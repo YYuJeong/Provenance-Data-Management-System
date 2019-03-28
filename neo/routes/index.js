@@ -96,11 +96,14 @@ router.post('/agent', function (req, res) {
   var agent_name = req.body.agent_name;
   var data=[];
   var test = [];
-  var test1 = [];
-
+  var activityArr= [];
+  var agentArr = [];
+  var entityArr = []; 
+  var dateArr = [];
+  var temp;
  // console.log(params_name);
    session
-    .run("MATCH (entity:Entity)-[:wasGeneratedBy]->(activity:Activity)-[:wasAssociatedWith]->(agent:Agent{name:'"+agent_name+"'}) WITH entity MATCH (entity:Entity)-[:wasGeneratedBy]->(activity:Activity)-[:wasAssociatedWith]->(agent:Agent) RETURN entity.name, activity.name, agent.name")
+    .run("MATCH (entity:Entity)-[:wasGeneratedBy]->(activity:Activity)-[:wasAssociatedWith]->(agent:Agent{name:'"+agent_name+"'}) WITH entity MATCH (entity:Entity)-[:wasGeneratedBy]->(activity:Activity)-[:wasAssociatedWith]->(agent:Agent) RETURN entity.name, activity.name, agent.name, activity.time")
     .then(function (result) {
       
      
@@ -109,21 +112,52 @@ router.post('/agent', function (req, res) {
      console.log("size : " + size);     
      for (var i = 0; i < size; i++) {
          var da = result.records[i]._fields;
+         //console.log("result : " + da);
          test[i] = da;            
          //data2 = JSON.stringify(data);         
-         console.log("result : " + test[i]);
+         
       }
-
+      
     for(var i=0;i < size; i+=2){
       data=(test[[i]]+" ,"+test[[i+1]]);
       searchArr.push(data);
-      console.log(data);
+      //console.log("data: " + data);
 
       } 
-  // console.log("ssarr"+searchArr);
-      res.render('search/searchAgentResult.ejs', {searches: searchArr});
-  // console.log('ddd'); 
-       session.close();  
+      //console.log("ssarr" + searchArr);
+      //console.log("type: " + typeof(searchArr))
+      
+      
+      temp = searchArr.toString()
+      var splitTemp = temp.split(',')
+
+      console.log('=========================================================');
+      for(var i =0; i< splitTemp.length; i++){
+        console.log('Each item #'+i+': %s',  splitTemp[i]);
+        console.log(' ');
+        
+        if((i%4) == 0){
+          entityArr.push(splitTemp[i]);
+        }
+        else if((i%4) == 1){
+          activityArr.push(splitTemp[i]);
+        }
+        else if((i%4) == 2){
+          agentArr.push(splitTemp[i]);
+        }
+        else if((i%4) == 3){
+          dateArr.push(splitTemp[i]);
+        }
+      }
+      
+      for(var i =0; i< dateArr.length; i++){
+        console.log('Each item #'+i+': %s', dateArr[i]);
+        console.log(' ');
+      }
+      
+      //console.log("index 0: "+ searchArr.toString())
+      res.render('search/searchAgentResult.ejs', {entities: entityArr, activities: activityArr, agents: agentArr, dates: dateArr}); 
+      session.close();  
     })
     .catch(function (err) {
        console.log(err);

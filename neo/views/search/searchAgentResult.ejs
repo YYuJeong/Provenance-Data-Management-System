@@ -9,8 +9,9 @@
    <meta charset="UTF-8">
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-   <link rel="icon" href="http://bootstrapk.com/favicon.ico">
-   
+     <!-- favicon -->
+     <link rel="shortcut icon" href="/images/favicon.ico">
+     <link rel="icon" href="/images/favicon.ico">
    <title>Provenance Data Management</title>
    
    <link href="http://bootstrapk.com/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -21,7 +22,7 @@
 
 <body>
    <div class="navbar-wrapper">
-      <div class="container">
+      <div class="container-fluid">
 
         <nav class="navbar navbar-inverse navbar-static-top">
           <div class="container">
@@ -106,60 +107,54 @@
             </form>
 
             <div class="panel panel-default">
-                  <!-- Default panel contents -->
-                  <div class="panel-heading" style = "font-size:medium;"><strong>Search Result</strong></div>
-                  <!-- Table -->
-                  <script type="text/javascript">
+                <!-- Default panel contents -->
+                <div class="panel-heading" style = "font-size:medium;"><strong>Search Result</strong></div>
+                <!-- Table -->
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Data</th>
+                      <th>Name</th>
+                      <th>Activity</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
 
-                    document.write("<table class='table'>");
-                    document.write("<thead>");
-                    document.write("<tr>");
-                    document.write("<th>#</th>");
-                    document.write("<th>Buyer</th>");
-                    document.write("<th>Data Name</th>");
-                    document.write("<th>Ower</th>");
-                    document.write("<th>Date</th>");
-                    document.write("</tr>");
-                    document.write("</thead>");
-
-                    document.write("<tbody>");
-
-                    for ( var i=0; i<6 ; i++) {
-                    document.write("<tr>");    
-                    document.write("<th scope='row'>"+(i+1)+"</th>");
-                      for ( var j=0; j<4 ; j++) {
-                        var txt="(" + i + "," + j + ")";    
-                        document.write("<td text-align='center'>"+ txt +"</td>");     
-                      } 
-                      document.write("</tr>");
-                    } 
-                    document.write("<tbody>");
-                    document.write("</table>");     
-                  </script>
-            </div>
-
-
-             
-            <ul>
-                <h3>Search Result</h3> 
-                <% searches.forEach(function(search){ %>
-                    <li>Result: <%= search %></li>
-                <% }) %>
-            </ul>
+                    <% for(var i=0; i<entities.length; i++) { %>
+                    <tr>
+                      <th scope="row">
+                        <%= (i+1) %>
+                      </th>
+                      <td>
+                        <%= entities[i] %>
+                      </td>
+                      <td>
+                        <%= agents[i] %>
+                      </td>
+                      <td>
+                        <%= activities[i] %>
+                      </td>
+                      <td>
+                        <%= dates[i] %>
+                      </td>
+                    </tr>
+                    <% } %>
+                  </tbody>
+                </table>
+            </div> 
+    
           </div>
         </div>
         
         <hr class="featurette-divider">
 
-        <!-- FOOTER -->
-          <footer>
-              <br>
-            <p class="pull-right"><a href="#">Back to top</a></p>
-            <p>&copy; 2014 Company, Inc. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
-          </footer>
+
   
       </div><!-- /.container -->
-  
+        <!-- FOOTER -->
+
   
       <!-- Bootstrap core JavaScript
       ================================================== -->
@@ -172,11 +167,7 @@
       <script src="../../assets/js/ie10-viewport-bug-workaround.js">
       </script>
     
-
-
-
-    
-
 </body>
+
 </html>
 
