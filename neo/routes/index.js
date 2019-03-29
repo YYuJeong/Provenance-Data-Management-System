@@ -46,11 +46,7 @@ router.get('/viewPage', function (req, res) {
                     time: record._fields[0].properties.time
 
                 });
-
-              
             });  
-            
-
             session
                 .run('MATCH(n: Agent) RETURN n LIMIT 100')
                 .then(function (result2) {
@@ -61,7 +57,6 @@ router.get('/viewPage', function (req, res) {
                             name: record._fields[0].properties.name
                         });
                     });
-
                     session
                         .run('MATCH(n: Entity) RETURN n LIMIT 100')
                         .then(function (result3) {
@@ -72,7 +67,6 @@ router.get('/viewPage', function (req, res) {
                                     name: record._fields[0].properties.name
                                 });
                             });
-
                             res.render('viewPage', {
                                 activities: activityArr,
                                 agents: agentArr,
@@ -108,34 +102,19 @@ router.post('/agent', function (req, res) {
       
      
      var searchArr = [];
-     var size = Object.keys(result.records).length;
-     console.log("size : " + size);     
+     var size = Object.keys(result.records).length;   
      for (var i = 0; i < size; i++) {
          var da = result.records[i]._fields;
-         //console.log("result : " + da);
-         test[i] = da;            
-         //data2 = JSON.stringify(data);         
-         
+         test[i] = da;                  
       }
       
     for(var i=0;i < size; i+=2){
       data=(test[[i]]+" ,"+test[[i+1]]);
       searchArr.push(data);
-      //console.log("data: " + data);
-
-      } 
-      //console.log("ssarr" + searchArr);
-      //console.log("type: " + typeof(searchArr))
-      
-      
+      }      
       temp = searchArr.toString()
       var splitTemp = temp.split(',')
-
-      console.log('=========================================================');
       for(var i =0; i< splitTemp.length; i++){
-        console.log('Each item #'+i+': %s',  splitTemp[i]);
-        console.log(' ');
-        
         if((i%4) == 0){
           entityArr.push(splitTemp[i]);
         }
@@ -149,20 +128,28 @@ router.post('/agent', function (req, res) {
           dateArr.push(splitTemp[i]);
         }
       }
-      
+      searchArr = []
+      var j = 0;
+      var k = 0;
       for(var i =0; i< dateArr.length; i++){
-        console.log('Each item #'+i+': %s', dateArr[i]);
-        console.log(' ');
+        if(activityArr[i] == 'Buy'){
+          searchArr[(1+4*j)] = agentArr[i];
+          searchArr[(2+4*j)] = entityArr[i];
+          searchArr[(3+4*j)] = dateArr[i];
+          j++;
+        }
+        else if(activityArr[i] == 'Own'){
+          searchArr[(4*k)] = agentArr[i];
+          k++;
+        }
       }
-      
-      //console.log("index 0: "+ searchArr.toString())
-      res.render('search/searchAgentResult.ejs', {entities: entityArr, activities: activityArr, agents: agentArr, dates: dateArr}); 
+      console.log(agent_name);
+      res.render('search/searchAgentResult.ejs', {searches: searchArr, agent_name: agent_name}); 
       session.close();  
     })
     .catch(function (err) {
        console.log(err);
     });
-//res.render('search.ejs', {data: params_name});
 });
 
 router.post('/agentAttribute', function (req, res) {

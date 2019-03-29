@@ -30,7 +30,7 @@ with driver.session() as session:
   
 # Bi-directional relationship?
 #u1.relationships.create("friends", u2)
-
+'''
 def merge(tx):
    tx.run("MATCH (agent:Agent) WITH agent.name AS agent, collect(agent) as node2Merge WITH node2Merge, extract(x IN node2Merge | x.match) AS matches CALL apoc.refactor.mergeNodes(node2Merge) yield node RETURN *")
 
@@ -42,7 +42,7 @@ def merge1(tx):
 
 with driver.session() as session:
           session.read_transaction(merge1)
-                                                       
+'''                                                       
                                                                                                                                                                                                                                   
 
 
