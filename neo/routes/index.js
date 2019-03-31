@@ -108,12 +108,12 @@ router.post('/agent', function (req, res) {
          test[i] = da;                  
       }
       
-    for(var i=0;i < size; i+=2){
-      data=(test[[i]]+" ,"+test[[i+1]]);
-      searchArr.push(data);
+      for(var i=0;i < size; i+=2){
+        data=(test[[i]]+" ,"+test[[i+1]]);
+        searchArr.push(data);
       }      
-      temp = searchArr.toString()
-      var splitTemp = temp.split(',')
+      temp = searchArr.toString();
+      var splitTemp = temp.split(',');
       for(var i =0; i< splitTemp.length; i++){
         if((i%4) == 0){
           entityArr.push(splitTemp[i]);
@@ -178,8 +178,7 @@ router.post('/agentAttribute', function (req, res) {
     for(var i=0;i < size; i+=2){
       data=(test[[i]]+" ,"+test[[i+1]]);
       searchArr.push(data);
-      console.log(data);
-
+      console.log(data)
       } 
   // console.log("ssarr"+searchArr);
       res.render('search/searchAgentAttributeResult.ejs', {searches: searchArr});
@@ -196,31 +195,35 @@ router.post('/agentAttribute', function (req, res) {
 
 router.post('/entity', function (req, res) {
   var entity_name = req.body.entity_name;
-  var data2;
   var data=[];
   var test = [];
-  
-  //console.log(entity_name);
+  var activityArr= [];
+  var agentArr = [];
+  var entityArr = []; 
+  var dateArr = [];
+  var temp;
     session
-        .run("MATCH (entity:Entity)-[rel:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent) WHERE entity.name='"+entity_name+"' RETURN entity.name, activity.name, agent.name")
+        .run("MATCH (entity:Entity)-[rel:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent) WHERE entity.name='"+entity_name+"' RETURN entity.name, activity.name, agent.name, activity.time")
         .then(function (result) {
             var searchArr = [];
-            console.log(result);
             var size = Object.keys(result.records).length;
-            console.log("size : " + size);     
             for (var i = 0; i < size; i++) {
               var da = result.records[i]._fields;
               test[i] = da;            
-              //data2 = JSON.stringify(data);         
-              //console.log("result : " + data2);
-           }
-     
-         for(var i=0;i < size; i+=2){
-           data=(test[[i]]+" ,"+test[[i+1]]);
-           searchArr.push(data);
-           console.log(data);
-     
-           } 
+            }
+            for(var i=0;i < size; i+=2){
+                data=(test[[i]]+" ,"+test[[i+1]]);
+                searchArr.push(data);
+                console.log(searchArr);
+            }
+            temp = searchArr.toString(); 
+            var splitTemp = temp.split(',');  
+            console.log(splitTemp);
+            
+            for(var i=0; i<splitTemp.length ; i++){
+              console.log("splitTemp: " +i +"-th is "+  splitTemp[i]);
+            }
+            
      
          // console.log("ssarr"+searchArr);
           res.render('search/searchEntityResult.ejs', {searches: searchArr});
