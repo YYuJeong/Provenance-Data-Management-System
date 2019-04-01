@@ -114,41 +114,57 @@
                   <thead>
                     <tr>
                       <th align = center>#</th>
-                      <th align = center>Owener</th>
-                      <th align = center>Buyer</th>
+                      <th align = center>Sender</th>
+                      <th align = center>Sender Division</th>
+                      <th align = center>Receiver</th>
+                      <th align = center>Receiver Division</th>
                       <th align = center>Data</th>
+                      <th align = center>Data Usage</th>
+                      <th align = center>Price</th>
                       <th align = center>Date</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <% for(var i=0, j=0; i<searches.length; i=i+4, j=j+3 ) { %>
+                    <% for(var i=0, j=0; i<senders.length; i++ ) { %>
                     <tr>
                       <th scope="row">
-                          <%= (i-j)+1 %>
+                          <%= (i+1) %>
                       </th>
-                      <% if(searches[i] == agent_name) { %>
+                      <% if(senders[i] == agent_name) { %>
                         <td align = center>
-                          <b><%= searches[i] %></b>
+                          <b><%= senders[i] %></b>
                         </td>
                       <% } else { %>
                         <td>
-                            <%= searches[i] %>
+                            <%= senders[i] %>
                         </td>
                       <% } %>  
-                      <% if(searches[i+1] == agent_name) { %>
-                        <td>
-                          <b><%= searches[i+1] %></b>
-                        </td>
-                      <% } else { %>
-                        <td>
-                            <%= searches[i+1] %>s
-                        </td>
-                      <% } %>  
-                      <td>
-                        <%= searches[i+2] %>
+                      <td align = center>
+                        <%= sendDivisions[i] %>
                       </td>
-                      <td>
-                        <%= searches[i+3] %>
+                      <% if(receivers[i] == agent_name) { %>
+                        <td align = center>
+                          <b><%= receivers[i] %></b>
+                        </td>
+                      <% } else { %>
+                        <td align = center>
+                            <%= receivers[i] %>
+                        </td>
+                      <% } %>  
+                      <td align = center>
+                        <%= recvDivisions[i] %>
+                      </td>
+                      <td align = center>
+                        <%= datas[i] %>
+                      </td>
+                      <td align = center>
+                        <%= dataUsages[i] %>
+                      </td>
+                      <td align = center>
+                        <%= prices[i] %>
+                      </td>
+                      <td align = center>
+                        <%= dates[i] %>
                       </td>
                     </tr>
                     <% } %>

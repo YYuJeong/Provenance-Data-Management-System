@@ -98,13 +98,59 @@
               <br>
               <br>
               <a href="/search/searchEntityResult"><input class="btn btn-primary" type="submit" value="Search"></a>
+              <br>
+              <br>
             </form>
-            <ul>
-                <h3>Search Result</h3> 
-                <% searches.forEach(function(search){ %>
-                    <li>Result: <%= search %></li>
-                <% }) %>
-            </ul>
+            <div class="panel panel-default">
+              <!-- Default panel contents -->
+              <div class="panel-heading" style = "font-size:medium;"><strong>Search Result</strong></div>
+              <!-- Table -->
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th align = center>#</th>
+                    <th align = center> Sender </th>
+                    <th align = center> Sender Division </th>
+                    <th align = center> Receiver </th>
+                    <th align = center> Receiver Division </th>
+                    <th align = center> Data Usage </th>
+                    <th align = center> Price </th>
+                    <th align = center> Date </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% for(var i=0, j=0; i<senders.length; i++ ) { %>
+                  <tr>
+                    <th scope="row">
+                        <%= (i+1) %>
+                    </th>
+                    <td align = center>
+                        <%= senders[i] %>
+                    </td>
+                    <td align = center>
+                      <%= sendDivisions[i] %>
+                    </td>
+                    <td align = center>
+                      <%= receivers[i] %>
+                    </td>
+                    <td align = center>
+                      <%= recvDivisions[i] %>
+                    </td>
+                    <td align = center>
+                      <%= dataUsages[i] %>
+                    </td>
+                    <td align = center>
+                      <%= prices[i] %>
+                    </td>
+                    <td align = center>
+                      <%= dates[i] %>
+                    </td>
+                  </tr>
+                  <% } %>
+                </tbody>
+              </table>
+          </div>  
+        </div>
           </div>
         </div>
         <hr class="featurette-divider">

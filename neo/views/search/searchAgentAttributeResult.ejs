@@ -111,46 +111,59 @@
             </form>
 
             <div class="panel panel-default">
-                  <!-- Default panel contents -->
-                  <div class="panel-heading" style = "font-size:medium;"><strong>Search Result</strong></div>
-                  <!-- Table -->
-                  <script type="text/javascript">
-
-                    document.write("<table class='table'>");
-                    document.write("<thead>");
-                    document.write("<tr>");
-                    document.write("<th>#</th>");
-                    document.write("<th>Buyer</th>");
-                    document.write("<th>Data Name</th>");
-                    document.write("<th>Ower</th>");
-                    document.write("<th>Date</th>");
-                    document.write("</tr>");
-                    document.write("</thead>");
-
-                    document.write("<tbody>");
-
-                    for ( var i=0; i<6 ; i++) {
-                    document.write("<tr>");    
-                    document.write("<th scope='row'>"+(i+1)+"</th>");
-                      for ( var j=0; j<4 ; j++) {
-                        var txt="(" + i + "," + j + ")";    
-                        document.write("<td text-align='center'>"+ txt +"</td>");     
-                      } 
-                      document.write("</tr>");
-                    } 
-                    document.write("<tbody>");
-                    document.write("</table>");     
-                  </script>
-            </div>
-
-
-             
-            <ul>
-                <h3>Search Result</h3> 
-                <% searches.forEach(function(search){ %>
-                    <li>Result: <%= search %></li>
-                <% }) %>
-            </ul>
+              <!-- Default panel contents -->
+              <div class="panel-heading" style = "font-size:medium;"><strong>Search Result</strong></div>
+              <!-- Table -->
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th align = center>#</th>
+                    <th align = center>Sender</th>
+                    <th align = center>Sender Division</th>
+                    <th align = center>Receiver</th>
+                    <th align = center>Receiver Division</th>
+                    <th align = center>Data</th>
+                    <th align = center>Data Usage</th>
+                    <th align = center>Price</th>
+                    <th align = center>Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% for(var i=0, j=0; i<senders.length; i++ ) { %>
+                  <tr>
+                    <th scope="row">
+                        <%= (i+1) %>
+                    </th>
+                    <td>
+                        <%= senders[i] %>
+                    </td>
+                    <td align = center>
+                      <%= sendDivisions[i] %>
+                    </td>
+                    <td align = center>
+                        <%= receivers[i] %>
+                    </td> 
+                    <td align = center>
+                      <%= recvDivisions[i] %>
+                    </td>
+                    <td align = center>
+                      <%= datas[i] %>
+                    </td>
+                    <td align = center>
+                      <%= dataUsages[i] %>
+                    </td>
+                    <td align = center>
+                      <%= prices[i] %>
+                    </td>
+                    <td align = center>
+                      <%= dates[i] %>
+                    </td>
+                  </tr>
+                  <% } %>
+                </tbody>
+              </table>
+          </div>  
+        </div>
           </div>
         </div>
         
