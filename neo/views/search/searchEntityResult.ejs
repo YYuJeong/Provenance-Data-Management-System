@@ -91,15 +91,14 @@
         <!-- /END THE FEATURETTES -->
         <div class="jumbotron">
           <div class="container" style="display: inline-block;text-align: center;">
-            <h3>Search Data</h3> 
+            <h3>Search Data</h3><br> 
             <form method="post" action="/entity">
               <label>Data Name</label><br>
               <input type="text" name="entity_name" />
               <br>
               <br>
               <a href="/search/searchEntityResult"><input class="btn btn-primary" type="submit" value="Search"></a>
-              <br>
-              <br>
+              <br><br><br>
             </form>
             <div class="panel panel-default">
               <!-- Default panel contents -->
@@ -113,6 +112,7 @@
                     <th align = center> Sender Division </th>
                     <th align = center> Receiver </th>
                     <th align = center> Receiver Division </th>
+                    <th align = center> Data </th>
                     <th align = center> Data Usage </th>
                     <th align = center> Price </th>
                     <th align = center> Date </th>
@@ -135,6 +135,9 @@
                     </td>
                     <td align = center>
                       <%= recvDivisions[i] %>
+                    </td>
+                    <td align = center>
+                      <%= datas[i] %>
                     </td>
                     <td align = center>
                       <%= dataUsages[i] %>

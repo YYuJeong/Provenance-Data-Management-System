@@ -9,13 +9,16 @@ var session = driver.session();
 
 router.post('/dataAdd', function (req, res) {
     var receiver_name = req.body.receiver_name;
+    var receiver_attr = req.body.receiver_attr;
     var sender_name = req.body.sender_name;
+    var sender_attr = req.body.sender_attr;
     var entity_name = req.body.entity_name;
+    var entity_use = req.body.entity_use;
     var activity_price = req.body.activity_price;
     var activity_time = req.body.activity_time;
     
     session
-        .run("CREATE(: Agent {name:'" + receiver_name + "'}) <- [:wasAssociatedWith]-(: Activity { name: 'Own'}) <- [:wasGeneratedBy]-(: Entity { name: '" + entity_name + "'}) - [:wasGeneratedBy] -> (: Activity { name: 'Buy', price:'" + activity_price + "',time:'" + activity_time +"'})- [:wasAssociatedWith] -> (: Agent {name:'" + sender_name + "'})")
+        .run("CREATE(: Agent {name:'" + sender_name + "', attribute:'" + sender_attr + "'}) <- [:wasAssociatedWith]-(: Activity { name: 'Own'}) <- [:wasGeneratedBy]-(: Entity { name: '" + entity_name + "', use: '" + entity_use + "'}) - [:wasGeneratedBy] -> (: Activity { name: 'Buy', price:'" + activity_price + "',time:'" + activity_time +"'})- [:wasAssociatedWith] -> (: Agent {name:'" + receiver_name + "', attribute:'" + receiver_attr + "'})")
         .then(function (result) {
 
             session.close();
@@ -28,62 +31,54 @@ router.post('/dataAdd', function (req, res) {
 });
 
 router.get('/',function(req, res, next) {
-  // res.send('kkk');
    res.render('index');
  });
 
 
-router.get('/viewPage', function (req, res) {  
+router.get('/viewPage', function (req, res) {
+  var receiverArr= [];
+  var recvDivisionArr = [];
+  var senderArr = [];
+  var sendDivisionArr = [];
+  var dataUsageArr = [];
+  var dataArr = []; 
+  var priceArr = [];
+  var dateArr = [];
   session
-        .run('MATCH(n) RETURN n LIMIT 100')
-        .then(function (result) {
-            var activityArr = [];
-            result.records.forEach(function (record) {
-                activityArr.push({
-                    id: record._fields[0].identity.low,
-                    name: record._fields[0].properties.name,
-                    price: record._fields[0].properties.price,
-                    time: record._fields[0].properties.time
-
-                });
-            });  
-            session
-                .run('MATCH(n: Agent) RETURN n LIMIT 100')
-                .then(function (result2) {
-                    var agentArr = [];
-                    result2.records.forEach(function (record) {
-                        agentArr.push({
-                            id: record._fields[0].identity.low,
-                            name: record._fields[0].properties.name
-                        });
-                    });
-                    session
-                        .run('MATCH(n: Entity) RETURN n LIMIT 100')
-                        .then(function (result3) {
-                            var entityArr = [];
-                            result3.records.forEach(function (record) {
-                                entityArr.push({
-                                    id: record._fields[0].identity.low,
-                                    name: record._fields[0].properties.name
-                                });
-                            });
-                            res.render('viewPage', {
-                                activities: activityArr,
-                                agents: agentArr,
-                                entities: entityArr
-                            });
-                        })
-                        .catch(function (err) {
-                            console.log(err);
-                        });
-                })
-                .catch(function (err) {
-                    console.log(err);
-                });
-        })
-        .catch(function (err) {
-            console.log(err);
+      .run("START n=node(*) MATCH (n)-[r]->(m) RETURN n, m LIMIT 400")
+      .then(function (result) {
+        var j =0;
+        result.records.forEach(function (record) {
+          if(j%4 == 0){
+            senderArr.push(record._fields[1].properties.name);
+            sendDivisionArr.push(record._fields[1].properties.attribute);
+          }
+          else if(j%4 == 1){
+            dataArr.push(record._fields[0].properties.name);
+            dataUsageArr.push(record._fields[0].properties.use);
+          }
+          else if(j%4 == 3){
+            priceArr.push(record._fields[0].properties.price);
+            dateArr.push(record._fields[0].properties.time);
+            receiverArr.push(record._fields[1].properties.name);
+            recvDivisionArr.push(record._fields[1].properties.attribute);
+          }
+          /*
+          for (var i =0; i<2; i++){
+            console.log("record " + i + " -th " + "field: " + record._fields[i]);
+            console.log("record " + i + " -th " + "field labels: " + record._fields[i].labels[0]);
+            console.log("record " + i + " -th " + "field properties name: " + record._fields[i].properties.name);
+            console.log("======================================");       
+          } 
+          */
+          j++;
         });
+      res.render('viewPage', {receivers : receiverArr, recvDivisions: recvDivisionArr, senders: senderArr, sendDivisions: sendDivisionArr, dataUsages: dataUsageArr, datas: dataArr, prices: priceArr, dates: dateArr}); 
+      session.close();  
+    })
+    .catch(function (err) {
+        console.log(err);
+  });
 });
 
 router.post('/agent', function (req, res) {
@@ -159,19 +154,6 @@ router.post('/agent', function (req, res) {
           }
         }
       }
-      /*
-      for(var i=0; i<senderArr.length; i++) {
-        console.log("============="+i+"===============");
-        console.log("receiverArr: " + receiverArr[i]);
-        console.log("recvDivisionArr: " + recvDivisionArr[i]); 
-        console.log("senderArr: " + senderArr[i]);
-        console.log("sendDivisionArr: " + sendDivisionArr[i]); 
-        console.log("dataUsageArr: " + dataUsageArr[i]); 
-        console.log("dataArr: " + dataArr[i]);
-        console.log("priceArr: " + priceArr[i]); 
-        console.log("dateArr: " + dateArr[i]); 
-      }
-      */
       res.render('search/searchAgentResult.ejs', {receivers : receiverArr, recvDivisions: recvDivisionArr, senders: senderArr, sendDivisions: sendDivisionArr, dataUsages: dataUsageArr, datas: dataArr, prices: priceArr, dates: dateArr, agent_name: agent_name}); 
       session.close();  
     })
@@ -342,35 +324,75 @@ router.post('/entity', function (req, res) {
 router.post('/entityAttribute', function (req, res) {
   var entity_name = req.body.entity_name;
   var entity_attr = req.body.entity_attr;
-  var data2;
+  var receiverArr= [];
+  var recvDivisionArr = [];
+  var senderArr = [];
+  var sendDivisionArr = [];
+  var dataUsageArr = [];
+  var dataArr = []; 
+  var priceArr = [];
+  var dateArr = [];
+  var temp;
   var data=[];
   var test = [];
   
   //console.log(entity_name);
     session
-        .run("MATCH (entity:Entity)-[rel:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent) WHERE entity.name='"+entity_name+"' RETURN entity.name, activity.name, agent.name")
+        .run("MATCH (entity:Entity)-[rel:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent) WHERE entity.name='"+entity_name+"' AND entity.use='"+entity_attr+"' RETURN entity.name, entity.use, activity.name, activity.price, activity.time, agent.name, agent.attribute")
         .then(function (result) {
             var searchArr = [];
-            console.log(result);
-            var size = Object.keys(result.records).length;
-            console.log("size : " + size);     
+            var size = Object.keys(result.records).length;   
             for (var i = 0; i < size; i++) {
               var da = result.records[i]._fields;
               test[i] = da;            
-              //data2 = JSON.stringify(data);         
-              //console.log("result : " + data2);
-           }
-     
-         for(var i=0;i < size; i+=2){
-           data=(test[[i]]+" ,"+test[[i+1]]);
-           searchArr.push(data);
-           console.log(data);
-     
-           } 
-     
-         // console.log("ssarr"+searchArr);
-          res.render('search/searchEntityAttributeResult.ejs', {searches: searchArr});
-         // console.log('ddd'); 
+            }    
+            for(var i=0;i < size; i+=2){
+              data=(test[[i]]+" ,"+test[[i+1]]);
+              searchArr.push(data);
+            } 
+            temp = searchArr.toString(); 
+            var splitTemp = temp.split(',');  
+            for(var i=0, j =0; i< splitTemp.length; i++){
+              if(i%14 == 0){
+                if(i > 0){
+                  j++;
+                  dataArr[j] = splitTemp[i]; 
+                  dataUsageArr[j] = splitTemp[++i];
+                }
+                else{
+                  dataArr[j] = splitTemp[i]; 
+                  dataUsageArr[j] = splitTemp[++i];
+                }
+              }
+              else if(i%14 == 2){
+                if(splitTemp[i] == 'Buy'){
+                  priceArr[j] = splitTemp[++i];
+                  dateArr[j] = splitTemp[++i];
+                  receiverArr[j] = splitTemp[++i];
+                  recvDivisionArr[j] = splitTemp[++i];
+                }
+                else if(splitTemp[i] == 'Own'){
+                  i += 2;
+                  senderArr[j] = splitTemp[++i];
+                  sendDivisionArr[j] = splitTemp[++i];
+                }
+                i += 2;
+              }
+              else if(i%14 == 9){
+                if(splitTemp[i] == 'Buy'){
+                  priceArr[j] = splitTemp[++i];
+                  dateArr[j] = splitTemp[++i];
+                  receiverArr[j] = splitTemp[++i];
+                  recvDivisionArr[j] = splitTemp[++i];
+                }
+                else if(splitTemp[i] == 'Own'){
+                  i += 2;
+                  senderArr[j] = splitTemp[++i];
+                  sendDivisionArr[j] = splitTemp[++i];
+                }
+              }
+            }
+          res.render('search/searchEntityAttributeResult.ejs', {receivers : receiverArr, recvDivisions: recvDivisionArr, senders: senderArr, sendDivisions: sendDivisionArr, dataUsages: dataUsageArr, datas: dataArr, prices: priceArr, dates: dateArr});
           session.close();  
         })
         .catch(function (err) {
@@ -385,10 +407,18 @@ router.post('/agentPeriod', function (req, res) {
   var end_date = req.body.end_date;
   var data=[];
   var test = [];
+  var receiverArr= [];
+  var recvDivisionArr = [];
+  var senderArr = [];
+  var sendDivisionArr = [];
+  var dataUsageArr = [];
+  var dataArr = []; 
+  var priceArr = [];
+  var dateArr = [];
+  var temp;
   
- // console.log(params_name);
     session
-        .run("MATCH (entity:Entity)-[:wasGeneratedBy]->(activity:Activity)-[:wasAssociatedWith]->(agent:Agent{name:'"+agent_name+"'}) WITH entity MATCH (entity:Entity)-[:wasGeneratedBy]->(activity:Activity)-[:wasAssociatedWith]->(agent:Agent) WHERE activity.time>='"+start_date+"' AND activity.time<'"+end_date+"' WITH entity MATCH (entity:Entity)-[:wasGeneratedBy]->(activity:Activity)-[:wasAssociatedWith]->(agent:Agent)  RETURN entity.name, activity.name, agent.name")
+        .run("MATCH (entity:Entity)-[:wasGeneratedBy]->(activity:Activity)-[:wasAssociatedWith]->(agent:Agent{name:'"+agent_name+"'}) WITH entity MATCH (entity:Entity)-[:wasGeneratedBy]->(activity:Activity)-[:wasAssociatedWith]->(agent:Agent) WHERE activity.time>='"+start_date+"' AND activity.time<'"+end_date+"' WITH entity MATCH (entity:Entity)-[:wasGeneratedBy]->(activity:Activity)-[:wasAssociatedWith]->(agent:Agent)  RETURN entity.name, entity.use, activity.name, activity.price, activity.time, agent.name, agent.attribute")
         .then(function (result) {
             var searchArr = [];
             console.log(result);
@@ -396,20 +426,56 @@ router.post('/agentPeriod', function (req, res) {
             console.log("size : " + size);     
             for (var i = 0; i < size; i++) {
               var da = result.records[i]._fields;
-              test[i] = da;            
-              //data2 = JSON.stringify(data);         
-              //console.log("result : " + data2);
+              test[i] = da;                 
            }
      
-         for(var i=0;i < size; i+=2){
-           data=(test[[i]]+" ,"+test[[i+1]]);
-           searchArr.push(data);
-           console.log(data);
-     
+           for(var i=0;i < size; i+=2){
+            data=(test[[i]]+" ,"+test[[i+1]]);
+            searchArr.push(data);    
            } 
-         // console.log("ssarr"+searchArr);
-          res.render('search/searchAgentPeriodResult.ejs', {searches: searchArr});
-         // console.log('ddd'); 
+           temp = searchArr.toString(); 
+           var splitTemp = temp.split(',');  
+           for(var i=0, j =0; i< splitTemp.length; i++){
+             if(i%14 == 0){
+               if(i > 0){
+                 j++;
+                 dataArr[j] = splitTemp[i]; 
+                 dataUsageArr[j] = splitTemp[++i];
+               }
+               else{
+                 dataArr[j] = splitTemp[i]; 
+                 dataUsageArr[j] = splitTemp[++i];
+               }
+             }
+             else if(i%14 == 2){
+               if(splitTemp[i] == 'Buy'){
+                 priceArr[j] = splitTemp[++i];
+                 dateArr[j] = splitTemp[++i];
+                 receiverArr[j] = splitTemp[++i];
+                 recvDivisionArr[j] = splitTemp[++i];
+               }
+               else if(splitTemp[i] == 'Own'){
+                 i += 2;
+                 senderArr[j] = splitTemp[++i];
+                 sendDivisionArr[j] = splitTemp[++i];
+               }
+               i += 2;
+             }
+             else if(i%14 == 9){
+               if(splitTemp[i] == 'Buy'){
+                 priceArr[j] = splitTemp[++i];
+                 dateArr[j] = splitTemp[++i];
+                 receiverArr[j] = splitTemp[++i];
+                 recvDivisionArr[j] = splitTemp[++i];
+               }
+               else if(splitTemp[i] == 'Own'){
+                 i += 2;
+                 senderArr[j] = splitTemp[++i];
+                 sendDivisionArr[j] = splitTemp[++i];
+               }
+             }
+           }
+          res.render('search/searchAgentPeriodResult.ejs', {receivers : receiverArr, recvDivisions: recvDivisionArr, senders: senderArr, sendDivisions: sendDivisionArr, dataUsages: dataUsageArr, datas: dataArr, prices: priceArr, dates: dateArr});
           session.close();  
         })
         .catch(function (err) {
@@ -425,32 +491,73 @@ router.post('/entityPeriod', function (req, res) {
   var end_date = req.body.end_date;
   var data=[];
   var test = [];
-  
- // console.log(params_name);
+  var receiverArr= [];
+  var recvDivisionArr = [];
+  var senderArr = [];
+  var sendDivisionArr = [];
+  var dataUsageArr = [];
+  var dataArr = []; 
+  var priceArr = [];
+  var dateArr = [];
+  var temp;
+
     session
-        .run("MATCH (entity:Entity)-[rel:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent) WHERE entity.name='"+entity_name+"'AND activity.time>='"+start_date+"'AND activity.time<'"+end_date+"' WITH entity MATCH (entity:Entity)-[:wasGeneratedBy]->(activity:Activity)-[:wasAssociatedWith]->(agent:Agent) RETURN entity.name, activity.name, agent.name")
+        .run("MATCH (entity:Entity)-[rel:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent) WHERE entity.name='"+entity_name+"'AND activity.time>='"+start_date+"'AND activity.time<'"+end_date+"' WITH entity MATCH (entity:Entity)-[:wasGeneratedBy]->(activity:Activity)-[:wasAssociatedWith]->(agent:Agent) RETURN entity.name, entity.use, activity.name, activity.price, activity.time, agent.name, agent.attribute")
         .then(function (result) {
             var searchArr = [];
-            console.log(result);
-            var size = Object.keys(result.records).length;
-            console.log("size : " + size);     
+            var size = Object.keys(result.records).length; 
             for (var i = 0; i < size; i++) {
               var da = result.records[i]._fields;
               test[i] = da;            
-              //data2 = JSON.stringify(data);         
-              //console.log("result : " + data2);
            }
      
          for(var i=0;i < size; i+=2){
            data=(test[[i]]+" ,"+test[[i+1]]);
-           searchArr.push(data);
-           console.log(data);
-     
-           } 
-     
-         // console.log("ssarr"+searchArr);
-          res.render('search/searchEntityPeriodResult.ejs', {searches: searchArr});
-         // console.log('ddd'); 
+           searchArr.push(data);     
+          } 
+          temp = searchArr.toString(); 
+          var splitTemp = temp.split(',');  
+          for(var i=0, j =0; i< splitTemp.length; i++){
+            if(i%14 == 0){
+              if(i > 0){
+                j++;
+                dataArr[j] = splitTemp[i]; 
+                dataUsageArr[j] = splitTemp[++i];
+              }
+              else{
+                dataArr[j] = splitTemp[i]; 
+                dataUsageArr[j] = splitTemp[++i];
+              }
+            }
+            else if(i%14 == 2){
+              if(splitTemp[i] == 'Buy'){
+                priceArr[j] = splitTemp[++i];
+                dateArr[j] = splitTemp[++i];
+                receiverArr[j] = splitTemp[++i];
+                recvDivisionArr[j] = splitTemp[++i];
+              }
+              else if(splitTemp[i] == 'Own'){
+                i += 2;
+                senderArr[j] = splitTemp[++i];
+                sendDivisionArr[j] = splitTemp[++i];
+              }
+              i += 2;
+            }
+            else if(i%14 == 9){
+              if(splitTemp[i] == 'Buy'){
+                priceArr[j] = splitTemp[++i];
+                dateArr[j] = splitTemp[++i];
+                receiverArr[j] = splitTemp[++i];
+                recvDivisionArr[j] = splitTemp[++i];
+              }
+              else if(splitTemp[i] == 'Own'){
+                i += 2;
+                senderArr[j] = splitTemp[++i];
+                sendDivisionArr[j] = splitTemp[++i];
+              }
+            }
+          }
+          res.render('search/searchEntityPeriodResult.ejs', {receivers : receiverArr, recvDivisions: recvDivisionArr, senders: senderArr, sendDivisions: sendDivisionArr, dataUsages: dataUsageArr, datas: dataArr, prices: priceArr, dates: dateArr});
           session.close();  
         })
         .catch(function (err) {
@@ -467,32 +574,72 @@ router.post('/agentEntityPeriod', function (req, res) {
   var end_date = req.body.end_date;
   var data=[];
   var test = [];
+  var receiverArr= [];
+  var recvDivisionArr = [];
+  var senderArr = [];
+  var sendDivisionArr = [];
+  var dataUsageArr = [];
+  var dataArr = []; 
+  var priceArr = [];
+  var dateArr = [];
+  var temp;
 
- // console.log(params_name4);
    session
-    .run("MATCH (entity:Entity)-[rel:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent) WHERE entity.name='"+entity_name+"'AND agent.name='"+agent_name+"' AND activity.time>='"+start_date+"'AND activity.time<'"+end_date+"'WITH entity MATCH (entity:Entity)-[:wasGeneratedBy]->(activity:Activity)-[:wasAssociatedWith]->(agent:Agent) RETURN entity.name, activity.name, agent.name")
+    .run("MATCH (entity:Entity)-[rel:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent) WHERE entity.name='"+entity_name+"'AND agent.name='"+agent_name+"' AND activity.time>='"+start_date+"'AND activity.time<'"+end_date+"'WITH entity MATCH (entity:Entity)-[:wasGeneratedBy]->(activity:Activity)-[:wasAssociatedWith]->(agent:Agent) RETURN entity.name, entity.use, activity.name, activity.price, activity.time, agent.name, agent.attribute")
     .then(function (result) {
-      
-     
         var searchArr = [];
         var size = Object.keys(result.records).length;
-        console.log("size : " + size);     
         for (var i = 0; i < size; i++) {
           var da = result.records[i]._fields;
-          test[i] = da;            
-          //data2 = JSON.stringify(data);         
-         
+          test[i] = da;                         
         }
-
-          for(var i=0;i < size; i+=2){
+        for(var i=0;i < size; i+=2){
           data=(test[[i]]+" ,"+test[[i+1]]);
           searchArr.push(data);
-          console.log(data);
-          } 
-
-  // console.log("ssarr"+searchArr);
-      res.render('search/searchAgentEntityPeriodResult.ejs', {searches: searchArr});
-  // console.log('ddd'); 
+        } 
+        temp = searchArr.toString(); 
+        var splitTemp = temp.split(',');  
+        for(var i=0, j =0; i< splitTemp.length; i++){
+          if(i%14 == 0){
+            if(i > 0){
+              j++;
+              dataArr[j] = splitTemp[i]; 
+              dataUsageArr[j] = splitTemp[++i];
+            }
+            else{
+              dataArr[j] = splitTemp[i]; 
+              dataUsageArr[j] = splitTemp[++i];
+            }
+          }
+          else if(i%14 == 2){
+            if(splitTemp[i] == 'Buy'){
+              priceArr[j] = splitTemp[++i];
+              dateArr[j] = splitTemp[++i];
+              receiverArr[j] = splitTemp[++i];
+              recvDivisionArr[j] = splitTemp[++i];
+            }
+            else if(splitTemp[i] == 'Own'){
+              i += 2;
+              senderArr[j] = splitTemp[++i];
+              sendDivisionArr[j] = splitTemp[++i];
+            }
+            i += 2;
+          }
+          else if(i%14 == 9){
+            if(splitTemp[i] == 'Buy'){
+              priceArr[j] = splitTemp[++i];
+              dateArr[j] = splitTemp[++i];
+              receiverArr[j] = splitTemp[++i];
+              recvDivisionArr[j] = splitTemp[++i];
+            }
+            else if(splitTemp[i] == 'Own'){
+              i += 2;
+              senderArr[j] = splitTemp[++i];
+              sendDivisionArr[j] = splitTemp[++i];
+            }
+          }
+        }
+      res.render('search/searchAgentEntityPeriodResult.ejs', {receivers : receiverArr, recvDivisions: recvDivisionArr, senders: senderArr, sendDivisions: sendDivisionArr, dataUsages: dataUsageArr, datas: dataArr, prices: priceArr, dates: dateArr});
        session.close();  
     })
     .catch(function (err) {

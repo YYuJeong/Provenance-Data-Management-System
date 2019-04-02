@@ -98,26 +98,35 @@
         <!-- /END THE FEATURETTES -->
         <div class="jumbotron">
           <div class="container" style="display: inline-block;text-align: center;">
-            <h3>Add Data </h3> 
+            <h3>Add Data </h3> <br>
             <form method="post" action="/dataAdd" >
-              <label>[Receiver Name]</label><br>
+              <label> Receiver </label><br>
               <input type="text" name="receiver_name" />
-              <br>
-              <label>[Sender Name]</label><br>
+              <br><br>
+              <label> Receiver Division</label><br>
+              <input type="text" name="receiver_attr" />
+              <br><br>
+              <label> Sender </label><br>
               <input type="text" name="sender_name" />
-              <br>
-              <label>[Entity Name]</label><br>
+              <br><br>
+              <label> Sender Division</label><br>
+              <input type="text" name="sender_attr" />
+              <br><br>
+              <label> Data </label><br> 
               <input type="text" name="entity_name" />
-              <br>
-              <label>[Activity Price]</label><br>
+              <br><br>
+              <label> Data Usage</label><br>
+              <input type="text" name="entity_use" />
+              <br><br>
+              <label> Data Price </label><br>
               <input type="text" name="activity_price" />
-              <br>
-              <label>[Activity Time]</label><br>
+              <br><br>
+              <label> Transaction Date </label><br>
               <input type="text" name="activity_time" />
               <br>
               <br>
               <input class="btn btn-primary" type="submit" value="Submit">
-              <br>
+              <br><br>
             </form>
           </div>
         </div>

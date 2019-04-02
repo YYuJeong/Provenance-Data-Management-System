@@ -24,7 +24,7 @@ with open("newdata.csv",'r') as f:
     matrix = list(csv.reader(f,delimiter=","))
     
 with driver.session() as session:
-    for i in range(len(matrix)):
+    for i in range(1, len(matrix)):
         session.write_transaction(add_node,matrix[i][0],matrix[i][1],matrix[i][2],matrix[i][3],matrix[i][4],matrix[i][5],matrix[i][6], matrix[i][7])
 
   
