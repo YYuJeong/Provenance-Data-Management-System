@@ -15,7 +15,7 @@ var bodyParser = require('body-parser');
 
 
 router.get('/', function(req, res, next) {
-  res.render('search/searchAgentEntityPeriod.ejs');
+  res.render('search/searchPerson/searchAgentPeriod.ejs');
 });
 
 /*
@@ -24,8 +24,8 @@ router.get('/', function(req, res, next) {
   });
 */
 
-router.get('/search/searchPage', function(req, res, next) {
-    res.render('search/searchAgentEntityPeriod.ejs');
+router.get('/search/searchPersonPage', function(req, res, next) {
+    res.render('search/searchPerson/searchAgentPeriod.ejs');
 });
 
 

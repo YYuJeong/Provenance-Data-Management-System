@@ -6,9 +6,8 @@
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
      <!-- favicon -->
-     <link rel="shortcut icon" href="/images/favicon.ico">
-     <link rel="icon" href="/images/favicon.ico">
-   
+  <link rel="shortcut icon" href="/images/favicon.ico">
+  <link rel="icon" href="/images/favicon.ico">
    <title>Provenance Data Management</title>
    
    <link href="http://bootstrapk.com/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -36,7 +35,7 @@
             </div>
             <div id="navbar" class="navbar-collapse collapse">
               <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Home</a></li>
+                <li class="active"><a href="/">Home</a></li>
                 <li><a href="#about">About</a></li>
                 <li><a href="#contact">Contact</a></li>
                 <li class="dropdown">
@@ -74,19 +73,19 @@
           <div class="col-lg-4">
             <img class="img-circle" src="/images/table.jpg" alt="Generic placeholder image" width="140" height="140">
             <h2>View data</h2>
-            <p>Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Praesent commodo cursus magna.</p>
+            <p>데이터 보기 </p>
             <p><a class="btn btn-default" href="/viewPage" role="button">View details &raquo;</a></p>
           </div><!-- /.col-lg-4 -->
           <div class="col-lg-4">
             <img class="img-circle" src="/images/add.jpg" alt="Generic placeholder image" width="140" height="140">
             <h2>Add data</h2>
-            <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh.</p>
+            <p>데이터 추가</p>
             <p><a class="btn btn-default" href="/addPage" role="button">Add details &raquo;</a></p>
           </div><!-- /.col-lg-4 -->
           <div class="col-lg-4">
             <img class="img-circle" src="/images/search.jpg" alt="Generic placeholder image" width="140" height="140">
             <h2>Search Data</h2>
-            <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+            <p>데이터 검색</p>
             <p><a class="btn btn-default" href="/search/searchPage" role="button">Search details &raquo;</a></p>
           </div><!-- /.col-lg-4 -->
         </div><!-- /.row -->
@@ -98,16 +97,14 @@
         <!-- /END THE FEATURETTES -->
         <div class="jumbotron">
           <div class="container" style="display: inline-block;text-align: center;">
-            <h3>Search Person-Attribute</h3> <br>
-            <form class="form-inline" method="post" action="/agentAttribute">
+            <h3>Search Person</h3><br>
+            <form class="form-inline" method="post" action="/agent">
               <label>Person Name</label><br>
               <input class="form-control" type="text" name="agent_name" />
-              <br><br>
-              <label>Attribute Name</label><br>
-              <input class="form-control" type="text" name="agent_attr" />
-              <br><br>
+              <br>
+              <br>
               <!--<input class="btn btn-primary" type="submit" value="Search">-->
-              <a href="/search/searchAgentAttributeResult"><input class="btn btn-primary" type="submit" value="Search"></a>
+              <a href="/search/searchPerson/searchAgentResult"><input class="btn btn-primary" type="submit" value="Search"></a>
             </form>
           </div>
         </div>

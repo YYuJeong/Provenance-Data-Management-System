@@ -17,9 +17,12 @@
 
 </head>
 
-<body>  
+<body>
+  
+  
    <div class="navbar-wrapper">
       <div class="container-fluid">
+
         <nav class="navbar navbar-inverse navbar-static-top">
           <div class="container">
             <div class="navbar-header">
@@ -87,22 +90,35 @@
             <p><a class="btn btn-default" href="/search/searchPage" role="button">Search details &raquo;</a></p>
           </div><!-- /.col-lg-4 -->
         </div><!-- /.row -->
-        <hr class="featurette-divider">
-        <br><br>
-        <!-- START THE FEATURETTES -->
-        <a href = "/search/searchPersonPage"><button type="button" class="btn btn-primary btn-lg btn-block">Person</button></a>
-        <br><br>
-        <a href = "/search/searchDataPage"><button type="button" class="btn btn-default btn-lg btn-block">Data</button></a>
-        <br><br>
-        <a href = "/search/searchDataPersonPage"><button type="button" class="btn btn-primary btn-lg btn-block">Person-Data</button></a>
-        <br><br>
+  
+  
 
         <hr class="featurette-divider">
   
+        <!-- /END THE FEATURETTES -->
+        <div class="jumbotron">
+          <div class="container" style="display: inline-block;text-align: center;">
+            <h3>Search Person-Attribute</h3> <br>
+            <form class="form-inline" method="post" action="/agentAttribute">
+              <label>Person Name</label><br>
+              <input class="form-control" type="text" name="agent_name" />
+              <br><br>
+              <label>Attribute Name</label><br>
+              <input class="form-control" type="text" name="agent_attr" />
+              <br><br>
+              <!--<input class="btn btn-primary" type="submit" value="Search">-->
+              <a href="/search/searchPerson/searchAgentAttributeResult"><input class="btn btn-primary" type="submit" value="Search"></a>
+            </form>
+          </div>
+        </div>
+        
 
-     
+        <hr class="featurette-divider">
+
+
         <!-- FOOTER -->
         <footer>
+          <br>
           <p class="pull-right"><a href="#">Back to top</a></p>
           <p>&copy; 2014 Company, Inc. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
         </footer>

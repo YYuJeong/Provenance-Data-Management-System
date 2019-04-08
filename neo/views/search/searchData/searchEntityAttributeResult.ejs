@@ -6,19 +6,18 @@
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
      <!-- favicon -->
-  <link rel="shortcut icon" href="/images/favicon.ico">
-  <link rel="icon" href="/images/favicon.ico">
+     <link rel="shortcut icon" href="/images/favicon.ico">
+     <link rel="icon" href="/images/favicon.ico">
+   
    <title>Provenance Data Management</title>
    
    <link href="http://bootstrapk.com/dist/css/bootstrap.min.css" rel="stylesheet">
    <script src="http://bootstrapk.com/assets/js/ie-emulation-modes-warning.js"></script>
-   <link href="/public/stylesheets/carousel.css" rel="stylesheet">
+   <link href="carousel.css" rel="stylesheet">
 
 </head>
 
 <body>
-  
-  
    <div class="navbar-wrapper">
       <div class="container-fluid">
 
@@ -31,7 +30,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              <a class="navbar-brand" href="#">Provenance Data Management</a>
+              <a class="navbar-brand" href="/">Provenance Data Management</a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
               <ul class="nav navbar-nav">
@@ -57,11 +56,6 @@
       </div>
     </div>
 
-
-    <!-- Carousel
-    ================================================== -->
-
-
     <!-- Marketing messaging and featurettes
     ================================================== -->
     <!-- Wrap the rest of the page in another container to center all the content. -->
@@ -73,49 +67,103 @@
           <div class="col-lg-4">
             <img class="img-circle" src="/images/table.jpg" alt="Generic placeholder image" width="140" height="140">
             <h2>View data</h2>
-            <p>Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Praesent commodo cursus magna.</p>
+            <p>데이터 보기 </p>
             <p><a class="btn btn-default" href="/viewPage" role="button">View details &raquo;</a></p>
           </div><!-- /.col-lg-4 -->
           <div class="col-lg-4">
             <img class="img-circle" src="/images/add.jpg" alt="Generic placeholder image" width="140" height="140">
             <h2>Add data</h2>
-            <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh.</p>
+            <p>데이터 추가</p>
             <p><a class="btn btn-default" href="/addPage" role="button">Add details &raquo;</a></p>
           </div><!-- /.col-lg-4 -->
           <div class="col-lg-4">
             <img class="img-circle" src="/images/search.jpg" alt="Generic placeholder image" width="140" height="140">
             <h2>Search Data</h2>
-            <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+            <p>데이터 검색</p>
             <p><a class="btn btn-default" href="/search/searchPage" role="button">Search details &raquo;</a></p>
           </div><!-- /.col-lg-4 -->
         </div><!-- /.row -->
   
   
+        <!-- START THE FEATURETTES -->
 
         <hr class="featurette-divider">
-  
         <!-- /END THE FEATURETTES -->
         <div class="jumbotron">
           <div class="container" style="display: inline-block;text-align: center;">
-            <h3>Search Person</h3><br>
-            <form class="form-inline" method="post" action="/agent">
-              <label>Person Name</label><br>
-              <input class="form-control" type="text" name="agent_name" />
+            <h3>Search Data-Attribute</h3> <br>
+            <form method="post" action="/entityAttribute">
+              <label>Data Name</label><br>
+              <input type="text" name="entity_name" />
+              <br><br>
+              <label>Attribute Name</label><br>
+              <input type="text" name="entity_attr" />
               <br>
               <br>
-              <!--<input class="btn btn-primary" type="submit" value="Search">-->
-              <a href="/search/searchAgentResult"><input class="btn btn-primary" type="submit" value="Search"></a>
+              <a href="/search/searchData/searchEntityAttributeResult"><input class="btn btn-primary" type="submit" value="Search"></a>
             </form>
+            <br><br><br>
+            <div class="panel panel-default">
+              <!-- Default panel contents -->
+              <div class="panel-heading" style = "font-size:medium;"><strong>Search Result</strong></div>
+              <!-- Table -->
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th align = center>#</th>
+                    <th align = center>Sender</th>
+                    <th align = center>Sender Division</th>
+                    <th align = center>Receiver</th>
+                    <th align = center>Receiver Division</th>
+                    <th align = center>Data</th>
+                    <th align = center>Data Usage</th>
+                    <th align = center>Price</th>
+                    <th align = center>Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% for(var i=0, j=0; i<senders.length; i++ ) { %>
+                  <tr>
+                    <th scope="row">
+                        <%= (i+1) %>
+                    </th>
+                    <td>
+                        <%= senders[i] %>
+                    </td>
+                    <td align = center>
+                      <%= sendDivisions[i] %>
+                    </td>
+                    <td align = center>
+                        <%= receivers[i] %>
+                    </td> 
+                    <td align = center>
+                      <%= recvDivisions[i] %>
+                    </td>
+                    <td align = center>
+                      <%= datas[i] %>
+                    </td>
+                    <td align = center>
+                      <%= dataUsages[i] %>
+                    </td>
+                    <td align = center>
+                      <%= prices[i] %>
+                    </td>
+                    <td align = center>
+                      <%= dates[i] %>
+                    </td>
+                  </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>  
           </div>
         </div>
-        
+
 
         <hr class="featurette-divider">
-
-
         <!-- FOOTER -->
         <footer>
-          <br>
+            <br>
           <p class="pull-right"><a href="#">Back to top</a></p>
           <p>&copy; 2014 Company, Inc. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
         </footer>
@@ -141,3 +189,4 @@
 
 </body>
 </html>
+

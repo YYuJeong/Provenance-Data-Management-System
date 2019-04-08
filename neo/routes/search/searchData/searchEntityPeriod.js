@@ -15,18 +15,17 @@ var bodyParser = require('body-parser');
 
 
 router.get('/', function(req, res, next) {
-  res.render('search/searchEntity.ejs');
+  res.render('search/searchData/searchEntityPeriod.ejs');
 });
 
 /*
 router.get('/', function(req, res, next) {
     res.render('search/searchPage.ejs');
   });
-*/ 
+*/
 
-
-router.get('/search/searchPage', function(req, res, next) {
-    res.render('search/searchEntity.ejs');
+router.get('/search/searchDataPage', function(req, res, next) {
+    res.render('search/searchData/searchEntityPeriod.ejs');
 });
 
 

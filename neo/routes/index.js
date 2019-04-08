@@ -31,7 +31,7 @@ router.post('/dataAdd', function (req, res) {
 });
 
 router.get('/',function(req, res, next) {
-   res.render('index');
+   res.render('index'); 
  });
 
 
@@ -154,7 +154,7 @@ router.post('/agent', function (req, res) {
           }
         }
       }
-      res.render('search/searchAgentResult.ejs', {receivers : receiverArr, recvDivisions: recvDivisionArr, senders: senderArr, sendDivisions: sendDivisionArr, dataUsages: dataUsageArr, datas: dataArr, prices: priceArr, dates: dateArr, agent_name: agent_name}); 
+      res.render('search/searchPerson/searchAgentResult.ejs', {receivers : receiverArr, recvDivisions: recvDivisionArr, senders: senderArr, sendDivisions: sendDivisionArr, dataUsages: dataUsageArr, datas: dataArr, prices: priceArr, dates: dateArr, agent_name: agent_name}); 
       session.close();  
     })
     .catch(function (err) {
@@ -233,7 +233,7 @@ router.post('/agentAttribute', function (req, res) {
         }
       }
     }
-      res.render('search/searchAgentAttributeResult.ejs', {receivers : receiverArr, recvDivisions: recvDivisionArr, senders: senderArr, sendDivisions: sendDivisionArr, dataUsages: dataUsageArr, datas: dataArr, prices: priceArr, dates: dateArr });
+      res.render('search/searchPerson/searchAgentAttributeResult.ejs', {receivers : receiverArr, recvDivisions: recvDivisionArr, senders: senderArr, sendDivisions: sendDivisionArr, dataUsages: dataUsageArr, datas: dataArr, prices: priceArr, dates: dateArr });
        session.close();  
     })
     .catch(function (err) {
@@ -312,7 +312,7 @@ router.post('/entity', function (req, res) {
                 }
               }
             }
-          res.render('search/searchEntityResult.ejs', {receivers : receiverArr, recvDivisions: recvDivisionArr, senders: senderArr, sendDivisions: sendDivisionArr, dataUsages: dataUsageArr, datas: dataArr, prices: priceArr, dates: dateArr});
+          res.render('search/searchData/searchEntityResult.ejs', {receivers : receiverArr, recvDivisions: recvDivisionArr, senders: senderArr, sendDivisions: sendDivisionArr, dataUsages: dataUsageArr, datas: dataArr, prices: priceArr, dates: dateArr});
           session.close();  
         })
         .catch(function (err) {
@@ -392,7 +392,7 @@ router.post('/entityAttribute', function (req, res) {
                 }
               }
             }
-          res.render('search/searchEntityAttributeResult.ejs', {receivers : receiverArr, recvDivisions: recvDivisionArr, senders: senderArr, sendDivisions: sendDivisionArr, dataUsages: dataUsageArr, datas: dataArr, prices: priceArr, dates: dateArr});
+          res.render('search/searchData/searchEntityAttributeResult.ejs', {receivers : receiverArr, recvDivisions: recvDivisionArr, senders: senderArr, sendDivisions: sendDivisionArr, dataUsages: dataUsageArr, datas: dataArr, prices: priceArr, dates: dateArr});
           session.close();  
         })
         .catch(function (err) {
@@ -475,7 +475,7 @@ router.post('/agentPeriod', function (req, res) {
                }
              }
            }
-          res.render('search/searchAgentPeriodResult.ejs', {receivers : receiverArr, recvDivisions: recvDivisionArr, senders: senderArr, sendDivisions: sendDivisionArr, dataUsages: dataUsageArr, datas: dataArr, prices: priceArr, dates: dateArr});
+          res.render('search/searchPerson/searchAgentPeriodResult.ejs', {receivers : receiverArr, recvDivisions: recvDivisionArr, senders: senderArr, sendDivisions: sendDivisionArr, dataUsages: dataUsageArr, datas: dataArr, prices: priceArr, dates: dateArr});
           session.close();  
         })
         .catch(function (err) {
@@ -557,7 +557,7 @@ router.post('/entityPeriod', function (req, res) {
               }
             }
           }
-          res.render('search/searchEntityPeriodResult.ejs', {receivers : receiverArr, recvDivisions: recvDivisionArr, senders: senderArr, sendDivisions: sendDivisionArr, dataUsages: dataUsageArr, datas: dataArr, prices: priceArr, dates: dateArr});
+          res.render('search/searchData/searchEntityPeriodResult.ejs', {receivers : receiverArr, recvDivisions: recvDivisionArr, senders: senderArr, sendDivisions: sendDivisionArr, dataUsages: dataUsageArr, datas: dataArr, prices: priceArr, dates: dateArr});
           session.close();  
         })
         .catch(function (err) {
@@ -639,7 +639,7 @@ router.post('/agentEntityPeriod', function (req, res) {
             }
           }
         }
-      res.render('search/searchAgentEntityPeriodResult.ejs', {receivers : receiverArr, recvDivisions: recvDivisionArr, senders: senderArr, sendDivisions: sendDivisionArr, dataUsages: dataUsageArr, datas: dataArr, prices: priceArr, dates: dateArr});
+      res.render('search/searchDataPerson/searchAgentEntityPeriodResult.ejs', {receivers : receiverArr, recvDivisions: recvDivisionArr, senders: senderArr, sendDivisions: sendDivisionArr, dataUsages: dataUsageArr, datas: dataArr, prices: priceArr, dates: dateArr});
        session.close();  
     })
     .catch(function (err) {

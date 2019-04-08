@@ -9,30 +9,34 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 
-var searchPage =  require('./routes/search/searchPage');
 var viewPage = require('./routes/viewPage');
 var addPage = require('./routes/addPage');
 
-var searchAgent =  require('./routes/search/searchAgent');
-var searchAgentResult = require('./routes/search/searchAgentResult');
+var searchPage =  require('./routes/search/searchPage');
+var searchPersonPage =  require('./routes/search/searchPersonPage');
+var searchDataPage =  require('./routes/search/searchDataPage');
+var searchDataPersonPage =  require('./routes/search/searchDataPersonPage');
 
-var searchEntity =  require('./routes/search/searchEntity');
-var searchEntityResult = require('./routes/search/searchEntityResult');
+var searchAgent =  require('./routes/search/searchPerson/searchAgent');
+var searchAgentResult = require('./routes/search/searchPerson/searchAgentResult');
 
-var searchAgentAttribute =  require('./routes/search/searchAgentAttribute');
-var searchAgentAttributeResult = require('./routes/search/searchAgentAttributeResult');
+var searchEntity =  require('./routes/search/searchData/searchEntity');
+var searchEntityResult = require('./routes/search/searchData/searchEntityResult');
 
-var searchEntityAttribute =  require('./routes/search/searchEntityAttribute');
-var searchEntityAttributeResult = require('./routes/search/searchEntityAttributeResult');
+var searchAgentAttribute =  require('./routes/search/searchPerson/searchAgentAttribute');
+var searchAgentAttributeResult = require('./routes/search/searchPerson/searchAgentAttributeResult');
 
-var searchAgentPeriod =  require('./routes/search/searchAgentPeriod');
-var searchAgentPeriodResult =  require('./routes/search/searchAgentPeriodResult');
+var searchEntityAttribute =  require('./routes/search/searchData/searchEntityAttribute');
+var searchEntityAttributeResult = require('./routes/search/searchData/searchEntityAttributeResult');
 
-var searchEntityPeriod =  require('./routes/search/searchEntityPeriod');
-var searchEntityPeriodResult =  require('./routes/search/searchEntityPeriodResult');
+var searchAgentPeriod =  require('./routes/search/searchPerson/searchAgentPeriod');
+var searchAgentPeriodResult =  require('./routes/search/searchPerson/searchAgentPeriodResult');
 
-var searchAgentEntityPeriod =  require('./routes/search/searchAgentEntityPeriod');
-var searchAgentEntityPeriodResult =  require('./routes/search/searchAgentEntityPeriodResult');
+var searchEntityPeriod =  require('./routes/search/searchData/searchEntityPeriod');
+var searchEntityPeriodResult =  require('./routes/search/searchData/searchEntityPeriodResult');
+
+var searchAgentEntityPeriod =  require('./routes/search/searchDataPerson/searchAgentEntityPeriod');
+var searchAgentEntityPeriodResult =  require('./routes/search/searchDataPerson/searchAgentEntityPeriodResult');
 
 var ejs = require('ejs');
 var app = express();
@@ -57,30 +61,33 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-app.use('/search/searchPage', searchPage);
 app.use('/viewPage', viewPage);
 app.use('/addPage', addPage);
+app.use('/search/searchPage', searchPage);
+app.use('/search/searchPersonPage', searchPersonPage);
+app.use('/search/searchDataPage', searchDataPage);
+app.use('/search/searchDataPersonPage', searchDataPersonPage);
 
-app.use('/search/searchAgent', searchAgent);
-app.use('/search/searchAgentResult', searchAgentResult);
+app.use('/search/searchPerson/searchAgent', searchAgent);
+app.use('/search/searchPerson/searchAgentResult', searchAgentResult);
 
-app.use('/search/searchEntity', searchEntity);
-app.use('/search/searchEntityResult', searchEntityResult);
+app.use('/search/searchData/searchEntity', searchEntity);
+app.use('/search/searchData/searchEntityResult', searchEntityResult);
 
-app.use('/search/searchAgentAttribute', searchAgentAttribute);
-app.use('/search/searchAgentAttributeResult', searchAgentAttributeResult);
+app.use('/search/searchPerson/searchAgentAttribute', searchAgentAttribute);
+app.use('/search/searchPerson/searchAgentAttributeResult', searchAgentAttributeResult);
 
-app.use('/search/searchEntityAttribute', searchEntityAttribute);
-app.use('/search/searchEntityAttributeResult', searchEntityAttributeResult);
+app.use('/search/searchData/searchEntityAttribute', searchEntityAttribute);
+app.use('/search/searchData/searchEntityAttributeResult', searchEntityAttributeResult);
 
-app.use('/search/searchAgentPeriod', searchAgentPeriod);
-app.use('/search/searchAgentPeriodResult', searchAgentPeriodResult);
+app.use('/search/searchPerson/searchAgentPeriod', searchAgentPeriod);
+app.use('/search/searchPerson/searchAgentPeriodResult', searchAgentPeriodResult);
 
-app.use('/search/searchEntityPeriod', searchEntityPeriod);
-app.use('/search/searchEntityPeriodResult', searchEntityPeriodResult);
+app.use('/search/searchData/searchEntityPeriod', searchEntityPeriod);
+app.use('/search/searchData/searchEntityPeriodResult', searchEntityPeriodResult);
 
-app.use('/search/searchAgentEntityPeriod', searchAgentEntityPeriod);
-app.use('/search/searchAgentEntityPeriodResult', searchAgentEntityPeriodResult);
+app.use('/search/searchDataPerson/searchAgentEntityPeriod', searchAgentEntityPeriod);
+app.use('/search/searchDataPerson/searchAgentEntityPeriodResult', searchAgentEntityPeriodResult);
 
 
 // catch 404 and forward to error handler
