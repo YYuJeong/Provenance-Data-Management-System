@@ -45,7 +45,7 @@ router.get('/viewPage', function (req, res) {
   var priceArr = [];
   var dateArr = [];
   session
-      .run("START n=node(*) MATCH (n)-[r]->(m) RETURN n, m LIMIT 400")
+      .run("START n=node(*) MATCH (n)-[r]->(m) RETURN n, m LIMIT 60")
       .then(function (result) {
         var j =0;
         result.records.forEach(function (record) {
