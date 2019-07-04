@@ -87,18 +87,24 @@
               <p><a class="btn btn-default" href="/search/searchPage" role="button">Search details &raquo;</a></p>
             </div><!-- /.col-lg-4 -->
           </div><!-- /.row -->
-
-
-
         <hr class="featurette-divider">
         <br><br>
         <!-- START THE FEATURETTES -->
-        <a href = "/search/searchPerson/searchAgent"><button type="button" class="btn btn-primary btn-lg btn-block">Search Person</button></a>
-        <br><br>
-        <a href = "/search/searchPerson/searchAgentAttribute"><button type="button" class="btn btn-default btn-lg btn-block">Search Person-Attribute</button></a>
-        <br><br>
-        <a href = "/search/searchPerson/searchAgentPeriod"><button type="button" class="btn btn-primary btn-lg btn-block">Search Person-Period</button></a>
-        <br><br>
+        <div class="jumbotron">
+            <div class="container" style="display: inline-block;text-align: center;">
+              <h3>Keyword Search</h3><br><br><br>
+              <form class="form-inline" method="post" action="/keyword">
+                <div class="input-group">
+                    <input type="text" class="form-control" name = "keyword" style="width:800px;">
+                </div>                  
+                <!--<input class="btn btn-primary" type="submit" value="Search">-->
+                <a href="/search/searchKeyword/searchKeywordResult"><input class="btn btn-primary" type="submit" value="Search"></a>
+                <br><br><br><br><br>
+                </form>
+            </div>
+          </div>
+  
+
         <hr class="featurette-divider">
   
 

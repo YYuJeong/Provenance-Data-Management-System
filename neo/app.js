@@ -17,6 +17,9 @@ var searchPersonPage =  require('./routes/search/searchPersonPage');
 var searchDataPage =  require('./routes/search/searchDataPage');
 var searchDataPersonPage =  require('./routes/search/searchDataPersonPage');
 
+var searchKeywordPage =  require('./routes/search/searchKeywordPage');
+var searchKeywordResult = require('./routes/search/searchKeyword/searchKeywordResult')
+
 var searchAgent =  require('./routes/search/searchPerson/searchAgent');
 var searchAgentResult = require('./routes/search/searchPerson/searchAgentResult');
 
@@ -67,6 +70,9 @@ app.use('/search/searchPage', searchPage);
 app.use('/search/searchPersonPage', searchPersonPage);
 app.use('/search/searchDataPage', searchDataPage);
 app.use('/search/searchDataPersonPage', searchDataPersonPage);
+
+app.use('/search/searchKeywordPage', searchKeywordPage);
+app.use('/search/searchKeyword/searchKeywordResult', searchKeywordResult);
 
 app.use('/search/searchPerson/searchAgent', searchAgent);
 app.use('/search/searchPerson/searchAgentResult', searchAgentResult);

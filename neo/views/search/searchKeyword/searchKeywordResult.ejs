@@ -13,13 +13,11 @@
    
    <link href="http://bootstrapk.com/dist/css/bootstrap.min.css" rel="stylesheet">
    <script src="http://bootstrapk.com/assets/js/ie-emulation-modes-warning.js"></script>
-   <link href="/public/stylesheets/carousel.css" rel="stylesheet">
+   <link href="carousel.css" rel="stylesheet">
 
 </head>
 
 <body>
-  
-  
    <div class="navbar-wrapper">
       <div class="container-fluid">
 
@@ -58,11 +56,6 @@
       </div>
     </div>
 
-
-    <!-- Carousel
-    ================================================== -->
-
-
     <!-- Marketing messaging and featurettes
     ================================================== -->
     <!-- Wrap the rest of the page in another container to center all the content. -->
@@ -74,7 +67,7 @@
           <div class="col-lg-4" align = center>
             <img class="img-circle" src="/images/table.jpg" alt="Generic placeholder image" width="140" height="140">
             <h2>View data</h2>
-            <p></p>
+            <p> </p>
             <p><a class="btn btn-default" href="/viewPage" role="button">View details &raquo;</a></p>
           </div><!-- /.col-lg-4 -->
           <div class="col-lg-4" align = center>
@@ -93,49 +86,77 @@
   
   
         <!-- START THE FEATURETTES -->
-  
+
         <hr class="featurette-divider">
         <!-- /END THE FEATURETTES -->
         <div class="jumbotron">
           <div class="container" style="display: inline-block;text-align: center;">
-            <h3>Add Data </h3> <br>
-            <form method="post" action="/dataAdd" >
-              <label> Receiver </label><br>
-              <input type="text" name="receiver_name" />
-              <br><br>
-              <label> Receiver Division</label><br>
-              <input type="text" name="receiver_attr" />
-              <br><br>
-              <label> Sender </label><br>
-              <input type="text" name="sender_name" />
-              <br><br>
-              <label> Sender Division</label><br>
-              <input type="text" name="sender_attr" />
-              <br><br>
-              <label> Data </label><br> 
-              <input type="text" name="entity_name" />
-              <br><br>
-              <label> Data Usage</label><br>
-              <input type="text" name="entity_use" />
-              <br><br>
-              <label> Data Price </label><br>
-              <input type="text" name="activity_price" />
-              <br><br>
-              <label> Transaction Date </label><br>
-              <input type="text" name="activity_time" />
-              <br>
-              <br>
-              <input class="btn btn-primary" type="submit" value="Submit">
+            <h3>Keyword Search</h3><br><br><br>
+            <form class="form-inline" method="post" action="/keyword">
+            <!--<form class="form-inline" method="post" action="/keyword">-->
+              <div class="input-group">
+                  <input type="text" class="form-control" name = "keyword" style="width:800px;">
+              </div>                  
+              <!--<input class="btn btn-primary" type="submit" value="Search">-->
+              <a href="/search/searchKeyword/searchKeywordResult"><input class="btn btn-primary" type="submit" value="Search"></a>
               <br><br>
             </form>
+            <br><br><br>
+            <div class="panel panel-default">
+              <!-- Default panel contents -->
+              <div class="panel-heading" style = "font-size:medium;"><strong>Search Result</strong></div>
+              <!-- Table -->
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th align = right>#</th>
+                    <td align = center><b>Person / Data</b></td>
+                    <td align = center><b>Activity</b></td>
+                    <td align = center><b>Person / Data</b></td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">1</th>
+                    <td align = center><b>Emily</b></td>
+                    <td align = center>Buy</td>
+                    <td align = center>data_336</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">2</th>
+                    <td align = center>data_336</td>
+                    <td align = center>Buy</td>
+                    <td align = center>Flora</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">3</th>
+                    <td align = center>data_336</td>
+                    <td align = center>Sell</td>
+                    <td align = center>Anna</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">4</th>
+                    <td align = center>Anna</td>
+                    <td align = center>Sell</td>
+                    <td align = center><b>data_246</b></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">5</th>
+                    <td align = center><b>data_246</b></td>
+                    <td align = center>Buy</td>
+                    <td align = center>Flora</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>  
           </div>
         </div>
-
 
 
         <hr class="featurette-divider">
         <!-- FOOTER -->
         <footer>
+            <br>
           <p class="pull-right"><a href="#">Back to top</a></p>
           <p>&copy; 2014 Company, Inc. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
         </footer>
@@ -153,6 +174,12 @@
       <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
       <script src="../../assets/js/ie10-viewport-bug-workaround.js">
       </script>
+    
+
+
+
+    
 
 </body>
 </html>
+

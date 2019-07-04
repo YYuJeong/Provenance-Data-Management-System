@@ -649,5 +649,86 @@ router.post('/agentEntityPeriod', function (req, res) {
 
 });
 
+router.post('/keyword', function (req, res) {
+  var agent_name = req.body.agent_name;
+  var data=[];
+  var test = [];
+  var receiverArr= [];
+  var recvDivisionArr = [];
+  var senderArr = [];
+  var sendDivisionArr = [];
+  var dataUsageArr = [];
+  var dataArr = []; 
+  var priceArr = [];
+  var dateArr = [];
+  var temp;
+ // console.log(params_name);
+   session
+    .run("MATCH (entity:Entity)-[:wasGeneratedBy]->(activity:Activity)-[:wasAssociatedWith]->(agent:Agent{name:'"+agent_name+"'}) WITH entity MATCH (entity:Entity)-[:wasGeneratedBy]->(activity:Activity)-[:wasAssociatedWith]->(agent:Agent) RETURN entity.name, entity.use, activity.name, activity.price, activity.time, agent.name, agent.attribute")
+    .then(function (result) {
+      
+     
+     var searchArr = [];
+     var size = Object.keys(result.records).length;   
+     for (var i = 0; i < size; i++) {
+         var da = result.records[i]._fields;
+         test[i] = da;                  
+      }
+      
+      for(var i=0;i < size; i+=2){
+        data=(test[[i]]+" ,"+test[[i+1]]);
+        searchArr.push(data);
+      }      
+
+      temp = searchArr.toString();
+      var splitTemp = temp.split(',');
+      for(var i=0, j =0; i< splitTemp.length; i++){
+        if(i%14 == 0){
+          if(i > 0){
+            j++;
+            dataArr[j] = splitTemp[i]; 
+            dataUsageArr[j] = splitTemp[++i];
+          }
+          else{
+            dataArr[j] = splitTemp[i]; 
+            dataUsageArr[j] = splitTemp[++i];
+          }
+        }
+        else if(i%14 == 2){
+          if(splitTemp[i] == 'Buy'){
+            priceArr[j] = splitTemp[++i];
+            dateArr[j] = splitTemp[++i];
+            receiverArr[j] = splitTemp[++i];
+            recvDivisionArr[j] = splitTemp[++i];
+          }
+          else if(splitTemp[i] == 'Own'){
+            i += 2;
+            senderArr[j] = splitTemp[++i];
+            sendDivisionArr[j] = splitTemp[++i];
+          }
+          i += 2;
+        }
+        else if(i%14 == 9){
+          if(splitTemp[i] == 'Buy'){
+            priceArr[j] = splitTemp[++i];
+            dateArr[j] = splitTemp[++i];
+            receiverArr[j] = splitTemp[++i];
+            recvDivisionArr[j] = splitTemp[++i];
+          }
+          else if(splitTemp[i] == 'Own'){
+            i += 2;
+            senderArr[j] = splitTemp[++i];
+            sendDivisionArr[j] = splitTemp[++i];
+          }
+        }
+      }
+      res.render('search/searchKeyword/searchKeywordResult.ejs', {receivers : receiverArr, recvDivisions: recvDivisionArr, senders: senderArr, sendDivisions: sendDivisionArr, dataUsages: dataUsageArr, datas: dataArr, prices: priceArr, dates: dateArr, agent_name: agent_name}); 
+      session.close();  
+    })
+    .catch(function (err) {
+       console.log(err);
+    });
+});
+
 
 module.exports = router;
