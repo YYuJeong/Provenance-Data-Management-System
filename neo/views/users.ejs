@@ -15,6 +15,8 @@
    <link href="http://bootstrapk.com/dist/css/bootstrap.min.css" rel="stylesheet">
    <script src="http://bootstrapk.com/assets/js/ie-emulation-modes-warning.js"></script>
    <link href="C:/neoperson/test/neo/public/stylesheets/carousel.css" rel="stylesheet">
+   <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
 
 </head>
 
@@ -31,12 +33,12 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              <a class="navbar-brand" href="/">Provenance Data Management</a>
+              <a class="navbar-brand" href="/">Provenance Data Management로그인 페이지</a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
               <ul class="nav navbar-nav">
                 <li class="active"><a href="#">Home</a></li>
-                <li><a href="/users">로그인</a></li>
+                <li><a href="#about">로그인</a></li>
                 <li><a href="#contact">Contact</a></li>
                 <li class="dropdown">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
@@ -88,43 +90,25 @@
   
         <!-- START THE FEATURETTES -->
   
-        <hr class="featurette-divider">
-  
-        <div class="row featurette">
-          <div class="col-md-7">
-            <h2 class="featurette-heading">Neo4j <span class="text-muted">그래프 데이터베이스</span></h2>
-            <p class="lead"></p>
+        <div class="container">
+
+            <form class="form-signin">
+                <h2 class="form-signin-heading">Please sign in</h2>
+                <label for="inputId" class="sr-only">Email address</label>
+                <input type="text" id="inputID" class="form-control" placeholder="ID" required="" autofocus="">
+                <label for="inputPassword" class="sr-only">Password</label>
+                <input type="password" id="inputPassword" class="form-control" placeholder="Password" required=""><br>
+                <div class="radiobutton">
+                    <input type="radio" name="user_info" value="admin">관리자
+                    <input type="radio" name="user_info" value="user">사용자 
+                </div>
+                <br>
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+            </form>
+      
           </div>
-          <div class="col-md-5">
-            <img class="featurette-image img-responsive center-block" src="/images/neo4j.jpg" alt="Generic placeholder image">
-          </div>
-        </div>
-  
-        <hr class="featurette-divider">
-  
-        <div class="row featurette">
-          <div class="col-md-7 col-md-push-5">
-            <h2 class="featurette-heading">DI Lab <span class="text-muted">Data Intelligence Lab</span></h2>
-            <p class="lead"></p>
-          </div>
-          <div class="col-md-5 col-md-pull-7">
-            <img class="featurette-image img-responsive center-block" src="/images/dilab.jpg" alt="DILab image" width="240" height="140">
-          </div>
-        </div>
-  
-        <hr class="featurette-divider">
-  
-        <div class="row featurette">
-          <div class="col-md-7">
-            <h2 class="featurette-heading">IITP <span class="text-muted">정보통신기획평가원</span></h2>
-            <p class="lead"></p>
-          </div>
-          <div class="col-md-5">
-            <img class="featurette-image img-responsive center-block" src="/images/iitp.jpg" alt="Generic placeholder image">
-          </div>
-        </div>
-  
-        <hr class="featurette-divider">
+
+
   
         <!-- /END THE FEATURETTES -->
 
