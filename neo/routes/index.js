@@ -8,17 +8,18 @@ var session = driver.session();
 
 
 router.post('/dataAdd', function (req, res) {
-    var receiver_name = req.body.receiver_name;
-    var receiver_attr = req.body.receiver_attr;
-    var sender_name = req.body.sender_name;
-    var sender_attr = req.body.sender_attr;
-    var entity_name = req.body.entity_name;
-    var entity_use = req.body.entity_use;
-    var activity_price = req.body.activity_price;
-    var activity_time = req.body.activity_time;
+    var name = req.body.name;
+    var affiliation = req.body.affiliation;
+    var activityType = req.body.activityType;
+    var date = req.body.date;
+    var dataName = req.body.dataName;
+    var dataType = req.body.dataType;
+    var price = req.body.price;
+    var device  = req.body.device;
     
     session
-        .run("CREATE(: Agent {name:'" + sender_name + "', attribute:'" + sender_attr + "'}) <- [:wasAssociatedWith]-(: Activity { name: 'Own'}) <- [:wasGeneratedBy]-(: Entity { name: '" + entity_name + "', use: '" + entity_use + "'}) - [:wasGeneratedBy] -> (: Activity { name: 'Buy', price:'" + activity_price + "',time:'" + activity_time +"'})- [:wasAssociatedWith] -> (: Agent {name:'" + receiver_name + "', attribute:'" + receiver_attr + "'})")
+        .run("CREATE(: Entity {name: '" + dataName + "', price: '" + price + "', d_type: '" + dataType + "', device: '" + device + "'}) - [:wasAttributedTo] -> (: Agent {name: '" + name + "' , aff: '" + affiliation + "'}) <- [:wasAssociatedWith] - (:Activity {name: '" + activityType + "', date: '" + date + "'})<-[:wasGeneratedBy]-(: Entity {name: '" + dataName + "', price: '" + price + "', d_type: '" + dataType + "', device: '" + device + "'})")
+       // .run("CREATE(: Agent {name:'" + sender_name + "', attribute:'" + sender_attr + "'}) <- [:wasAssociatedWith]-(: Activity { name: 'Own'}) <- [:wasGeneratedBy]-(: Entity { name: '" + entity_name + "', use: '" + entity_use + "'}) - [:wasGeneratedBy] -> (: Activity { name: 'Buy', price:'" + activity_price + "',time:'" + activity_time +"'})- [:wasAssociatedWith] -> (: Agent {name:'" + receiver_name + "', attribute:'" + receiver_attr + "'})")
         .then(function (result) {
 
             session.close();
