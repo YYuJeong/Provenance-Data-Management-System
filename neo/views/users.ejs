@@ -17,6 +17,16 @@
   <link href="C:/neoperson/test/neo/public/stylesheets/carousel.css" rel="stylesheet">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
   <link href="https://codepen.io/ace-subido/pen/Cuiep.css" rel="stylesheet">
+
+   <script>
+
+    function onLogin(){
+      alert("로그인 되었습니다.");
+      location.href="/logout";
+    };
+
+  </script>
+  
 </head>
 
 <body style="overflow-y:scroll">
@@ -30,7 +40,7 @@
           <div id="navbar" class="navbar-collapse collapse" style="float:right;">
             <ul class="nav navbar-nav">
               <li><a href="/users">로그인</a></li>
-              <li><a href="/admin">관리자</a></li>
+              <!--<li><a href="/admin">관리자</a></li>-->
             </ul>
           </div>
         </div>
@@ -56,8 +66,11 @@
                     <input type="radio" name="user_info" value="admin">관리자
                     <input type="radio" name="user_info" value="user">사용자 
                 </div>
-                -->
-          <button class="btn btn-lg btn-primary btn-block" type="submit">확인</button><br>
+              -->
+
+
+
+          <input class="btn btn-lg btn-primary btn-block" type="button" value="확인" onClick="onLogin()"><br>
           <a href="#"
             onclick="window.open('/contact','contact','width=500, height=500')">
 						<p class="text-center">아직 회원이 아니신가요?</p></a>
