@@ -9,7 +9,7 @@
     <link rel="shortcut icon" href="/images/favicon.ico">
     <link rel="icon" href="/images/favicon.ico">
    
-   <title>Provenance Data Management</title>
+   <title>이력 정보 관리 시스템</title>
    
    <link href="http://bootstrapk.com/dist/css/bootstrap.min.css" rel="stylesheet">
    <script src="http://bootstrapk.com/assets/js/ie-emulation-modes-warning.js"></script>
@@ -30,7 +30,7 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">이력정보관리시스템</a>
+            <a class="navbar-brand" href="/">이력 정보 관리 시스템</a>
           </div>
           <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
@@ -53,28 +53,31 @@
     <!-- Wrap the rest of the page in another container to center all the content. -->
     <hr class="featurette-divider">
     <div class="container marketing">
-
         <!-- Three columns of text below the carousel -->
         <div class="row">
-          <div class="col-lg-4" align = center>
-            <img class="img-circle" src="/images/table.jpg" alt="Generic placeholder image" width="140" height="140">
-            <h2>View data</h2>
-            <p>데이터 보기 </p>
-            <p><a class="btn btn-default" href="/viewPage" role="button">View details &raquo;</a></p>
-          </div><!-- /.col-lg-4 -->
-          <div class="col-lg-4" align = center>
-            <img class="img-circle" src="/images/add.jpg" alt="Generic placeholder image" width="140" height="140">
-            <h2>Add data</h2>
-            <p>데이터 추가</p>
-            <p><a class="btn btn-default" href="/addPage" role="button">Add details &raquo;</a></p>
-          </div><!-- /.col-lg-4 -->
-          <div class="col-lg-4" align = center> 
-            <img class="img-circle" src="/images/search.jpg" alt="Generic placeholder image" width="140" height="140">
-            <h2>Search Data</h2>
-            <p>데이터 검색</p>
-            <p><a class="btn btn-default" href="/search/searchPage" role="button">Search details &raquo;</a></p>
-          </div><!-- /.col-lg-4 -->
-        </div><!-- /.row -->
+            <div style="margin-top: 50px;"></div>
+            <div class="col-lg-4" align = center>
+              <a  href="/viewPage" >
+              <img class="img-circle" src="/images/table.jpg" alt="Generic placeholder image" width="140" height="140">
+              </a>
+              <br><br>
+              <h2>이력 정보 보기</h2>
+            </div><!-- /.col-lg-4 -->
+            <div class="col-lg-4" align = center>
+              <a href="/addPage">
+              <img class="img-circle" src="/images/add.jpg"  alt="Generic placeholder image" width="140" height="140">
+              </a>
+              <br><br>
+              <h2>이력 정보 추가</h2>
+            </div><!-- /.col-lg-4 -->
+            <div class="col-lg-4" align = center>
+              <a href = "/search/searchPage">
+              <img class="img-circle" src="/images/search.jpg" alt="Generic placeholder image" width="140" height="140">
+              </a>
+              <br><br>
+              <h2>이력 정보 검색</h2>
+            </div><!-- /.col-lg-4 -->
+          </div><!-- /.row -->
   
   
         <!-- START THE FEATURETTES -->
@@ -85,51 +88,51 @@
             <br><br>
             <div class="panel panel-default">
               <!-- Default panel contents -->
-              <div class="panel-heading" style = "font-size:medium;"><strong>View Result</strong></div>
+              <div class="panel-heading" style = "font-size:medium;"><strong>데이터 보기 결과</strong></div>
               <!-- Table -->
               <table class="table table-striped">
                 <thead>
                   <tr>
                     <th align = center>#</th>
-                    <th align = center>Sender</th>
-                    <th align = center>Sender Division</th>
-                    <th align = center>Receiver</th>
-                    <th align = center>Receiver Division</th>
-                    <th align = center>Data</th>
-                    <th align = center>Data Usage</th>
-                    <th align = center>Price</th>
-                    <th align = center>Date</th>
+                    <th align = center>이 름</th>
+                    <th align = center> 소       속</th>
+                    <th align = center>Activity</th>
+                    <th align = center>날 짜</th>
+                    <th align = center>데이터명</th>
+                    <th align = center>데이터 종류</th>
+                    <th align = center>가 격</th>
+                    <th align = center>Device</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <% for(var i=0, j=0; i<senders.length; i++ ) { %>
+                  <% for(var i=0; i<names.length; i++ ) { %>
                   <tr>
                     <th scope="row">
                         <%= (i+1) %>
                     </th>
                     <td>
-                        <%= senders[i] %>
+                        <%= names[i] %>
                     </td>
                     <td align = center>
-                      <%= sendDivisions[i] %>
+                      <%= affiliations[i] %>
                     </td>
                     <td align = center>
-                        <%= receivers[i] %>
+                      <%= activityTypes[i] %>
                     </td> 
                     <td align = center>
-                      <%= recvDivisions[i] %>
+                      <%= dates[i] %>
                     </td>
                     <td align = center>
-                      <%= datas[i] %>
+                      <%= dataNames[i] %>
                     </td>
                     <td align = center>
-                      <%= dataUsages[i] %>
+                      <%= dataTypes[i] %>
                     </td>
                     <td align = center>
                       <%= prices[i] %>
                     </td>
                     <td align = center>
-                      <%= dates[i] %>
+                      <%= devices[i] %>
                     </td>
                   </tr>
                   <% } %>

@@ -36,44 +36,40 @@ router.get('/',function(req, res, next) {
 
 
 router.get('/viewPage', function (req, res) {
-  var receiverArr= [];
-  var recvDivisionArr = [];
-  var senderArr = [];
-  var sendDivisionArr = [];
-  var dataUsageArr = [];
-  var dataArr = []; 
-  var priceArr = [];
+  var nameArr = [];
+  var affiliationArr = [];
+  var activityTypeArr = [];
   var dateArr = [];
+  var dataNameArr = [];
+  var dataTypeArr = [];
+  var priceArr = [];
+  var deviceArr = [];
+
   session
-      .run("START n=node(*) MATCH (n)-[r]->(m) RETURN n, m LIMIT 60")
+      .run("START n=node(*) MATCH (n)-[:wasAttributedTo]->(m)<-[:wasAssociatedWith]-(k) RETURN n, m,k LIMIT 50")
       .then(function (result) {
-        var j =0;
         result.records.forEach(function (record) {
-          if(j%4 == 0){
-            senderArr.push(record._fields[1].properties.name);
-            sendDivisionArr.push(record._fields[1].properties.attribute);
-          }
-          else if(j%4 == 1){
-            dataArr.push(record._fields[0].properties.name);
-            dataUsageArr.push(record._fields[0].properties.use);
-          }
-          else if(j%4 == 3){
-            priceArr.push(record._fields[0].properties.price);
-            dateArr.push(record._fields[0].properties.time);
-            receiverArr.push(record._fields[1].properties.name);
-            recvDivisionArr.push(record._fields[1].properties.attribute);
-          }
+          dataTypeArr.push(record._fields[0].properties.d_type);
+          dataNameArr.push(record._fields[0].properties.name);
+          deviceArr.push(record._fields[0].properties.device);
+          priceArr.push(record._fields[0].properties.price)
+
+          affiliationArr.push(record._fields[1].properties.aff);
+          nameArr.push(record._fields[1].properties.name);
+
+          dateArr.push(record._fields[2].properties.date);
+          activityTypeArr.push(record._fields[2].properties.name);
           /*
-          for (var i =0; i<2; i++){
+          for (var i =0; i<3; i++){
             console.log("record " + i + " -th " + "field: " + record._fields[i]);
             console.log("record " + i + " -th " + "field labels: " + record._fields[i].labels[0]);
             console.log("record " + i + " -th " + "field properties name: " + record._fields[i].properties.name);
             console.log("======================================");       
           } 
           */
-          j++;
         });
-      res.render('viewPage', {receivers : receiverArr, recvDivisions: recvDivisionArr, senders: senderArr, sendDivisions: sendDivisionArr, dataUsages: dataUsageArr, datas: dataArr, prices: priceArr, dates: dateArr}); 
+      res.render('viewPage', {dataTypes : dataTypeArr, dataNames : dataNameArr, devices : deviceArr, prices : priceArr
+        , affiliations : affiliationArr, names : nameArr, dates : dateArr, activityTypes : activityTypeArr}); 
       session.close();  
     })
     .catch(function (err) {
