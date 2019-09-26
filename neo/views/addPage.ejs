@@ -9,7 +9,7 @@
      <link rel="shortcut icon" href="/images/favicon.ico">
      <link rel="icon" href="/images/favicon.ico">
    
-   <title>Provenance Data Management</title>
+   <title>이력 정보 관리시스템</title>
    
    <link href="http://bootstrapk.com/dist/css/bootstrap.min.css" rel="stylesheet">
    <script src="http://bootstrapk.com/assets/js/ie-emulation-modes-warning.js"></script>
@@ -17,40 +17,18 @@
 
 </head>
 
-<body>
-  
-  
-   <div class="navbar-wrapper">
+<body style="overflow:auto">
+    <div class="navbar-wrapper">
       <div class="container-fluid">
-
         <nav class="navbar navbar-inverse navbar-static-top">
           <div class="container">
             <div class="navbar-header">
-              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-              <a class="navbar-brand" href="/">Provenance Data Management</a>
+              <a class="navbar-brand" href="/">이력 정보 관리시스템</a>
             </div>
-            <div id="navbar" class="navbar-collapse collapse">
+            <div id="navbar" class="navbar-collapse collapse" style="float:right;">
               <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#contact">Contact</a></li>
-                <li class="dropdown">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
-                  <ul class="dropdown-menu" role="menu">
-                    <li><a href="#">Action</a></li>
-                    <li><a href="#">Another action</a></li>
-                    <li><a href="#">Something else here</a></li>
-                    <li class="divider"></li>
-                    <li class="dropdown-header">Nav header</li>
-                    <li><a href="#">Separated link</a></li>
-                    <li><a href="#">One more separated link</a></li>
-                  </ul>
-                </li>
+                <li><a href="/users">로그인</a></li>
+                <li><a href="/admin">관리자</a></li>
               </ul>
             </div>
           </div>
@@ -69,27 +47,30 @@
 
     <div class="container marketing">
 
-        <!-- Three columns of text below the carousel -->
         <div class="row">
-          <div class="col-lg-4" align = center>
-            <img class="img-circle" src="/images/table.jpg" alt="Generic placeholder image" width="140" height="140">
-            <h2>View data</h2>
-            <p></p>
-            <p><a class="btn btn-default" href="/viewPage" role="button">View details &raquo;</a></p>
-          </div><!-- /.col-lg-4 -->
-          <div class="col-lg-4" align = center>
-            <img class="img-circle" src="/images/add.jpg" alt="Generic placeholder image" width="140" height="140">
-            <h2>Add data</h2>
-            <p></p>
-            <p><a class="btn btn-default" href="/addPage" role="button">Add details &raquo;</a></p>
-          </div><!-- /.col-lg-4 -->
-          <div class="col-lg-4" align = center>
-            <img class="img-circle" src="/images/search.jpg" alt="Generic placeholder image" width="140" height="140">
-            <h2>Search Data</h2>
-            <p></p>
-            <p><a class="btn btn-default" href="/search/searchPage" role="button">Search details &raquo;</a></p>
-          </div><!-- /.col-lg-4 -->
-        </div><!-- /.row -->
+            <div style="margin-top: 50px;"></div>
+            <div class="col-lg-4" align = center>
+              <a  href="/viewPage" >
+              <img class="img-circle" src="/images/table.jpg" alt="Generic placeholder image" width="140" height="140">
+              </a>
+              <br><br>
+              <h2>이력 정보 보기</h2>
+            </div><!-- /.col-lg-4 -->
+            <div class="col-lg-4" align = center>
+              <a href="/addPage">
+              <img class="img-circle" src="/images/add.jpg"  alt="Generic placeholder image" width="140" height="140">
+              </a>
+              <br><br>
+              <h2>이력 정보 추가</h2>
+            </div><!-- /.col-lg-4 -->
+            <div class="col-lg-4" align = center>
+              <a href = "/search/searchPage">
+              <img class="img-circle" src="/images/search.jpg" alt="Generic placeholder image" width="140" height="140">
+              </a>
+              <br><br>
+              <h2>이력 정보 검색</h2>
+            </div><!-- /.col-lg-4 -->
+          </div><!-- /.row -->
   
   
         <!-- START THE FEATURETTES -->
@@ -98,34 +79,36 @@
         <!-- /END THE FEATURETTES -->
         <div class="jumbotron">
           <div class="container" style="display: inline-block;text-align: center;">
-            <h3>Add Data </h3> <br>
+            <h3>이력 정보 추가 </h3> <br>
             <form method="post" action="/dataAdd" >
-              <label> Receiver </label><br>
-              <input type="text" name="receiver_name" />
+              <label> 이 름 </label><br>
+              <input type="text" name="name" />
               <br><br>
-              <label> Receiver Division</label><br>
-              <input type="text" name="receiver_attr" />
+              <label> 소 속</label><br>
+              <input type="text" name="affiliation" />
               <br><br>
-              <label> Sender </label><br>
-              <input type="text" name="sender_name" />
+              <label> Activity </label><br>
+              <input type="text" name="activityType" />
               <br><br>
-              <label> Sender Division</label><br>
-              <input type="text" name="sender_attr" />
+              <label> 날 짜</label><br>
+              <input type="text" name="date" />
               <br><br>
-              <label> Data </label><br> 
-              <input type="text" name="entity_name" />
+              <label> 데이터명 </label><br> 
+              <input type="text" name="dataName" />
               <br><br>
-              <label> Data Usage</label><br>
-              <input type="text" name="entity_use" />
+              <label> 데이터 종류</label><br>
+              <input type="text" name="dataType" />
               <br><br>
-              <label> Data Price </label><br>
-              <input type="text" name="activity_price" />
+              <label> 가 격 </label><br>
+              <input type="text" name="price" />
               <br><br>
-              <label> Transaction Date </label><br>
-              <input type="text" name="activity_time" />
+              <label> Device </label><br>
+              <input type="text" name="device" />
               <br>
               <br>
-              <input class="btn btn-primary" type="submit" value="Submit">
+              <a href="/addPage">
+              <input class="btn btn-primary" type="submit" value="추가">
+              </a>
               <br><br>
             </form>
           </div>
@@ -134,11 +117,7 @@
 
 
         <hr class="featurette-divider">
-        <!-- FOOTER -->
-        <footer>
-          <p class="pull-right"><a href="#">Back to top</a></p>
-          <p>&copy; 2014 Company, Inc. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
-        </footer>
+      
   
       </div><!-- /.container -->
   

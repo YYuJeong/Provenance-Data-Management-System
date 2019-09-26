@@ -1,0 +1,160 @@
+<!DOCTYPE html> 
+<html lang="ko"> 
+
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+     <!-- favicon -->
+     <link rel="shortcut icon" href="/images/favicon.ico">
+     <link rel="icon" href="/images/favicon.ico">
+     
+   <title>Provenance Data Management</title>
+   <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.min.css" />
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker3.min.css" />
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.min.js"></script>
+
+<script>
+        $(document).ready(function() {
+            $('#datePicker')
+                .datepicker({
+                    format: 'yyyymmdd'
+                })
+                .on('changeDate', function(e) {
+                    // Revalidate the date field
+                    $('#eventForm').formValidation('revalidateField', 'date');
+                });
+
+            $('#datePicker2')
+                .datepicker({
+                    format: 'yyyymmdd'
+                })
+                .on('changeDate', function(e) {
+                    // Revalidate the date field
+                    $('#eventForm').formValidation('revalidateField', 'date');
+                });
+        
+            $('#eventForm').formValidation({
+                framework: 'bootstrap',
+                icon: {
+                    valid: 'glyphicon glyphicon-ok',
+                    invalid: 'glyphicon glyphicon-remove',
+                    validating: 'glyphicon glyphicon-refresh'
+                },
+                fields: {
+                    name: {
+                        validators: {
+                            notEmpty: {
+                                message: 'The name is required'
+                            }
+                        }
+                    },
+                    date: {
+                        validators: {
+                            notEmpty: {
+                                message: 'The date is required'
+                            },
+                            date: {
+                                format: 'YYYYMMDD',
+                                message: 'The date is not a valid'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        </script>
+   
+</head>
+
+<body style="overflow:auto">
+        <div class="navbar-wrapper">
+          <div class="container-fluid">
+            <nav class="navbar navbar-inverse navbar-static-top">
+              <div class="container">
+                <div class="navbar-header">
+                  <a class="navbar-brand" href="/">이력 정보 관리시스템</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse" style="float:right;">
+                  <ul class="nav navbar-nav">
+                    <!--<li><a href="/users"></a></li>-->
+                    <!--<li><a href="/admin">관리자</a></li>-->
+                    <li><a href=#>눈송이님 환영합니다.</a></li>
+                    <li><a href="/">로그아웃</a></li>
+                  </ul>
+                </div>
+              </div>
+            </nav>
+          </div>
+        </div>
+
+              <div class="container marketing">
+                    <div class="row">
+                            <div style="margin-top: 50px;"></div>
+                            <div class="col-lg-4" align = center>
+                              <img class="img-circle" src="/images/table.jpg" alt="Generic placeholder image" width="140" height="140">
+                              <h2>데이터 보기</h2>
+                              <p> </p>
+                              <p><a class="btn btn-default" href="/viewPage" role="button">View details &raquo;</a></p>
+                            </div><!-- /.col-lg-4 -->
+                            <div class="col-lg-4" align = center>
+                              <img class="img-circle" src="/images/add.jpg" alt="Generic placeholder image" width="140" height="140">
+                              <h2>데이터 추가</h2>
+                              <p></p>
+                              <p><a class="btn btn-default" href="/addPage" role="button">Add details &raquo;</a></p>
+                            </div><!-- /.col-lg-4 -->
+                            <div class="col-lg-4" align = center>
+                              <img class="img-circle" src="/images/search.jpg" alt="Generic placeholder image" width="140" height="140">
+                              <h2>데이터 검색</h2>
+                              <p></p>
+                              <p><a class="btn btn-default" href="/search/searchPage" role="button">Search details &raquo;</a></p>
+                            </div><!-- /.col-lg-4 -->
+                    </div><!-- /.row -->
+
+                    <hr class="featurette-divider">
+                    <div class="jumbotron">
+                        <div class="container">
+                            <div style="text-align: center;"><h3>기간 검색</h3><br><br>
+                            </div>
+                        <form method="post" action="">
+
+                        <div class="row" style="padding-right: 250px;">
+                            <!-- Include Bootstrap Datepicker -->
+                            <div class="form-group" style="text-align: center;">
+                                <!--<div style="width:20%; margin:0 auto; float:left; text-align: right; padding-right: 3%; padding-top: 5px;">기간</div>-->
+                                <div style="width:30%; margin:0 auto; float:right;">
+                                        <div class="input-group input-append date" id="datePicker" >
+                                        <input type="text" class="form-control" name="date" />
+                                        <span class="input-group-addon add-on"><span class="glyphicon glyphicon-calendar"></span></span>
+                                        </div>
+                                </div>
+                                <div style="width:5%; margin:0 auto; float:right;">
+                                    <p class="font-weight-bold">~</p>
+                                </div>
+                                <div style="width:30%; margin:0 auto; float:right;">
+                                        <div class="input-group input-append date" id="datePicker2" >
+                                        <input type="text" class="form-control" name="date" />
+                                        <span class="input-group-addon add-on"><span class="glyphicon glyphicon-calendar"></span></span>
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div style="text-align: center;"><br><br>
+                            <a href=""><input class="btn btn-primary" type="submit" value="검색" style="width:100px"></a>
+                            <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px"></a>
+                        </div> 
+                        </form>
+            </div>
+        </div>
+      <hr class="featurette-divider">
+      <!-- FOOTER -->
+      <footer>
+      </footer>
+    <!-- /.container -->
+</body>
+</html>

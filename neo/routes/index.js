@@ -8,17 +8,18 @@ var session = driver.session();
 
 
 router.post('/dataAdd', function (req, res) {
-    var receiver_name = req.body.receiver_name;
-    var receiver_attr = req.body.receiver_attr;
-    var sender_name = req.body.sender_name;
-    var sender_attr = req.body.sender_attr;
-    var entity_name = req.body.entity_name;
-    var entity_use = req.body.entity_use;
-    var activity_price = req.body.activity_price;
-    var activity_time = req.body.activity_time;
+    var name = req.body.name;
+    var affiliation = req.body.affiliation;
+    var activityType = req.body.activityType;
+    var date = req.body.date;
+    var dataName = req.body.dataName;
+    var dataType = req.body.dataType;
+    var price = req.body.price;
+    var device  = req.body.device;
     
     session
-        .run("CREATE(: Agent {name:'" + sender_name + "', attribute:'" + sender_attr + "'}) <- [:wasAssociatedWith]-(: Activity { name: 'Own'}) <- [:wasGeneratedBy]-(: Entity { name: '" + entity_name + "', use: '" + entity_use + "'}) - [:wasGeneratedBy] -> (: Activity { name: 'Buy', price:'" + activity_price + "',time:'" + activity_time +"'})- [:wasAssociatedWith] -> (: Agent {name:'" + receiver_name + "', attribute:'" + receiver_attr + "'})")
+        .run("CREATE(: Entity {name: '" + dataName + "', price: '" + price + "', d_type: '" + dataType + "', device: '" + device + "'}) - [:wasAttributedTo] -> (: Agent {name: '" + name + "' , aff: '" + affiliation + "'}) <- [:wasAssociatedWith] - (:Activity {name: '" + activityType + "', date: '" + date + "'})<-[:wasGeneratedBy]-(: Entity {name: '" + dataName + "', price: '" + price + "', d_type: '" + dataType + "', device: '" + device + "'})")
+       // .run("CREATE(: Agent {name:'" + sender_name + "', attribute:'" + sender_attr + "'}) <- [:wasAssociatedWith]-(: Activity { name: 'Own'}) <- [:wasGeneratedBy]-(: Entity { name: '" + entity_name + "', use: '" + entity_use + "'}) - [:wasGeneratedBy] -> (: Activity { name: 'Buy', price:'" + activity_price + "',time:'" + activity_time +"'})- [:wasAssociatedWith] -> (: Agent {name:'" + receiver_name + "', attribute:'" + receiver_attr + "'})")
         .then(function (result) {
 
             session.close();
@@ -36,44 +37,40 @@ router.get('/',function(req, res, next) {
 
 
 router.get('/viewPage', function (req, res) {
-  var receiverArr= [];
-  var recvDivisionArr = [];
-  var senderArr = [];
-  var sendDivisionArr = [];
-  var dataUsageArr = [];
-  var dataArr = []; 
-  var priceArr = [];
+  var nameArr = [];
+  var affiliationArr = [];
+  var activityTypeArr = [];
   var dateArr = [];
+  var dataNameArr = [];
+  var dataTypeArr = [];
+  var priceArr = [];
+  var deviceArr = [];
+
   session
-      .run("START n=node(*) MATCH (n)-[r]->(m) RETURN n, m LIMIT 60")
+      .run("START n=node(*) MATCH (n)-[:wasAttributedTo]->(m)<-[:wasAssociatedWith]-(k) RETURN n, m,k LIMIT 50")
       .then(function (result) {
-        var j =0;
         result.records.forEach(function (record) {
-          if(j%4 == 0){
-            senderArr.push(record._fields[1].properties.name);
-            sendDivisionArr.push(record._fields[1].properties.attribute);
-          }
-          else if(j%4 == 1){
-            dataArr.push(record._fields[0].properties.name);
-            dataUsageArr.push(record._fields[0].properties.use);
-          }
-          else if(j%4 == 3){
-            priceArr.push(record._fields[0].properties.price);
-            dateArr.push(record._fields[0].properties.time);
-            receiverArr.push(record._fields[1].properties.name);
-            recvDivisionArr.push(record._fields[1].properties.attribute);
-          }
+          dataTypeArr.push(record._fields[0].properties.d_type);
+          dataNameArr.push(record._fields[0].properties.name);
+          deviceArr.push(record._fields[0].properties.device);
+          priceArr.push(record._fields[0].properties.price)
+
+          affiliationArr.push(record._fields[1].properties.aff);
+          nameArr.push(record._fields[1].properties.name);
+
+          dateArr.push(record._fields[2].properties.date);
+          activityTypeArr.push(record._fields[2].properties.name);
           /*
-          for (var i =0; i<2; i++){
+          for (var i =0; i<3; i++){
             console.log("record " + i + " -th " + "field: " + record._fields[i]);
             console.log("record " + i + " -th " + "field labels: " + record._fields[i].labels[0]);
             console.log("record " + i + " -th " + "field properties name: " + record._fields[i].properties.name);
             console.log("======================================");       
           } 
           */
-          j++;
         });
-      res.render('viewPage', {receivers : receiverArr, recvDivisions: recvDivisionArr, senders: senderArr, sendDivisions: sendDivisionArr, dataUsages: dataUsageArr, datas: dataArr, prices: priceArr, dates: dateArr}); 
+      res.render('viewPage', {dataTypes : dataTypeArr, dataNames : dataNameArr, devices : deviceArr, prices : priceArr
+        , affiliations : affiliationArr, names : nameArr, dates : dateArr, activityTypes : activityTypeArr}); 
       session.close();  
     })
     .catch(function (err) {
