@@ -11,12 +11,20 @@ with open("randomData.csv",'r') as f:
 from neo4j import GraphDatabase
 
 driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "wowhi223"))
-
+'''
 def add_node(tx,receiver_name,sender_name,entity_name, activity_time,activity_price, sender_attribute, receiver_attribute,  entity_use):
     tx.run("CREATE(: Agent {name: $receiver_name, attribute: $receiver_attribute}) <- [:wasAssociatedWith]-(: Activity { name: 'Own'}) <- [:wasGeneratedBy]-(: Entity { name: $entity_name, use: $entity_use}) - [:wasGeneratedBy] -> (: Activity { name: 'Buy', price: $activity_price,time: $activity_time})- [:wasAssociatedWith] -> (: Agent {name: $sender_name, attribute: $sender_attribute})"
          ,receiver_name=receiver_name,sender_name=sender_name,entity_name=entity_name,activity_price=activity_price,activity_time=activity_time, sender_attribute=sender_attribute, receiver_attribute=receiver_attribute, entity_use=entity_use)
     #tx.run("CREATE(: Agent {name: $receiver_name}) <- [:wasAssociatedWith]-(: Activity { name: 'Own'}) <- [:wasGeneratedBy]-(: Entity { name: $entity_name}) - [:wasGeneratedBy] -> (: Activity { name: 'Buy', price: $activity_price,time: $activity_time})- [:wasAssociatedWith] -> (: Agent {name: $sender_name})"
         # ,receiver_name=receiver_name,sender_name=sender_name,entity_name=entity_name,activity_price=activity_price,activity_time=activity_time)
+'''
+
+def add_node(tx,dataName ,price ,dataType , device ,name , affiliation, activityType,  date):
+    tx.run("CREATE(: Entity {name: $dataName , price: $price , d_type: $dataType, device: $device}) - [:wasAttributedTo] -> (: Agent {name: $name , aff: $affiliation }) <- [:wasAssociatedWith] - (:Activity {name: $activityType, date: $date })<-[:wasGeneratedBy]-(: Entity {name: $dataName , price: $price , d_type: $dataType , device: $device})"
+         ,dataName = dataName, price = price, dataType = dataType, device = device, name = name, affiliation = affiliation, activityType = activityType, date = date)
+    #tx.run("CREATE(: Agent {name: $receiver_name}) <- [:wasAssociatedWith]-(: Activity { name: 'Own'}) <- [:wasGeneratedBy]-(: Entity { name: $entity_name}) - [:wasGeneratedBy] -> (: Activity { name: 'Buy', price: $activity_price,time: $activity_time})- [:wasAssociatedWith] -> (: Agent {name: $sender_name})"
+        # ,receiver_name=receiver_name,sender_name=sender_name,entity_name=entity_name,activity_price=activity_price,activity_time=activity_time)
+
 
 '''
 def add_node(tx,sender_name,receiver_name,entity_name, activity_time,activity_price, sender_attribute, receiver_attribute,  entity_use):
@@ -36,7 +44,7 @@ with driver.session() as session:
   
 # Bi-directional relationship?
 #u1.relationships.create("friends", u2)
-
+'''
 def merge(tx):
    tx.run("MATCH (s:Seller) WITH s.name AS s, collect(s) as node2Merge WITH node2Merge, extract(x IN node2Merge | x.match) AS matches CALL apoc.refactor.mergeNodes(node2Merge) yield node RETURN *")
 
@@ -55,7 +63,7 @@ def merge2(tx):
 with driver.session() as session:
           session.read_transaction(merge2)
 
-
+'''
 
 print("start_time", start_time)
 print("---%s seconds ---" %(time.time() - start_time))
