@@ -47,8 +47,13 @@ var searchAgentEntityPeriod =  require('./routes/search/searchDataPerson/searchA
 var searchAgentEntityPeriodResult =  require('./routes/search/searchDataPerson/searchAgentEntityPeriodResult');
 
 var searchData = require('./routes/newSearch/searchData');
+var searchDataResult = require('./routes/newSearch/searchDataResult');
+
 var searchName = require('./routes/newSearch/searchName');
+var searchNameResult = require('./routes/newSearch/searchNameResult');
+
 var searchPeriod = require('./routes/newSearch/searchPeriod');
+var searchPeriodResult = require('./routes/newSearch/searchPeriodResult');
 
 var ejs = require('ejs');
 var app = express();
@@ -111,9 +116,13 @@ app.use('/search/searchDataPerson/searchAgentEntityPeriod', searchAgentEntityPer
 app.use('/search/searchDataPerson/searchAgentEntityPeriodResult', searchAgentEntityPeriodResult);
 
 app.use('/newSearch/searchData', searchData);
-app.use('/newSearch/searchName', searchName);
-app.use('/newSearch/searchPeriod', searchPeriod);
+app.use('/newSearch/searchDataResult', searchDataResult);
 
+app.use('/newSearch/searchName', searchName);
+app.use('/newSearch/searchNameResult', searchNameResult);
+
+app.use('/newSearch/searchPeriod', searchPeriod);
+app.use('/newSearch/searchPeriodResult', searchPeriodResult);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -10,17 +10,9 @@
      <link rel="icon" href="/images/favicon.ico">
      
    <title>Provenance Data Management</title>
-   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-
-   <style type="text/css"> 
-    .input-group-addon.primary {
-      color: rgb(255, 255, 255);
-      background-color: rgb(50, 118, 177);
-      border-color: rgb(40, 94, 142);
-      }
-   </style>
+   <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 
 </head>
 
@@ -82,56 +74,23 @@
                             <!--Start Here:)-->
                         <div style="margin:0 auto;">
                             <div class="input-group" style="width:30%; margin:0 auto;">
-                                <span class="input-group-addon">데이터</span>
-                                <input type="text" id="data" name="data" class="form-control" />
+                                <span class="input-group-addon">이름</span>
+                                <input type="text" id="name" name="name" class="form-control" />
+                                <!--placeholder="이름을 입력해주세요"-->
                             </div>
                             <br>
                             <div class="input-group" style="width:30%; margin:0 auto;">
-                                <span class="input-group-addon">&nbsp 이름 &nbsp</span>
-                                <input type="text" id="name" name="name" class="form-control" />
+                                <span class="input-group-addon">기관</span>
+                                <input type="text" id="ins" name="ins" class="form-control" />
                             </div>
-                            <br>
-                            <div class="form-group">
-                                <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
-                                <div class="col-sm-6 col-md-4">
-                                  <select id="device" class="form-control">
-                                    <option selected>장치</option>
-                                    <option value="AI">AI스피커</option>
-                                    <option value="T">T머니</option>
-                                    <option value="rail">레일플러스</option>
-                                    <option value="smart">스마트워치</option>
-                                    <option value="patient">페이션트모니터</option>
-                                    <option value="cash">캐시비</option>
-                                  </select> 
-                                </div>
-                            </div>
-                            <br><br>
-                            <div class="form-group">
-                                <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
-                                <div class="col-sm-6 col-md-4">
-                                  <select id="type" class="form-control">
-                                    <option selected>타입</option>
-                                    <option value="health">건강</option>
-                                    <option value="medi">의료</option>
-                                    <option value="loc">위치</option>
-                                    <option value="voice">음성</option>
-                                  </select> 
-                                </div>
-                            </div>
-
-                            <!--<div class="input-group" style="width:30%; margin:0 auto;">
-                                <span class="input-group-addon">&nbsp 가격 &nbsp </span>
-                                <input type="text" aria-label="price1" class="form-control" />
-                                <input type="text" aria-label="price2" class="form-control" />
-                            </div>-->
                         </div>
                         </div>
-                      </form><!--디비연결전송오류로잠시위치이동-->
+    
                         <div style="text-align: center;"><br><br>
                             <a href=""><input class="btn btn-primary" type="submit" value="검색" style="width:100px"></a>
                             <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px"></a>
                         </div> 
-                   <!--원래폼위치-->      
+                        </form>
             </div>
         </div>
       <hr class="featurette-divider">

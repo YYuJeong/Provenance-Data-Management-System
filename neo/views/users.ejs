@@ -18,6 +18,13 @@
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
   <link href="https://codepen.io/ace-subido/pen/Cuiep.css" rel="stylesheet">
 
+  <style type="text/css">
+  .suit {
+    width: 152px;
+        }
+  
+  </style>
+
    <script>
 
     function onLogin(){
@@ -67,9 +74,13 @@
                     <input type="radio" name="user_info" value="user">사용자 
                 </div>
               -->
-
-
-
+          <div>
+            <div class="btn-group" style="margin:0 auto;">
+              <button type="button" class="btn btn-dark suit">사용자</button>
+              <button type="button" class="btn btn-dark suit">관리자</button>
+            </div>
+          </div>
+          <br>
           <input class="btn btn-lg btn-primary btn-block" type="button" value="확인" onClick="onLogin()"><br>
           <a href="#"
             onclick="window.open('/contact','contact','width=500, height=500')">
