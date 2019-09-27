@@ -18,7 +18,7 @@ router.use(bodyParser.urlencoded({ extended: false }));
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.render('admin.ejs');
+  res.render('newSearch/searchPeriod.ejs');
 });
 
 module.exports = router;
