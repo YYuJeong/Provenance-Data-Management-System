@@ -1,0 +1,143 @@
+<!DOCTYPE html> 
+<html lang="ko"> 
+
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+     <!-- favicon -->
+     <link rel="shortcut icon" href="/images/favicon.ico">
+     <link rel="icon" href="/images/favicon.ico">
+     
+   <title>Provenance Data Management</title>
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+   <style type="text/css"> 
+    .input-group-addon.primary {
+      color: rgb(255, 255, 255);
+      background-color: rgb(50, 118, 177);
+      border-color: rgb(40, 94, 142);
+      }
+   </style>
+
+</head>
+
+<body style="overflow:auto">
+        <div class="navbar-wrapper">
+          <div class="container-fluid">
+            <nav class="navbar navbar-inverse navbar-static-top">
+              <div class="container">
+                <div class="navbar-header">
+                  <a class="navbar-brand" href="/">이력 정보 관리시스템</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse" style="float:right;">
+                  <ul class="nav navbar-nav">
+                    <!--<li><a href="/users"></a></li>-->
+                    <!--<li><a href="/admin">관리자</a></li>-->
+                    <li><a href=#>눈송이님 환영합니다.</a></li>
+                    <li><a href="/">로그아웃</a></li>
+                  </ul>
+                </div>
+              </div>
+            </nav>
+          </div>
+        </div>
+
+              <div class="container marketing">
+                    <div class="row">
+                            <div style="margin-top: 50px;"></div>
+                            <div class="col-lg-4" align = center>
+                              <a  href="/viewPage" >
+                              <img class="img-circle" src="/images/table.jpg" alt="Generic placeholder image" width="140" height="140">
+                              </a>
+                              <br><br>
+                              <h2>이력 정보 보기</h2>
+                            </div><!-- /.col-lg-4 -->
+                            <div class="col-lg-4" align = center>
+                              <a href="/addPage">
+                              <img class="img-circle" src="/images/add.jpg"  alt="Generic placeholder image" width="140" height="140">
+                              </a>
+                              <br><br>
+                              <h2>이력 정보 추가</h2>
+                            </div><!-- /.col-lg-4 -->
+                            <div class="col-lg-4" align = center>
+                              <a href = "/search/searchPage">
+                              <img class="img-circle" src="/images/search.jpg" alt="Generic placeholder image" width="140" height="140">
+                              </a>
+                              <br><br>
+                              <h2>이력 정보 검색</h2>
+                            </div><!-- /.col-lg-4 -->
+                    </div><!-- /.row -->
+
+                    <hr class="featurette-divider">
+                    <div class="jumbotron">
+                        <div class="container">
+                            <div style="text-align: center;"><h3>데이터 검색</h3><br>
+                            </div>
+                        <form method="post" action="">
+
+                        <div class="row" >
+                            <!--Start Here:)-->
+                        <div style="margin:0 auto;">
+                            <div class="input-group" style="width:30%; margin:0 auto;">
+                                <span class="input-group-addon">데이터</span>
+                                <input type="text" id="data" name="data" class="form-control" />
+                            </div>
+                            <br>
+                            <div class="input-group" style="width:30%; margin:0 auto;">
+                                <span class="input-group-addon">&nbsp 이름 &nbsp</span>
+                                <input type="text" id="name" name="name" class="form-control" />
+                            </div>
+                            <br>
+                            <div class="form-group">
+                                <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
+                                <div class="col-sm-6 col-md-4">
+                                  <select id="device" class="form-control">
+                                    <option selected>장치</option>
+                                    <option value="AI">AI스피커</option>
+                                    <option value="T">T머니</option>
+                                    <option value="rail">레일플러스</option>
+                                    <option value="smart">스마트워치</option>
+                                    <option value="patient">페이션트모니터</option>
+                                    <option value="cash">캐시비</option>
+                                  </select> 
+                                </div>
+                            </div>
+                            <br><br>
+                            <div class="form-group">
+                                <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
+                                <div class="col-sm-6 col-md-4">
+                                  <select id="type" class="form-control">
+                                    <option selected>타입</option>
+                                    <option value="health">건강</option>
+                                    <option value="medi">의료</option>
+                                    <option value="loc">위치</option>
+                                    <option value="voice">음성</option>
+                                  </select> 
+                                </div>
+                            </div>
+
+                            <!--<div class="input-group" style="width:30%; margin:0 auto;">
+                                <span class="input-group-addon">&nbsp 가격 &nbsp </span>
+                                <input type="text" aria-label="price1" class="form-control" />
+                                <input type="text" aria-label="price2" class="form-control" />
+                            </div>-->
+                        </div>
+                        </div>
+                      </form><!--디비연결전송오류로잠시위치이동-->
+                        <div style="text-align: center;"><br><br>
+                            <a href=""><input class="btn btn-primary" type="submit" value="검색" style="width:100px"></a>
+                            <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px"></a>
+                        </div> 
+                   <!--원래폼위치-->      
+            </div>
+        </div>
+      <hr class="featurette-divider">
+      <!-- FOOTER -->
+      <footer>
+      </footer>
+    <!-- /.container -->
+</body>
+</html>

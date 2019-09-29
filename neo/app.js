@@ -9,6 +9,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var contactRouter = require('./routes/contact');
 var adminRouter = require('./routes/admin');
+var logoutRouter = require('./routes/logout');
 
 var viewPage = require('./routes/viewPage');
 var addPage = require('./routes/addPage');
@@ -20,6 +21,9 @@ var searchDataPersonPage =  require('./routes/search/searchDataPersonPage');
 
 var searchKeywordPage =  require('./routes/search/searchKeywordPage');
 var searchKeywordResult = require('./routes/search/searchKeyword/searchKeywordResult')
+
+var searchConditionPage = require('./routes/search/searchConditionPage');
+//var searchConditionResult = require('./routes/search/searchCondition/searchConditionResult')
 
 var searchAgent =  require('./routes/search/searchPerson/searchAgent');
 var searchAgentResult = require('./routes/search/searchPerson/searchAgentResult');
@@ -41,6 +45,15 @@ var searchEntityPeriodResult =  require('./routes/search/searchData/searchEntity
 
 var searchAgentEntityPeriod =  require('./routes/search/searchDataPerson/searchAgentEntityPeriod');
 var searchAgentEntityPeriodResult =  require('./routes/search/searchDataPerson/searchAgentEntityPeriodResult');
+
+var searchData = require('./routes/newSearch/searchData');
+var searchDataResult = require('./routes/newSearch/searchDataResult');
+
+var searchName = require('./routes/newSearch/searchName');
+var searchNameResult = require('./routes/newSearch/searchNameResult');
+
+var searchPeriod = require('./routes/newSearch/searchPeriod');
+var searchPeriodResult = require('./routes/newSearch/searchPeriodResult');
 
 var ejs = require('ejs');
 var app = express();
@@ -66,6 +79,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/contact', contactRouter);
 app.use('/admin', adminRouter);
+app.use('/logout', logoutRouter);
 
 app.use('/viewPage', viewPage);
 app.use('/addPage', addPage);
@@ -76,6 +90,9 @@ app.use('/search/searchDataPersonPage', searchDataPersonPage);
 
 app.use('/search/searchKeywordPage', searchKeywordPage);
 app.use('/search/searchKeyword/searchKeywordResult', searchKeywordResult);
+
+app.use('/search/searchConditionPage', searchConditionPage);
+//app.use('/search/searchCondition/searchConditionResult', searchConditionResult);
 
 app.use('/search/searchPerson/searchAgent', searchAgent);
 app.use('/search/searchPerson/searchAgentResult', searchAgentResult);
@@ -98,6 +115,14 @@ app.use('/search/searchData/searchEntityPeriodResult', searchEntityPeriodResult)
 app.use('/search/searchDataPerson/searchAgentEntityPeriod', searchAgentEntityPeriod);
 app.use('/search/searchDataPerson/searchAgentEntityPeriodResult', searchAgentEntityPeriodResult);
 
+app.use('/newSearch/searchData', searchData);
+app.use('/newSearch/searchDataResult', searchDataResult);
+
+app.use('/newSearch/searchName', searchName);
+app.use('/newSearch/searchNameResult', searchNameResult);
+
+app.use('/newSearch/searchPeriod', searchPeriod);
+app.use('/newSearch/searchPeriodResult', searchPeriodResult);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
