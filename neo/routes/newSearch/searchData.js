@@ -21,4 +21,5 @@ router.get('/', function(req, res, next) {
   res.render('newSearch/searchData.ejs');
 });
 
+
 module.exports = router;
