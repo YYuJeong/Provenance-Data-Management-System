@@ -1,0 +1,103 @@
+<!DOCTYPE html> 
+<html lang="ko"> 
+
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+     <!-- favicon -->
+     <link rel="shortcut icon" href="/images/favicon.ico">
+     <link rel="icon" href="/images/favicon.ico">
+     
+   <title>Provenance Data Management</title>
+   <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+</head>
+
+<body style="overflow:auto">
+        <div class="navbar-wrapper">
+          <div class="container-fluid">
+            <nav class="navbar navbar-inverse navbar-static-top">
+              <div class="container">
+                <div class="navbar-header">
+                  <a class="navbar-brand" href="/">이력 정보 관리시스템</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse" style="float:right;">
+                  <ul class="nav navbar-nav">
+                    <!--<li><a href="/users"></a></li>-->
+                    <!--<li><a href="/admin">관리자</a></li>-->
+                    <li><a href=#>눈송이님 환영합니다.</a></li>
+                    <li><a href="/">로그아웃</a></li>
+                  </ul>
+                </div>
+              </div>
+            </nav>
+          </div>
+        </div>
+
+              <div class="container marketing">
+                    <div class="row">
+                            <div style="margin-top: 50px;"></div>
+                            <div class="col-lg-4" align = center>
+                              <a  href="/viewPage" >
+                              <img class="img-circle" src="/images/table.jpg" alt="Generic placeholder image" width="140" height="140">
+                              </a>
+                              <br><br>
+                              <h2>이력 정보 보기</h2>
+                            </div><!-- /.col-lg-4 -->
+                            <div class="col-lg-4" align = center>
+                              <a href="/addPage">
+                              <img class="img-circle" src="/images/add.jpg"  alt="Generic placeholder image" width="140" height="140">
+                              </a>
+                              <br><br>
+                              <h2>이력 정보 추가</h2>
+                            </div><!-- /.col-lg-4 -->
+                            <div class="col-lg-4" align = center>
+                              <a href = "/search/searchPage">
+                              <img class="img-circle" src="/images/search.jpg" alt="Generic placeholder image" width="140" height="140">
+                              </a>
+                              <br><br>
+                              <h2>이력 정보 검색</h2>
+                            </div><!-- /.col-lg-4 -->
+                    </div><!-- /.row -->
+
+                    <hr class="featurette-divider">
+                    <div class="jumbotron">
+                        <div class="container">
+                            <div style="text-align: center;"><h3>이름 검색</h3><br>
+                            </div>
+                        <form method="post" action="/nameSearch">
+
+                        <div class="row" >
+                            <!--Start Here:)-->
+                        <div style="margin:0 auto;">
+                            <div class="input-group" style="width:30%; margin:0 auto;">
+                                <span class="input-group-addon">이름</span>
+                                <input type="text" id="name" name="name" class="form-control" />
+                                <!--placeholder="이름을 입력해주세요"-->
+                            </div>
+                            <br>
+                            <div class="input-group" style="width:30%; margin:0 auto;">
+                                <span class="input-group-addon">기관</span>
+                                <input type="text" id="affiliation" name="affiliation" class="form-control" />
+                            </div>
+                        </div>
+                        </div>
+                      <!--디비연결전송오류로잠시위치이동-->
+                        <div style="text-align: center;"><br><br>
+                            <a href="/search/searchNameResult"><input class="btn btn-primary" type="submit" value="검색" style="width:100px"></a>
+                            <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px"></a>
+                        </div> 
+                        <!--원래폼위치-->
+                    </form>
+            </div>
+        </div>
+      <hr class="featurette-divider">
+      <!-- FOOTER -->
+      <footer>
+      </footer>
+    <!-- /.container -->
+</body>
+</html>

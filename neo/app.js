@@ -13,22 +13,21 @@ var logoutRouter = require('./routes/logout');
 
 var viewPage = require('./routes/viewPage');
 var addPage = require('./routes/addPage');
-
 var searchPage =  require('./routes/search/searchPage');
 
-var searchKeywordPage =  require('./routes/search/searchKeywordPage');
-var searchKeywordResult = require('./routes/search/searchKeyword/searchKeywordResult')
+var searchKeyword =  require('./routes/search/searchKeyword');
+var searchKeywordResult = require('./routes/search/searchKeywordResult')
 
 var searchConditionPage = require('./routes/search/searchConditionPage');
 
-var searchData = require('./routes/newSearch/searchData');
-var searchDataResult = require('./routes/newSearch/searchDataResult');
+var searchData = require('./routes/search/searchData');
+var searchDataResult = require('./routes/search/searchDataResult');
 
-var searchName = require('./routes/newSearch/searchName');
-var searchNameResult = require('./routes/newSearch/searchNameResult');
+var searchName = require('./routes/search/searchName');
+var searchNameResult = require('./routes/search/searchNameResult');
 
-var searchPeriod = require('./routes/newSearch/searchPeriod');
-var searchPeriodResult = require('./routes/newSearch/searchPeriodResult');
+var searchPeriod = require('./routes/search/searchPeriod');
+var searchPeriodResult = require('./routes/search/searchPeriodResult');
 
 var ejs = require('ejs');
 var app = express();
@@ -60,19 +59,19 @@ app.use('/viewPage', viewPage);
 app.use('/addPage', addPage);
 app.use('/search/searchPage', searchPage);
 
-app.use('/search/searchKeywordPage', searchKeywordPage);
-app.use('/search/searchKeyword/searchKeywordResult', searchKeywordResult);
+app.use('/search/searchKeyword', searchKeyword);
+app.use('/search/searchKeywordResult', searchKeywordResult);
 
 app.use('/search/searchConditionPage', searchConditionPage);
 
-app.use('/newSearch/searchData', searchData);
-app.use('/newSearch/searchDataResult', searchDataResult);
+app.use('/search/searchData', searchData);
+app.use('/search/searchDataResult', searchDataResult);
 
-app.use('/newSearch/searchName', searchName);
-app.use('/newSearch/searchNameResult', searchNameResult);
+app.use('/search/searchName', searchName);
+app.use('/search/searchNameResult', searchNameResult);
 
-app.use('/newSearch/searchPeriod', searchPeriod);
-app.use('/newSearch/searchPeriodResult', searchPeriodResult);
+app.use('/search/searchPeriod', searchPeriod);
+app.use('/search/searchPeriodResult', searchPeriodResult);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

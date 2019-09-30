@@ -16,8 +16,9 @@ router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: false }));
 //router.use(express.static(path.join(__dirname, 'public')));
 
+/* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.render('newSearch/searchDataResult.ejs');
+  res.render('search/searchPeriodResult.ejs');
 });
 
 module.exports = router;
