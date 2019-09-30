@@ -19,7 +19,6 @@ router.post('/dataAdd', function (req, res) {
     
     session
         .run("CREATE(: Entity {name: '" + dataName + "', price: '" + price + "', d_type: '" + dataType + "', device: '" + device + "'}) - [:wasAttributedTo] -> (: Agent {name: '" + name + "' , aff: '" + affiliation + "'}) <- [:wasAssociatedWith] - (:Activity {name: '" + activityType + "', date: '" + date + "'})<-[:wasGeneratedBy]-(: Entity {name: '" + dataName + "', price: '" + price + "', d_type: '" + dataType + "', device: '" + device + "'})")
-       // .run("CREATE(: Agent {name:'" + sender_name + "', attribute:'" + sender_attr + "'}) <- [:wasAssociatedWith]-(: Activity { name: 'Own'}) <- [:wasGeneratedBy]-(: Entity { name: '" + entity_name + "', use: '" + entity_use + "'}) - [:wasGeneratedBy] -> (: Activity { name: 'Buy', price:'" + activity_price + "',time:'" + activity_time +"'})- [:wasAssociatedWith] -> (: Agent {name:'" + receiver_name + "', attribute:'" + receiver_attr + "'})")
         .then(function (result) {
 
             session.close();
@@ -95,17 +94,78 @@ router.post('/DataSearch', function(req, res){
   var deviceArr = [];
 
   var test = [];
+  var query = "MATCH (entity:Entity)-[rel:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent) WHERE agent.name='"+name+"' RETURN agent.name, agent.aff, activity.name, activity.date, entity.name, entity.d_type, entity.price, entity.device";
+
+  console.log("dataName: " + dataName);
+  console.log("name: " + name);
+  console.log("device: " + device);
+  console.log("dataType: " + dataType);
+
+
+  console.log("*******************************************");
+  var nullcount = 0;
+  var matchCyper = "MATCH (entity:Entity)-[rel:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent)";
+  var returnCyper = " RETURN agent.name, agent.aff, activity.name, activity.date, entity.name, entity.d_type, entity.price, entity.device"
+  var whereCyper = " WHERE"
+  
+  var deviceCyper = " entity.device = ";
+  var dataNameCyper = " entity.name = ";
+  var dataTypeCyper = " entity.d_type = ";
+  var nameCyper = " agent.name = ";
+
+  if(device == ''){
+    console.log("device null");
+    nullcount++;
+  }
+  if(dataName == '' || dataName == undefined){
+    console.log("dataName null");
+    nullcount++;
+  }
+
+  if(name == ''){
+    console.log("name null");
+    nullcount++;
+  }
+
+
+  if(dataType == ''){
+    console.log("dataType null");
+    nullcount++;
+  }
+
+  console.log("nullcount: " + nullcount);
+
+  if(nullcount == 3){
+    if(device != ''){
+      console.log("device : " + device);
+      var newQuery = matchCyper + whereCyper + deviceCyper + "'" + device + "'" + returnCyper;
+    }
+    
+    else if(dataName != undefined || dataName != null || dataName != '' ){
+      console.log("dataName: " + dataName);
+      var newQuery = matchCyper + whereCyper + dataNameCyper + "'" + dataName + "'" + returnCyper;
+    }
+    
+    else if(name != ''){
+
+      console.log("name: " + name);
+      var newQuery = matchCyper + whereCyper + nameCyper + "'" + name + "'" + returnCyper;
+    }
+  
+    else{
+      console.log("dataType: " + dataType);
+      var newQuery = matchCyper + whereCyper+ dataTypeCyper + "'" + dataType + "'" + returnCyper;
+    }
+    
+  }
+  console.log(newQuery);
+
   session
- // .run("MATCH (entity:Entity)-[rel1:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent) WHERE entity.name='"+dataName+"' AND agent.name ='"+name+"' AND entity.device='"+device+"' AND entity.d_type='"+dataType+"' RETURN agent.name, agent.aff, activity.name, activity.date, entity.name, entity.d_type, entity.price, entity.device")
-  .run("MATCH (entity:Entity)-[rel:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent) WHERE agent.name='"+name+"' RETURN agent.name, agent.aff, activity.name, activity.date, entity.name, entity.d_type, entity.price, entity.device")
+  //.run("MATCH (entity:Entity)-[rel1:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent) WHERE entity.name='"+dataName+"' AND agent.name ='"+name+"' AND entity.device='"+device+"' AND entity.d_type='"+dataType+"' RETURN agent.name, agent.aff, activity.name, activity.date, entity.name, entity.d_type, entity.price, entity.device")
+  //.run("MATCH (entity:Entity)-[rel:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent) WHERE agent.name='"+name+"' RETURN agent.name, agent.aff, activity.name, activity.date, entity.name, entity.d_type, entity.price, entity.device")
+  .run(newQuery)
   .then(function (result) {
-   console.log("dataName: " + dataName);
-   console.log("name: " + name);
-   console.log("device: " + device);
-   console.log("dataType: " + dataType);
-   if(device == ''){
-     console.log("null");
-   }
+
    var searchArr = [];
    var size = Object.keys(result.records).length;  
    console.log("size: " + size);
