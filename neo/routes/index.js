@@ -223,7 +223,7 @@ router.post('/DataSearch', function(req, res){
 
     */
 
-    res.render('newSearch/searchDataResult.ejs', {dataTypes : dataTypeArr, dataNames : dataNameArr, devices : deviceArr, prices : priceArr
+    res.render('search/searchDataResult.ejs', {dataTypes : dataTypeArr, dataNames : dataNameArr, devices : deviceArr, prices : priceArr
       , affiliations : affiliationArr, names : nameArr, dates : dateArr, activityTypes : activityTypeArr}); 
     session.close();  
   })
@@ -875,7 +875,7 @@ router.post('/keyword', function (req, res) {
           }
         }
       }
-      res.render('search/searchKeyword/searchKeywordResult.ejs', {receivers : receiverArr, recvDivisions: recvDivisionArr, senders: senderArr, sendDivisions: sendDivisionArr, dataUsages: dataUsageArr, datas: dataArr, prices: priceArr, dates: dateArr, agent_name: agent_name}); 
+      res.render('search/searchKeywordResult.ejs', {receivers : receiverArr, recvDivisions: recvDivisionArr, senders: senderArr, sendDivisions: sendDivisionArr, dataUsages: dataUsageArr, datas: dataArr, prices: priceArr, dates: dateArr, agent_name: agent_name}); 
       session.close();  
     })
     .catch(function (err) {
