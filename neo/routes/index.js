@@ -101,6 +101,10 @@ router.post('/DataSearch', function(req, res){
    console.log("dataName: " + dataName);
    console.log("name: " + name);
    console.log("device: " + device);
+   console.log("dataType: " + dataType);
+   if(device == ''){
+     console.log("null");
+   }
    var searchArr = [];
    var size = Object.keys(result.records).length;  
    console.log("size: " + size);
@@ -116,9 +120,9 @@ router.post('/DataSearch', function(req, res){
     temp = searchArr.toString();
     var splitTemp = temp.split(',');
     console.log("SSS: " , splitTemp);
-    for(var j = 0, i=0; j < splitTemp.length; j++){
+    for(var j = 0, i=0; j < 8*size ; j++){
       if((j+1)%8 != 0){
-        nameArr.push( splitTemp[j]);
+        nameArr.push(splitTemp[j]);
         affiliationArr[i] = splitTemp[++j];
         activityTypeArr[i] = splitTemp[++j];
         dateArr[i] = splitTemp[++j];
@@ -130,7 +134,7 @@ router.post('/DataSearch', function(req, res){
       i++; 
     }
     console.log("=======================================================");
-    
+    /*
     for(var i = 0; i < 4; i++){
       console.log("i: " + i);
       console.log("nameArr[i]: " + nameArr[i] );
@@ -142,7 +146,7 @@ router.post('/DataSearch', function(req, res){
       console.log("price: " + priceArr[i]);
       console.log("device: " + deviceArr[i]);
     }
-    
+    */
     res.render('newSearch/searchDataResult.ejs', {dataTypes : dataTypeArr, dataNames : dataNameArr, devices : deviceArr, prices : priceArr
       , affiliations : affiliationArr, names : nameArr, dates : dateArr, activityTypes : activityTypeArr}); 
     session.close();  
