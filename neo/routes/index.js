@@ -30,7 +30,7 @@ router.post('/dataAdd', function (req, res) {
             console.log(err);
         });
     
-    res.redirect('/');
+    res.redirect('/addPage');
 });
 
 router.get('/',function(req, res, next) {
