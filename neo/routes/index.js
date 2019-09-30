@@ -89,6 +89,11 @@ router.post('/DataSearch', function(req, res){
   var dataType = req.body.dataType;
   var device = req.body.device;
 
+  var dataNameFlag = true;
+  var nameFlag = true;
+  var dataTypeFlag = true;
+  var deviceFlag = true;
+
   var nameArr = [];
   var affiliationArr = [];
   var activityTypeArr = [];
@@ -106,8 +111,7 @@ router.post('/DataSearch', function(req, res){
   console.log("device: " + device);
   console.log("dataType: " + dataType);
 
-
-  console.log("*******************************************");
+  console.log("*******************************************************************************************************");
   var nullcount = 0;
   var matchCyper = "MATCH (entity:Entity)-[rel:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent)";
   var returnCyper = " RETURN agent.name, agent.aff, activity.name, activity.date, entity.name, entity.d_type, entity.price, entity.device"
@@ -120,44 +124,47 @@ router.post('/DataSearch', function(req, res){
 
   if(device == ''){
     console.log("device null");
+    deviceFlag = false;
     nullcount++;
   }
   if(dataName == '' || dataName == undefined){
     console.log("dataName null");
+    dataNameFlag = false;
     nullcount++;
   }
 
   if(name == ''){
     console.log("name null");
+    nameFlag = false;
     nullcount++;
   }
-
-
   if(dataType == ''){
     console.log("dataType null");
+    dataTypeFlag = false;
     nullcount++;
   }
 
   console.log("nullcount: " + nullcount);
 
+  console.log("*******************************************************************************************************");
   if(nullcount == 3){
-    if(device != ''){
+    if(deviceFlag){
       console.log("device : " + device);
       var newQuery = matchCyper + whereCyper + deviceCyper + "'" + device + "'" + returnCyper;
     }
     
-    else if(dataName != undefined || dataName != null || dataName != '' ){
+    else if(dataNameFlag){
       console.log("dataName: " + dataName);
       var newQuery = matchCyper + whereCyper + dataNameCyper + "'" + dataName + "'" + returnCyper;
     }
     
-    else if(name != ''){
+    else if(nameFlag){
 
       console.log("name: " + name);
       var newQuery = matchCyper + whereCyper + nameCyper + "'" + name + "'" + returnCyper;
     }
   
-    else{
+    else if(dataTypeFlag){
       console.log("dataType: " + dataType);
       var newQuery = matchCyper + whereCyper+ dataTypeCyper + "'" + dataType + "'" + returnCyper;
     }
@@ -166,8 +173,6 @@ router.post('/DataSearch', function(req, res){
   console.log(newQuery);
 
   session
-  //.run("MATCH (entity:Entity)-[rel1:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent) WHERE entity.name='"+dataName+"' AND agent.name ='"+name+"' AND entity.device='"+device+"' AND entity.d_type='"+dataType+"' RETURN agent.name, agent.aff, activity.name, activity.date, entity.name, entity.d_type, entity.price, entity.device")
-  //.run("MATCH (entity:Entity)-[rel:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent) WHERE agent.name='"+name+"' RETURN agent.name, agent.aff, activity.name, activity.date, entity.name, entity.d_type, entity.price, entity.device")
   .run(newQuery)
   .then(function (result) {
 
