@@ -74,16 +74,16 @@
                     <hr class="featurette-divider">
                     <div class="jumbotron">
                         <div class="container">
-                            <div style="text-align: center;"><h3>데이터 검색</h3><br>
+                            <div style="text-align: center;"><h3>이름 검색</h3><br>
                             </div>
-                        <form method="post" action="/DataSearch">
+                        <form method="post" action="">
 
                         <div class="row" >
                             <!--Start Here:)-->
                         <div style="margin:0 auto;">
                             <div class="input-group" style="width:30%; margin:0 auto;">
                                 <span class="input-group-addon">데이터</span>
-                                <input type="text" id="dataName" name="dataName" class="form-control" />
+                                <input type="text" id="data" name="data" class="form-control" />
                             </div>
                             <br>
                             <div class="input-group" style="width:30%; margin:0 auto;">
@@ -94,6 +94,7 @@
                             <div class="form-group">
                                 <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
                                 <div class="col-sm-6 col-md-4">
+
                                   <select id="device" name = "device" class="form-control">
                                     <option value = ''>장치</option>
                                     <option value="AI스피커">AI스피커</option>
@@ -102,6 +103,7 @@
                                     <option value="스마트워치">스마트워치</option>
                                     <option value="페이션트모니터">페이션트모니터</option>
                                     <option value="캐시비">캐시비</option>
+
                                   </select> 
                                 </div>
                             </div>
@@ -109,12 +111,14 @@
                             <div class="form-group">
                                 <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
                                 <div class="col-sm-6 col-md-4">
+
                                   <select id="dataType" name = "dataType" class="form-control">
                                     <option value = ''>타입</option>
                                     <option value="건강데이터">건강</option>
                                     <option value="의료데이터">의료</option>
                                     <option value="위치데이터">위치</option>
                                     <option value="음성데이터">음성</option>
+
                                   </select> 
                                 </div>
                             </div>
@@ -135,6 +139,7 @@
             </div>
         </div>
       <hr class="featurette-divider">
+
       <hr class="featurette-divider">
       <div class="jumbotron">
         <div class="container" style="display: inline-block;text-align: center;">
@@ -195,6 +200,7 @@
         </div>
       </div>
       <!-- /END THE FEATURETTES -->
+
 
       <!-- FOOTER -->
       <footer>

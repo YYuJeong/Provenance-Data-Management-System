@@ -19,7 +19,7 @@ def add_node(tx,receiver_name,sender_name,entity_name, activity_time,activity_pr
         # ,receiver_name=receiver_name,sender_name=sender_name,entity_name=entity_name,activity_price=activity_price,activity_time=activity_time)
 '''
 
-def add_node(tx, name, affiliation, activityType, date, dataName, dataType, price, device):
+def add_node(tx,dataName ,price ,dataType , device ,name , affiliation, activityType,  date):
     tx.run("CREATE(: Entity {name: $dataName , price: $price , d_type: $dataType, device: $device}) - [:wasAttributedTo] -> (: Agent {name: $name , aff: $affiliation }) <- [:wasAssociatedWith] - (:Activity {name: $activityType, date: $date })<-[:wasGeneratedBy]-(: Entity {name: $dataName , price: $price , d_type: $dataType , device: $device})"
          ,dataName = dataName, price = price, dataType = dataType, device = device, name = name, affiliation = affiliation, activityType = activityType, date = date)
     #tx.run("CREATE(: Agent {name: $receiver_name}) <- [:wasAssociatedWith]-(: Activity { name: 'Own'}) <- [:wasGeneratedBy]-(: Entity { name: $entity_name}) - [:wasGeneratedBy] -> (: Activity { name: 'Buy', price: $activity_price,time: $activity_time})- [:wasAssociatedWith] -> (: Agent {name: $sender_name})"

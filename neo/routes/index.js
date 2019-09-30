@@ -78,6 +78,7 @@ router.get('/viewPage', function (req, res) {
   });
 });
 
+
 router.post('/DataSearch', function(req, res){
   var dataName = req.body.dataName;
   var name = req.body.name;
@@ -155,6 +156,7 @@ router.post('/DataSearch', function(req, res){
      console.log(err);
   });
 });
+
 
 router.post('/agent', function (req, res) {
   var agent_name = req.body.agent_name;
