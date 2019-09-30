@@ -78,6 +78,80 @@ router.get('/viewPage', function (req, res) {
   });
 });
 
+router.post('/DataSearch', function(req, res){
+  var dataName = req.body.dataName;
+  var name = req.body.name;
+  var dataType = req.body.dataType;
+  var device = req.body.device;
+
+  var nameArr = [];
+  var affiliationArr = [];
+  var activityTypeArr = [];
+  var dateArr = [];
+  var dataNameArr = [];
+  var dataTypeArr = [];
+  var priceArr = [];
+  var deviceArr = [];
+
+  var test = [];
+  session
+ // .run("MATCH (entity:Entity)-[rel1:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent) WHERE entity.name='"+dataName+"' AND agent.name ='"+name+"' AND entity.device='"+device+"' AND entity.d_type='"+dataType+"' RETURN agent.name, agent.aff, activity.name, activity.date, entity.name, entity.d_type, entity.price, entity.device")
+  .run("MATCH (entity:Entity)-[rel:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent) WHERE agent.name='"+name+"' RETURN agent.name, agent.aff, activity.name, activity.date, entity.name, entity.d_type, entity.price, entity.device")
+  .then(function (result) {
+   console.log("dataName: " + dataName);
+   console.log("name: " + name);
+   console.log("device: " + device);
+   var searchArr = [];
+   var size = Object.keys(result.records).length;  
+   console.log("size: " + size);
+   for (var i = 0; i < size; i++) {
+       var da = result.records[i]._fields;
+       test[i] = da;                  
+    }
+    for(var i=0;i < size; i+=2){
+      data=(test[[i]]+" ,"+test[[i+1]]);
+      searchArr.push(data);
+    }      
+
+    temp = searchArr.toString();
+    var splitTemp = temp.split(',');
+    console.log("SSS: " , splitTemp);
+    for(var j = 0, i=0; j < splitTemp.length; j++){
+      if((j+1)%8 != 0){
+        nameArr.push( splitTemp[j]);
+        affiliationArr[i] = splitTemp[++j];
+        activityTypeArr[i] = splitTemp[++j];
+        dateArr[i] = splitTemp[++j];
+        dataNameArr[i] = splitTemp[++j];
+        dataTypeArr[i] = splitTemp[++j];
+        priceArr[i] = splitTemp[++j];
+        deviceArr[i] = splitTemp[++j];
+      }
+      i++; 
+    }
+    console.log("=======================================================");
+    
+    for(var i = 0; i < 4; i++){
+      console.log("i: " + i);
+      console.log("nameArr[i]: " + nameArr[i] );
+      console.log("affiliation: " + affiliationArr[i]);
+      console.log("activityType: " + activityTypeArr[i]);
+      console.log("date: " + dateArr[i]);
+      console.log("dataName: " + dataNameArr[i]);
+      console.log("dataType: " + dataTypeArr[i]);
+      console.log("price: " + priceArr[i]);
+      console.log("device: " + deviceArr[i]);
+    }
+    
+    res.render('newSearch/searchDataResult.ejs', {dataTypes : dataTypeArr, dataNames : dataNameArr, devices : deviceArr, prices : priceArr
+      , affiliations : affiliationArr, names : nameArr, dates : dateArr, activityTypes : activityTypeArr}); 
+    session.close();  
+  })
+  .catch(function (err) {
+     console.log(err);
+  });
+});
+
 router.post('/agent', function (req, res) {
   var agent_name = req.body.agent_name;
   var data=[];

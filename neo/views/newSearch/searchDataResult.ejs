@@ -74,16 +74,16 @@
                     <hr class="featurette-divider">
                     <div class="jumbotron">
                         <div class="container">
-                            <div style="text-align: center;"><h3>이름 검색</h3><br>
+                            <div style="text-align: center;"><h3>데이터 검색</h3><br>
                             </div>
-                        <form method="post" action="">
+                        <form method="post" action="/DataSearch">
 
                         <div class="row" >
                             <!--Start Here:)-->
                         <div style="margin:0 auto;">
                             <div class="input-group" style="width:30%; margin:0 auto;">
                                 <span class="input-group-addon">데이터</span>
-                                <input type="text" id="data" name="data" class="form-control" />
+                                <input type="text" id="dataName" name="dataName" class="form-control" />
                             </div>
                             <br>
                             <div class="input-group" style="width:30%; margin:0 auto;">
@@ -94,14 +94,14 @@
                             <div class="form-group">
                                 <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
                                 <div class="col-sm-6 col-md-4">
-                                  <select id="device" class="form-control">
+                                  <select id="device" name = "device" class="form-control">
                                     <option selected>장치</option>
-                                    <option value="AI">AI스피커</option>
-                                    <option value="T">T머니</option>
-                                    <option value="rail">레일플러스</option>
-                                    <option value="smart">스마트워치</option>
-                                    <option value="patient">페이션트모니터</option>
-                                    <option value="cash">캐시비</option>
+                                    <option value="AI스피커">AI스피커</option>
+                                    <option value="T머니">T머니</option>
+                                    <option value="레일플러스">레일플러스</option>
+                                    <option value="스마트워치">스마트워치</option>
+                                    <option value="페이션트모니터">페이션트모니터</option>
+                                    <option value="캐시비">캐시비</option>
                                   </select> 
                                 </div>
                             </div>
@@ -109,12 +109,12 @@
                             <div class="form-group">
                                 <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
                                 <div class="col-sm-6 col-md-4">
-                                  <select id="type" class="form-control">
+                                  <select id="dataType" name = "dataType" class="form-control">
                                     <option selected>타입</option>
-                                    <option value="health">건강</option>
-                                    <option value="medi">의료</option>
-                                    <option value="loc">위치</option>
-                                    <option value="voice">음성</option>
+                                    <option value="건강데이터">건강</option>
+                                    <option value="의료데이터">의료</option>
+                                    <option value="위치데이터">위치</option>
+                                    <option value="음성데이터">음성</option>
                                   </select> 
                                 </div>
                             </div>
@@ -135,6 +135,67 @@
             </div>
         </div>
       <hr class="featurette-divider">
+      <hr class="featurette-divider">
+      <div class="jumbotron">
+        <div class="container" style="display: inline-block;text-align: center;">
+          <br><br>
+          <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading" style = "font-size:medium;"><strong>데이터 검색 결과</strong></div>
+            <!-- Table -->
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th align = center>#</th>
+                  <th align = center>이름</th>
+                  <th align = center>소속</th>
+                  <th align = center>Activity</th>
+                  <th align = center>날&nbsp짜</th>
+                  <th align = center>데이터명</th>
+                  <th align = center>데이터 종류</th>
+                  <th align = center>가 격</th>
+                  <th align = center>Device</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% for(var i=0; i<names.length; i++ ) { %>
+                <tr>
+                  <th scope="row">
+                      <%= (i+1) %>
+                  </th>
+                  <td>
+                      <%= names[i] %>
+                  </td>
+                  <td align = center>
+                    <%= affiliations[i] %>
+                  </td>
+                  <td align = center>
+                    <%= activityTypes[i] %>
+                  </td> 
+                  <td align = center>
+                    <%= dates[i] %>
+                  </td>
+                  <td align = center>
+                    <%= dataNames[i] %>
+                  </td>
+                  <td align = center>
+                    <%= dataTypes[i] %>
+                  </td>
+                  <td align = center>
+                    <%= prices[i] %>
+                  </td>
+                  <td align = center>
+                    <%= devices[i] %>
+                  </td>
+                </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>  
+        </div>
+      </div>
+      <!-- /END THE FEATURETTES -->
+
       <!-- FOOTER -->
       <footer>
       </footer>
