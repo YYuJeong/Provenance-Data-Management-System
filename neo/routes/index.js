@@ -326,7 +326,7 @@ router.post('/nameSearch', function(req, res){
       }
       i++; 
     }
-    res.render('newSearch/searchNameResult.ejs', {dataTypes : dataTypeArr, dataNames : dataNameArr, devices : deviceArr, prices : priceArr
+    res.render('search/searchNameResult.ejs', {dataTypes : dataTypeArr, dataNames : dataNameArr, devices : deviceArr, prices : priceArr
       , affiliations : affiliationArr, names : nameArr, dates : dateArr, activityTypes : activityTypeArr}); 
     session.close();  
   })
@@ -386,7 +386,7 @@ router.post('/periodSearch', function(req, res){
       }
       i++; 
     }
-    res.render('newSearch/searchPeriodResult.ejs', {dataTypes : dataTypeArr, dataNames : dataNameArr, devices : deviceArr, prices : priceArr
+    res.render('search/searchPeriodResult.ejs', {dataTypes : dataTypeArr, dataNames : dataNameArr, devices : deviceArr, prices : priceArr
       , affiliations : affiliationArr, names : nameArr, dates : dateArr, activityTypes : activityTypeArr}); 
     session.close();  
   })

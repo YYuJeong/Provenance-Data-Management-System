@@ -29,6 +29,10 @@ var searchNameResult = require('./routes/search/searchNameResult');
 var searchPeriod = require('./routes/search/searchPeriod');
 var searchPeriodResult = require('./routes/search/searchPeriodResult');
 
+var modifyData = require('./routes/data/modifyData');
+var deleteData = require('./routes/data/deleteData');
+var uploadData = require('./routes/data/uploadData');
+
 var ejs = require('ejs');
 var app = express();
 
@@ -72,6 +76,10 @@ app.use('/search/searchNameResult', searchNameResult);
 
 app.use('/search/searchPeriod', searchPeriod);
 app.use('/search/searchPeriodResult', searchPeriodResult);
+
+app.use('/data/modifyData', modifyData);
+app.use('/data/deleteData', deleteData);
+app.use('/data/uploadData', uploadData);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
