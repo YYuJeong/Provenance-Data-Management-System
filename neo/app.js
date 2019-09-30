@@ -15,36 +15,11 @@ var viewPage = require('./routes/viewPage');
 var addPage = require('./routes/addPage');
 
 var searchPage =  require('./routes/search/searchPage');
-var searchPersonPage =  require('./routes/search/searchPersonPage');
-var searchDataPage =  require('./routes/search/searchDataPage');
-var searchDataPersonPage =  require('./routes/search/searchDataPersonPage');
 
 var searchKeywordPage =  require('./routes/search/searchKeywordPage');
 var searchKeywordResult = require('./routes/search/searchKeyword/searchKeywordResult')
 
 var searchConditionPage = require('./routes/search/searchConditionPage');
-//var searchConditionResult = require('./routes/search/searchCondition/searchConditionResult')
-
-var searchAgent =  require('./routes/search/searchPerson/searchAgent');
-var searchAgentResult = require('./routes/search/searchPerson/searchAgentResult');
-
-var searchEntity =  require('./routes/search/searchData/searchEntity');
-var searchEntityResult = require('./routes/search/searchData/searchEntityResult');
-
-var searchAgentAttribute =  require('./routes/search/searchPerson/searchAgentAttribute');
-var searchAgentAttributeResult = require('./routes/search/searchPerson/searchAgentAttributeResult');
-
-var searchEntityAttribute =  require('./routes/search/searchData/searchEntityAttribute');
-var searchEntityAttributeResult = require('./routes/search/searchData/searchEntityAttributeResult');
-
-var searchAgentPeriod =  require('./routes/search/searchPerson/searchAgentPeriod');
-var searchAgentPeriodResult =  require('./routes/search/searchPerson/searchAgentPeriodResult');
-
-var searchEntityPeriod =  require('./routes/search/searchData/searchEntityPeriod');
-var searchEntityPeriodResult =  require('./routes/search/searchData/searchEntityPeriodResult');
-
-var searchAgentEntityPeriod =  require('./routes/search/searchDataPerson/searchAgentEntityPeriod');
-var searchAgentEntityPeriodResult =  require('./routes/search/searchDataPerson/searchAgentEntityPeriodResult');
 
 var searchData = require('./routes/newSearch/searchData');
 var searchDataResult = require('./routes/newSearch/searchDataResult');
@@ -84,36 +59,11 @@ app.use('/logout', logoutRouter);
 app.use('/viewPage', viewPage);
 app.use('/addPage', addPage);
 app.use('/search/searchPage', searchPage);
-app.use('/search/searchPersonPage', searchPersonPage);
-app.use('/search/searchDataPage', searchDataPage);
-app.use('/search/searchDataPersonPage', searchDataPersonPage);
 
 app.use('/search/searchKeywordPage', searchKeywordPage);
 app.use('/search/searchKeyword/searchKeywordResult', searchKeywordResult);
 
 app.use('/search/searchConditionPage', searchConditionPage);
-//app.use('/search/searchCondition/searchConditionResult', searchConditionResult);
-
-app.use('/search/searchPerson/searchAgent', searchAgent);
-app.use('/search/searchPerson/searchAgentResult', searchAgentResult);
-
-app.use('/search/searchData/searchEntity', searchEntity);
-app.use('/search/searchData/searchEntityResult', searchEntityResult);
-
-app.use('/search/searchPerson/searchAgentAttribute', searchAgentAttribute);
-app.use('/search/searchPerson/searchAgentAttributeResult', searchAgentAttributeResult);
-
-app.use('/search/searchData/searchEntityAttribute', searchEntityAttribute);
-app.use('/search/searchData/searchEntityAttributeResult', searchEntityAttributeResult);
-
-app.use('/search/searchPerson/searchAgentPeriod', searchAgentPeriod);
-app.use('/search/searchPerson/searchAgentPeriodResult', searchAgentPeriodResult);
-
-app.use('/search/searchData/searchEntityPeriod', searchEntityPeriod);
-app.use('/search/searchData/searchEntityPeriodResult', searchEntityPeriodResult);
-
-app.use('/search/searchDataPerson/searchAgentEntityPeriod', searchAgentEntityPeriod);
-app.use('/search/searchDataPerson/searchAgentEntityPeriodResult', searchAgentEntityPeriodResult);
 
 app.use('/newSearch/searchData', searchData);
 app.use('/newSearch/searchDataResult', searchDataResult);
