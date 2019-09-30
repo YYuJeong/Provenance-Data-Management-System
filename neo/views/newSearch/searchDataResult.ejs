@@ -76,8 +76,7 @@
                         <div class="container">
                             <div style="text-align: center;"><h3>데이터 검색</h3><br>
                             </div>
-                        <form method="post" action="/DataSearch">
-
+                        <form  method="post" action="/DataSearch">
                         <div class="row" >
                             <!--Start Here:)-->
                         <div style="margin:0 auto;">
@@ -94,8 +93,10 @@
                             <div class="form-group">
                                 <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
                                 <div class="col-sm-6 col-md-4">
+
+
                                   <select id="device" name = "device" class="form-control">
-                                    <option selected>장치</option>
+                                    <option value = ''>장치</option>
                                     <option value="AI스피커">AI스피커</option>
                                     <option value="T머니">T머니</option>
                                     <option value="레일플러스">레일플러스</option>
@@ -110,7 +111,7 @@
                                 <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
                                 <div class="col-sm-6 col-md-4">
                                   <select id="dataType" name = "dataType" class="form-control">
-                                    <option selected>타입</option>
+                                    <option value = ''>타입</option>
                                     <option value="건강데이터">건강</option>
                                     <option value="의료데이터">의료</option>
                                     <option value="위치데이터">위치</option>
@@ -131,7 +132,7 @@
                             <a href="/newSearch/searchDataResult"><input class="btn btn-primary" type="submit" value="검색" style="width:100px"></a>
                             <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px"></a>
                         </div> 
-                        </form>
+                      </form>
             </div>
         </div>
       <hr class="featurette-divider">
@@ -147,8 +148,8 @@
               <thead>
                 <tr>
                   <th align = center>#</th>
-                  <th align = center>이름</th>
-                  <th align = center>소속</th>
+                  <th align = center>&nbsp;이름&nbsp;</th>
+                  <th align = center>소&nbsp;&nbsp;&nbsp;속</th>
                   <th align = center>Activity</th>
                   <th align = center>날&nbsp짜</th>
                   <th align = center>데이터명</th>
@@ -195,7 +196,6 @@
         </div>
       </div>
       <!-- /END THE FEATURETTES -->
-
       <!-- FOOTER -->
       <footer>
       </footer>

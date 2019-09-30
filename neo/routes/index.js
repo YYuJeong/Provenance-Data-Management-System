@@ -19,7 +19,9 @@ router.post('/dataAdd', function (req, res) {
     
     session
         .run("CREATE(: Entity {name: '" + dataName + "', price: '" + price + "', d_type: '" + dataType + "', device: '" + device + "'}) - [:wasAttributedTo] -> (: Agent {name: '" + name + "' , aff: '" + affiliation + "'}) <- [:wasAssociatedWith] - (:Activity {name: '" + activityType + "', date: '" + date + "'})<-[:wasGeneratedBy]-(: Entity {name: '" + dataName + "', price: '" + price + "', d_type: '" + dataType + "', device: '" + device + "'})")
-       // .run("CREATE(: Agent {name:'" + sender_name + "', attribute:'" + sender_attr + "'}) <- [:wasAssociatedWith]-(: Activity { name: 'Own'}) <- [:wasGeneratedBy]-(: Entity { name: '" + entity_name + "', use: '" + entity_use + "'}) - [:wasGeneratedBy] -> (: Activity { name: 'Buy', price:'" + activity_price + "',time:'" + activity_time +"'})- [:wasAssociatedWith] -> (: Agent {name:'" + receiver_name + "', attribute:'" + receiver_attr + "'})")
+       //.run("CREATE(: Agent {name:'" + sender_name + "', attribute:'" + sender_attr + "'}) <- [:wasAssociatedWith]-(: Activity { name: 'Own'}) <- [:wasGeneratedBy]-(: Entity { name: '" + entity_name + "', use: '" + entity_use + "'}) - [:wasGeneratedBy] -> (: Activity { name: 'Buy', price:'" + activity_price + "',time:'" + activity_time +"'})- [:wasAssociatedWith] -> (: Agent {name:'" + receiver_name + "', attribute:'" + receiver_attr + "'})")
+
+
         .then(function (result) {
 
             session.close();
@@ -45,11 +47,12 @@ router.get('/viewPage', function (req, res) {
   var dataTypeArr = [];
   var priceArr = [];
   var deviceArr = [];
-
+  var i = 0;
   session
-      .run("START n=node(*) MATCH (n)-[:wasAttributedTo]->(m)<-[:wasAssociatedWith]-(k) RETURN n, m,k LIMIT 50")
+      .run("START n=node(*) MATCH (n)-[:wasAttributedTo]->(m)<-[:wasAssociatedWith]-(k) RETURN n, m, k LIMIT 50")
       .then(function (result) {
         result.records.forEach(function (record) {
+          i = i + 1;
           dataTypeArr.push(record._fields[0].properties.d_type);
           dataNameArr.push(record._fields[0].properties.name);
           deviceArr.push(record._fields[0].properties.device);
@@ -60,14 +63,15 @@ router.get('/viewPage', function (req, res) {
 
           dateArr.push(record._fields[2].properties.date);
           activityTypeArr.push(record._fields[2].properties.name);
-          /*
-          for (var i =0; i<3; i++){
-            console.log("record " + i + " -th " + "field: " + record._fields[i]);
-            console.log("record " + i + " -th " + "field labels: " + record._fields[i].labels[0]);
-            console.log("record " + i + " -th " + "field properties name: " + record._fields[i].properties.name);
+
+          for (var j =0; j<3; j++){
+            console.log("record " + j + " -th " + "field: " + record._fields[j]);
+            console.log("record " + j + " -th " + "field labels: " + record._fields[j].labels[0]);
+            console.log("record " + j+ " -th " + "field properties name: " + record._fields[j].properties.name);
             console.log("======================================");       
           } 
-          */
+
+          console.log("i: " + i);
         });
       res.render('viewPage', {dataTypes : dataTypeArr, dataNames : dataNameArr, devices : deviceArr, prices : priceArr
         , affiliations : affiliationArr, names : nameArr, dates : dateArr, activityTypes : activityTypeArr}); 
@@ -93,14 +97,79 @@ router.post('/DataSearch', function(req, res){
   var priceArr = [];
   var deviceArr = [];
 
-  var test = [];
+
+  var query = "MATCH (entity:Entity)-[rel:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent) WHERE agent.name='"+name+"' RETURN agent.name, agent.aff, activity.name, activity.date, entity.name, entity.d_type, entity.price, entity.device";
+
+  console.log("dataName: " + dataName);
+  console.log("name: " + name);
+  console.log("device: " + device);
+  console.log("dataType: " + dataType);
+
+
+  console.log("*******************************************");
+  var nullcount = 0;
+  var matchCyper = "MATCH (entity:Entity)-[rel:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent)";
+  var returnCyper = " RETURN agent.name, agent.aff, activity.name, activity.date, entity.name, entity.d_type, entity.price, entity.device"
+  var whereCyper = " WHERE"
+  
+  var deviceCyper = " entity.device = ";
+  var dataNameCyper = " entity.name = ";
+  var dataTypeCyper = " entity.d_type = ";
+  var nameCyper = " agent.name = ";
+
+  if(device == ''){
+    console.log("device null");
+    nullcount++;
+  }
+  if(dataName == '' || dataName == undefined){
+    console.log("dataName null");
+    nullcount++;
+  }
+
+  if(name == ''){
+    console.log("name null");
+    nullcount++;
+  }
+
+
+  if(dataType == ''){
+    console.log("dataType null");
+    nullcount++;
+  }
+
+  console.log("nullcount: " + nullcount);
+
+  if(nullcount == 3){
+    if(device != ''){
+      console.log("device : " + device);
+      var newQuery = matchCyper + whereCyper + deviceCyper + "'" + device + "'" + returnCyper;
+    }
+    
+    else if(dataName != undefined || dataName != null || dataName != '' ){
+      console.log("dataName: " + dataName);
+      var newQuery = matchCyper + whereCyper + dataNameCyper + "'" + dataName + "'" + returnCyper;
+    }
+    
+    else if(name != ''){
+
+      console.log("name: " + name);
+      var newQuery = matchCyper + whereCyper + nameCyper + "'" + name + "'" + returnCyper;
+    }
+  
+    else{
+      console.log("dataType: " + dataType);
+      var newQuery = matchCyper + whereCyper+ dataTypeCyper + "'" + dataType + "'" + returnCyper;
+    }
+    
+  }
+  console.log(newQuery);
+
   session
- // .run("MATCH (entity:Entity)-[rel1:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent) WHERE entity.name='"+dataName+"' AND agent.name ='"+name+"' AND entity.device='"+device+"' AND entity.d_type='"+dataType+"' RETURN agent.name, agent.aff, activity.name, activity.date, entity.name, entity.d_type, entity.price, entity.device")
-  .run("MATCH (entity:Entity)-[rel:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent) WHERE agent.name='"+name+"' RETURN agent.name, agent.aff, activity.name, activity.date, entity.name, entity.d_type, entity.price, entity.device")
+  //.run("MATCH (entity:Entity)-[rel1:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent) WHERE entity.name='"+dataName+"' AND agent.name ='"+name+"' AND entity.device='"+device+"' AND entity.d_type='"+dataType+"' RETURN agent.name, agent.aff, activity.name, activity.date, entity.name, entity.d_type, entity.price, entity.device")
+  //.run("MATCH (entity:Entity)-[rel:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent) WHERE agent.name='"+name+"' RETURN agent.name, agent.aff, activity.name, activity.date, entity.name, entity.d_type, entity.price, entity.device")
+  .run(newQuery)
   .then(function (result) {
-   console.log("dataName: " + dataName);
-   console.log("name: " + name);
-   console.log("device: " + device);
+
    var searchArr = [];
    var size = Object.keys(result.records).length;  
    console.log("size: " + size);
@@ -116,9 +185,11 @@ router.post('/DataSearch', function(req, res){
     temp = searchArr.toString();
     var splitTemp = temp.split(',');
     console.log("SSS: " , splitTemp);
-    for(var j = 0, i=0; j < splitTemp.length; j++){
+
+
+    for(var j = 0, i=0; j < 8*size ; j++){
       if((j+1)%8 != 0){
-        nameArr.push( splitTemp[j]);
+        nameArr.push(splitTemp[j]);
         affiliationArr[i] = splitTemp[++j];
         activityTypeArr[i] = splitTemp[++j];
         dateArr[i] = splitTemp[++j];
@@ -130,7 +201,9 @@ router.post('/DataSearch', function(req, res){
       i++; 
     }
     console.log("=======================================================");
-    
+
+    /*
+>>>>>>> 9dcd56157941f773a9594b12152e7ffb450c1b30
     for(var i = 0; i < 4; i++){
       console.log("i: " + i);
       console.log("nameArr[i]: " + nameArr[i] );
@@ -142,7 +215,9 @@ router.post('/DataSearch', function(req, res){
       console.log("price: " + priceArr[i]);
       console.log("device: " + deviceArr[i]);
     }
-    
+
+    */
+
     res.render('newSearch/searchDataResult.ejs', {dataTypes : dataTypeArr, dataNames : dataNameArr, devices : deviceArr, prices : priceArr
       , affiliations : affiliationArr, names : nameArr, dates : dateArr, activityTypes : activityTypeArr}); 
     session.close();  
@@ -151,6 +226,8 @@ router.post('/DataSearch', function(req, res){
      console.log(err);
   });
 });
+
+
 
 router.post('/agent', function (req, res) {
   var agent_name = req.body.agent_name;
