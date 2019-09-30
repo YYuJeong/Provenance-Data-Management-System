@@ -82,7 +82,6 @@ router.get('/viewPage', function (req, res) {
   });
 });
 
-
 router.post('/DataSearch', function(req, res){
   var dataName = req.body.dataName;
   var name = req.body.name;
@@ -103,7 +102,7 @@ router.post('/DataSearch', function(req, res){
   var priceArr = [];
   var deviceArr = [];
 
-  var test = [];
+
   var query = "MATCH (entity:Entity)-[rel:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent) WHERE agent.name='"+name+"' RETURN agent.name, agent.aff, activity.name, activity.date, entity.name, entity.d_type, entity.price, entity.device";
 
   console.log("dataName: " + dataName);
@@ -191,6 +190,8 @@ router.post('/DataSearch', function(req, res){
     temp = searchArr.toString();
     var splitTemp = temp.split(',');
     console.log("SSS: " , splitTemp);
+
+
     for(var j = 0, i=0; j < 8*size ; j++){
       if((j+1)%8 != 0){
         nameArr.push(splitTemp[j]);
@@ -205,7 +206,9 @@ router.post('/DataSearch', function(req, res){
       i++; 
     }
     console.log("=======================================================");
+
     /*
+>>>>>>> 9dcd56157941f773a9594b12152e7ffb450c1b30
     for(var i = 0; i < 4; i++){
       console.log("i: " + i);
       console.log("nameArr[i]: " + nameArr[i] );
@@ -217,7 +220,9 @@ router.post('/DataSearch', function(req, res){
       console.log("price: " + priceArr[i]);
       console.log("device: " + deviceArr[i]);
     }
+
     */
+
     res.render('newSearch/searchDataResult.ejs', {dataTypes : dataTypeArr, dataNames : dataNameArr, devices : deviceArr, prices : priceArr
       , affiliations : affiliationArr, names : nameArr, dates : dateArr, activityTypes : activityTypeArr}); 
     session.close();  
@@ -226,6 +231,7 @@ router.post('/DataSearch', function(req, res){
      console.log(err);
   });
 });
+
 
 
 router.post('/agent', function (req, res) {
