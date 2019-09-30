@@ -148,7 +148,7 @@
                         <div class="container">
                             <div style="text-align: center;"><h3>기간 검색</h3><br><br>
                             </div>
-                        <form method="post" action="">
+                        <form method="post" action="/periodSearch">
 
                         <div class="row" style="padding-right: 265px;">
                             <!-- Include Bootstrap Datepicker -->
@@ -156,7 +156,7 @@
                                 <!--<div style="width:20%; margin:0 auto; float:left; text-align: right; padding-right: 3%; padding-top: 5px;">기간</div>-->
                                 <div style="width:30%; margin:0 auto; float:right;">
                                         <div class="input-group input-append date" id="datePicker" >
-                                        <input type="text" class="form-control" name="date" />
+                                        <input type="text" class="form-control" name="start_date" />
                                         <span class="input-group-addon add-on"><span class="glyphicon glyphicon-calendar"></span></span>
                                         </div>
                                 </div>
@@ -165,7 +165,7 @@
                                 </div>
                                 <div style="width:30%; margin:0 auto; float:right;">
                                         <div class="input-group input-append date" id="datePicker2" >
-                                        <input type="text" class="form-control" name="date" />
+                                        <input type="text" class="form-control" name="end_date" />
                                         <span class="input-group-addon add-on"><span class="glyphicon glyphicon-calendar"></span></span>
                                         </div>
                                 </div>
@@ -179,7 +179,66 @@
                         </form>
             </div>
         </div>
-      <hr class="featurette-divider">
+        <hr class="featurette-divider">
+        <hr class="featurette-divider">
+        <div class="jumbotron">
+          <div class="container" style="display: inline-block;text-align: center;">
+            <br><br>
+            <div class="panel panel-default">
+              <!-- Default panel contents -->
+              <div class="panel-heading" style = "font-size:medium;"><strong>데이터 검색 결과</strong></div>
+              <!-- Table -->
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th align = center>#</th>
+                    <th align = center>&nbsp;이름&nbsp;</th>
+                    <th align = center>소&nbsp;&nbsp;&nbsp;속</th>
+                    <th align = center>Activity</th>
+                    <th align = center>날&nbsp짜</th>
+                    <th align = center>데이터명</th>
+                    <th align = center>데이터 종류</th>
+                    <th align = center>가 격</th>
+                    <th align = center>Device</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% for(var i=0; i<names.length; i++ ) { %>
+                  <tr>
+                    <th scope="row">
+                        <%= (i+1) %>
+                    </th>
+                    <td>
+                        <%= names[i] %>
+                    </td>
+                    <td align = center>
+                      <%= affiliations[i] %>
+                    </td>
+                    <td align = center>
+                      <%= activityTypes[i] %>
+                    </td> 
+                    <td align = center>
+                      <%= dates[i] %>
+                    </td>
+                    <td align = center>
+                      <%= dataNames[i] %>
+                    </td>
+                    <td align = center>
+                      <%= dataTypes[i] %>
+                    </td>
+                    <td align = center>
+                      <%= prices[i] %>
+                    </td>
+                    <td align = center>
+                      <%= devices[i] %>
+                    </td>
+                  </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>  
+          </div>
+        </div>
       <!-- FOOTER -->
       <footer>
       </footer>
