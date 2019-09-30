@@ -112,47 +112,42 @@
         <hr class="featurette-divider">
         <!-- /END THE FEATURETTES -->
         <div class="jumbotron">
-          <div class="container" style="display: inline-block;text-align: center;">
+          <div class="container" style="display: inline-block; text-align: center;">
             <h3>이력 정보 추가 </h3> <br>
             <form method="post" action="/dataAdd" >
               <label> 이 름 </label><br>
-              <input type="text" name="name" />
-              <br><br>
+              <input type="text" name="name" class="form-control" style="width:180px; margin:0 auto;" />
+              <br>
               <label> 소 속</label><br>
-              <input type="text" name="affiliation" />
-              <br><br>
+              <input type="text" name="affiliation" class="form-control" style="width:180px; margin:0 auto;" />
+              <br>
               <label> Activity </label><br>
-              <input type="text" name="activityType" />
-              <br><br>
+              <input type="text" name="activityType" class="form-control" style="width:180px; margin:0 auto;" />
+              <br>
               <label> 날 짜</label><br>
-              <input type="text" name="date" />
-              <br><br>
+              <input type="text" name="date" class="form-control" style="width:180px; margin:0 auto;" />
+              <br>
               <label> 데이터명 </label><br> 
-              <input type="text" name="dataName" />
-              <br><br>
+              <input type="text" name="dataName" class="form-control" style="width:180px; margin:0 auto;" />
+              <br>
               <label> 데이터 종류</label><br>
-              <input type="text" name="dataType" />
-              <br><br>
+              <input type="text" name="dataType" class="form-control" style="width:180px; margin:0 auto;" />
+              <br>
               <label> 가 격 </label><br>
-              <input type="text" name="price" />
-              <br><br>
+              <input type="text" name="price" class="form-control" style="width:180px; margin:0 auto;" />
+              <br>
               <label> Device </label><br>
-              <input type="text" name="device" />
-              <br>
-              <br>
-              <input class="btn btn-primary" type="submit" value="추가" onClick="onAdd()">
+              <input type="text" name="device" class="form-control" style="width:180px; margin:0 auto;" />
+              <br><br>
+              <input class="btn btn-primary" type="submit" value="추가" style="width:100px;" onClick="onAdd()">
+              <input class="btn btn-light" type="reset" value="취소" style="width:100px;">
               <br><br>
             </form>
           </div>
         </div>
-
-
-
         <hr class="featurette-divider">
-      
   
       </div><!-- /.container -->
-  
   
       <!-- Bootstrap core JavaScript
       ================================================== -->
