@@ -76,14 +76,14 @@
                         <div class="container">
                             <div style="text-align: center;"><h3>데이터 검색</h3><br>
                             </div>
-                        <form method="post" action="">
+                        <form  method="post" action="/DataSearch">
 
                         <div class="row" >
                             <!--Start Here:)-->
                         <div style="margin:0 auto;">
                             <div class="input-group" style="width:30%; margin:0 auto;">
                                 <span class="input-group-addon">데이터</span>
-                                <input type="text" id="data" name="data" class="form-control" />
+                                <input type="text" id="dataName" name="dataName" class="form-control" />
                             </div>
                             <br>
                             <div class="input-group" style="width:30%; margin:0 auto;">
@@ -94,14 +94,14 @@
                             <div class="form-group">
                                 <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
                                 <div class="col-sm-6 col-md-4">
-                                  <select id="device" class="form-control">
+                                  <select id="device" name = "device" class="form-control">
                                     <option selected>장치</option>
-                                    <option value="AI">AI스피커</option>
-                                    <option value="T">T머니</option>
-                                    <option value="rail">레일플러스</option>
-                                    <option value="smart">스마트워치</option>
-                                    <option value="patient">페이션트모니터</option>
-                                    <option value="cash">캐시비</option>
+                                    <option value="AI스피커">AI스피커</option>
+                                    <option value="T머니">T머니</option>
+                                    <option value="레일플러스"">레일플러스</option>
+                                    <option value="스마트워치">스마트워치</option>
+                                    <option value="페이션트모니터">페이션트모니터</option>
+                                    <option value="캐시비">캐시비</option>
                                   </select> 
                                 </div>
                             </div>
@@ -109,12 +109,12 @@
                             <div class="form-group">
                                 <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
                                 <div class="col-sm-6 col-md-4">
-                                  <select id="type" class="form-control">
+                                  <select id="dataType" name = "dataType" class="form-control">
                                     <option selected>타입</option>
-                                    <option value="health">건강</option>
-                                    <option value="medi">의료</option>
-                                    <option value="loc">위치</option>
-                                    <option value="voice">음성</option>
+                                    <option value="건강데이터">건강</option>
+                                    <option value="의료데이터">의료</option>
+                                    <option value="위치데이터">위치</option>
+                                    <option value="음성데이터">음성</option>
                                   </select> 
                                 </div>
                             </div>
@@ -126,12 +126,12 @@
                             </div>-->
                         </div>
                         </div>
-                      </form><!--디비연결전송오류로잠시위치이동-->
+                      <!--</form>-->  <!--디비연결전송오류로잠시위치이동-->
                         <div style="text-align: center;"><br><br>
                             <a href="/newSearch/searchDataResult"><input class="btn btn-primary" type="submit" value="검색" style="width:100px"></a>
                             <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px"></a>
                         </div> 
-                   <!--원래폼위치-->      
+                      </form><!--원래폼위치-->      
             </div>
         </div>
       <hr class="featurette-divider">
