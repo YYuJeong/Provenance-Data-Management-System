@@ -9,7 +9,7 @@
      <link rel="shortcut icon" href="/images/favicon.ico">
      <link rel="icon" href="/images/favicon.ico">
      
-   <title>Provenance Data Management</title>
+   <title>이력 정보 관리시스템</title>
    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
@@ -123,7 +123,7 @@
                         <div class="container">
                             <div style="text-align: center;"><h3>기간 검색</h3><br><br>
                             </div>
-                        <form method="post" action="">
+                        <form method="post" action="/periodSearch">
 
                         <div class="row" style="padding-right: 265px;">
                             <!-- Include Bootstrap Datepicker -->
@@ -131,7 +131,7 @@
                                 <!--<div style="width:20%; margin:0 auto; float:left; text-align: right; padding-right: 3%; padding-top: 5px;">기간</div>-->
                                 <div style="width:30%; margin:0 auto; float:right;">
                                         <div class="input-group input-append date" id="datePicker" >
-                                        <input type="text" class="form-control" name="date" />
+                                        <input type="text" class="form-control" name="start_date" />
                                         <span class="input-group-addon add-on"><span class="glyphicon glyphicon-calendar"></span></span>
                                         </div>
                                 </div>
@@ -140,19 +140,19 @@
                                 </div>
                                 <div style="width:30%; margin:0 auto; float:right;">
                                         <div class="input-group input-append date" id="datePicker2" >
-                                        <input type="text" class="form-control" name="date" />
+                                        <input type="text" class="form-control" name="end_date" />
                                         <span class="input-group-addon add-on"><span class="glyphicon glyphicon-calendar"></span></span>
                                         </div>
                                 </div>
                             </div>
                         </div>
-                    </form><!--디비연결전송오류로잠시위치이동-->
+                    <!--디비연결전송오류로잠시위치이동-->
                         <br><br>
                         <div style="text-align: center;">
                             <a href="/newSearch/searchPeriodResult"><input class="btn btn-primary" type="submit" value="검색" style="width:100px"></a>
                             <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px"></a>
                         </div> 
-                   <!--원래폼위치-->     
+                    </form><!--원래폼위치-->     
             </div>
         </div>
       <hr class="featurette-divider">

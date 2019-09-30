@@ -68,7 +68,7 @@
                         <div class="container">
                             <div style="text-align: center;"><h3>이름 검색</h3><br>
                             </div>
-                        <form method="post" action="">
+                        <form method="post" action="/nameSearch">
 
                         <div class="row" >
                             <!--Start Here:)-->
@@ -81,16 +81,17 @@
                             <br>
                             <div class="input-group" style="width:30%; margin:0 auto;">
                                 <span class="input-group-addon">기관</span>
-                                <input type="text" id="ins" name="ins" class="form-control" />
+                                <input type="text" id="affiliation" name="affiliation" class="form-control" />
                             </div>
                         </div>
                         </div>
-                      </form><!--디비연결전송오류로잠시위치이동-->
+                      <!--디비연결전송오류로잠시위치이동-->
                         <div style="text-align: center;"><br><br>
                             <a href="/newSearch/searchNameResult"><input class="btn btn-primary" type="submit" value="검색" style="width:100px"></a>
                             <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px"></a>
                         </div> 
                         <!--원래폼위치-->
+                    </form>
             </div>
         </div>
       <hr class="featurette-divider">
