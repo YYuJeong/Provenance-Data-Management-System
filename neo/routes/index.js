@@ -19,7 +19,7 @@ router.post('/dataAdd', function (req, res) {
     
     session
         .run("CREATE(: Entity {name: '" + dataName + "', price: '" + price + "', d_type: '" + dataType + "', device: '" + device + "'}) - [:wasAttributedTo] -> (: Agent {name: '" + name + "' , aff: '" + affiliation + "'}) <- [:wasAssociatedWith] - (:Activity {name: '" + activityType + "', date: '" + date + "'})<-[:wasGeneratedBy]-(: Entity {name: '" + dataName + "', price: '" + price + "', d_type: '" + dataType + "', device: '" + device + "'})")
-       // .run("CREATE(: Agent {name:'" + sender_name + "', attribute:'" + sender_attr + "'}) <- [:wasAssociatedWith]-(: Activity { name: 'Own'}) <- [:wasGeneratedBy]-(: Entity { name: '" + entity_name + "', use: '" + entity_use + "'}) - [:wasGeneratedBy] -> (: Activity { name: 'Buy', price:'" + activity_price + "',time:'" + activity_time +"'})- [:wasAssociatedWith] -> (: Agent {name:'" + receiver_name + "', attribute:'" + receiver_attr + "'})")
+       //.run("CREATE(: Agent {name:'" + sender_name + "', attribute:'" + sender_attr + "'}) <- [:wasAssociatedWith]-(: Activity { name: 'Own'}) <- [:wasGeneratedBy]-(: Entity { name: '" + entity_name + "', use: '" + entity_use + "'}) - [:wasGeneratedBy] -> (: Activity { name: 'Buy', price:'" + activity_price + "',time:'" + activity_time +"'})- [:wasAssociatedWith] -> (: Agent {name:'" + receiver_name + "', attribute:'" + receiver_attr + "'})")
         .then(function (result) {
 
             session.close();
@@ -45,11 +45,12 @@ router.get('/viewPage', function (req, res) {
   var dataTypeArr = [];
   var priceArr = [];
   var deviceArr = [];
-
+  var i = 0;
   session
-      .run("START n=node(*) MATCH (n)-[:wasAttributedTo]->(m)<-[:wasAssociatedWith]-(k) RETURN n, m,k LIMIT 50")
+      .run("START n=node(*) MATCH (n)-[:wasAttributedTo]->(m)<-[:wasAssociatedWith]-(k) RETURN n, m, k LIMIT 50")
       .then(function (result) {
         result.records.forEach(function (record) {
+          i = i + 1;
           dataTypeArr.push(record._fields[0].properties.d_type);
           dataNameArr.push(record._fields[0].properties.name);
           deviceArr.push(record._fields[0].properties.device);
@@ -60,14 +61,15 @@ router.get('/viewPage', function (req, res) {
 
           dateArr.push(record._fields[2].properties.date);
           activityTypeArr.push(record._fields[2].properties.name);
-          /*
-          for (var i =0; i<3; i++){
-            console.log("record " + i + " -th " + "field: " + record._fields[i]);
-            console.log("record " + i + " -th " + "field labels: " + record._fields[i].labels[0]);
-            console.log("record " + i + " -th " + "field properties name: " + record._fields[i].properties.name);
+
+          for (var j =0; j<3; j++){
+            console.log("record " + j + " -th " + "field: " + record._fields[j]);
+            console.log("record " + j + " -th " + "field labels: " + record._fields[j].labels[0]);
+            console.log("record " + j+ " -th " + "field properties name: " + record._fields[j].properties.name);
             console.log("======================================");       
           } 
-          */
+
+          console.log("i: " + i);
         });
       res.render('viewPage', {dataTypes : dataTypeArr, dataNames : dataNameArr, devices : deviceArr, prices : priceArr
         , affiliations : affiliationArr, names : nameArr, dates : dateArr, activityTypes : activityTypeArr}); 
