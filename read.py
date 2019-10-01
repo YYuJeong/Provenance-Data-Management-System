@@ -9,7 +9,7 @@ from neo4j import GraphDatabase
 with open("randomData.csv",'r') as f:
     matrix = list(csv.reader(f,delimiter=","))
     
-    driver = GraphDatabase.driver("bolt://localhost:11002", auth=("neo4j", "wowhi223"))
+    driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "wowhi223"))
           
     #create agent
     def create_agent(tx, name, affiliation):
@@ -29,7 +29,7 @@ with open("randomData.csv",'r') as f:
     def wasAttributedTo(tx, name, affiliation, dataName, dataType, price, device):
         tx.run("MATCH (agent:Agent {name: $name, affiliation: $affiliation}) "
                "MATCH (entity:Entity {name: $dataName, type: $dataType, price: $price, device: $device}) "
-               "MERGE (agent)-[:wasAttributedTo]->(entity)",
+               "MERGE (agent)-[:wasAttributedTo {cost:1}]->(entity)",
                name=name, affiliation=affiliation, dataName=dataName, dataType=dataType, price=price, device=device)
     
 
@@ -37,14 +37,14 @@ with open("randomData.csv",'r') as f:
     def wasGeneratedBy(tx, dataName, dataType, price, device, activityType, date):
         tx.run("MATCH (entity: Entity {name: $dataName, type: $dataType, price: $price, device: $device}) "
                "MATCH (activity: Activity {name: $activityType, date: $date})"
-               "MERGE (entity)-[:wasGeneratedBy]->(activity)",     
+               "MERGE (entity)-[:wasGeneratedBy {cost:1}]->(activity)",     
                dataName=dataName, dataType=dataType, price=price, device=device, activityType=activityType, date=date)
 
     #create a relationship between activity and agent - wasAssociatedWith
     def wasAssociatedWith(tx, activityType, date, name, affiliation):
         tx.run("MATCH (activity: Activity {name: $activityType, date: $date}) "
                "MATCH (agent: Agent {name: $name, affiliation: $affiliation})"
-               "MERGE (activity)-[:wasAssociatedWith]->(agent)",
+               "MERGE (activity)-[:wasAssociatedWith {cost:1}]->(agent)",
                activityType=activityType, date=date, name=name, affiliation=affiliation)
         
   
@@ -52,7 +52,7 @@ with open("randomData.csv",'r') as f:
     def used(tx, activityType, date, dataName, dataType, price, device):
         tx.run("MATCH (activity: Activity {name: $activityType, date: $date}) "
                "MATCH (entity:Entity {name: $dataName, type: $dataType, price:$price, device: $device}) "
-               "MERGE (entity)<-[:used]-(activity)", 
+               "MERGE (entity)<-[:used {cost:1}]-(activity)", 
                 activityType=activityType, date=date, dataName=dataName, dataType=dataType, price=price, device=device)
      
  #   @classmethod 
@@ -77,7 +77,7 @@ with open("randomData.csv",'r') as f:
 
 
     with driver.session() as session:
-        for i in range(100):
+        for i in range(1000):
             name = matrix[i][0]
             affiliation = matrix[i][1]
             activityType = matrix[i][2]
