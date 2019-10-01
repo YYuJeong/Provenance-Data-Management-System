@@ -32,6 +32,8 @@
 
 == 결과 확인 o ==
 -----------------------
+![image](https://user-images.githubusercontent.com/16285746/65948383-1a983500-e475-11e9-9dfd-9c1a80858e4f.png)
+
 1.<br>
 	<pre>
 	MATCH path = (a1:Agent{name:'Emily'})-[r*..3]-(a2:Agent{name:'Maud'})
