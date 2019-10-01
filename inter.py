@@ -74,3 +74,8 @@ joinResult = list(set(joinResult)) #리스트 중복제거
 searchTerm = ['*Emily*']
 re = glob.globfilter(joinResult, searchTerm)
 print(re)
+
+#search term '*Emily*2018' 이런 식으로 넣으면 검색 가능
+#js에서 검색 시 * 붙일 수 있도록 구현
+#python에서 함수 호출
+#json으로 export하는 cypher : CALL apoc.export.json.query("query 적기","filename.json",{})
