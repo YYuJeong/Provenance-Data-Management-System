@@ -43,21 +43,21 @@ with driver.session() as session:
   
 # Bi-directional relationship?
 #u1.relationships.create("friends", u2)
-'''
+
 def merge(tx):
-   tx.run("MATCH (s:Seller) WITH s.name AS s, collect(s) as node2Merge WITH node2Merge, extract(x IN node2Merge | x.match) AS matches CALL apoc.refactor.mergeNodes(node2Merge) yield node RETURN *")
+   tx.run("MATCH (a:Agent) WITH a.name AS a, collect(a) as node2Merge WITH node2Merge, extract(x IN node2Merge | x.match) AS matches CALL apoc.refactor.mergeNodes(node2Merge) yield node RETURN *")
 with driver.session() as session:
           session.read_transaction(merge)
 def merge1(tx):
-   tx.run("MATCH (d:Data) WITH d.name AS d, collect(d) as node2Merge WITH node2Merge, extract(x IN node2Merge | x.match) AS matches CALL apoc.refactor.mergeNodes(node2Merge) yield node RETURN *")
+   tx.run("MATCH (e:Entity) WITH e.name AS e, collect(e) as node2Merge WITH node2Merge, extract(x IN node2Merge | x.match) AS matches CALL apoc.refactor.mergeNodes(node2Merge) yield node RETURN *")
 with driver.session() as session:
           session.read_transaction(merge1)
                                                     
 def merge2(tx):
-   tx.run("MATCH (b:Buyer) WITH b.name AS b, collect(b) as node2Merge WITH node2Merge, extract(x IN node2Merge | x.match) AS matches CALL apoc.refactor.mergeNodes(node2Merge) yield node RETURN *")
+   tx.run("MATCH (a:Activity) WITH a.name AS a, collect(a) as node2Merge WITH node2Merge, extract(x IN node2Merge | x.match) AS matches CALL apoc.refactor.mergeNodes(node2Merge) yield node RETURN *")
 with driver.session() as session:
           session.read_transaction(merge2)
-'''
+
 
 print("start_time", start_time)
 print("---%s seconds ---" %(time.time() - start_time))
