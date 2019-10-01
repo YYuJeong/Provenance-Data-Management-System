@@ -31,7 +31,7 @@ with open("randomData.csv",'r') as f:
     def wasAttributedTo(tx, name, affiliation, dataName, dataType, price, device):
         tx.run("MATCH (agent:Agent {name: $name, affiliation: $affiliation}) "
                "MATCH (entity:Entity {name: $dataName, type: $dataType, price: $price, device: $device}) "
-               "MERGE (agent)-[:wasAttributedTo {cost:1}]->(entity)",
+               "MERGE (agent)-[:wasAttributedTo]->(entity)",
                name=name, affiliation=affiliation, dataName=dataName, dataType=dataType, price=price, device=device)
     
 
@@ -39,14 +39,14 @@ with open("randomData.csv",'r') as f:
     def wasGeneratedBy(tx, dataName, dataType, price, device, activityType, date):
         tx.run("MATCH (entity: Entity {name: $dataName, type: $dataType, price: $price, device: $device}) "
                "MATCH (activity: Activity {name: $activityType, date: $date})"
-               "MERGE (entity)-[:wasGeneratedBy {cost:1}]->(activity)",     
+               "MERGE (entity)-[:wasGeneratedBy]->(activity)",     
                dataName=dataName, dataType=dataType, price=price, device=device, activityType=activityType, date=date)
 
     #create a relationship between activity and agent - wasAssociatedWith
     def wasAssociatedWith(tx, activityType, date, name, affiliation):
         tx.run("MATCH (activity: Activity {name: $activityType, date: $date}) "
                "MATCH (agent: Agent {name: $name, affiliation: $affiliation})"
-               "MERGE (activity)-[:wasAssociatedWith {cost:1}]->(agent)",
+               "MERGE (activity)-[:wasAssociatedWith]->(agent)",
                activityType=activityType, date=date, name=name, affiliation=affiliation)
         
   
@@ -54,7 +54,7 @@ with open("randomData.csv",'r') as f:
     def used(tx, activityType, date, dataName, dataType, price, device):
         tx.run("MATCH (activity: Activity {name: $activityType, date: $date}) "
                "MATCH (entity:Entity {name: $dataName, type: $dataType, price:$price, device: $device}) "
-               "MERGE (entity)<-[:used {cost:1}]-(activity)", 
+               "MERGE (entity)<-[:used]-(activity)", 
                 activityType=activityType, date=date, dataName=dataName, dataType=dataType, price=price, device=device)
      
  #   @classmethod 
