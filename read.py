@@ -1,3 +1,5 @@
+<<<<<<< HEAD
+=======
 # -*- coding: utf-8 -*-
 """
 Created on Mon Sep 23 12:23:20 2019
@@ -105,3 +107,4 @@ with open("randomData.csv",'r') as f:
 
     
     
+>>>>>>> d2f3b8a18ba96873cddb6bb3de515c002b7b98bb

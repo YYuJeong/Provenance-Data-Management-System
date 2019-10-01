@@ -1,3 +1,5 @@
+
+  
 # -*- coding: utf-8 -*-
 import csv
 import time
@@ -19,8 +21,8 @@ def add_node(tx,receiver_name,sender_name,entity_name, activity_time,activity_pr
         # ,receiver_name=receiver_name,sender_name=sender_name,entity_name=entity_name,activity_price=activity_price,activity_time=activity_time)
 '''
 
-def add_node(tx,dataName ,price ,dataType , device ,name , affiliation, activityType,  date):
-    tx.run("CREATE(: Entity {name: $dataName , price: $price , d_type: $dataType, device: $device}) - [:wasAttributedTo] -> (: Agent {name: $name , aff: $affiliation }) <- [:wasAssociatedWith] - (:Activity {name: $activityType, date: $date })<-[:wasGeneratedBy]-(: Entity {name: $dataName , price: $price , d_type: $dataType , device: $device})"
+def add_node(tx,name,	affiliation,	activityType,	date,	dataName,	dataType,	price,	device):
+    tx.run("CREATE(e: Entity {name: $dataName , price: $price , d_type: $dataType, device: $device}) - [:wasAttributedTo] -> (a: Agent {name: $name , aff: $affiliation }) <- [:wasAssociatedWith] - (ac:Activity {name: $activityType, date: $date })<-[:wasGeneratedBy]-(e1: Entity {name: $dataName , price: $price , d_type: $dataType , device: $device})"
          ,dataName = dataName, price = price, dataType = dataType, device = device, name = name, affiliation = affiliation, activityType = activityType, date = date)
     #tx.run("CREATE(: Agent {name: $receiver_name}) <- [:wasAssociatedWith]-(: Activity { name: 'Own'}) <- [:wasGeneratedBy]-(: Entity { name: $entity_name}) - [:wasGeneratedBy] -> (: Activity { name: 'Buy', price: $activity_price,time: $activity_time})- [:wasAssociatedWith] -> (: Agent {name: $sender_name})"
         # ,receiver_name=receiver_name,sender_name=sender_name,entity_name=entity_name,activity_price=activity_price,activity_time=activity_time)
@@ -35,7 +37,7 @@ def add_node(tx,sender_name,receiver_name,entity_name, activity_time,activity_pr
  '''       
 
 with driver.session() as session:
-    for i in range(100):
+    for i in range(1000):
         session.write_transaction(add_node,matrix[i][0],matrix[i][1],matrix[i][2],matrix[i][3],matrix[i][4],matrix[i][5],matrix[i][6],matrix[i][7])
         
         #session.write_transaction(add_node,matrix[i][0],matrix[i][1],matrix[i][2],matrix[i][3],matrix[i][4])
@@ -45,18 +47,22 @@ with driver.session() as session:
 #u1.relationships.create("friends", u2)
 
 def merge(tx):
-   tx.run("MATCH (s:Seller) WITH s.name AS s, collect(s) as node2Merge WITH node2Merge, extract(x IN node2Merge | x.match) AS matches CALL apoc.refactor.mergeNodes(node2Merge) yield node RETURN *")
+   tx.run("MATCH (e:Entity) WITH e.name AS e, collect(e) as node2Merge WITH node2Merge, extract(x IN node2Merge | x.match) AS matches CALL apoc.refactor.mergeNodes(node2Merge) yield node RETURN *")
 with driver.session() as session:
           session.read_transaction(merge)
 def merge1(tx):
-   tx.run("MATCH (d:Data) WITH d.name AS d, collect(d) as node2Merge WITH node2Merge, extract(x IN node2Merge | x.match) AS matches CALL apoc.refactor.mergeNodes(node2Merge) yield node RETURN *")
+   tx.run("MATCH (a:Agent) WITH a.name AS a, collect(a) as node2Merge WITH node2Merge, extract(x IN node2Merge | x.match) AS matches CALL apoc.refactor.mergeNodes(node2Merge) yield node RETURN *")
 with driver.session() as session:
           session.read_transaction(merge1)
                                                     
 def merge2(tx):
-   tx.run("MATCH (b:Buyer) WITH b.name AS b, collect(b) as node2Merge WITH node2Merge, extract(x IN node2Merge | x.match) AS matches CALL apoc.refactor.mergeNodes(node2Merge) yield node RETURN *")
+   tx.run("MATCH (ac:Activity) WITH ac.name AS ac, collect(ac) as node2Merge WITH node2Merge, extract(x IN node2Merge | x.match) AS matches CALL apoc.refactor.mergeNodes(node2Merge) yield node RETURN *")
 with driver.session() as session:
           session.read_transaction(merge2)
 
+def merge3(tx):
+   tx.run("MATCH (e1:Entity) WITH e1.name AS e1, collect(e1) as node2Merge WITH node2Merge, extract(x IN node2Merge | x.match) AS matches CALL apoc.refactor.mergeNodes(node2Merge) yield node RETURN *")
+with driver.session() as session:
+          session.read_transaction(merge)
 print("start_time", start_time)
 print("---%s seconds ---" %(time.time() - start_time))
