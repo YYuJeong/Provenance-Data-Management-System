@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-=======
+
 # -*- coding: utf-8 -*-
 """
 Created on Mon Sep 23 12:23:20 2019
@@ -11,7 +10,7 @@ from neo4j import GraphDatabase
 with open("randomData.csv",'r') as f:
     matrix = list(csv.reader(f,delimiter=","))
     
-    driver = GraphDatabase.driver("bolt://localhost:11002", auth=("neo4j", "wowhi223"))
+    driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "wowhi223"))
           
     #create agent
     def create_agent(tx, name, affiliation):
@@ -39,7 +38,7 @@ with open("randomData.csv",'r') as f:
     def wasGeneratedBy(tx, dataName, dataType, price, device, activityType, date):
         tx.run("MATCH (entity: Entity {name: $dataName, type: $dataType, price: $price, device: $device}) "
                "MATCH (activity: Activity {name: $activityType, date: $date})"
-               "MERGE (entity)-[:wasGeneratedBy]->(activity)",     
+              "MERGE (entity)-[:wasGeneratedBy]->(activity)",     
                dataName=dataName, dataType=dataType, price=price, device=device, activityType=activityType, date=date)
 
     #create a relationship between activity and agent - wasAssociatedWith
@@ -49,7 +48,7 @@ with open("randomData.csv",'r') as f:
                "MERGE (activity)-[:wasAssociatedWith]->(agent)",
                activityType=activityType, date=date, name=name, affiliation=affiliation)
         
-  
+
     #create a relationship between entity and activity - used
     def used(tx, activityType, date, dataName, dataType, price, device):
         tx.run("MATCH (activity: Activity {name: $activityType, date: $date}) "
@@ -65,7 +64,7 @@ with open("randomData.csv",'r') as f:
      #          "MERGE (entity1)<-[:wasDerivedFrom]-(entity2),
       #         dataName=dataName, dataType=dataType, price=price, device=device)
 
-
+        '''
     def merge(tx):
        tx.run("MATCH (a:Agent) WITH a.name AS a, collect(a) as node2Merge WITH node2Merge, extract(x IN node2Merge | x.match) AS matches CALL apoc.refactor.mergeNodes(node2Merge) yield node RETURN *")
 
@@ -75,7 +74,7 @@ with open("randomData.csv",'r') as f:
   
     def merge2(tx):
        tx.run("MATCH (e:Entity) WITH e.name AS e, collect(e) as node2Merge WITH node2Merge, extract(x IN node2Merge | x.match) AS matches CALL apoc.refactor.mergeNodes(node2Merge) yield node RETURN *")
-
+       '''
 
 
     with driver.session() as session:
@@ -95,16 +94,16 @@ with open("randomData.csv",'r') as f:
             session.write_transaction(wasAttributedTo, name, affiliation, dataName, dataType, price, device)
             session.write_transaction(wasGeneratedBy, dataName, dataType, price, device, activityType, date)
             session.write_transaction(wasAssociatedWith, activityType, date, name, affiliation)
+          
             session.write_transaction(used, activityType, date, dataName, dataType, price, device)
-                
+            '''
             session.read_transaction(merge)
             session.read_transaction(merge1)
             session.read_transaction(merge2)
-         
+            '''
     
     print("finished")
             
 
     
     
->>>>>>> d2f3b8a18ba96873cddb6bb3de515c002b7b98bb
