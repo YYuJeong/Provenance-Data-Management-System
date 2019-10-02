@@ -1,10 +1,123 @@
 var express = require('express');
 var router = express.Router();
 
+var mysql = require("mysql");
+var esession = require('express-session');
+
+var crypto = require('crypto');
+
 var bodyParser = require('body-parser');
 var neo4j = require('neo4j-driver').v1;
 var driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', 'wowhi223'));
 var session = driver.session();
+var cookieParser = require('cookie-parser');
+
+
+let con = mysql.createConnection({
+  user: "root",
+  password: "super501",
+  database: "iitp"
+})
+
+router.get('/contact', function(req, res, next) {
+con.query("SELECT * FROM iitp.users;", function(err, result, fields){
+  console.log("err : " + err);
+    if(err){
+      console.log(err);
+      console.log("QUERY ERROR!");
+    }
+    else{
+      console.log(result);
+      res.render('contact', {
+        results: result
+      });
+    }
+  });
+});
+
+router.post('/contact', function(req, res, next) {
+  var body = req.body;
+
+  con.query("INSERT INTO iitp.users (name, email, password, gubun) VALUES (?, ?, ?, ?);", [
+    body.name, body.email, body.password, body.gubun
+  ], function(err, rows, fields){
+
+    console.log("err : " + err);
+    console.log("rows : " + rows);
+    console.log("insertId : " + rows.insertId);
+
+    res.redirect("/contact");
+  });
+});
+
+/*
+router.get('/users', function(req, res, next) {
+  
+  let esession = req.esession;
+
+
+
+console.log("bbb" + req.esession);
+  res.render("users", {
+
+    esession : esession
+  });
+});
+*/
+
+
+router.post('/users', function(req, res, next) {
+  
+  //추가함
+  var express = require('express');
+  var esession = require('express-session');
+  var app = express();
+
+  app.use(esession({
+    secret: 'asdfasdf!@G^DF$#As',
+    resave: false,
+    saveUninitialized: true
+  }));
+
+
+  var body = req.body;
+  var email = body.email;
+  var password = body.password;
+  var name = body.name;
+  var gubun = body.gubun;
+
+  var sql = 'SELECT * FROM users WHERE email=?';
+  con.query(sql, [email], function(err, results){
+  
+    if(err)
+      console.log(err);
+
+    if(!results[0])
+      //return res.send('아이디를 확인해주십시오');
+      return res.render('users', {message:'아이디를 확인해주십시오'});
+    else {
+      if(results[0].password === password){
+        //console.log('aaaaa');
+        //return res.send('로그인 되었습니다');
+        esession.email = body.email;
+        esession.password = body.password;
+        name = results[0].name;
+        esession.gubun = results[0].gubun;
+        //console.log(results[0].name);
+        console.log(name);
+     
+        return res.render('users', {message:'로그인 되었습니다'});
+      }
+      else //return res.send('비밀번호를 확인해주십시오');
+        return res.render('users', {message:'비밀번호를 확인해주십시오'});
+    
+    }
+  });
+}); 
+
+
+
+
 
 
 router.post('/dataAdd', function (req, res) {
