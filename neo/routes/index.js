@@ -653,7 +653,7 @@ router.post('/keyword', function (req, res) {
           console.log(path["segments"][p]);
         }*/
         console.log(start, end)
-        res.render('search/searchKeywordResult.ejs');
+        res.render('search/searchKeywordResult.ejs',{esession: session_value.getSession() } );
       });
     })
     /*(function (result) {
