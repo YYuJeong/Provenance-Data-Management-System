@@ -12,10 +12,10 @@ router.use(bodyParser.urlencoded({ extended: false }));
 var path = require('path');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
-
+var session_value = require('../session');
 
 router.get('/', function(req, res, next) {
-  res.render('data/deleteData.ejs');
+  res.render('data/deleteData.ejs', {esession: session_value.getSession()});
 });
 
 

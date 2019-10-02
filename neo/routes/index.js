@@ -1,10 +1,10 @@
 var express = require('express');
 var router = express.Router();
-
+var app = express();
 var mysql = require("mysql");
 var esession = require('express-session');
-
 var crypto = require('crypto');
+var session_value = require('./session');
 
 var bodyParser = require('body-parser');
 var neo4j = require('neo4j-driver').v1;
@@ -12,12 +12,22 @@ var driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', 'wo
 var session = driver.session();
 var cookieParser = require('cookie-parser');
 
+app.use(esession({
+    secret:"asdfasffdas",
+    resave:false,
+    saveUninitialized:true,
+}));
+
 
 let con = mysql.createConnection({
-  user: "root",
-  password: "super501",
-  database: "iitp"
-})
+    host: 'localhost',
+    user: "root",
+    password: "1234",
+    port: 3306,
+    database: "iitp",
+    insecureAuth: true
+});
+con.connect();
 
 router.get('/contact', function(req, res, next) {
 con.query("SELECT * FROM iitp.users;", function(err, result, fields){
@@ -65,21 +75,61 @@ console.log("bbb" + req.esession);
 });
 */
 
+router.get('/logout', function (req, res, next) {
+    session_value.setSession('','','','');
+    console.log('logout', session_value.getSession())
+    res.render('index', {esession: session_value.getSession() });
+});
+/*
+router.route('/users').get(
+    function (req, res) {
+        console.log(esession.email)
+        res.render('users', {essession:req.essession});
+    }
+)*/
 
+router.route('/search/searchPage').post(
+    function (req, res) {
+        res.render('search/searchPage', {esession: session_value.getSession()});
+    }
+)
+
+router.route('/users').post(
+    function (req, res) {
+        var body = req.body;
+        var email = body.email;
+        var password = body.password;
+        var gubun = body.gubun;
+
+        var sql = 'SELECT * FROM users WHERE email=?';
+        con.query(sql, [email], function(err, results){
+            if(err)
+                console.log(err);
+
+            if(!results[0])
+            //return res.send('아이디를 확인해주십시오');
+                return res.render('users', {message:'아이디를 확인해주십시오'});
+            else {
+                if(results[0].password === password){
+                    //console.log('aaaaa');
+                    //return res.send('로그인 되었습니다');
+
+                    //session_info.email = body.email;
+                    //session_info.password = body.password;
+                    //session_info.user = results[0]["name"];
+                    //session_info.gubun = results[0]["gubun"];
+                    session_value.setSession(body.email, results[0]["name"], results[0]["gubun"], body.password);
+
+                    res.render('index', {message:'로그인 되었습니다' , esession: session_value.getSession()});
+                }
+                else //return res.send('비밀번호를 확인해주십시오');
+                    res.render('users', {message:'비밀번호를 확인해주십시오', esession: undefined});
+            }
+        });
+    }
+)
+/*
 router.post('/users', function(req, res, next) {
-  
-  //추가함
-  var express = require('express');
-  var esession = require('express-session');
-  var app = express();
-
-  app.use(esession({
-    secret: 'asdfasdf!@G^DF$#As',
-    resave: false,
-    saveUninitialized: true
-  }));
-
-
   var body = req.body;
   var email = body.email;
   var password = body.password;
@@ -88,7 +138,6 @@ router.post('/users', function(req, res, next) {
 
   var sql = 'SELECT * FROM users WHERE email=?';
   con.query(sql, [email], function(err, results){
-  
     if(err)
       console.log(err);
 
@@ -99,22 +148,20 @@ router.post('/users', function(req, res, next) {
       if(results[0].password === password){
         //console.log('aaaaa');
         //return res.send('로그인 되었습니다');
+
         esession.email = body.email;
         esession.password = body.password;
-        name = results[0].name;
-        esession.gubun = results[0].gubun;
-        //console.log(results[0].name);
-        console.log(name);
-     
-        return res.render('users', {message:'로그인 되었습니다'});
+        esession.user = results[0]["name"];
+        esession.gubun = results[0]["gubun"];
+
+        res.render('index', {message:'로그인 되었습니다' , esession: esession.user});
       }
       else //return res.send('비밀번호를 확인해주십시오');
-        return res.render('users', {message:'비밀번호를 확인해주십시오'});
-    
+        res.render('users', {message:'비밀번호를 확인해주십시오', esession: undefined});
     }
   });
 }); 
-
+*/
 
 
 
@@ -143,11 +190,15 @@ router.post('/dataAdd', function (req, res) {
             console.log(err);
         });
     
-    res.redirect('/addPage');
+    res.render('addPage', {esession:session_value.getSession()});
 });
 
+router.get('/addPage', function (req, res, next) {
+    res.render('addPage', {esession:session_value.getSession()});
+})
+
 router.get('/',function(req, res, next) {
-   res.render('index'); 
+   res.render('index', {esession: session_value.getSession()});
  });
 
 
@@ -186,7 +237,7 @@ router.get('/viewPage', function (req, res) {
 
           console.log("i: " + i);
         });
-      res.render('viewPage', {dataTypes : dataTypeArr, dataNames : dataNameArr, devices : deviceArr, prices : priceArr
+      res.render('viewPage', {esession:session_value.getSession(), dataTypes : dataTypeArr, dataNames : dataNameArr, devices : deviceArr, prices : priceArr
         , affiliations : affiliationArr, names : nameArr, dates : dateArr, activityTypes : activityTypeArr}); 
       session.close();  
     })
@@ -214,6 +265,7 @@ router.post('/DataSearch', function(req, res){
   var dataTypeArr = [];
   var priceArr = [];
   var deviceArr = [];
+
 
   console.log("dataName: " + dataName);
   console.log("name: " + name);
@@ -342,7 +394,7 @@ router.post('/DataSearch', function(req, res){
 
     */
 
-    res.render('search/searchDataResult.ejs', {dataTypes : dataTypeArr, dataNames : dataNameArr, devices : deviceArr, prices : priceArr
+    res.render('search/searchDataResult.ejs', {esession:session_value.getSession(), dataTypes : dataTypeArr, dataNames : dataNameArr, devices : deviceArr, prices : priceArr
       , affiliations : affiliationArr, names : nameArr, dates : dateArr, activityTypes : activityTypeArr}); 
     session.close();  
   })
@@ -439,7 +491,7 @@ router.post('/nameSearch', function(req, res){
       }
       i++; 
     }
-    res.render('search/searchNameResult.ejs', {dataTypes : dataTypeArr, dataNames : dataNameArr, devices : deviceArr, prices : priceArr
+    res.render('search/searchNameResult.ejs', {esession:session_value.getSession(), dataTypes : dataTypeArr, dataNames : dataNameArr, devices : deviceArr, prices : priceArr
       , affiliations : affiliationArr, names : nameArr, dates : dateArr, activityTypes : activityTypeArr}); 
     session.close();  
   })
@@ -499,7 +551,7 @@ router.post('/periodSearch', function(req, res){
       }
       i++; 
     }
-    res.render('search/searchPeriodResult.ejs', {dataTypes : dataTypeArr, dataNames : dataNameArr, devices : deviceArr, prices : priceArr
+    res.render('search/searchPeriodResult.ejs', {esession:session_value.getSession(), dataTypes : dataTypeArr, dataNames : dataNameArr, devices : deviceArr, prices : priceArr
       , affiliations : affiliationArr, names : nameArr, dates : dateArr, activityTypes : activityTypeArr}); 
     session.close();  
   })
@@ -581,13 +633,12 @@ router.post('/keyword', function (req, res) {
           }
         }
       }
-      res.render('search/searchKeywordResult.ejs', {receivers : receiverArr, recvDivisions: recvDivisionArr, senders: senderArr, sendDivisions: sendDivisionArr, dataUsages: dataUsageArr, datas: dataArr, prices: priceArr, dates: dateArr, agent_name: agent_name}); 
+      res.render('search/searchKeywordResult.ejs', {esession:session_value.getSession(), receivers : receiverArr, recvDivisions: recvDivisionArr, senders: senderArr, sendDivisions: sendDivisionArr, dataUsages: dataUsageArr, datas: dataArr, prices: priceArr, dates: dateArr, agent_name: agent_name});
       session.close();  
     })
     .catch(function (err) {
        console.log(err);
     });
 });
-
 
 module.exports = router;

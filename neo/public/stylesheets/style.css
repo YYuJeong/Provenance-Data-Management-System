@@ -6,3 +6,8 @@ body {
 a {
   color: #00B7FF;
 }
+
+#login_name{
+  color: white;
+  font-size: 1.2em;
+}

@@ -9,7 +9,7 @@ var session = driver.session();
 
 var path = require('path');
 var logger = require('morgan');;
-
+var session_value = require('../session');
 
 router.use(logger('dev'));
 router.use(bodyParser.json());
@@ -18,7 +18,7 @@ router.use(bodyParser.urlencoded({ extended: false }));
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.render('search/searchPeriod.ejs');
+  res.render('search/searchPeriod.ejs', {esession: session_value.getSession()});
 });
 
 module.exports = router;
