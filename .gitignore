@@ -1,1 +1,3 @@
 neo/node_modules/*
+.idea/*
+.git/*
