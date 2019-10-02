@@ -395,6 +395,54 @@ router.post('/periodSearch', function(req, res){
   });
 });
 
+function getKeyword(keywords){
+  return new Promise(function(resolve, reject){
+    keyword = keywords.split(',');
+    if (keyword.length == 1){
+      keyword = keyword.split(' ');
+    }
+    else{
+      for(var k in keyword){
+        keyword[k] = keyword[k].trim()
+      }
+    }
+    resolve(keyword);
+  });
+}
+
+function getCheckNode(keyword){
+  return new Promise(function(resolve, reject){
+    if (!isNaN(parseInt(keyword))){
+      ;
+    }
+    else{
+      session.run('MATCH (a:Agent{name:"' + keyword + '"}) RETURN count(a)=1 as check')
+      .then(function(result){
+        //console.log(result)
+        if (result.records[0].get('check'))
+          resolve('Agent');
+        else{
+          session.run('MATCH (a:Activity{name:"' + keyword + '"}) RETURN count(a)=1 as check')
+          .then(function(result){
+            if (result.records[0].get('check'))
+              resolve('Activity')
+            else {
+              session.run('MATCH (a:Entity{name:"' + keyword + '"}) RETURN count(a)=1 as check')
+              .then(function(result){
+                if (result.records[0].get('check'))
+                  resolve('Entity');
+                else
+                  resolve('NOT EXIST');
+              });
+              }
+          });
+        }
+        //resolve(result);
+      });
+    }    
+  });
+}
+
 router.post('/keyword', function (req, res) {
   var agent_name = req.body.agent_name;
   var data=[];
@@ -408,8 +456,24 @@ router.post('/keyword', function (req, res) {
   var priceArr = [];
   var dateArr = [];
   var temp;
- // console.log(params_name);
-   session
+  var search_keyword;
+  
+  getKeyword(req.body.keyword)
+  .then(
+    function(keywords){
+      for(var key in keywords){
+        getCheckNode(keywords[key]).then(function(result){
+          console.log(result);
+        });  
+      }
+      
+      search_keyword = keywords;
+      return search_keyword;
+    }
+  )
+  .then(function(){
+    console.log(search_keyword)
+    session
     .run("MATCH (entity:Entity)-[:wasGeneratedBy]->(activity:Activity)-[:wasAssociatedWith]->(agent:Agent{name:'"+agent_name+"'}) WITH entity MATCH (entity:Entity)-[:wasGeneratedBy]->(activity:Activity)-[:wasAssociatedWith]->(agent:Agent) RETURN entity.name, entity.use, activity.name, activity.price, activity.time, agent.name, agent.attribute")
     .then(function (result) {
       
@@ -474,6 +538,10 @@ router.post('/keyword', function (req, res) {
     .catch(function (err) {
        console.log(err);
     });
+  });
+  
+ //console.log(params_name);
+
 });
 
 
