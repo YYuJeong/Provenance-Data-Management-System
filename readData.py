@@ -22,8 +22,8 @@ def add_node(tx,receiver_name,sender_name,entity_name, activity_time,activity_pr
 '''
 
 def add_node(tx,name,	affiliation,	activityType,	date,	dataName,	dataType,	price,	device):
-    tx.run("CREATE(e: Entity {name: $dataName , price: $price , d_type: $dataType, device: $device}) - [:wasAttributedTo] -> (a: Agent {name: $name , aff: $affiliation }) <- [:wasAssociatedWith] - (ac:Activity {name: $activityType, date: $date })<-[:wasGeneratedBy]-(e1: Entity {name: $dataName , price: $price , d_type: $dataType , device: $device})"
-         ,dataName = dataName, price = price, dataType = dataType, device = device, name = name, affiliation = affiliation, activityType = activityType, date = date)
+    #tx.run("CREATE(e: Entity {name: $dataName , price: $price , d_type: $dataType, device: $device}) - [:wasAttributedTo {cost:1}] -> (a: Agent {name: $name , aff: $affiliation }) <- [:wasAssociatedWith {cost:1}] - (ac:Activity {name: $activityType, date: $date })<-[:wasGeneratedBy {cost:1}]-(e1: Entity {name: $dataName , price: $price , d_type: $dataType , device: $device})"
+    tx.run("CREATE(e: Entity {name: $dataName , price: $price , d_type: $dataType, device: $device}) - [:wasAttributedTo] -> (a: Agent {name: $name , aff: $affiliation }) <- [:wasAssociatedWith] - (ac:Activity {name: $activityType, date: $date })<-[:wasGeneratedBy]-(e1: Entity {name: $dataName , price: $price , d_type: $dataType , device: $device})"     ,dataName = dataName, price = price, dataType = dataType, device = device, name = name, affiliation = affiliation, activityType = activityType, date = date)
     #tx.run("CREATE(: Agent {name: $receiver_name}) <- [:wasAssociatedWith]-(: Activity { name: 'Own'}) <- [:wasGeneratedBy]-(: Entity { name: $entity_name}) - [:wasGeneratedBy] -> (: Activity { name: 'Buy', price: $activity_price,time: $activity_time})- [:wasAssociatedWith] -> (: Agent {name: $sender_name})"
         # ,receiver_name=receiver_name,sender_name=sender_name,entity_name=entity_name,activity_price=activity_price,activity_time=activity_time)
 

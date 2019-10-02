@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var Promise = require('promise');
 
 var bodyParser = require('body-parser');
 var neo4j = require('neo4j-driver').v1;
@@ -395,6 +396,54 @@ router.post('/periodSearch', function(req, res){
   });
 });
 
+function getKeyword(keywords){
+  return new Promise(function(resolve, reject){
+    keyword = keywords.split(',');
+    if (keyword.length == 1){
+      keyword = keyword.split(' ');
+    }
+    else{
+      for(var k in keyword){
+        keyword[k] = keyword[k].trim()
+      }
+    }
+    resolve(keyword);
+  });
+}
+
+function getCheckNode(keyword){
+  return new Promise(function(resolve, reject){
+    if (!isNaN(parseInt(keyword))){
+      ;
+    }
+    else{
+      session.run('MATCH (a:Agent{name:"' + keyword + '"}) RETURN count(a)=1 as check')
+      .then(function(result){
+        //console.log(result)
+        if (result.records[0].get('check'))
+          resolve('Agent');
+        else{
+          session.run('MATCH (a:Activity{name:"' + keyword + '"}) RETURN count(a)=1 as check')
+          .then(function(result){
+            if (result.records[0].get('check'))
+              resolve('Activity')
+            else {
+              session.run('MATCH (a:Entity{name:"' + keyword + '"}) RETURN count(a)=1 as check')
+              .then(function(result){
+                if (result.records[0].get('check'))
+                  resolve('Entity');
+                else
+                  resolve('NOT EXIST');
+              });
+              }
+          });
+        }
+        //resolve(result);
+      });
+    }    
+  });
+}
+
 router.post('/keyword', function (req, res) {
   var agent_name = req.body.agent_name;
   var data=[];
@@ -408,12 +457,45 @@ router.post('/keyword', function (req, res) {
   var priceArr = [];
   var dateArr = [];
   var temp;
- // console.log(params_name);
-   session
-    .run("MATCH (entity:Entity)-[:wasGeneratedBy]->(activity:Activity)-[:wasAssociatedWith]->(agent:Agent{name:'"+agent_name+"'}) WITH entity MATCH (entity:Entity)-[:wasGeneratedBy]->(activity:Activity)-[:wasAssociatedWith]->(agent:Agent) RETURN entity.name, entity.use, activity.name, activity.price, activity.time, agent.name, agent.attribute")
-    .then(function (result) {
-      
-     
+  var search_keyword;
+  
+  getKeyword(req.body.keyword)
+  .then(
+    function(keywords){
+      return new Promise(function(resolve, reject){
+        Promise.all([getCheckNode(keywords[0]), getCheckNode(keywords[1])]).then(function(results){
+          results.push(keywords);
+          resolve(results);
+        });
+      });      
+    }
+  )
+  .then(function(keys){
+    var group = [keys[0], keys[1]];
+    var keyword = keys[2]
+    console.log(group, keyword);
+    session
+    .run("MATCH (a1:"+ group[0] +" {name:'"+ keyword[0] +"'}), (a2:"+group[1]+" {name:'"+ keyword[1] +"'}), path=((a1)-[*3..4]-(a2)) RETURN path ORDER BY LENGTH(path)")
+    .then(result => {
+      console.log(result.records.length)
+      return result.records.map(record => {
+        console.log(record.get("path"));
+        path = record.get("path");
+        start = path["start"]["properties"]["name"]
+        end = path["end"]["properties"]["name"]
+        /*for(var p in path["segments"]){
+          console.log(path["segments"][p]);
+        }*/
+        console.log(start, end)
+        res.render('search/searchKeywordResult.ejs');
+      });
+    })
+    /*(function (result) {
+      console.log(result);
+      for(var i =0; i<result.length; i++){
+        console.log(result.records[i]._fields)
+      }
+     /*
      var searchArr = [];
      var size = Object.keys(result.records).length;   
      for (var i = 0; i < size; i++) {
@@ -468,12 +550,17 @@ router.post('/keyword', function (req, res) {
           }
         }
       }
+      
       res.render('search/searchKeywordResult.ejs', {receivers : receiverArr, recvDivisions: recvDivisionArr, senders: senderArr, sendDivisions: sendDivisionArr, dataUsages: dataUsageArr, datas: dataArr, prices: priceArr, dates: dateArr, agent_name: agent_name}); 
       session.close();  
-    })
+    })*/
     .catch(function (err) {
        console.log(err);
     });
+  });
+  
+ //console.log(params_name);
+
 });
 
 
