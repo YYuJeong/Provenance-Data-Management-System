@@ -566,12 +566,13 @@ function getKeyword(keywords){
   return new Promise(function(resolve, reject){
     keyword = keywords.split(',');
     if (keyword.length == 1){
-      keyword = keyword.split(' ');
+        keyword = keyword[0].split(' ');
     }
     else{
       for(var k in keyword){
         keyword[k] = keyword[k].trim()
       }
+        console.log(keyword)
     }
     resolve(keyword);
   });
