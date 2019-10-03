@@ -646,14 +646,28 @@ router.post('/keyword', function (req, res) {
     .then(result => {
       console.log(result.records.length)
       return result.records.map(record => {
+        console.log("-----------------START------------------------")
         console.log(record.get("path"));
         path = record.get("path");
         start = path["start"]["properties"]["name"]
         end = path["end"]["properties"]["name"]
-        /*for(var p in path["segments"]){
+        var startArr = [];
+        for(var p in path["segments"]){
+          console.log("=============================PATH SEGMENT====================")
+          console.log(typeof(path["segments"][p]));
           console.log(path["segments"][p]);
-        }*/
+          var ss = path["segments"][p];
+          console.log(typeof(ss));
+          startArr.push(ss.start);
+          console.log(ss.start);
+          //var size = Object.keys(result.records).length;  
+        }
         console.log(start, end)
+        console.log("**********************END*****************************")
+
+        for(var i =0; i < startArr.length ; i++){
+          console.log("startArr[" + i + "] : " + startArr[i]);
+        }
         res.render('search/searchKeywordResult.ejs',{esession: session_value.getSession() } );
       });
     })
@@ -719,7 +733,7 @@ router.post('/keyword', function (req, res) {
       }
 <<<<<<< HEAD
       res.render('search/searchKeywordResult.ejs', {esession:session_value.getSession(), receivers : receiverArr, recvDivisions: recvDivisionArr, senders: senderArr, sendDivisions: sendDivisionArr, dataUsages: dataUsageArr, datas: dataArr, prices: priceArr, dates: dateArr, agent_name: agent_name});
-=======
+
       
       res.render('search/searchKeywordResult.ejs', {receivers : receiverArr, recvDivisions: recvDivisionArr, senders: senderArr, sendDivisions: sendDivisionArr, dataUsages: dataUsageArr, datas: dataArr, prices: priceArr, dates: dateArr, agent_name: agent_name}); 
 >>>>>>> master
