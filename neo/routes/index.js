@@ -641,6 +641,7 @@ router.post('/keyword', function (req, res) {
   .then(function(keys){
     var group = [keys[0], keys[1]];
     var keyword = keys[2]
+    var resultArr = []
     console.log(group, keyword);
     session
     .run("MATCH (a1:"+ group[0] +" {name:'"+ keyword[0] +"'}), (a2:"+group[1]+" {name:'"+ keyword[1] +"'}), path=((a1)-[*3..4]-(a2)) RETURN path ORDER BY LENGTH(path)")
@@ -651,9 +652,10 @@ router.post('/keyword', function (req, res) {
         path = record.get("path");
         start = path["start"]["properties"]["name"]
         end = path["end"]["properties"]["name"]
-        /*for(var p in path["segments"]){
+        for(var p in path["segments"]){
           console.log(path["segments"][p]);
-        }*/
+          resultArr.push(path["segments"][p].start);
+        }
         console.log(start, end)
         res.render('search/searchKeywordResult.ejs',{esession: session_value.getSession() } );
       });
