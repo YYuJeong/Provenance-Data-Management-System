@@ -167,9 +167,6 @@ router.post('/users', function(req, res, next) {
 */
 
 
-
-
-
 router.post('/dataAdd', function (req, res) {
     var name = req.body.name;
     var affiliation = req.body.affiliation;
@@ -705,6 +702,104 @@ router.post('/keyword', function (req, res) {
   
  //console.log(params_name);
 
+});
+
+
+router.post('/delete', function(req, res){
+  var dataName = req.body.dataName;
+  var name = req.body.name;
+
+  var dataNameFlag = true;
+  var nameFlag = true;
+
+  var nameArr = [];
+  var affiliationArr = [];
+  var activityTypeArr = [];
+  var dateArr = [];
+  var dataNameArr = [];
+  var dataTypeArr = [];
+  var priceArr = [];
+  var deviceArr = [];
+
+  console.log("affiliation: " + dataName);
+  console.log("name: " + name);
+
+  var nullcount = 0;
+  var matchCyper = "MATCH (entity:Entity)-[rel1:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent)";
+  var returnCyper = " RETURN agent.name, agent.aff, activity.name, activity.date, entity.name, entity.d_type, entity.price, entity.device"
+  var whereCyper = " WHERE"
+  
+  var dataNameCyper = " entity.name = ";
+  var nameCyper = " agent.name = ";
+
+  if(dataName == '' || dataName == undefined ){
+    console.log("dataName null");
+    dataNameFlag = false;
+    nullcount++;
+  }
+  if(name == '' || name == undefined ){
+    console.log("name null");
+    nameFlag = false;
+    nullcount++;
+  }
+
+  var newQuery = matchCyper + whereCyper;
+  for(var i = 0 ; i < (2-nullcount); i++){
+    if(dataNameFlag){
+      newQuery = newQuery + dataNameCyper + "'" + dataName + "'";
+      dataNameFlag = false;
+    }
+    else if(nameFlag){
+      newQuery = newQuery + nameCyper + "'" + name + "'" ;
+      nameFlag = false;
+    }
+    if((i+1) != (2-nullcount)){
+      newQuery = newQuery + " AND";
+    }
+  }
+  newQuery = newQuery + returnCyper;
+  session
+  .run(newQuery)
+  .then(function (result) {
+
+   var searchArr = [];
+   var size = Object.keys(result.records).length;  
+   console.log("size: " + size);
+   var test = [];
+   for (var i = 0; i < size; i++) {
+       var da = result.records[i]._fields;
+       test[i] = da;                  
+    }
+    for(var i=0;i < size; i+=2){
+      data=(test[[i]]+" ,"+test[[i+1]]);
+      searchArr.push(data);
+    }      
+
+    temp = searchArr.toString();
+    var splitTemp = temp.split(',');
+    console.log("SSS: " , splitTemp);
+
+
+    for(var j = 0, i=0; j < 8*size ; j++){
+      if((j+1)%8 != 0){
+        nameArr.push(splitTemp[j]);
+        affiliationArr[i] = splitTemp[++j];
+        activityTypeArr[i] = splitTemp[++j];
+        dateArr[i] = splitTemp[++j];
+        dataNameArr[i] = splitTemp[++j];
+        dataTypeArr[i] = splitTemp[++j];
+        priceArr[i] = splitTemp[++j];
+        deviceArr[i] = splitTemp[++j];
+      }
+      i++; 
+    }
+    res.render('data/deleteDataResult.ejs', {esession:session_value.getSession(), dataTypes : dataTypeArr, dataNames : dataNameArr, devices : deviceArr, prices : priceArr
+      , affiliations : affiliationArr, names : nameArr, dates : dateArr, activityTypes : activityTypeArr}); 
+    session.close();  
+  })
+  .catch(function (err) {
+     console.log(err);
+  });
 });
 
 module.exports = router;
