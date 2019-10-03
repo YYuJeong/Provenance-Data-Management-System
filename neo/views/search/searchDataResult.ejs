@@ -81,7 +81,7 @@
                     <hr class="featurette-divider">
                     <div class="jumbotron">
                         <div class="container">
-                            <div style="text-align: center;"><h3>데이터 검색</h3><br>
+                            <div style="text-align: center;"><h3>데이터로 검색</h3><br>
                             </div>
                         <form method="post" action="/DataSearch">
                         <div class="row" >
@@ -91,11 +91,7 @@
                                 <span class="input-group-addon">데이터</span>
                                 <input type="text" id="dataName" name="dataName" class="form-control" />
                             </div>
-                            <br>
-                            <div class="input-group" style="width:30%; margin:0 auto;">
-                                <span class="input-group-addon">&nbsp 이름 &nbsp</span>
-                                <input type="text" id="name" name="name" class="form-control" />
-                            </div>
+
                             <br>
                             <div class="form-group">
                                 <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
@@ -157,12 +153,12 @@
                   <th align = center>#</th>
                   <th align = center>&nbsp;이름&nbsp;</th>
                   <th align = center>소&nbsp;&nbsp;&nbsp;속</th>
-                  <th align = center>Activity</th>
-                  <th align = center>날&nbsp짜</th>
                   <th align = center>데이터명</th>
-                  <th align = center>데이터 종류</th>
-                  <th align = center>가 격</th>
-                  <th align = center>Device</th>
+                  <th align = center>가격</th>
+                  <th align = center>데이터타입</th>
+                  <th align = center>장치</th>
+                  <th align = center>타입(판매/구매/출판/수정)</th>
+                  <th align = center>날짜</th>
                 </tr>
               </thead>
               <tbody>
@@ -171,29 +167,29 @@
                   <th scope="row">
                       <%= (i+1) %>
                   </th>
-                  <td>
+                  <td align = center>
                       <%= names[i] %>
                   </td>
                   <td align = center>
                     <%= affiliations[i] %>
                   </td>
                   <td align = center>
-                    <%= activityTypes[i] %>
+                    <%= dataNames[i] %>
                   </td> 
                   <td align = center>
-                    <%= dates[i] %>
-                  </td>
-                  <td align = center>
-                    <%= dataNames[i] %>
+                    <%= prices[i] %>
                   </td>
                   <td align = center>
                     <%= dataTypes[i] %>
                   </td>
                   <td align = center>
-                    <%= prices[i] %>
+                    <%= devices[i] %>
                   </td>
                   <td align = center>
-                    <%= devices[i] %>
+                    <%= activityTypes[i]  %>
+                  </td>
+                  <td align = center>
+                    <%= dates[i] %>
                   </td>
                 </tr>
                 <% } %>

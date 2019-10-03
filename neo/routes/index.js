@@ -230,7 +230,7 @@ router.get('/viewPage', function (req, res) {
 
           dateArr.push(record._fields[2].properties.date);
           activityTypeArr.push(record._fields[2].properties.name);
-
+          /*
           for (var j =0; j<3; j++){
             console.log("record " + j + " -th " + "field: " + record._fields[j]);
             console.log("record " + j + " -th " + "field labels: " + record._fields[j].labels[0]);
@@ -239,6 +239,7 @@ router.get('/viewPage', function (req, res) {
           } 
 
           console.log("i: " + i);
+          */
         });
       res.render('viewPage', {esession:session_value.getSession(), dataTypes : dataTypeArr, dataNames : dataNameArr, devices : deviceArr, prices : priceArr
         , affiliations : affiliationArr, names : nameArr, dates : dateArr, activityTypes : activityTypeArr}); 
@@ -251,12 +252,10 @@ router.get('/viewPage', function (req, res) {
 
 router.post('/DataSearch', function(req, res){
   var dataName = req.body.dataName;
-  var name = req.body.name;
   var dataType = req.body.dataType;
   var device = req.body.device;
 
   var dataNameFlag = true;
-  var nameFlag = true;
   var dataTypeFlag = true;
   var deviceFlag = true;
 
@@ -271,7 +270,6 @@ router.post('/DataSearch', function(req, res){
 
 
   console.log("dataName: " + dataName);
-  console.log("name: " + name);
   console.log("device: " + device);
   console.log("dataType: " + dataType);
 
@@ -284,7 +282,6 @@ router.post('/DataSearch', function(req, res){
   var deviceCyper = " entity.device = ";
   var dataNameCyper = " entity.name = ";
   var dataTypeCyper = " entity.d_type = ";
-  var nameCyper = " agent.name = ";
 
   if(device == ''){
     console.log("device null");
@@ -296,22 +293,15 @@ router.post('/DataSearch', function(req, res){
     dataNameFlag = false;
     nullcount++;
   }
-
-  if(name == ''){
-    console.log("name null");
-    nameFlag = false;
-    nullcount++;
-  }
   if(dataType == ''){
     console.log("dataType null");
     dataTypeFlag = false;
     nullcount++;
   }
 
-
   var newQuery = matchCyper + whereCyper;
 
-  for(var i = 0 ; i < (4-nullcount); i++){
+  for(var i = 0 ; i < (3-nullcount); i++){
     console.log("i: " + i);
     if(deviceFlag){
       console.log("2device : " + device);
@@ -323,20 +313,13 @@ router.post('/DataSearch', function(req, res){
       newQuery = newQuery + dataNameCyper + "'" + dataName + "'";
       dataNameFlag = false;
     }
-    
-    else if(nameFlag){
-
-      console.log("2name: " + name);
-      newQuery = newQuery + nameCyper + "'" + name + "'" ;
-      nameFlag = false;
-    }
   
     else if(dataTypeFlag){
       console.log("2dataType: " + dataType);
       newQuery = newQuery + dataTypeCyper + "'" + dataType + "'" ;
       dataTypeFlag = false;
     }
-    if((i+1) != (4-nullcount)){
+    if((i+1) != (3-nullcount)){
       newQuery = newQuery + " AND";
     }
   }
@@ -506,6 +489,7 @@ router.post('/nameSearch', function(req, res){
 router.post('/periodSearch', function(req, res){
   var end_date = req.body.start_date;
   var start_date = req.body.end_date;
+  var activityType = req.body.activityType;
 
   var nameArr = [];
   var affiliationArr = [];
@@ -516,11 +500,58 @@ router.post('/periodSearch', function(req, res){
   var priceArr = [];
   var deviceArr = [];
 
+  var end_dateFlag = true;
+  var start_dateFlag = true;
+  var activityTypeFlag = true;
+
   console.log("starDate:  " + start_date);
   console.log("end: " + end_date);
+  
+  var nullcount = 0;
 
+  var matchCyper = "MATCH (entity:Entity)-[rel1:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent)";
+  var returnCyper = " RETURN agent.name, agent.aff, activity.name, activity.date, entity.name, entity.d_type, entity.price, entity.device"
+  var whereCyper = " WHERE"
+  
+  var startDateCyper = " activity.date >= ";
+  var endDateCyper = " activity.date < ";
+  var activityTypeCyper = " activity.name = "
+
+  if(end_date == '' || end_date == undefined){
+    end_dateFlag = false;
+
+  }
+  if(start_date == '' || start_date == undefined){
+    start_dateFlag = false;
+
+  }
+  if( start_dateFlag == false || end_dateFlag == false){
+    nullcount++;
+  }
+  if(activityType == '' || activityType == undefined ){
+    activityTypeFlag = false;
+    nullcount++;
+  }
+  var newQuery = matchCyper + whereCyper;
+  for(var i = 0 ; i < (2-nullcount); i++){
+    if(end_dateFlag && start_date){
+      newQuery = newQuery +  startDateCyper + "'" + start_date +"'" + " AND" + endDateCyper + "'" + end_date + "'" ;
+      end_dateFlag = false;
+      start_dateFlag = false;
+    }
+    else if(activityTypeFlag){
+      newQuery = newQuery + activityTypeCyper + "'" + activityType + "'" ;
+      activityTypeFlag = false;
+    }
+    if((i+1) != (2-nullcount)){
+      newQuery = newQuery + " AND";
+    }
+  }
+
+  newQuery = newQuery + returnCyper;
+  console.log(newQuery);
   session
-  .run( "MATCH (entity:Entity)-[:wasGeneratedBy]->(activity:Activity)-[:wasAssociatedWith]->(agent:Agent) WHERE activity.date>='"+start_date+"' AND activity.date<'"+end_date+"' RETURN agent.name, agent.aff, activity.name, activity.date, entity.name, entity.d_type, entity.price, entity.device")
+  .run(newQuery )
   .then(function (result) {
 
    var searchArr = [];
@@ -617,6 +648,7 @@ router.post('/keyword', function (req, res) {
   var result3Arr = []
   var length4count ;
   var length3count ;
+  var ss;
   getKeyword(req.body.keyword)
   .then(
     function(keywords){
@@ -638,8 +670,6 @@ router.post('/keyword', function (req, res) {
     .then(result => {
       console.log(result.records.length)
       return result.records.map(record => {
-        console.log("-----------------START------------------------")
-        //console.log(record.get("path"));
         path = record.get("path");
         start = path["start"]["properties"]["name"]
         end = path["end"]["properties"]["name"]
@@ -647,9 +677,6 @@ router.post('/keyword', function (req, res) {
         if(path.length == 3){
           length3count++;
           for(var p in path["segments"]){
-        //    console.log("========================3 LENGTH PATH SEGMENT====================")
-         //   console.log(path["segments"][p]);
-          //  console.log("start name: " ,path["segments"][p].start.properties.name);
             result3Arr.push(path["segments"][p].start.properties.name)
           }
           result3Arr.push(end)
@@ -665,7 +692,7 @@ router.post('/keyword', function (req, res) {
         for(var i = 0; i<result4Arr.length ; i++){
           console.log("result4[", i , "] : " , result4Arr[i]);
         }
-        var ss = result4Arr.length;
+        ss = result4Arr.length;
         console.log("ss: ", ss);
         res.render('search/searchKeywordResult.ejs',{esession: session_value.getSession(),one: "this is the one", lend : ss} );
         session.close();
