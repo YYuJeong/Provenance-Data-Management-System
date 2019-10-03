@@ -76,74 +76,72 @@
             <h2>이력 파일 업로드</h2>
           </div><!-- /.col-lg-4 -->
         </div><!-- /.row -->
-  
-        <!-- START THE FEATURETTES -->
 
         <hr class="featurette-divider">
-        <!-- /END THE FEATURETTES -->
+        <br><br>
+        
+        <!-- START THE FEATURETTES -->
         <div class="jumbotron">
-          <div class="container" style="display: inline-block;text-align: center;">
-            <h3>Keyword Search</h3><br><br><br>
+          <div class="container" style="display: inline-block; text-align: center;">
+            <h3>키워드 검색</h3><br><br><br>
             <form class="form-inline" method="post" action="/keyword">
-            <!--<form class="form-inline" method="post" action="/keyword">-->
-              <div class="input-group">
-                  <input type="text" class="form-control" name = "keyword" style="width:800px;">
+              <div class="input-group" style="text-align: center;">
+                  <input type="text" class="form-control" name = "keyword" style="width:300px;">
               </div>                  
               <!--<input class="btn btn-primary" type="submit" value="Search">-->
               <a href="/search/searchKeywordResult"><input class="btn btn-primary" type="submit" value="Search"></a>
-              <br><br>
-            </form>
-            <br><br><br>
+              <br><br><br><br><br>
+              </form>
+          </div>
+        </div>
+
+        <hr class="featurette-divider">
+        <div class="jumbotron">
+          <div class="container" style="display: inline-block;text-align: center;">
+            <br><br>
             <div class="panel panel-default">
               <!-- Default panel contents -->
-              <div class="panel-heading" style = "font-size:medium;"><strong>Search Result</strong></div>
+              <div class="panel-heading" style = "font-size:medium;"><strong>키워드 검색 결과</strong></div>
               <!-- Table -->
               <table class="table table-striped">
                 <thead>
                   <tr>
-                    <th align = right>#</th>
-                    <td align = center><b>Person / Data</b></td>
-                    <td align = center><b>Activity</b></td>
-                    <td align = center><b>Person / Data</b></td>
+                    <th align = center>#</th>
+                    <th align = center>&nbsp;이름&nbsp;</th>
+                    <th align = center>소&nbsp;&nbsp;&nbsp;속</th>
+                    <th align = center>Activity</th>
+                    <th align = center>날&nbsp짜</th>
+                    <th align = center>len4c :</th>
                   </tr>
                 </thead>
                 <tbody>
+                  <% for(var i=0; i<20; i++ ) { %>
                   <tr>
-                    <th scope="row">1</th>
-                    <td align = center><b>Emily</b></td>
-                    <td align = center>Buy</td>
-                    <td align = center>data_336</td>
+                    <th scope="row">
+                      <%= one %>
+                    </th>
+                    <td align = center>
+                      <%= lend %>
+                    </td>
+                    <td align = center>
+                      <%= one %>
+                    </td> 
+                    <td align = center>
+                      <%= one %>
+                    </td> 
+                    <td align = center>
+                      <%= one %>
+                    </td> 
+                    <td align = center>
+                      <%= one %>
+                    </td> 
                   </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td align = center>data_336</td>
-                    <td align = center>Buy</td>
-                    <td align = center>Flora</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">3</th>
-                    <td align = center>data_336</td>
-                    <td align = center>Sell</td>
-                    <td align = center>Anna</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">4</th>
-                    <td align = center>Anna</td>
-                    <td align = center>Sell</td>
-                    <td align = center><b>data_246</b></td>
-                  </tr>
-                  <tr>
-                    <th scope="row">5</th>
-                    <td align = center><b>data_246</b></td>
-                    <td align = center>Buy</td>
-                    <td align = center>Flora</td>
-                  </tr>
+                  <% } %>
                 </tbody>
               </table>
             </div>  
           </div>
         </div>
-
 
         <hr class="featurette-divider">
         <!-- FOOTER -->

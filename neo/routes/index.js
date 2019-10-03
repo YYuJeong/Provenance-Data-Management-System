@@ -613,20 +613,10 @@ function getCheckNode(keyword){
 }
 
 router.post('/keyword', function (req, res) {
-  var agent_name = req.body.agent_name;
-  var data=[];
-  var test = [];
-  var receiverArr= [];
-  var recvDivisionArr = [];
-  var senderArr = [];
-  var sendDivisionArr = [];
-  var dataUsageArr = [];
-  var dataArr = []; 
-  var priceArr = [];
-  var dateArr = [];
-  var temp;
-  var search_keyword;
-  
+  var result4Arr = []
+  var result3Arr = []
+  var length4count ;
+  var length3count ;
   getKeyword(req.body.keyword)
   .then(
     function(keywords){
@@ -648,98 +638,38 @@ router.post('/keyword', function (req, res) {
       console.log(result.records.length)
       return result.records.map(record => {
         console.log("-----------------START------------------------")
-        console.log(record.get("path"));
+        //console.log(record.get("path"));
         path = record.get("path");
         start = path["start"]["properties"]["name"]
         end = path["end"]["properties"]["name"]
-        var startArr = [];
-        for(var p in path["segments"]){
-          console.log("=============================PATH SEGMENT====================")
-          console.log(typeof(path["segments"][p]));
-          console.log(path["segments"][p]);
-          var ss = path["segments"][p];
-          console.log(typeof(ss));
-          startArr.push(ss.start);
-          console.log(ss.start);
-          //var size = Object.keys(result.records).length;  
+       // console.log("length : ", path.length);
+        if(path.length == 3){
+          length3count++;
+          for(var p in path["segments"]){
+        //    console.log("========================3 LENGTH PATH SEGMENT====================")
+         //   console.log(path["segments"][p]);
+          //  console.log("start name: " ,path["segments"][p].start.properties.name);
+            result3Arr.push(path["segments"][p].start.properties.name)
+          }
+          result3Arr.push(end)
         }
-        console.log(start, end)
-        console.log("**********************END*****************************")
-
-        for(var i =0; i < startArr.length ; i++){
-          console.log("startArr[" + i + "] : " + startArr[i]);
+        else if(path.length == 4){
+          length4count++;
+          for(var p in path["segments"]){
+            result4Arr.push(path["segments"][p].start.properties.name)
+          }
+          result4Arr.push(end)
         }
-        res.render('search/searchKeywordResult.ejs',{esession: session_value.getSession() } );
+        
+        for(var i = 0; i<result4Arr.length ; i++){
+          console.log("result4[", i , "] : " , result4Arr[i]);
+        }
+        var ss = result4Arr.length;
+        console.log("ss: ", ss);
+        res.render('search/searchKeywordResult.ejs',{esession: session_value.getSession(),one: "this is the one", lend : ss} );
+        session.close();
       });
     })
-    /*(function (result) {
-      console.log(result);
-      for(var i =0; i<result.length; i++){
-        console.log(result.records[i]._fields)
-      }
-     /*
-     var searchArr = [];
-     var size = Object.keys(result.records).length;   
-     for (var i = 0; i < size; i++) {
-         var da = result.records[i]._fields;
-         test[i] = da;                  
-      }
-      
-      for(var i=0;i < size; i+=2){
-        data=(test[[i]]+" ,"+test[[i+1]]);
-        searchArr.push(data);
-      }      
-
-      temp = searchArr.toString();
-      var splitTemp = temp.split(',');
-      for(var i=0, j =0; i< splitTemp.length; i++){
-        if(i%14 == 0){
-          if(i > 0){
-            j++;
-            dataArr[j] = splitTemp[i]; 
-            dataUsageArr[j] = splitTemp[++i];
-          }
-          else{
-            dataArr[j] = splitTemp[i]; 
-            dataUsageArr[j] = splitTemp[++i];
-          }
-        }
-        else if(i%14 == 2){
-          if(splitTemp[i] == 'Buy'){
-            priceArr[j] = splitTemp[++i];
-            dateArr[j] = splitTemp[++i];
-            receiverArr[j] = splitTemp[++i];
-            recvDivisionArr[j] = splitTemp[++i];
-          }
-          else if(splitTemp[i] == 'Own'){
-            i += 2;
-            senderArr[j] = splitTemp[++i];
-            sendDivisionArr[j] = splitTemp[++i];
-          }
-          i += 2;
-        }
-        else if(i%14 == 9){
-          if(splitTemp[i] == 'Buy'){
-            priceArr[j] = splitTemp[++i];
-            dateArr[j] = splitTemp[++i];
-            receiverArr[j] = splitTemp[++i];
-            recvDivisionArr[j] = splitTemp[++i];
-          }
-          else if(splitTemp[i] == 'Own'){
-            i += 2;
-            senderArr[j] = splitTemp[++i];
-            sendDivisionArr[j] = splitTemp[++i];
-          }
-        }
-      }
-<<<<<<< HEAD
-      res.render('search/searchKeywordResult.ejs', {esession:session_value.getSession(), receivers : receiverArr, recvDivisions: recvDivisionArr, senders: senderArr, sendDivisions: sendDivisionArr, dataUsages: dataUsageArr, datas: dataArr, prices: priceArr, dates: dateArr, agent_name: agent_name});
-
-      
-      res.render('search/searchKeywordResult.ejs', {receivers : receiverArr, recvDivisions: recvDivisionArr, senders: senderArr, sendDivisions: sendDivisionArr, dataUsages: dataUsageArr, datas: dataArr, prices: priceArr, dates: dateArr, agent_name: agent_name}); 
->>>>>>> master
-      session.close();  
-    })*/
     .catch(function (err) {
        console.log(err);
     });
