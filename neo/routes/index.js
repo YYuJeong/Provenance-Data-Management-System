@@ -79,8 +79,9 @@ console.log("bbb" + req.esession);
 
 router.get('/logout', function (req, res, next) {
     session_value.setSession('','','','');
-    console.log('logout', session_value.getSession())
-    res.render('index', {esession: session_value.getSession() });
+    console.log('logout', session_value.getSession());
+    res.redirect('/');
+    //res.render('index', {esession: session_value.getSession() });
 });
 /*
 router.route('/users').get(
