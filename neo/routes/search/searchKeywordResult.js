@@ -12,5 +12,8 @@ var driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', 'wo
 var session = driver.session();
 var session_value = require('../session');
 
+router.get('/', function(req, res, next) {
+    res.render('search/searchKeywordResult.ejs', {esession: session_value.getSession()});
+  });
   
 module.exports = router;
