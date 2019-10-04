@@ -104,41 +104,84 @@
               <div class="panel-heading" style = "font-size:medium;"><strong>키워드 검색 결과</strong></div>
               <!-- Table -->
               <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th align = center>#</th>
-                    <th align = center>&nbsp;이름&nbsp;</th>
-                    <th align = center>소&nbsp;&nbsp;&nbsp;속</th>
-                    <th align = center>Activity</th>
-                    <th align = center>날&nbsp짜</th>
-                    <th align = center>len4c :</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <% for(var i=0; i<20; i++ ) { %>
-                  <tr>
-                    <th scope="row">
-                      <%= one %>
-                    </th>
-                    <td align = center>
-                      <%= lend %>
-                    </td>
-                    <td align = center>
-                      <%= one %>
-                    </td> 
-                    <td align = center>
-                      <%= one %>
-                    </td> 
-                    <td align = center>
-                      <%= one %>
-                    </td> 
-                    <td align = center>
-                      <%= one %>
-                    </td> 
-                  </tr>
-                  <% } %>
-                </tbody>
-              </table>
+                  <thead>
+                    <tr>
+                      <th align = center>#</th>
+                      <th align = center>시작</th>
+                      <th align = center></th>
+                      <th align = center></th>
+                      <th align = center>끝</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% for(var i=0, j = 0; i<result3s.length; i++, j++ ) { %>
+                    <tr>
+                      <th scope="row">
+                          <%= (j+1) %>
+                      </th>
+                      <td align = center>
+                        <strong><%= result3s[i] %></strong>
+                      </td>
+                      <td align = center>
+                        <%= result3s[++i] %>
+                      </td>
+                      <td align = center>
+                        <%= result3s[++i] %>
+                      </td> 
+                      <td align = center>
+                        <strong><%= result3s[++i] %></strong>
+                      </td> 
+                    </tr>
+                    <% } %>
+                  </tbody>
+                </table>
+            </div>  
+          </div>
+        </div>
+
+        <div class="jumbotron">
+          <div class="container" style="display: inline-block;text-align: center;">
+            <br><br>
+            <div class="panel panel-default">
+              <!-- Default panel contents -->
+              <div class="panel-heading" style = "font-size:medium;"><strong>키워드 검색 결과</strong></div>
+              <!-- Table -->
+              <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th align = center>#</th>
+                      <th align = center>&nbsp;시작&nbsp;</th>
+                      <th align = center></th>
+                      <th align = center></th>
+                      <th align = center></th>
+                      <th align = center>끝</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% for(var i=0, j =0; i<result4s.length; i++, j++ ) { %>
+                    <tr>
+                      <th scope="row">
+                          <%= (j+1) %>
+                      </th>
+                      <td align = center>
+                        <strong><%= result4s[i] %></strong>
+                      </td>
+                      <td align = center>
+                        <%= result4s[++i] %>
+                      </td>
+                      <td align = center>
+                        <%= result4s[++i] %>
+                      </td> 
+                      <td align = center>
+                        <%= result4s[++i] %>
+                      </td>
+                      <td align = center>
+                        <strong><%= result4s[++i] %></strong>
+                      </td>
+                    </tr>
+                    <% } %>
+                  </tbody>
+                </table>
             </div>  
           </div>
         </div>

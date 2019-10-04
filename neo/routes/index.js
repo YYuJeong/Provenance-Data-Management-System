@@ -665,12 +665,16 @@ router.post('/keyword', function (req, res) {
     session
     .run("MATCH (a1:"+ group[0] +" {name:'"+ keyword[0] +"'}), (a2:"+group[1]+" {name:'"+ keyword[1] +"'}), path=((a1)-[*3..4]-(a2)) RETURN path ORDER BY LENGTH(path)")
     .then(result => {
+      leng = result.records.length
       console.log(result.records.length)
       return result.records.map(record => {
         path = record.get("path");
         start = path["start"]["properties"]["name"]
         end = path["end"]["properties"]["name"]
-
+        //console.log(record)
+        for(var p in path["segments"]){
+          console.log(path["segments"][p]);
+        }
         if(path.length == 3){
           length3count++;
           for(var p in path["segments"]){
@@ -686,14 +690,23 @@ router.post('/keyword', function (req, res) {
           result4Arr.push(end)
         }
         
-        for(var i = 0; i<result4Arr.length ; i++){
-          console.log("result4[", i , "] : " , result4Arr[i]);
-        }
         ss = result4Arr.length;
         console.log("ss: ", ss);
-        res.render('search/searchKeywordResult.ejs',{esession: session_value.getSession(),one: "this is the one", lend : ss} );
-        session.close();
+        /*
+        for (var i = 0; i <result3Arr.length ; i++){
+          console.log("result3Arr[" , i , "] : ", result3Arr[i])
+        }
+        */
+        if(ss == leng){
+          res.render('search/searchKeywordResult.ejs',{esession: session_value.getSession(), result4s:result4Arr, result3s : result3Arr} );
+          session.close();
+        }
+        else if(ss == 300){
+          res.render('search/searchKeywordResult.ejs',{esession: session_value.getSession(), result4s:result4Arr, result3s : result3Arr} );
+          session.close();
+        }
       });
+      //res.render('search/searchKeywordResult.ejs',{esession: session_value.getSession(),one: "this is the one", lend : ss} );
     })
     .catch(function (err) {
        console.log(err);
