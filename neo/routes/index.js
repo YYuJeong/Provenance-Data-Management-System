@@ -6,8 +6,6 @@ var esession = require('express-session');
 var crypto = require('crypto');
 var session_value = require('./session');
 var Promise = require('promise');
-
-
 var bodyParser = require('body-parser');
 var neo4j = require('neo4j-driver').v1;
 var driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', 'wowhi223'));
@@ -62,34 +60,12 @@ router.post('/contact', function(req, res, next) {
   });
 });
 
-/*
-router.get('/users', function(req, res, next) {
-  
-  let esession = req.esession;
-
-
-
-console.log("bbb" + req.esession);
-  res.render("users", {
-
-    esession : esession
-  });
-});
-*/
-
 router.get('/logout', function (req, res, next) {
     session_value.setSession('','','','');
     console.log('logout', session_value.getSession());
     res.redirect('/');
     //res.render('index', {esession: session_value.getSession() });
 });
-/*
-router.route('/users').get(
-    function (req, res) {
-        console.log(esession.email)
-        res.render('users', {essession:req.essession});
-    }
-)*/
 
 router.route('/search/searchPage').post(
     function (req, res) {
@@ -130,42 +106,7 @@ router.route('/users').post(
             }
         });
     }
-)
-/*
-router.post('/users', function(req, res, next) {
-  var body = req.body;
-  var email = body.email;
-  var password = body.password;
-  var name = body.name;
-  var gubun = body.gubun;
-
-  var sql = 'SELECT * FROM users WHERE email=?';
-  con.query(sql, [email], function(err, results){
-    if(err)
-      console.log(err);
-
-    if(!results[0])
-      //return res.send('아이디를 확인해주십시오');
-      return res.render('users', {message:'아이디를 확인해주십시오'});
-    else {
-      if(results[0].password === password){
-        //console.log('aaaaa');
-        //return res.send('로그인 되었습니다');
-
-        esession.email = body.email;
-        esession.password = body.password;
-        esession.user = results[0]["name"];
-        esession.gubun = results[0]["gubun"];
-
-        res.render('index', {message:'로그인 되었습니다' , esession: esession.user});
-      }
-      else //return res.send('비밀번호를 확인해주십시오');
-        res.render('users', {message:'비밀번호를 확인해주십시오', esession: undefined});
-    }
-  });
-}); 
-*/
-
+);
 
 router.post('/dataAdd', function (req, res) {
     var name = req.body.name;

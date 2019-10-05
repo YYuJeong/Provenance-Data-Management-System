@@ -4,7 +4,7 @@ var session_info ={
     email: '',
     user: '',
     gubun: '',
-    password: '',
+    password: ''
 };
 
 function setSession(email, user, gubun, password){
@@ -12,7 +12,7 @@ function setSession(email, user, gubun, password){
         email: email,
         user: user,
         gubun: gubun,
-        password: password,
+        password: password
     };
 }
 

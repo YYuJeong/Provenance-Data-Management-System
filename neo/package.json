@@ -6,6 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "alert-node": "^2.0.1",
     "body-parser": "^1.18.3",
     "cookie-parser": "^1.4.4",
     "crypto": "^1.0.1",
@@ -20,6 +21,7 @@
     "mysql": "^2.17.1",
     "neo4j-driver": "^1.7.3",
     "nodemon": "^1.19.3",
-    "promise": "^8.0.3"
+    "promise": "^8.0.3",
+    "sweetalert": "^2.1.2"
   }
 }
