@@ -29,55 +29,7 @@
     <!-- Wrap the rest of the page in another container to center all the content. -->
     <div class="container marketing">
         <!-- Three columns of text below the carousel -->
-        <div class="row">
-            <div style="margin-top: 50px;"></div>
-            <div class="col-lg-4" align = center>
-              <a  href="/viewPage" >
-              <img class="img-circle" src="/images/table.jpg" alt="Generic placeholder image" width="140" height="140">
-              </a>
-              <br><br>
-              <h2>이력 정보 보기</h2>
-            </div><!-- /.col-lg-4 -->
-            <div class="col-lg-4" align = center>
-              <a href="/addPage">
-              <img class="img-circle" src="/images/add.jpg"  alt="Generic placeholder image" width="140" height="140">
-              </a>
-              <br><br>
-              <h2>이력 정보 추가</h2>
-            </div><!-- /.col-lg-4 -->
-            <div class="col-lg-4" align = center>
-              <a href = "/search/searchPage">
-              <img class="img-circle" src="/images/search.jpg" alt="Generic placeholder image" width="140" height="140">
-              </a>
-              <br><br>
-              <h2>이력 정보 검색</h2>
-            </div><!-- /.col-lg-4 -->
-          </div><!-- /.row -->
-  
-          <div class="row">
-            <div style="margin-top: 50px;"></div>
-            <div class="col-lg-4" align = center>
-              <a  href="/data/modifyData" >
-              <img class="img-circle" src="/images/modify.png" alt="Generic placeholder image" width="140" height="140">
-              </a>
-              <br><br>
-              <h2>이력 정보 변경</h2>
-            </div><!-- /.col-lg-4 -->
-            <div class="col-lg-4" align = center>
-              <a href="/data/deleteData">
-              <img class="img-circle" src="/images/delete.png"  alt="Generic placeholder image" width="140" height="140">
-              </a>
-              <br><br>
-              <h2>이력 정보 삭제</h2>
-            </div><!-- /.col-lg-4 -->
-            <div class="col-lg-4" align = center>
-              <a href = "/data/uploadData">
-              <img class="img-circle" src="/images/upload.png" alt="Generic placeholder image" width="140" height="140">
-              </a>
-              <br><br>
-              <h2>이력 파일 업로드</h2>
-            </div><!-- /.col-lg-4 -->
-          </div><!-- /.row -->
+        <%include ./menu%>
   
         <!-- START THE FEATURETTES -->
 
@@ -87,6 +39,9 @@
             <br><br>
             <div class="panel panel-default">
               <!-- Default panel contents -->
+                <% if(authenticated == false){ %>
+                <% include ./notAuthenticated %>
+                <% }else {%>
               <div class="panel-heading" style = "font-size:medium;"><strong>이력 정보 보기 결과</strong></div>
               <!-- Table -->
               <table class="table table-striped">
@@ -104,7 +59,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <% for(var i=0; i<50; i++ ) { %>
+                  <% for(var i=0; i<data_length; i++ ) { %>
                   <tr>
                     <th scope="row">
                         <%= (i+1) %>
@@ -117,7 +72,7 @@
                     </td>
                     <td align = center>
                       <%= dataNames[i]  %>
-                    </td> 
+                    </td>
                     <td align = center>
                       <%= prices[i] %>
                     </td>
@@ -137,6 +92,7 @@
                   <% } %>
                 </tbody>
               </table>
+                <%}%>
             </div>  
           </div>
         </div>

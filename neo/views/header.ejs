@@ -30,17 +30,15 @@
                 <div id="navbar" class="navbar-collapse collapse" style="float:right;">
                     <ul class="nav navbar-nav">
                         <% if (esession != undefined){
-                        if(esession.email){
-                        %>
-                        <li id="login_name" margin="auto" style="color:white; font-size:1.3em">
-                            <%=esession.user%> 님 접속
-                            <button id="logout" onclick="logout()">logout</button>
-                            <!--<script src="../routes/header.js"></script>
-                            <a href="/logout" onclick="swal('logout')">logout</a>-->
-                        </li>
-                        <%}else{%>
-                            <li><a href="/users">로그인</a></li>
-                        <%}
+                            if(esession.email){
+                            %>
+                            <li id="login_name" margin="auto" style="color:white; font-size:1.3em">
+                                <%=esession.user%> 님 접속
+                                <button id="logout" onclick="logout()">logout</button>
+                            </li>
+                            <%}else{%>
+                                <li><a href="/users">로그인</a></li>
+                            <%}
                         }else{%>
                             <li><a href="/users">로그인</a></li>
                         <%}%>

@@ -61,8 +61,7 @@ router.post('/contact', function(req, res, next) {
 });
 
 router.get('/logout', function (req, res, next) {
-    session_value.setSession('','','','');
-    console.log('logout', session_value.getSession());
+    session_value.setSession('','','','',false);
     res.redirect('/');
     //res.render('index', {esession: session_value.getSession() });
 });
@@ -97,7 +96,7 @@ router.route('/users').post(
                     //session_info.password = body.password;
                     //session_info.user = results[0]["name"];
                     //session_info.gubun = results[0]["gubun"];
-                    session_value.setSession(body.email, results[0]["name"], results[0]["gubun"], body.password);
+                    session_value.setSession(body.email, results[0]["name"], results[0]["gubun"], body.password, true);
 
                     res.render('index', {message:'로그인 되었습니다' , esession: session_value.getSession()});
                 }
@@ -153,39 +152,116 @@ router.get('/viewPage', function (req, res) {
   var priceArr = [];
   var deviceArr = [];
   var i = 0;
-  session
-      .run("START n=node(*) MATCH (n)-[:wasAttributedTo]->(m)<-[:wasAssociatedWith]-(k) RETURN n, m, k LIMIT 50")
-      .then(function (result) {
-        result.records.forEach(function (record) {
-          i = i + 1;
-          dataTypeArr.push(record._fields[0].properties.d_type);
-          dataNameArr.push(record._fields[0].properties.name);
-          deviceArr.push(record._fields[0].properties.device);
-          priceArr.push(record._fields[0].properties.price)
+  var user_gubun = session_value.getSession().gubun;
+  var user_name = session_value.getSession().user;
 
-          affiliationArr.push(record._fields[1].properties.aff);
-          nameArr.push(record._fields[1].properties.name);
+    if(user_gubun == '사용자'){
+        session
+            .run("START n=node(*) MATCH (n)-[:wasAttributedTo]->(m:Agent{name:'"+user_name +"'})<-[:wasAssociatedWith]-(k) RETURN n, m, k LIMIT 50")
+            .then(function (result) {
+                result.records.forEach(function (record) {
+                    i = i + 1;
+                    dataTypeArr.push(record._fields[0].properties.d_type);
+                    dataNameArr.push(record._fields[0].properties.name);
+                    deviceArr.push(record._fields[0].properties.device);
+                    priceArr.push(record._fields[0].properties.price)
 
-          dateArr.push(record._fields[2].properties.date);
-          activityTypeArr.push(record._fields[2].properties.name);
-          /*
-          for (var j =0; j<3; j++){
-            console.log("record " + j + " -th " + "field: " + record._fields[j]);
-            console.log("record " + j + " -th " + "field labels: " + record._fields[j].labels[0]);
-            console.log("record " + j+ " -th " + "field properties name: " + record._fields[j].properties.name);
-            console.log("======================================");       
-          } 
+                    affiliationArr.push(record._fields[1].properties.aff);
+                    nameArr.push(record._fields[1].properties.name);
 
-          console.log("i: " + i);
-          */
+                    dateArr.push(record._fields[2].properties.date);
+                    activityTypeArr.push(record._fields[2].properties.name);
+                    /*
+                    for (var j =0; j<3; j++){
+                      console.log("record " + j + " -th " + "field: " + record._fields[j]);
+                      console.log("record " + j + " -th " + "field labels: " + record._fields[j].labels[0]);
+                      console.log("record " + j+ " -th " + "field properties name: " + record._fields[j].properties.name);
+                      console.log("======================================");
+                    }
+
+                    console.log("i: " + i);
+                    */
+                });
+                res.render('viewPage', {
+                    esession: session_value.getSession(),
+                    dataTypes: dataTypeArr,
+                    dataNames: dataNameArr,
+                    devices: deviceArr,
+                    prices: priceArr,
+                    affiliations: affiliationArr,
+                    names: nameArr,
+                    dates: dateArr,
+                    activityTypes: activityTypeArr,
+                    data_length: dataTypeArr.length,
+                    authenticated: true
+                });
+                session.close();
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+    }
+    else if(user_gubun =='관리자'){
+        session
+            .run("START n=node(*) MATCH (n)-[:wasAttributedTo]->(m)<-[:wasAssociatedWith]-(k) RETURN n, m, k LIMIT 50")
+            .then(function (result) {
+                result.records.forEach(function (record) {
+                    i = i + 1;
+                    dataTypeArr.push(record._fields[0].properties.d_type);
+                    dataNameArr.push(record._fields[0].properties.name);
+                    deviceArr.push(record._fields[0].properties.device);
+                    priceArr.push(record._fields[0].properties.price)
+
+                    affiliationArr.push(record._fields[1].properties.aff);
+                    nameArr.push(record._fields[1].properties.name);
+
+                    dateArr.push(record._fields[2].properties.date);
+                    activityTypeArr.push(record._fields[2].properties.name);
+                    /*
+                    for (var j =0; j<3; j++){
+                      console.log("record " + j + " -th " + "field: " + record._fields[j]);
+                      console.log("record " + j + " -th " + "field labels: " + record._fields[j].labels[0]);
+                      console.log("record " + j+ " -th " + "field properties name: " + record._fields[j].properties.name);
+                      console.log("======================================");
+                    }
+
+                    console.log("i: " + i);
+                    */
+                });
+                res.render('viewPage', {
+                    esession: session_value.getSession(),
+                    dataTypes: dataTypeArr,
+                    dataNames: dataNameArr,
+                    devices: deviceArr,
+                    prices: priceArr,
+                    affiliations: affiliationArr,
+                    names: nameArr,
+                    dates: dateArr,
+                    activityTypes: activityTypeArr,
+                    data_length: dataTypeArr.length,
+                    authenticated: true
+                });
+                session.close();
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+    }
+    else {
+        res.render('viewPage', {
+            esession: session_value.getSession(),
+            dataTypes: undefined,
+            dataNames: undefined,
+            devices: undefined,
+            prices: undefined,
+            affiliations: undefined,
+            names: undefined,
+            dates: undefined,
+            activityTypes: undefined,
+            data_length: undefined,
+            authenticated: false
         });
-      res.render('viewPage', {esession:session_value.getSession(), dataTypes : dataTypeArr, dataNames : dataNameArr, devices : deviceArr, prices : priceArr
-        , affiliations : affiliationArr, names : nameArr, dates : dateArr, activityTypes : activityTypeArr}); 
-      session.close();  
-    })
-    .catch(function (err) {
-        console.log(err);
-  });
+    }
 });
 
 router.post('/DataSearch', function(req, res){
@@ -213,7 +289,15 @@ router.post('/DataSearch', function(req, res){
 
   console.log("*******************************************************************************************************");
   var nullcount = 0;
-  var matchCyper = "MATCH (entity:Entity)-[rel1:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent)";
+  var user_gubun = session_value.getSession().gubun;
+  var user_name = session_value.getSession().user;
+  var matchCyper;
+
+  if(user_gubun == '관리자')
+      matchCyper = "MATCH (entity:Entity)-[rel1:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent)";
+  else
+      matchCyper = "MATCH (entity:Entity)-[rel1:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent{name:'" + user_name + "'})";
+
   var returnCyper = " RETURN agent.name, agent.aff, activity.name, activity.date, entity.name, entity.d_type, entity.price, entity.device"
   var whereCyper = " WHERE"
   
@@ -447,7 +531,15 @@ router.post('/periodSearch', function(req, res){
   
   var nullcount = 0;
 
-  var matchCyper = "MATCH (entity:Entity)-[rel1:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent)";
+  var user_gubun = session_value.getSession().gubun;
+  var user_name = session_value.getSession().user;
+  var matchCyper;
+
+  if(user_gubun == '관리자')
+      matchCyper = "MATCH (entity:Entity)-[rel1:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent)";
+  else
+      matchCyper = "MATCH (entity:Entity)-[rel1:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent{name:'" + user_name + "'})";
+
   var returnCyper = " RETURN agent.name, agent.aff, activity.name, activity.date, entity.name, entity.d_type, entity.price, entity.device"
   var whereCyper = " WHERE"
   
@@ -603,8 +695,12 @@ router.post('/keyword', function (req, res) {
     var keyword = keys[2]
     var resultArr = []
     console.log(group, keyword);
+    var user_gubun = session_value.getSession().gubun;
+    var user_name = session_value.getSession().user;
+    var query = "MATCH (a1:"+ group[0] +" {name:'"+ keyword[0] +"'}), (a2:"+group[1]+" {name:'"+ keyword[1] +"'}), path=((a1)-[*3..4]-(a2)) RETURN path ORDER BY LENGTH(path)";
+
     session
-    .run("MATCH (a1:"+ group[0] +" {name:'"+ keyword[0] +"'}), (a2:"+group[1]+" {name:'"+ keyword[1] +"'}), path=((a1)-[*3..4]-(a2)) RETURN path ORDER BY LENGTH(path)")
+    .run(query)
     .then(result => {
       leng = result.records.length
       console.log(result.records.length)

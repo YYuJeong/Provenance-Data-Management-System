@@ -16,7 +16,6 @@
    <link href="/public/stylesheets/carousel.css" rel="stylesheet">
 
    <script>
-
       function onAdd(){
         alert("이력 정보가 추가되었습니다.");
       };
@@ -39,93 +38,48 @@
 
     <div class="container marketing">
 
-        <div class="row">
-            <div style="margin-top: 50px;"></div>
-            <div class="col-lg-4" align = center>
-              <a  href="/viewPage" >
-              <img class="img-circle" src="/images/table.jpg" alt="Generic placeholder image" width="140" height="140">
-              </a>
-              <br><br>
-              <h2>이력 정보 보기</h2>
-            </div><!-- /.col-lg-4 -->
-            <div class="col-lg-4" align = center>
-              <a href="/addPage">
-              <img class="img-circle" src="/images/add.jpg"  alt="Generic placeholder image" width="140" height="140">
-              </a>
-              <br><br>
-              <h2>이력 정보 추가</h2>
-            </div><!-- /.col-lg-4 -->
-            <div class="col-lg-4" align = center>
-              <a href = "/search/searchPage">
-              <img class="img-circle" src="/images/search.jpg" alt="Generic placeholder image" width="140" height="140">
-              </a>
-              <br><br>
-              <h2>이력 정보 검색</h2>
-            </div><!-- /.col-lg-4 -->
-          </div><!-- /.row -->
-
-          <div class="row">
-            <div style="margin-top: 50px;"></div>
-            <div class="col-lg-4" align = center>
-              <a  href="/data/modifyData" >
-              <img class="img-circle" src="/images/modify.png" alt="Generic placeholder image" width="140" height="140">
-              </a>
-              <br><br>
-              <h2>이력 정보 변경</h2>
-            </div><!-- /.col-lg-4 -->
-            <div class="col-lg-4" align = center>
-              <a href="/data/deleteData">
-              <img class="img-circle" src="/images/delete.png"  alt="Generic placeholder image" width="140" height="140">
-              </a>
-              <br><br>
-              <h2>이력 정보 삭제</h2>
-            </div><!-- /.col-lg-4 -->
-            <div class="col-lg-4" align = center>
-              <a href = "/data/uploadData">
-              <img class="img-circle" src="/images/upload.png" alt="Generic placeholder image" width="140" height="140">
-              </a>
-              <br><br>
-              <h2>이력 파일 업로드</h2>
-            </div><!-- /.col-lg-4 -->
-          </div><!-- /.row -->
+        <%include ./menu%>
   
         <!-- START THE FEATURETTES -->
-  
         <hr class="featurette-divider">
         <!-- /END THE FEATURETTES -->
         <div class="jumbotron">
-          <div class="container" style="display: inline-block; text-align: center;">
-            <h3>이력 정보 추가 </h3> <br>
-            <form method="post" action="/dataAdd" >
-              <label> 이 름 </label><br>
-              <input type="text" name="name" class="form-control" style="width:180px; margin:0 auto;" />
-              <br>
-              <label> 소 속</label><br>
-              <input type="text" name="affiliation" class="form-control" style="width:180px; margin:0 auto;" />
-              <br>
-              <label> Activity </label><br>
-              <input type="text" name="activityType" class="form-control" style="width:180px; margin:0 auto;" />
-              <br>
-              <label> 날 짜</label><br>
-              <input type="text" name="date" class="form-control" style="width:180px; margin:0 auto;" />
-              <br>
-              <label> 데이터명 </label><br> 
-              <input type="text" name="dataName" class="form-control" style="width:180px; margin:0 auto;" />
-              <br>
-              <label> 데이터 종류</label><br>
-              <input type="text" name="dataType" class="form-control" style="width:180px; margin:0 auto;" />
-              <br>
-              <label> 가 격 </label><br>
-              <input type="text" name="price" class="form-control" style="width:180px; margin:0 auto;" />
-              <br>
-              <label> Device </label><br>
-              <input type="text" name="device" class="form-control" style="width:180px; margin:0 auto;" />
-              <br><br>
-              <input class="btn btn-primary" type="submit" value="추가" style="width:100px;" onClick="onAdd()">
-              <input class="btn btn-light" type="reset" value="취소" style="width:100px;">
-              <br><br>
-            </form>
-          </div>
+            <%if(esession.authenticated == false){ %>
+            <%include ./notAuthenticated.ejs%>
+            <% } else {%>
+              <div class="container" style="display: inline-block; text-align: center;">
+                <h3>이력 정보 추가 </h3> <br>
+                <form method="post" action="/dataAdd" >
+                  <label> 이 름 </label><br>
+                  <input type="text" name="name" class="form-control" style="width:180px; margin:0 auto;" />
+                  <br>
+                  <label> 소 속</label><br>
+                  <input type="text" name="affiliation" class="form-control" style="width:180px; margin:0 auto;" />
+                  <br>
+                  <label> Activity </label><br>
+                  <input type="text" name="activityType" class="form-control" style="width:180px; margin:0 auto;" />
+                  <br>
+                  <label> 날 짜</label><br>
+                  <input type="text" name="date" class="form-control" style="width:180px; margin:0 auto;" />
+                  <br>
+                  <label> 데이터명 </label><br>
+                  <input type="text" name="dataName" class="form-control" style="width:180px; margin:0 auto;" />
+                  <br>
+                  <label> 데이터 종류</label><br>
+                  <input type="text" name="dataType" class="form-control" style="width:180px; margin:0 auto;" />
+                  <br>
+                  <label> 가 격 </label><br>
+                  <input type="text" name="price" class="form-control" style="width:180px; margin:0 auto;" />
+                  <br>
+                  <label> Device </label><br>
+                  <input type="text" name="device" class="form-control" style="width:180px; margin:0 auto;" />
+                  <br><br>
+                  <input class="btn btn-primary" type="submit" value="추가" style="width:100px;" onClick="onAdd()">
+                  <input class="btn btn-light" type="reset" value="취소" style="width:100px;">
+                  <br><br>
+                </form>
+              </div>
+            <% }%>
         </div>
         <hr class="featurette-divider">
   
