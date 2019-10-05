@@ -171,16 +171,7 @@ router.get('/viewPage', function (req, res) {
 
                     dateArr.push(record._fields[2].properties.date);
                     activityTypeArr.push(record._fields[2].properties.name);
-                    /*
-                    for (var j =0; j<3; j++){
-                      console.log("record " + j + " -th " + "field: " + record._fields[j]);
-                      console.log("record " + j + " -th " + "field labels: " + record._fields[j].labels[0]);
-                      console.log("record " + j+ " -th " + "field properties name: " + record._fields[j].properties.name);
-                      console.log("======================================");
-                    }
 
-                    console.log("i: " + i);
-                    */
                 });
                 res.render('viewPage', {
                     esession: session_value.getSession(),
@@ -217,16 +208,6 @@ router.get('/viewPage', function (req, res) {
 
                     dateArr.push(record._fields[2].properties.date);
                     activityTypeArr.push(record._fields[2].properties.name);
-                    /*
-                    for (var j =0; j<3; j++){
-                      console.log("record " + j + " -th " + "field: " + record._fields[j]);
-                      console.log("record " + j + " -th " + "field labels: " + record._fields[j].labels[0]);
-                      console.log("record " + j+ " -th " + "field properties name: " + record._fields[j].properties.name);
-                      console.log("======================================");
-                    }
-
-                    console.log("i: " + i);
-                    */
                 });
                 res.render('viewPage', {
                     esession: session_value.getSession(),
@@ -676,9 +657,7 @@ function getCheckNode(keyword){
 router.post('/keyword', function (req, res) {
   var result4Arr = []
   var result3Arr = []
-  var length4count ;
-  var length3count ;
-  var ss;
+  var arrLength;
   getKeyword(req.body.keyword)
   .then(
     function(keywords){
@@ -734,11 +713,11 @@ router.post('/keyword', function (req, res) {
           console.log("result3Arr[" , i , "] : ", result3Arr[i])
         }
         */
-        if(ss == leng){
+        if( arrLength == leng){
           res.render('search/searchKeywordResult.ejs',{esession: session_value.getSession(), result4s:result4Arr, result3s : result3Arr} );
           session.close();
         }
-        else if(ss == 300){
+        else if( arrLength == 300){
           res.render('search/searchKeywordResult.ejs',{esession: session_value.getSession(), result4s:result4Arr, result3s : result3Arr} );
           session.close();
         }
