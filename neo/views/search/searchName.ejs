@@ -70,11 +70,17 @@
             <h2>개인정보 이력 업로드</h2>
           </div><!-- /.col-lg-4 -->
         </div><!-- /.row -->
+              <div class="container marketing">
+                  <%include ../menu%>
 
                     <hr class="featurette-divider">
                     <div class="jumbotron">
+                        <div class="jumbotron">
+                            <%if(esession.authenticated == false){%>
+                                <% include ../notAuthenticated.ejs %>
+                            <% }else{%>
                         <div class="container">
-                            <div style="text-align: center;"><h3>이름 검색</h3><br>
+                            <div style="text-align: center;"><h3>사용자로 검색</h3><br>
                             </div>
                         <form method="post" action="/nameSearch">
 
@@ -88,7 +94,7 @@
                             </div>
                             <br>
                             <div class="input-group" style="width:30%; margin:0 auto;">
-                                <span class="input-group-addon">기관</span>
+                                <span class="input-group-addon">소속</span>
                                 <input type="text" id="affiliation" name="affiliation" class="form-control" />
                             </div>
                         </div>
@@ -101,6 +107,7 @@
                         <!--원래폼위치-->
                     </form>
             </div>
+                            <%}%>
         </div>
       <hr class="featurette-divider">
       <!-- FOOTER -->

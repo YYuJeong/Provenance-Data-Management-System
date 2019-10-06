@@ -82,10 +82,14 @@
             <h2>개인정보 이력 업로드</h2>
           </div><!-- /.col-lg-4 -->
         </div><!-- /.row -->
+        <%include ../menu%>
 
           <hr class="featurette-divider">
           <br><br>
           <div class="jumbotron">
+              <%if(esession.authenticated == false){%>
+                  <% include ../notAuthenticated.ejs %>
+              <% }else{%>
             <div class="container">
                 <div style="text-align: center;"><h3>이력 파일 업로드</h3><br>
                 </div>
@@ -93,6 +97,7 @@
           <!-- START THE FEATURETTES -->
           
             </div><!-- /.container -->
+              <%}%>
           </div>
         <hr class="featurette-divider">
       </div>

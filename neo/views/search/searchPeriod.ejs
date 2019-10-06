@@ -124,11 +124,17 @@
               <h2>개인정보 이력 업로드</h2>
             </div><!-- /.col-lg-4 -->
           </div><!-- /.row -->
+              <div class="container marketing">
+                  <%include ../menu%>
 
                     <hr class="featurette-divider">
                     <div class="jumbotron">
+                        <div class="jumbotron">
+                            <%if(esession.authenticated == false){%>
+                                <% include ../notAuthenticated.ejs %>
+                            <% }else{%>
                         <div class="container">
-                            <div style="text-align: center;"><h3>기간 검색</h3><br><br>
+                            <div style="text-align: center;"><h3>활동으로 검색</h3><br><br>
                             </div>
                         <form method="post" action="/periodSearch">
 
@@ -151,6 +157,17 @@
                                         <span class="input-group-addon add-on"><span class="glyphicon glyphicon-calendar"></span></span>
                                         </div>
                                 </div>
+
+                                <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
+                                <div class="col-sm-6 col-md-4">
+                                    <select id="activityType" name = "activityType" class="form-control">
+                                    <option value = ''>타입</option>
+                                    <option value="판매">판매</option>
+                                    <option value="구매">구매</option>
+                                    <option value="출판">출판</option>
+                                    <option value="수정">수정</option>
+                                    </select> 
+                                </div>
                             </div>
                         </div>
                     <!--디비연결전송오류로잠시위치이동-->
@@ -161,6 +178,7 @@
                         </div> 
                     </form><!--원래폼위치-->     
             </div>
+            <%}%>
         </div>
       <hr class="featurette-divider">
       <!-- FOOTER -->

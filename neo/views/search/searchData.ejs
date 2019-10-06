@@ -78,25 +78,24 @@
             <h2>개인정보 이력 업로드</h2>
           </div><!-- /.col-lg-4 -->
         </div><!-- /.row -->
+              <div class="container marketing">
+                  <%include ../menu%>
 
                     <hr class="featurette-divider">
                     <div class="jumbotron">
+                        <%if(esession.authenticated == false){%>
+                            <% include ../notAuthenticated.ejs %>
+                        <% }else{%>
                         <div class="container">
-                            <div style="text-align: center;"><h3>데이터 검색</h3><br>
+                            <div style="text-align: center;"><h3>데이터로 검색</h3><br>
                             </div>
                         <form  method="post" action="/DataSearch">
-
                         <div class="row" >
                             <!--Start Here:)-->
                         <div style="margin:0 auto;">
                             <div class="input-group" style="width:30%; margin:0 auto;">
                                 <span class="input-group-addon">데이터</span>
                                 <input type="text" id="dataName" name="dataName" class="form-control" />
-                            </div>
-                            <br>
-                            <div class="input-group" style="width:30%; margin:0 auto;">
-                                <span class="input-group-addon">&nbsp 이름 &nbsp</span>
-                                <input type="text" id="name" name="name" class="form-control" />
                             </div>
                             <br>
                             <div class="form-group">
@@ -141,6 +140,7 @@
                         </div> 
                       </form><!--원래폼위치-->      
             </div>
+                        <%}%>
     </div>
     <hr class="featurette-divider">
   </div>

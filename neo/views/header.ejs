@@ -1,3 +1,25 @@
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+    function logout() {
+         swal({
+             title: "LOGOUT?",
+             icon: "warning",
+             buttons: true,
+             dangerMode: true,
+         })
+        .then((logout) => {
+            if (logout) {
+                swal({
+                    title:"LOGOUT 되었습니다!",
+                    icon: "success",
+                })
+                .then((out)=>{
+                    window.location.href = "/logout";
+                });
+            }
+        });
+    }
+</script>
 <div class="navbar-wrapper">
     <div class="container-fluid">
         <nav class="navbar navbar-inverse navbar-static-top">
@@ -8,12 +30,15 @@
                 <div id="navbar" class="navbar-collapse collapse" style="float:right;">
                     <ul class="nav navbar-nav">
                         <% if (esession != undefined){
-                        if(esession.email){
-                        %>
-                        <li id="login_name" margin="auto" style="color:white; font-size:1.3em"><%=esession.user%> 님 접속 <a href="/logout">logout</a></li>
-                        <%}else{%>
-                            <li><a href="/users">로그인</a></li>
-                        <%}
+                            if(esession.email){
+                            %>
+                            <li id="login_name" margin="auto" style="color:white; font-size:1.3em">
+                                <%=esession.user%> 님 접속
+                                <button id="logout" onclick="logout()">logout</button>
+                            </li>
+                            <%}else{%>
+                                <li><a href="/users">로그인</a></li>
+                            <%}
                         }else{%>
                             <li><a href="/users">로그인</a></li>
                         <%}%>

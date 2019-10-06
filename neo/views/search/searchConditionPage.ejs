@@ -32,6 +32,7 @@
     <div class="container marketing">
 
         <!-- Three columns of text below the carousel -->
+<<<<<<< HEAD
         <div class="row">
           <div style="margin-top: 50px;"></div>
           <div class="col-lg-4" align = center>
@@ -81,16 +82,27 @@
             <h2>개인정보 이력 업로드</h2>
           </div><!-- /.col-lg-4 -->
         </div><!-- /.row -->
+=======
+        <%include ../menu%>
+>>>>>>> fb20060a8e76389a61a7a4d3f12cfba729a7ff61
 
         <hr class="featurette-divider">
         <br><br>
-        <!-- START THE FEATURETTES --><div align = center>
-        <a href = "/search/searchData"><button type="button" class="btn btn-primary btn-lg btn-block" style="width:300px;">데이터 검색</button></a>
+        <!-- START THE FEATURETTES -->
+        <div align = center>
+            <%if(esession.authenticated == false){%>
+                <% include ../notAuthenticated.ejs %>
+            <% }else{%>
+        <a href = "/search/searchData"><button type="button" class="btn btn-primary btn-lg btn-block" style="width:300px;">데이터로 검색</button></a>
         <br><br>
-        <a href = "/search/searchName"><button type="button" class="btn btn-default btn-lg btn-block" style="width:300px;">이름 검색</button></a>
+        <%if(esession.gubun =='관리자'){%>
+            <a href = "/search/searchName"><button type="button" class="btn btn-default btn-lg btn-block" style="width:300px;">사용자로 검색</button></a>
+            <br><br>
+        <%}%>
+        <a href = "/search/searchPeriod"><button type="button" class="btn btn-dark btn-lg btn-block" style="width:300px;">활동으로 검색</button></a>
         <br><br>
-        <a href = "/search/searchPeriod"><button type="button" class="btn btn-dark btn-lg btn-block" style="width:300px;">기간 검색</button></a>
-        <br><br></div>
+            <% }%>
+        </div>
         <hr class="featurette-divider">
 
   

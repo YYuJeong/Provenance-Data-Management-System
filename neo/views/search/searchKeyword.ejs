@@ -81,22 +81,27 @@
             <h2>개인정보 이력 업로드</h2>
           </div><!-- /.col-lg-4 -->
         </div><!-- /.row -->
+        <%include ../menu%>
 
         <hr class="featurette-divider">
         <br><br>
         <!-- START THE FEATURETTES -->
         <div class="jumbotron">
+            <%if(esession.authenticated == false){%>
+                <% include ../notAuthenticated.ejs %>
+            <% }else{%>
             <div class="container" style="display: inline-block; text-align: center;">
               <h3>키워드 검색</h3><br><br><br>
               <form class="form-inline" method="post" action="/keyword">
                 <div class="input-group" style="text-align: center;">
-                    <input type="text" class="form-control" name = "keyword" style="width:300px;">
+                    <input type="text" value=<%=esession.user%> class="form-control" name = "keyword" style="width:300px;">
                 </div>                  
                 <!--<input class="btn btn-primary" type="submit" value="Search">-->
                 <a href="/search/searchKeywordResult"><input class="btn btn-primary" type="submit" value="Search"></a>
                 <br><br><br><br><br>
                 </form>
             </div>
+            <%}%>
           </div>
   
 
