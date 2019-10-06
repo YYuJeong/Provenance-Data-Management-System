@@ -10,8 +10,6 @@ var esession = require('express-session');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var contactRouter = require('./routes/contact');
-var adminRouter = require('./routes/admin');
-var logoutRouter = require('./routes/logout');
 
 var viewPage = require('./routes/viewPage');
 var addPage = require('./routes/addPage');
@@ -61,8 +59,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/contact', contactRouter);
-app.use('/admin', adminRouter);
-app.use('/logout', logoutRouter);
 
 app.use('/viewPage', viewPage);
 app.use('/addPage', addPage);

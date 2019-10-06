@@ -13,12 +13,19 @@
    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+   <link href="https://fonts.googleapis.com/css?family=Do+Hyeon&display=swap" rel="stylesheet">
 
    <style type="text/css"> 
     .input-group-addon.primary {
       color: rgb(255, 255, 255);
       background-color: rgb(50, 118, 177);
       border-color: rgb(40, 94, 142);
+      }
+
+    body {
+      font-family: 'Do Hyeon';
+      color: #303030;
+      letter-spacing: 1px;
       }
    </style>
 
@@ -46,25 +53,12 @@
                                 <span class="input-group-addon">데이터</span>
                                 <input type="text" id="dataName" name="dataName" class="form-control" />
                             </div>
-
                             <br>
-                            <div class="form-group">
-                                <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
-                                <div class="col-sm-6 col-md-4">
-
-
-                                  <select id="device" name = "device" class="form-control">
-                                    <option value = ''>장치</option>
-                                    <option value="AI스피커">AI스피커</option>
-                                    <option value="T머니">T머니</option>
-                                    <option value="레일플러스">레일플러스</option>
-                                    <option value="스마트워치">스마트워치</option>
-                                    <option value="페이션트모니터">페이션트모니터</option>
-                                    <option value="캐시비">캐시비</option>
-                                  </select> 
-                                </div>
+                            <div class="input-group" style="width:30%; margin:0 auto;">
+                                <span class="input-group-addon">가격</span>
+                                <input type="text" id="dataName" name="dataName" class="form-control" />
                             </div>
-                            <br><br>
+                            <br>
                             <div class="form-group">
                                 <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
                                 <div class="col-sm-6 col-md-4">
@@ -74,6 +68,21 @@
                                     <option value="의료데이터">의료</option>
                                     <option value="위치데이터">위치</option>
                                     <option value="음성데이터">음성</option>
+                                  </select> 
+                                </div>
+                            </div>
+                            <br><br>
+                            <div class="form-group">
+                                <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
+                                <div class="col-sm-6 col-md-4">
+                                  <select id="device" name = "device" class="form-control">
+                                    <option value = ''>장치</option>
+                                    <option value="AI스피커">AI스피커</option>
+                                    <option value="T머니">T머니</option>
+                                    <option value="레일플러스">레일플러스</option>
+                                    <option value="스마트워치">스마트워치</option>
+                                    <option value="페이션트모니터">페이션트모니터</option>
+                                    <option value="캐시비">캐시비</option>
                                   </select> 
                                 </div>
                             </div>
@@ -93,7 +102,6 @@
                       </form>
             </div>
         </div>
-      <hr class="featurette-divider">
       <hr class="featurette-divider">
       <div class="jumbotron">
         <div class="container" style="display: inline-block;text-align: center;">

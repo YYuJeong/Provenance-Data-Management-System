@@ -13,6 +13,15 @@
    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Do+Hyeon&display=swap" rel="stylesheet">
+
+<style type="text/css"> 
+  body {
+    font-family: 'Do Hyeon';
+    color: #303030;
+    letter-spacing: 1px;
+  }
+</style>
 
 </head>
 
@@ -20,55 +29,6 @@
 <% include ../header %>
               <div class="container marketing">
         <!-- Three columns of text below the carousel -->
-        <div class="row">
-          <div style="margin-top: 50px;"></div>
-          <div class="col-lg-4" align = center>
-            <a  href="/viewPage" >
-            <img class="img-circle" src="/images/table.jpg" alt="Generic placeholder image" width="140" height="140">
-            </a>
-            <br><br>
-            <h2>개인정보 이력 보기</h2>
-          </div><!-- /.col-lg-4 -->
-          <div class="col-lg-4" align = center>
-            <a href="/addPage">
-            <img class="img-circle" src="/images/add.jpg"  alt="Generic placeholder image" width="140" height="140">
-            </a>
-            <br><br>
-            <h2>개인정보 이력 추가</h2>
-          </div><!-- /.col-lg-4 -->
-          <div class="col-lg-4" align = center>
-            <a href = "/search/searchPage">
-            <img class="img-circle" src="/images/search.jpg" alt="Generic placeholder image" width="140" height="140">
-            </a>
-            <br><br>
-            <h2>개인정보 이력 검색</h2>
-          </div><!-- /.col-lg-4 -->
-        </div><!-- /.row -->
-        
-        <div class="row">
-          <div style="margin-top: 50px;"></div>
-          <div class="col-lg-4" align = center>
-            <a  href="/data/modifyData" >
-            <img class="img-circle" src="/images/modify.png" alt="Generic placeholder image" width="140" height="140">
-            </a>
-            <br><br>
-            <h2>개인정보 이력 변경</h2>
-          </div><!-- /.col-lg-4 -->
-          <div class="col-lg-4" align = center>
-            <a href="/data/deleteData">
-            <img class="img-circle" src="/images/delete.png"  alt="Generic placeholder image" width="140" height="140">
-            </a>
-            <br><br>
-            <h2>개인정보 이력 삭제</h2>
-          </div><!-- /.col-lg-4 -->
-          <div class="col-lg-4" align = center>
-            <a href = "/data/uploadData">
-            <img class="img-circle" src="/images/upload.png" alt="Generic placeholder image" width="140" height="140">
-            </a>
-            <br><br>
-            <h2>개인정보 이력 업로드</h2>
-          </div><!-- /.col-lg-4 -->
-        </div><!-- /.row -->
                   <%include ../menu%>
 
                     <hr class="featurette-divider">
@@ -101,7 +61,6 @@
                         </form>
             </div>
         </div>
-        <hr class="featurette-divider">
         <hr class="featurette-divider">
         <div class="jumbotron">
           <div class="container" style="display: inline-block;text-align: center;">
