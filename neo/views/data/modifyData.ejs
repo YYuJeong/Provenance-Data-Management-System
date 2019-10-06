@@ -32,27 +32,49 @@
     <div class="container marketing">
 
         <!-- Three columns of text below the carousel -->
-
         <%include ../menu%>
 
-          <hr class="featurette-divider">
-          <br><br>
-          <div class="jumbotron">
-              <%if(esession.authenticated == false){%>
-                  <% include ../notAuthenticated.ejs %>
-              <% }else{%>
-            <div class="container">
-                <div style="text-align: center;"><h3>이력 정보 변경</h3><br>
-                </div>
-  
-          <!-- START THE FEATURETTES -->
-          
-            </div><!-- /.container -->
-              <%}%>
-          </div>
         <hr class="featurette-divider">
+        <br><br>
+        <div class="jumbotron">
+            <%if(esession.authenticated == false){%>
+                <% include ../notAuthenticated.ejs %>
+            <% }else{%>
+          <div class="container">
+              <div style="text-align: center;"><h3>이력 정보 변경</h3><br>
+              </div>
+
+        <!-- START THE FEATURETTES -->
+            <form  method="post" action="/modify">
+            <div class="row" >
+                <!--Start Here:)-->
+            <div style="margin:0 auto;">
+                <div class="input-group" style="width:30%; margin:0 auto;">
+                    <span class="input-group-addon">데이터</span>
+                    <input type="text" id="dataName" name="dataName" class="form-control" />
+                </div>
+                <br>
+                <%if (esession.gubun == '관리자'){%>
+                <div class="input-group" style="width:30%; margin:0 auto;">
+                        <span class="input-group-addon">이  름</span>
+                        <input type="text" id="name" name="name" class="form-control" />
+                </div>
+                <%}%>
+            </div>
+
+          <!--</form>-->  <!--디비연결전송오류로잠시위치이동-->
+            <div style="text-align: center;"><br><br>
+                <a href="/data/modifyDataResult"><input class="btn btn-primary" type="submit" value="검색" style="width:100px"></a>
+                <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px"></a>
+            </div> 
+          </div>
+          </form><!--원래폼위치-->      
+        </div>
+            <%}%>
+          </div><!-- /.container -->
+      <hr class="featurette-divider">
     </div>
-  
+    
   
       <!-- Bootstrap core JavaScript
       ================================================== -->

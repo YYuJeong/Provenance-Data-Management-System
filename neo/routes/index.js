@@ -287,17 +287,14 @@ router.post('/DataSearch', function(req, res){
   var dataTypeCyper = " entity.d_type = ";
 
   if(device == ''){
-    console.log("device null");
     deviceFlag = false;
     nullcount++;
   }
   if(dataName == '' || dataName == undefined){
-    console.log("dataName null");
     dataNameFlag = false;
     nullcount++;
   }
   if(dataType == ''){
-    console.log("dataType null");
     dataTypeFlag = false;
     nullcount++;
   }
@@ -305,20 +302,16 @@ router.post('/DataSearch', function(req, res){
   var newQuery = matchCyper + whereCyper;
 
   for(var i = 0 ; i < (3-nullcount); i++){
-    console.log("i: " + i);
     if(deviceFlag){
-      console.log("2device : " + device);
       newQuery = newQuery + deviceCyper + "'" + device + "'";
       deviceFlag = false;
     }
     else if(dataNameFlag){
-      console.log("2dataName: " + dataName);
       newQuery = newQuery + dataNameCyper + "'" + dataName + "'";
       dataNameFlag = false;
     }
   
     else if(dataTypeFlag){
-      console.log("2dataType: " + dataType);
       newQuery = newQuery + dataTypeCyper + "'" + dataType + "'" ;
       dataTypeFlag = false;
     }
@@ -328,16 +321,12 @@ router.post('/DataSearch', function(req, res){
   }
   newQuery = newQuery + returnCyper;
 
-  console.log("*******************************************************************************************************");
-  console.log(newQuery);
-
   session
   .run(newQuery)
   .then(function (result) {
 
    var searchArr = [];
    var size = Object.keys(result.records).length;  
-   console.log("size: " + size);
    var test = [];
    for (var i = 0; i < size; i++) {
        var da = result.records[i]._fields;
@@ -350,7 +339,6 @@ router.post('/DataSearch', function(req, res){
 
     temp = searchArr.toString();
     var splitTemp = temp.split(',');
-    console.log("SSS: " , splitTemp);
 
 
     for(var j = 0, i=0; j < 8*size ; j++){
@@ -366,25 +354,18 @@ router.post('/DataSearch', function(req, res){
       }
       i++; 
     }
-    console.log("=======================================================");
 
-    /*
-    for(var i = 0; i < 4; i++){
-      console.log("i: " + i);
-      console.log("nameArr[i]: " + nameArr[i] );
-      console.log("affiliation: " + affiliationArr[i]);
-      console.log("activityType: " + activityTypeArr[i]);
-      console.log("date: " + dateArr[i]);
-      console.log("dataName: " + dataNameArr[i]);
-      console.log("dataType: " + dataTypeArr[i]);
-      console.log("price: " + priceArr[i]);
-      console.log("device: " + deviceArr[i]);
-    }
-
-    */
-
-    res.render('search/searchDataResult.ejs', {esession:session_value.getSession(), dataTypes : dataTypeArr, dataNames : dataNameArr, devices : deviceArr, prices : priceArr
-      , affiliations : affiliationArr, names : nameArr, dates : dateArr, activityTypes : activityTypeArr}); 
+    res.render('search/searchDataResult.ejs', {
+      esession:session_value.getSession(),
+      dataTypes : dataTypeArr, 
+      dataNames : dataNameArr, 
+      devices : deviceArr, 
+      prices : priceArr, 
+      affiliations : affiliationArr, 
+      names : nameArr, 
+      dates : dateArr, 
+      activityTypes : activityTypeArr
+    }); 
     session.close();  
   })
   .catch(function (err) {
@@ -706,8 +687,8 @@ router.post('/keyword', function (req, res) {
           result4Arr.push(end)
         }
         
-        ss = result4Arr.length;
-        console.log("ss: ", ss);
+        arrLength = result4Arr.length;
+
         /*
         for (var i = 0; i <result3Arr.length ; i++){
           console.log("result3Arr[" , i , "] : ", result3Arr[i])
@@ -722,7 +703,6 @@ router.post('/keyword', function (req, res) {
           session.close();
         }
       });
-      //res.render('search/searchKeywordResult.ejs',{esession: session_value.getSession(),one: "this is the one", lend : ss} );
     })
     .catch(function (err) {
        console.log(err);
@@ -750,10 +730,16 @@ router.post('/delete', function(req, res){
   var priceArr = [];
   var deviceArr = [];
 
-  console.log("affiliation: " + dataName);
+  console.log("dataName: " + dataName);
   console.log("name: " + name);
 
   var nullcount = 0;
+
+
+  var user_gubun = session_value.getSession().gubun;
+  var user_name = session_value.getSession().user;
+  var matchCyper;
+
   var matchCyper = "MATCH (entity:Entity)-[rel1:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent)";
   var returnCyper = " RETURN agent.name, agent.aff, activity.name, activity.date, entity.name, entity.d_type, entity.price, entity.device"
   var whereCyper = " WHERE"
@@ -823,6 +809,108 @@ router.post('/delete', function(req, res){
       i++; 
     }
     res.render('data/deleteDataResult.ejs', {esession:session_value.getSession(), dataTypes : dataTypeArr, dataNames : dataNameArr, devices : deviceArr, prices : priceArr
+      , affiliations : affiliationArr, names : nameArr, dates : dateArr, activityTypes : activityTypeArr}); 
+    session.close();  
+  })
+  .catch(function (err) {
+     console.log(err);
+  });
+});
+
+router.post('/modify', function(req, res){
+  var dataName = req.body.dataName;
+  var name = req.body.name;
+
+  var dataNameFlag = true;
+  var nameFlag = true;
+
+  var nameArr = [];
+  var affiliationArr = [];
+  var activityTypeArr = [];
+  var dateArr = [];
+  var dataNameArr = [];
+  var dataTypeArr = [];
+  var priceArr = [];
+  var deviceArr = [];
+
+  console.log("dataName: " + dataName);
+  console.log("name: " + name);
+
+  var nullcount = 0;
+
+  var user_gubun = session_value.getSession().gubun;
+  var user_name = session_value.getSession().user;
+  var matchCyper;
+
+  var matchCyper = "MATCH (entity:Entity)-[rel1:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent)";
+  var returnCyper = " RETURN agent.name, agent.aff, activity.name, activity.date, entity.name, entity.d_type, entity.price, entity.device"
+  var whereCyper = " WHERE"
+  
+  var dataNameCyper = " entity.name = ";
+  var nameCyper = " agent.name = ";
+
+  if(dataName == '' || dataName == undefined ){
+    console.log("dataName null");
+    dataNameFlag = false;
+    nullcount++;
+  }
+  if(name == '' || name == undefined ){
+    console.log("name null");
+    nameFlag = false;
+    nullcount++;
+  }
+
+  var newQuery = matchCyper + whereCyper;
+  for(var i = 0 ; i < (2-nullcount); i++){
+    if(dataNameFlag){
+      newQuery = newQuery + dataNameCyper + "'" + dataName + "'";
+      dataNameFlag = false;
+    }
+    else if(nameFlag){
+      newQuery = newQuery + nameCyper + "'" + name + "'" ;
+      nameFlag = false;
+    }
+    if((i+1) != (2-nullcount)){
+      newQuery = newQuery + " AND";
+    }
+  }
+  newQuery = newQuery + returnCyper;
+  session
+  .run(newQuery)
+  .then(function (result) {
+
+   var searchArr = [];
+   var size = Object.keys(result.records).length;  
+   console.log("size: " + size);
+   var test = [];
+   for (var i = 0; i < size; i++) {
+       var da = result.records[i]._fields;
+       test[i] = da;                  
+    }
+    for(var i=0;i < size; i+=2){
+      data=(test[[i]]+" ,"+test[[i+1]]);
+      searchArr.push(data);
+    }      
+
+    temp = searchArr.toString();
+    var splitTemp = temp.split(',');
+    console.log("SSS: " , splitTemp);
+
+
+    for(var j = 0, i=0; j < 8*size ; j++){
+      if((j+1)%8 != 0){
+        nameArr.push(splitTemp[j]);
+        affiliationArr[i] = splitTemp[++j];
+        activityTypeArr[i] = splitTemp[++j];
+        dateArr[i] = splitTemp[++j];
+        dataNameArr[i] = splitTemp[++j];
+        dataTypeArr[i] = splitTemp[++j];
+        priceArr[i] = splitTemp[++j];
+        deviceArr[i] = splitTemp[++j];
+      }
+      i++; 
+    }
+    res.render('data/modifyDataResult.ejs', {esession:session_value.getSession(), dataTypes : dataTypeArr, dataNames : dataNameArr, devices : deviceArr, prices : priceArr
       , affiliations : affiliationArr, names : nameArr, dates : dateArr, activityTypes : activityTypeArr}); 
     session.close();  
   })
