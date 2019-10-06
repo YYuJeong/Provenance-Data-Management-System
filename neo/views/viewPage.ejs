@@ -26,6 +26,10 @@
     th {
       text-align: center;
     }
+
+    .fontSize {
+      font-size: 1.2em;
+    }
   </style>
 
 </head>
@@ -47,14 +51,14 @@
         <!-- START THE FEATURETTES -->
 
         <hr class="featurette-divider">
-          <div class="container" style="display: inline-block;text-align: center;">
+          <div class="container fontSize" style="display: inline-block;text-align: center;">
               <!-- Default panel contents -->
                 <% if(authenticated == false){ %>
                 <% include ./notAuthenticated %>
                 <% }else {%>
               <div class="jumbotron">
               <div class="panel panel-default">
-              <div class="panel-heading" style = "font-size:medium;"><strong>이력 정보 보기 결과</strong></div>
+              <div class="panel-heading" style="font-size:1.4em;">이력 정보 보기 결과</div>
               <!-- Table -->
               <table class="table table-striped">
                 <thead>

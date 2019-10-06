@@ -22,6 +22,10 @@
       color: #303030;
       letter-spacing: 1px;
     }
+
+    .fontSize {
+      font-size: 1.2em;
+    }
   </style>
 
    <script>
@@ -60,7 +64,8 @@
             <%include ./notAuthenticated.ejs%>
             <% } else {%>
               <div class="jumbotron">
-                <h3>이력 정보 추가 </h3> <br>
+                <div style="font-size:2em;">이력 정보 추가</div> <br><br>
+                <div class="fontSize">
                 <form method="post" action="/dataAdd" >
                   <label> 이 름 </label><br>
                   <input type="text" name="name" class="form-control" style="width:180px; margin:0 auto;" />
@@ -90,6 +95,7 @@
                   <input class="btn btn-light" type="reset" value="취소" style="width:100px;">
                   <br><br>
                 </form>
+                </div>
               </div>
             <% }%>
         </div>
