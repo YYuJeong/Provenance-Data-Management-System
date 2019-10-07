@@ -12,6 +12,8 @@ var driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', 'wo
 var session = driver.session();
 var cookieParser = require('cookie-parser');
 var multer = require("multer");
+var multiparty = require('multiparty');
+var fs = require('fs');
 
 app.use(esession({
     secret:"asdfasffdas",
@@ -110,11 +112,58 @@ router.route('/users').post(
 
 let upload = multer({
   dest: "upload/"
-})
-
-router.get('/', function(req, res, next) {
-  res.render('data/uploadData.ejs', {esession: session_value.getSession()});
 });
+
+router.get('/data/uploadData', function(req, res, next) {
+    res.render('data/uploadData', {esession: session_value.getSession()});
+});
+
+router.post('/data/uploadData', function (req, res, next) {
+    var form = new multiparty.Form();
+
+    // get field name & value
+    form.on('field',function(name,value){
+        console.log('normal field / name = '+name+' , value = '+value);
+    });
+
+    // file upload handling
+    form.on('part',function(part){
+        var filename;
+        var size;
+        if (part.filename) {
+            filename = part.filename;
+            size = part.byteCount;
+        }else{
+            part.resume();
+        }
+
+        console.log("Write Streaming file :"+filename);
+        var writeStream = fs.createWriteStream('upload/'+filename);
+        writeStream.filename = filename;
+        part.pipe(writeStream);
+
+        part.on('data',function(chunk){
+            console.log(filename+' read '+chunk.length + 'bytes');
+        });
+
+        part.on('end',function(){
+            console.log(filename+' Part read complete');
+            writeStream.end();
+        });
+    });
+
+    // all uploads are completed
+    form.on('close',function(){
+        res.render('data/uploadData', {esession: session_value.getSession()});
+    });
+
+    // track progress
+    form.on('progress',function(byteRead,byteExpected){
+        console.log(' Reading total  '+byteRead+'/'+byteExpected);
+    });
+
+    form.parse(req);
+})
 
 router.post('/create', upload.single("file"), function(req, res, next) {
   

@@ -16,7 +16,7 @@ var bodyParser = require('body-parser');
 var session_value = require('../session');
 
 router.get('/', function(req, res, next) {
-  res.render('data/uploadData.ejs', {esession: session_value.getSession()});
+  res.render('data/uploadData', {esession: session_value.getSession()});
 });
 
 module.exports = router;

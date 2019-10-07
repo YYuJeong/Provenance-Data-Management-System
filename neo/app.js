@@ -88,7 +88,7 @@ app.use('/data/deleteData', deleteData);
 app.use('/data/deleteDataResult', deleteDataResult);
 
 app.use('/data/uploadData', fileuploadRouter);
-app.use('/upload', express.static('uploads'));
+//app.use('/upload', express.static('uploads'));
 
 
 // catch 404 and forward to error handler
