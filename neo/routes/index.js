@@ -725,11 +725,16 @@ router.post('/keyword', function (req, res) {
 
 });
 
+router.post('/getValues', function (req, res) {
+    var checkValues = req.body.deleteCheck;
+    console.log("*****************************", checkValues);
+    res.render('data/deleteData', {esession:session_value.getSession()});
+});
+
 
 router.post('/delete', function(req, res){
   var dataName = req.body.dataName;
   var name = req.body.name;
-
   var dataNameFlag = true;
   var nameFlag = true;
 
