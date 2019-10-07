@@ -249,10 +249,12 @@ router.post('/DataSearch', function(req, res){
   var dataName = req.body.dataName;
   var dataType = req.body.dataType;
   var device = req.body.device;
+  var price = req.body.price;
 
   var dataNameFlag = true;
   var dataTypeFlag = true;
   var deviceFlag = true;
+  var priceFlag = true;
 
   var nameArr = [];
   var affiliationArr = [];
@@ -267,6 +269,7 @@ router.post('/DataSearch', function(req, res){
   console.log("dataName: " + dataName);
   console.log("device: " + device);
   console.log("dataType: " + dataType);
+  console.log("price: " + price);
 
   console.log("*******************************************************************************************************");
   var nullcount = 0;
@@ -285,6 +288,7 @@ router.post('/DataSearch', function(req, res){
   var deviceCyper = " entity.device = ";
   var dataNameCyper = " entity.name = ";
   var dataTypeCyper = " entity.d_type = ";
+  var priceCyper = " entity.price = ";
 
   if(device == ''){
     deviceFlag = false;
@@ -298,10 +302,14 @@ router.post('/DataSearch', function(req, res){
     dataTypeFlag = false;
     nullcount++;
   }
+  if(price == ''){
+    priceFlag = false;
+    nullcount++;
+  }
 
   var newQuery = matchCyper + whereCyper;
 
-  for(var i = 0 ; i < (3-nullcount); i++){
+  for(var i = 0 ; i < (4-nullcount); i++){
     if(deviceFlag){
       newQuery = newQuery + deviceCyper + "'" + device + "'";
       deviceFlag = false;
@@ -315,12 +323,16 @@ router.post('/DataSearch', function(req, res){
       newQuery = newQuery + dataTypeCyper + "'" + dataType + "'" ;
       dataTypeFlag = false;
     }
-    if((i+1) != (3-nullcount)){
+    else if(priceFlag){
+      newQuery = newQuery + priceCyper + "'" + price + "'" ;
+      priceFlag = false;
+    }
+    if((i+1) != (4-nullcount)){
       newQuery = newQuery + " AND";
     }
   }
   newQuery = newQuery + returnCyper;
-
+  console.log(newQuery)
   session
   .run(newQuery)
   .then(function (result) {
