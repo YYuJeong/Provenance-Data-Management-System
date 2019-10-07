@@ -673,14 +673,14 @@ router.post('/keyword', function (req, res) {
           console.log(path["segments"][p]);
         }
         if(path.length == 3){
-          length3count++;
+         // length3count++;
           for(var p in path["segments"]){
             result3Arr.push(path["segments"][p].start.properties.name)
           }
           result3Arr.push(end)
         }
         else if(path.length == 4){
-          length4count++;
+        //  length4count++;
           for(var p in path["segments"]){
             result4Arr.push(path["segments"][p].start.properties.name)
           }
@@ -740,7 +740,12 @@ router.post('/delete', function(req, res){
   var user_name = session_value.getSession().user;
   var matchCyper;
 
-  var matchCyper = "MATCH (entity:Entity)-[rel1:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent)";
+  if(user_gubun == '관리자')
+    matchCyper = "MATCH (entity:Entity)-[rel1:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent)";
+  else
+    matchCyper = "MATCH (entity:Entity)-[rel1:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent{name:'" + user_name + "'})";
+
+//  var matchCyper = "MATCH (entity:Entity)-[rel1:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent)";
   var returnCyper = " RETURN agent.name, agent.aff, activity.name, activity.date, entity.name, entity.d_type, entity.price, entity.device"
   var whereCyper = " WHERE"
   
@@ -842,7 +847,12 @@ router.post('/modify', function(req, res){
   var user_name = session_value.getSession().user;
   var matchCyper;
 
-  var matchCyper = "MATCH (entity:Entity)-[rel1:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent)";
+  if(user_gubun == '관리자')
+    matchCyper = "MATCH (entity:Entity)-[rel1:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent)";
+  else
+    matchCyper = "MATCH (entity:Entity)-[rel1:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent{name:'" + user_name + "'})";
+
+  //var matchCyper = "MATCH (entity:Entity)-[rel1:wasGeneratedBy]->(activity:Activity)-[rel2:wasAssociatedWith]->(agent:Agent)";
   var returnCyper = " RETURN agent.name, agent.aff, activity.name, activity.date, entity.name, entity.d_type, entity.price, entity.device"
   var whereCyper = " WHERE"
   
@@ -918,5 +928,7 @@ router.post('/modify', function(req, res){
      console.log(err);
   });
 });
+
+
 
 module.exports = router;

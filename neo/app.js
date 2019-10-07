@@ -31,6 +31,7 @@ var searchPeriodResult = require('./routes/search/searchPeriodResult');
 
 var modifyData = require('./routes/data/modifyData');
 var modifyDataResult = require('./routes/data/modifyDataResult');
+var modifyDataPage = require('./routes/data/modifyDataPage');
 
 var deleteData = require('./routes/data/deleteData');
 var deleteDataResult = require('./routes/data/deleteDataResult');
@@ -81,6 +82,7 @@ app.use('/search/searchPeriodResult', searchPeriodResult);
 
 app.use('/data/modifyData', modifyData);
 app.use('/data/modifyDataResult', modifyDataResult);
+app.use('/data/modifyDataPage', modifyDataPage);
 
 app.use('/data/deleteData', deleteData);
 app.use('/data/deleteDataResult', deleteDataResult);
