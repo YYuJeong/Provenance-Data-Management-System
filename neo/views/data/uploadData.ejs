@@ -56,13 +56,13 @@
   
           <!-- START THE FEATURETTES -->
             
-          <form method="post" enctype="multipart/form-data" action="/data/uploadData">
+          <form method="post" enctype="multipart/form-data" action="/create" id="upload">
             <div style="width:17%; margin:0 auto;">
-            <input type="file" id="files" name="files" multiple="multiple" />
+            <input type="file" id="files" name="file"/>
             </div>
             <br><br>
             <div style="text-align: center;">
-                <a href=""><input class="btn btn-primary" type="" value="확인" style="width:100px" onClick="upload()"></a>
+                <a href=""><input class="btn btn-primary" type="submit" value="확인" style="width:100px" onClick="upload()"></a>
                 <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px"></a>
             </div>
           </form>
