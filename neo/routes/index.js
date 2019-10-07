@@ -14,6 +14,7 @@ var cookieParser = require('cookie-parser');
 var multer = require("multer");
 var multiparty = require('multiparty');
 var fs = require('fs');
+const exec = require('child_process').exec;
 
 app.use(esession({
     secret:"asdfasffdas",
@@ -120,7 +121,7 @@ router.get('/data/uploadData', function(req, res, next) {
 
 router.post('/data/uploadData', function (req, res, next) {
     var form = new multiparty.Form();
-
+    var name;
     // get field name & value
     form.on('field',function(name,value){
         console.log('normal field / name = '+name+' , value = '+value);
@@ -132,6 +133,7 @@ router.post('/data/uploadData', function (req, res, next) {
         var size;
         if (part.filename) {
             filename = part.filename;
+            name = filename;
             size = part.byteCount;
         }else{
             part.resume();
@@ -149,11 +151,24 @@ router.post('/data/uploadData', function (req, res, next) {
         part.on('end',function(){
             console.log(filename+' Part read complete');
             writeStream.end();
+
         });
     });
 
     // all uploads are completed
     form.on('close',function(){
+        var path = __dirname.split("\\");
+        var len = path.length
+        var tmp = path.splice(0, len -2)
+        path = tmp.join("\\") + "\\"
+
+        var path1 = __dirname.split("\\");
+        path1 = path1.splice(0, len-1)
+        path1 = path1.join("\\") + "\\"
+
+        var cmd = "python "+ path + "readData.py " + path1 + "upload\\"+ name;
+        console.log(cmd)
+        exec(cmd);
         res.render('data/uploadData', {esession: session_value.getSession()});
     });
 
