@@ -11,10 +11,10 @@
    
    <title>이력 정보 관리시스템</title>
    
-   <link href="http://bootstrapk.com/dist/css/bootstrap.min.css" rel="stylesheet">
-   <script src="http://bootstrapk.com/assets/js/ie-emulation-modes-warning.js"></script>
-   <link href="/public/stylesheets/carousel.css" rel="stylesheet">
-   <link href="https://fonts.googleapis.com/css?family=Do+Hyeon&display=swap" rel="stylesheet">
+   <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Do+Hyeon&display=swap" rel="stylesheet">
 
    <style type="text/css"> 
     body {
@@ -32,57 +32,9 @@
       function onAdd(){
         alert("이력 정보가 추가되었습니다.");
       };
-
-      $(document).ready(function() {
-            $('#datePicker')
-                .datepicker({
-                    format: 'yyyymmdd'
-                })
-                .on('changeDate', function(e) {
-                    // Revalidate the date field
-                    $('#eventForm').formValidation('revalidateField', 'date');
-                });
-
-            $('#datePicker2')
-                .datepicker({
-                    format: 'yyyymmdd'
-                })
-                .on('changeDate', function(e) {
-                    // Revalidate the date field
-                    $('#eventForm').formValidation('revalidateField', 'date');
-                });
-        
-            $('#eventForm').formValidation({
-                framework: 'bootstrap',
-                icon: {
-                    valid: 'glyphicon glyphicon-ok',
-                    invalid: 'glyphicon glyphicon-remove',
-                    validating: 'glyphicon glyphicon-refresh'
-                },
-                fields: {
-                    name: {
-                        validators: {
-                            notEmpty: {
-                                message: 'The name is required'
-                            }
-                        }
-                    },
-                    date: {
-                        validators: {
-                            notEmpty: {
-                                message: 'The date is required'
-                            },
-                            date: {
-                                format: 'YYYYMMDD',
-                                message: 'The date is not a valid'
-                            }
-                        }
-                    }
-                }
-            });
-      });
-  
   </script>
+
+  
 
 </head>
 
@@ -116,7 +68,7 @@
                 <div style="font-size:2em;">이력 정보 추가</div> <br><br>
                 <div class="fontSize">
                 <form method="post" action="/dataAdd" >
-                  <div style="text-align: center; font-size:2em;">사용자<br></div>
+                  <div style="text-align: center; font-size:1.5em;">사용자<br></div>
                   <div class="row" >
                     <div style="margin:0 auto;">
                     <div class="input-group" style="width:30%; margin:0 auto;">
@@ -131,7 +83,7 @@
                   </div>
                   </div>
                   <br><br>
-                  <div style="text-align: center; font-size:2em;">데이터<br></div>
+                  <div style="text-align: center; font-size:1.5em;">데이터<br></div>
                   <div class="row" >
                   <div style="margin:0 auto;">
                     <div class="input-group" style="width:30%; margin:0 auto;">
@@ -174,8 +126,8 @@
                 </div>
                 </div>
                 <br><br>
-                <div style="text-align: center; font-size:2em;">활동<br></div>
-                <div class="row" style="width:490px; margin:0 auto;">
+                <div style="text-align: center; font-size:1.5em;">활동<br></div>
+                <div class="row" style="width:320px; margin:0 auto;">
                   <select id="activityType" name = "activityType" class="form-control">
                       <option value = ''>타입</option>
                       <option value="판매">판매</option>
@@ -185,25 +137,15 @@
                   </select> 
               </div>
               <br>
-              <div class="row" style="padding-right: 265px;">
+              <div class="row">
                 <!-- Include Bootstrap Datepicker -->
                 <div class="form-group" style="text-align: center;">
-                    <div style="width:30%; margin:0 auto; float:right;">
+                    <div style="width:320px; margin:0 auto;">
                             <div class="input-group input-append date" id="datePicker" >
                             <input type="text" class="form-control" name="start_date" />
                             <span class="input-group-addon add-on"><span class="glyphicon glyphicon-calendar"></span></span>
                             </div>
                     </div>
-                    <div style="width:5%; margin:0 auto; float:right;">
-                        <p class="font-weight-bold">~</p>
-                    </div>
-                    <div style="width:30%; margin:0 auto; float:right;">
-                            <div class="input-group input-append date" id="datePicker2" >
-                            <input type="text" class="form-control" name="end_date" />
-                            <span class="input-group-addon add-on"><span class="glyphicon glyphicon-calendar"></span></span>
-                            </div>
-                    </div>
-
                 </div>
             </div>
             <br><br>
