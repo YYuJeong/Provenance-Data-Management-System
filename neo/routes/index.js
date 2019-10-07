@@ -11,6 +11,7 @@ var neo4j = require('neo4j-driver').v1;
 var driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', 'wowhi223'));
 var session = driver.session();
 var cookieParser = require('cookie-parser');
+var multer = require("multer");
 
 app.use(esession({
     secret:"asdfasffdas",
@@ -106,6 +107,27 @@ router.route('/users').post(
         });
     }
 );
+
+let upload = multer({
+  dest: "upload/"
+})
+
+router.get('/', function(req, res, next) {
+  res.render('data/uploadData.ejs', {esession: session_value.getSession()});
+});
+
+router.post('/create', upload.single("file"), function(req, res, next) {
+  
+  let file = req.file
+  let result = {
+      originalName : file.originalname,
+      size : file.size,
+  }
+
+  res.render('data/uploadData', {esession:session_value.getSession()});
+  //res.json(result);
+});
+
 
 router.post('/dataAdd', function (req, res) {
     var name = req.body.name;
