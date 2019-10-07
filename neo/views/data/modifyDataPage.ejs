@@ -38,7 +38,7 @@
 </head>
 
 <body style="overflow:auto">
-<% include ./header %>
+<% include ../header %>
 
 
     <!-- Carousel
@@ -54,17 +54,17 @@
         <!-- Three columns of text below the carousel -->
       
 
-        <%include ./menu%>
+        <%include ../menu%>
 
         <!-- START THE FEATURETTES -->
         <hr class="featurette-divider">
         <!-- /END THE FEATURETTES -->
         <div class="container" style="display: inline-block; text-align: center;">
             <%if(esession.authenticated == false){ %>
-            <%include ./notAuthenticated.ejs%>
+            <%include ../notAuthenticated.ejs%>
             <% } else {%>
               <div class="jumbotron">
-                <div style="font-size:2em;">이력 정보 추가</div> <br><br>
+                <div style="font-size:2em;">이력 정보 변경</div> <br><br>
                 <div class="fontSize">
               
                   <label> 이 름 </label><br>

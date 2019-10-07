@@ -84,9 +84,9 @@ router.route('/users').post(
             if(err)
                 console.log(err);
 
-            if(!results[0])
-            //return res.send('아이디를 확인해주십시오');
+            if(!results[0]){
                 return res.render('users', {message:'아이디를 확인해주십시오'});
+              }
             else {
                 if(results[0].password === password){
                     //console.log('aaaaa');

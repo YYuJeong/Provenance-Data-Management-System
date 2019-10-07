@@ -5,16 +5,17 @@ var session_info ={
     user: '',
     gubun: '',
     password: '',
-    authenticated:false
+    authenticated:false,
+    message: ''
 };
 
-function setSession(email, user, gubun, password, authenticated){
+function setSession(email, user, gubun, password, authenticated, message){
     session_info ={
         email: email,
         user: user,
         gubun: gubun,
         password: password,
-        authenticated: authenticated
+        authenticated: authenticated,
     };
 }
 
