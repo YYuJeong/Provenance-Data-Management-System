@@ -50,12 +50,13 @@
     <!-- Wrap the rest of the page in another container to center all the content. -->
 
     <div class="container marketing">
+      <%include ../menu%>
 
         <hr class="featurette-divider">
         <!-- /END THE FEATURETTES -->
         <div class="container" style="display: inline-block; text-align: center;">
             <%if(esession.authenticated == false){ %>
-            <%include ./notAuthenticated.ejs%>
+            <%include ../notAuthenticated.ejs%>
             <% } else {%>
               <div class="jumbotron">
                 <div style="font-size:2em;">이력 정보 수정</div> <br><br>
@@ -125,7 +126,7 @@
                       <option value = ''>타입</option>
                       <option value="판매">판매</option>
                       <option value="구매">구매</option>
-                      <option value="출판">배포</option>
+                      <option value="배포">배포</option>
                       <option value="수정">수정</option>
                   </select> 
               </div>
