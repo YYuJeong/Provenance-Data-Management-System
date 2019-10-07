@@ -22,8 +22,18 @@
       color: #303030;
       letter-spacing: 1px;
       }
-
   </style>
+
+<script>
+  function upload(){
+
+    //$("#upload").submit();
+    alert("이력 파일이 업로드 되었습니다.");
+    //location.href="/data/uploadData";
+
+  };
+
+</script>
    
 
 </head>
@@ -46,13 +56,13 @@
   
           <!-- START THE FEATURETTES -->
             
-          <form method="post" enctype="multipart/form-data">
+          <form method="post" enctype="multipart/form-data" action="/data/uploadData">
             <div style="width:17%; margin:0 auto;">
             <input type="file" id="files" name="files" multiple="multiple" />
             </div>
             <br><br>
             <div style="text-align: center;">
-                <a href="/search/searchPeriodResult"><input class="btn btn-primary" type="submit" value="검색" style="width:100px"></a>
+                <a href=""><input class="btn btn-primary" type="" value="확인" style="width:100px" onClick="upload()"></a>
                 <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px"></a>
             </div>
           </form>
