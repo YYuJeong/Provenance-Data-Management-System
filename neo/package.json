@@ -8,6 +8,7 @@
   "dependencies": {
     "alert-node": "^2.0.1",
     "body-parser": "^1.18.3",
+    "child_process": "^1.0.2",
     "cookie-parser": "^1.4.4",
     "debug": "~2.6.9",
     "ejs": "^2.5.9",
