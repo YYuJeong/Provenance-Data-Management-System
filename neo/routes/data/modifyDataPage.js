@@ -6,19 +6,20 @@ var neo4j = require('neo4j-driver').v1;
 var driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', 'wowhi223'));
 var session = driver.session();
 
-
-var path = require('path');
-var logger = require('morgan');;
-
-
-router.use(logger('dev'));
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: false }));
-//router.use(express.static(path.join(__dirname, 'public')));
 
-/* GET users listing. */
+var path = require('path');
+var logger = require('morgan');
+var bodyParser = require('body-parser');
+var session_value = require('../session');
+
 router.get('/', function(req, res, next) {
-  res.render('admin.ejs');
+  res.render('data/modifyDataPage.ejs', {esession: session_value.getSession()});
 });
+
+
+
+
 
 module.exports = router;

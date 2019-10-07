@@ -16,6 +16,19 @@
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.min.css" />
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker3.min.css" />
 <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.min.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Do+Hyeon&display=swap" rel="stylesheet">
+
+<style type="text/css"> 
+ body {
+   font-family: 'Do Hyeon';
+   color: #303030;
+   letter-spacing: 1px;
+ }
+
+ th {
+      text-align: center;
+  }
+</style>
 
 <script>
         $(document).ready(function() {
@@ -74,61 +87,15 @@
 <body style="overflow:auto">
 <% include ../header %>
 
+      <div class="container marketing">
+        <!-- Three columns of text below the carousel -->
               <div class="container marketing">
-                    <div class="row">
-                            <div style="margin-top: 50px;"></div>
-                            <div class="col-lg-4" align = center>
-                              <a  href="/viewPage" >
-                              <img class="img-circle" src="/images/table.jpg" alt="Generic placeholder image" width="140" height="140">
-                              </a>
-                              <br><br>
-                              <h2>이력 정보 보기</h2>
-                            </div><!-- /.col-lg-4 -->
-                            <div class="col-lg-4" align = center>
-                              <a href="/addPage">
-                              <img class="img-circle" src="/images/add.jpg"  alt="Generic placeholder image" width="140" height="140">
-                              </a>
-                              <br><br>
-                              <h2>이력 정보 추가</h2>
-                            </div><!-- /.col-lg-4 -->
-                            <div class="col-lg-4" align = center>
-                              <a href = "/search/searchPage">
-                              <img class="img-circle" src="/images/search.jpg" alt="Generic placeholder image" width="140" height="140">
-                              </a>
-                              <br><br>
-                              <h2>이력 정보 검색</h2>
-                            </div><!-- /.col-lg-4 -->
-                    </div><!-- /.row -->
-
-                    <div class="row">
-                        <div style="margin-top: 50px;"></div>
-                        <div class="col-lg-4" align = center>
-                          <a  href="/data/modifyData" >
-                          <img class="img-circle" src="/images/modify.png" alt="Generic placeholder image" width="140" height="140">
-                          </a>
-                          <br><br>
-                          <h2>이력 정보 변경</h2>
-                        </div><!-- /.col-lg-4 -->
-                        <div class="col-lg-4" align = center>
-                          <a href="/data/deleteData">
-                          <img class="img-circle" src="/images/delete.png"  alt="Generic placeholder image" width="140" height="140">
-                          </a>
-                          <br><br>
-                          <h2>이력 정보 삭제</h2>
-                        </div><!-- /.col-lg-4 -->
-                        <div class="col-lg-4" align = center>
-                          <a href = "/data/uploadData">
-                          <img class="img-circle" src="/images/upload.png" alt="Generic placeholder image" width="140" height="140">
-                          </a>
-                          <br><br>
-                          <h2>이력 파일 업로드</h2>
-                        </div><!-- /.col-lg-4 -->
-                      </div><!-- /.row -->
+                  <%include ../menu%>
 
                     <hr class="featurette-divider">
                     <div class="jumbotron">
                         <div class="container">
-                            <div style="text-align: center;"><h3>기간 검색</h3><br><br>
+                          <div style="text-align: center; font-size:2em;">활동으로 검색<br><br>
                             </div>
                         <form method="post" action="/periodSearch">
 
@@ -152,13 +119,25 @@
                                         </div>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
+                                <div class="col-sm-6 col-md-4">
+                                  <select id="activityType" name = "activityType" class="form-control">
+                                    <option value = ''>타입</option>
+                                    <option value="판매">판매</option>
+                                    <option value="구매">구매</option>
+                                    <option value="출판">출판</option>
+                                    <option value="수정">수정</option>
+                                  </select> 
+                                </div>
+                            </div>
                         </div>
     
                         <div style="text-align: center;"><br><br>
                             <a href="/search/searchPeriodResult"><input class="btn btn-primary" type="submit" value="검색" style="width:100px"></a>
                             <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px"></a>
                         </div> 
-                        </form>
+                      </form>
             </div>
         </div>
         <hr class="featurette-divider">
@@ -168,54 +147,54 @@
             <br><br>
             <div class="panel panel-default">
               <!-- Default panel contents -->
-              <div class="panel-heading" style = "font-size:medium;"><strong>데이터 검색 결과</strong></div>
+              <div class="panel-heading" style="font-size:1.4em;">활동 검색 결과</div>
               <!-- Table -->
               <table class="table table-striped">
                 <thead>
                   <tr>
-                    <th align = center>#</th>
-                    <th align = center>&nbsp;이름&nbsp;</th>
-                    <th align = center>소&nbsp;&nbsp;&nbsp;속</th>
-                    <th align = center>Activity</th>
-                    <th align = center>날&nbsp짜</th>
-                    <th align = center>데이터명</th>
-                    <th align = center>데이터 종류</th>
-                    <th align = center>가 격</th>
-                    <th align = center>Device</th>
+                    <th>#</th>
+                    <th>이 름</th>
+                    <th>소 속</th>
+                    <th>데이터명</th>
+                    <th>가격</th>
+                    <th>데이터 타입</th>
+                    <th>장치</th>
+                    <th>타입(판매/구매/출판/수정)</th>
+                    <th>날짜</th>
                   </tr>
                 </thead>
                 <tbody>
                   <% for(var i=0; i<names.length; i++ ) { %>
-                  <tr>
-                    <th scope="row">
-                        <%= (i+1) %>
-                    </th>
-                    <td>
-                        <%= names[i] %>
-                    </td>
-                    <td align = center>
-                      <%= affiliations[i] %>
-                    </td>
-                    <td align = center>
-                      <%= activityTypes[i] %>
-                    </td> 
-                    <td align = center>
-                      <%= dates[i] %>
-                    </td>
-                    <td align = center>
-                      <%= dataNames[i] %>
-                    </td>
-                    <td align = center>
-                      <%= dataTypes[i] %>
-                    </td>
-                    <td align = center>
-                      <%= prices[i] %>
-                    </td>
-                    <td align = center>
-                      <%= devices[i] %>
-                    </td>
-                  </tr>
-                  <% } %>
+                      <tr>
+                        <th scope="row">
+                            <%= (i+1) %>
+                        </th>
+                        <td align = center>
+                            <%= names[i] %>
+                        </td>
+                        <td align = center>
+                          <%= affiliations[i] %>
+                        </td>
+                        <td align = center>
+                          <%= dataNames[i] %>
+                        </td> 
+                        <td align = center>
+                          <%= prices[i] %>
+                        </td>
+                        <td align = center>
+                          <%= dataTypes[i] %>
+                        </td>
+                        <td align = center>
+                          <%= devices[i] %>
+                        </td>
+                        <td align = center>
+                          <%= activityTypes[i]  %>
+                        </td>
+                        <td align = center>
+                          <%= dates[i] %>
+                        </td>
+                      </tr>
+                      <% } %>
                 </tbody>
               </table>
             </div>  

@@ -14,6 +14,15 @@
    <link href="http://bootstrapk.com/dist/css/bootstrap.min.css" rel="stylesheet">
    <script src="http://bootstrapk.com/assets/js/ie-emulation-modes-warning.js"></script>
    <link href="/public/stylesheets/carousel.css" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css?family=Do+Hyeon&display=swap" rel="stylesheet">
+
+   <style type="text/css">
+    body {
+      font-family: 'Do Hyeon';
+      color: #303030;
+      letter-spacing: 1px;
+      }
+  </style>
 
 </head>
 
@@ -32,70 +41,49 @@
     <div class="container marketing">
 
         <!-- Three columns of text below the carousel -->
-        <div class="row">
-            <div style="margin-top: 50px;"></div>
-            <div class="col-lg-4" align = center>
-              <a  href="/viewPage" >
-              <img class="img-circle" src="/images/table.jpg" alt="Generic placeholder image" width="140" height="140">
-              </a>
-              <br><br>
-              <h2>이력 정보 보기</h2>
-            </div><!-- /.col-lg-4 -->
-            <div class="col-lg-4" align = center>
-              <a href="/addPage">
-              <img class="img-circle" src="/images/add.jpg"  alt="Generic placeholder image" width="140" height="140">
-              </a>
-              <br><br>
-              <h2>이력 정보 추가</h2>
-            </div><!-- /.col-lg-4 -->
-            <div class="col-lg-4" align = center>
-              <a href = "/search/searchPage">
-              <img class="img-circle" src="/images/search.jpg" alt="Generic placeholder image" width="140" height="140">
-              </a>
-              <br><br>
-              <h2>이력 정보 검색</h2>
-            </div><!-- /.col-lg-4 -->
-          </div><!-- /.row -->
+        <%include ../menu%>
 
-          <div class="row">
-            <div style="margin-top: 50px;"></div>
-            <div class="col-lg-4" align = center>
-              <a  href="/data/modifyData" >
-              <img class="img-circle" src="/images/modify.png" alt="Generic placeholder image" width="140" height="140">
-              </a>
-              <br><br>
-              <h2>이력 정보 변경</h2>
-            </div><!-- /.col-lg-4 -->
-            <div class="col-lg-4" align = center>
-              <a href="/data/deleteData">
-              <img class="img-circle" src="/images/delete.png"  alt="Generic placeholder image" width="140" height="140">
-              </a>
-              <br><br>
-              <h2>이력 정보 삭제</h2>
-            </div><!-- /.col-lg-4 -->
-            <div class="col-lg-4" align = center>
-              <a href = "/data/uploadData">
-              <img class="img-circle" src="/images/upload.png" alt="Generic placeholder image" width="140" height="140">
-              </a>
-              <br><br>
-              <h2>이력 파일 업로드</h2>
-            </div><!-- /.col-lg-4 -->
-          </div><!-- /.row -->
-
-          <hr class="featurette-divider">
-          <br><br>
-          <div class="jumbotron">
-            <div class="container">
-                <div style="text-align: center;"><h3>이력 정보 변경</h3><br>
-                </div>
-  
-          <!-- START THE FEATURETTES -->
-          
-            </div><!-- /.container -->
-          </div>
         <hr class="featurette-divider">
+        <div class="container" style="display: inline-block; text-align: center;">
+        <br><br>
+            <%if(esession.authenticated == false){%>
+                <% include ../notAuthenticated.ejs %>
+            <% }else{%>
+              <div class="jumbotron">
+              <div style="text-align: center; font-size:2em;">이력 정보 변경<br><br>
+              </div>
+
+        <!-- START THE FEATURETTES -->
+            <form  method="post" action="/modify">
+            <div class="row" >
+                <!--Start Here:)-->
+            <div style="margin:0 auto;">
+                <div class="input-group" style="width:30%; margin:0 auto;">
+                    <span class="input-group-addon">데이터</span>
+                    <input type="text" id="dataName" name="dataName" class="form-control" />
+                </div>
+                <br>
+                <%if (esession.gubun == '관리자'){%>
+                <div class="input-group" style="width:30%; margin:0 auto;">
+                        <span class="input-group-addon">이  름</span>
+                        <input type="text" id="name" name="name" class="form-control" />
+                </div>
+                <%}%>
+            </div>
+
+          <!--</form>-->  <!--디비연결전송오류로잠시위치이동-->
+            <div style="text-align: center;"><br><br>
+                <a href="/data/modifyDataResult"><input class="btn btn-primary" type="submit" value="검색" style="width:100px"></a>
+                <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px"></a>
+            </div> 
+          </div>
+          </form><!--원래폼위치-->      
+        </div>
+            <%}%>
+          </div><!-- /.container -->
+      <hr class="featurette-divider">
     </div>
-  
+    
   
       <!-- Bootstrap core JavaScript
       ================================================== -->

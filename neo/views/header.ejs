@@ -1,21 +1,64 @@
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+    function logout() {
+         swal({
+             title: "로그아웃 하시겠습니까?",
+             icon: "warning",
+             buttons: true,
+             dangerMode: true,
+         })
+        .then((logout) => {
+            if (logout) {
+                swal({
+                    title:"로그아웃 되었습니다!",
+                    icon: "success",
+                })
+                .then((out)=>{
+                    window.location.href = "/logout";
+                });
+            }
+        });
+    }
+</script>
+<% if (esession != undefined){
+    if(esession.email){
+    %>
 <div class="navbar-wrapper">
     <div class="container-fluid">
         <nav class="navbar navbar-inverse navbar-static-top">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="/">이력 정보 관리시스템</a>
+                    <a class="navbar-brand" style="font-size: 2em; padding-top: 23px;" href="/" >&nbsp&nbsp&nbsp&nbsp이력 정보 관리시스템</a>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse" style="float:right;">
                     <ul class="nav navbar-nav">
-                        <% if (esession != undefined){
-                        if(esession.email){
-                        %>
-                        <li id="login_name" margin="auto" style="color:white; font-size:1.3em"><%=esession.user%> 님 접속 <a href="/logout">logout</a></li>
-                        <%}else{%>
-                            <li><a href="/users">로그인</a></li>
-                        <%}
+                            <li id="login_name" margin="auto" style="color:#303030; font-size:1.5em">
+                                <a href=#><%=esession.user%> 님 환영합니다
+                                <button id="logout" class="btn btn-default" style="color:#303030;" onclick="logout()">logout</button></a>
+                            </li>
+                            <%}else{%>
+                                <div class="navbar-wrapper">
+                                    <div class="container-fluid">
+                                        <nav class="navbar navbar-inverse navbar-static-top">
+                                            <div class="container">
+                                                <div class="navbar-header">
+                                                    <a class="navbar-brand" style="font-size: 2em;" href="/" >&nbsp&nbsp&nbsp&nbsp이력 정보 관리시스템</a>
+                                                </div>
+                                                <div id="navbar" class="navbar-collapse collapse" style="float:right;">
+                                                    <ul class="nav navbar-nav">
+                                <li><a href="/users" style="font-size:1.5em">로그인</a></li>
+                            <%}
                         }else{%>
-                            <li><a href="/users">로그인</a></li>
+                            <div class="navbar-wrapper">
+                                <div class="container-fluid">
+                                    <nav class="navbar navbar-inverse navbar-static-top">
+                                        <div class="container">
+                                            <div class="navbar-header">
+                                                <a class="navbar-brand" style="font-size: 2em;" href="/" >&nbsp&nbsp&nbsp&nbsp이력 정보 관리시스템</a>
+                                            </div>
+                                            <div id="navbar" class="navbar-collapse collapse" style="float:right;">
+                                                <ul class="nav navbar-nav">
+                            <li><a href="/users" style="font-size:1.5em">로그인</a></li>
                         <%}%>
                         <!--<li><a href="/admin">관리자</a></li>-->
                     </ul>

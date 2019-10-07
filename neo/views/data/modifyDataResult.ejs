@@ -1,0 +1,162 @@
+<!DOCTYPE html> 
+<html lang="ko"> 
+
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+     <!-- favicon -->
+     <link rel="shortcut icon" href="/images/favicon.ico">
+     <link rel="icon" href="/images/favicon.ico">
+   
+   <title>이력 정보 관리시스템</title>
+   
+   <link href="http://bootstrapk.com/dist/css/bootstrap.min.css" rel="stylesheet">
+   <script src="http://bootstrapk.com/assets/js/ie-emulation-modes-warning.js"></script>
+   <link href="/public/stylesheets/carousel.css" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css?family=Do+Hyeon&display=swap" rel="stylesheet">
+
+   <style type="text/css">
+        body {
+        font-family: 'Do Hyeon';
+        color: #303030;
+        letter-spacing: 1px;
+    }
+
+    th {
+      text-align: center;
+    }
+    </style>
+
+<script type = "text/javascript">
+    //function btn(sample){ 
+    //    alert(sample); 
+    //} 
+
+
+
+</script>
+
+</head>
+
+<body style="overflow:auto">
+<% include ../header %>
+ 
+
+    <!-- Carousel
+    ================================================== -->
+
+
+    <!-- Marketing messaging and featurettes
+    ================================================== -->
+    <!-- Wrap the rest of the page in another container to center all the content. -->
+
+    <div class="container marketing">
+
+        <!-- Three columns of text below the carousel -->
+        <%include ../menu%>
+
+        <hr class="featurette-divider">
+        <br><br>
+        <div class="jumbotron">
+            <div class="container" style="display: inline-block;text-align: center;">
+                <div style="text-align: center; font-size:2em;">이력 정보 변경<br><br>
+                    </div>
+                    <br><br>
+
+
+                        
+                    <div class="panel panel-default">
+                        <!-- Default panel contents -->
+                        <div class="panel-heading" style="font-size:1.4em;">검색 결과</div>
+                        <!-- Table -->
+                        
+                        <table class="table table-striped">
+                        <thead>
+                            <tr>
+                            <th>#</th>
+                            <th>&nbsp;이름&nbsp;</th>
+                            <th>소&nbsp;&nbsp;&nbsp;속</th>
+                            <th>데이터명</th>
+                            <th>가격</th>
+                            <th>데이터타입</th>
+                            <th>장치</th>
+                            <th>타입(판매/구매/출판/수정)</th>
+                            <th>날짜</th>
+                            <th>선택</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% for(var i=0; i<names.length; i++ ) { %>
+                            <tr>
+                            <th scope="row">
+                                <%= (i+1) %>
+                            </th>
+                            <td align = center>
+                                <%= names[i] %>
+                            </td>
+                            <td align = center>
+                                <%= affiliations[i] %>
+                            </td>
+                            <td align = center>
+                                <%= dataNames[i] %>
+                            </td> 
+                            <td align = center>
+                                <%= prices[i] %>
+                            </td>
+                            <td align = center>
+                                <%= dataTypes[i] %>
+                            </td>
+                            <td align = center>
+                                <%= devices[i] %>
+                            </td>
+                            <td align = center>
+                                <%= activityTypes[i]  %>
+                            </td>
+                            <td align = center>
+                                <%= dates[i] %>
+                            </td>
+                            <td align = center id = "td3"><input type = "checkbox" name = "deleteCheck" value="1"></td>
+                            </tr>
+                            <% } %>
+                        </tbody>
+                        </table>
+                    </div>  
+                    <input name="box_chk" type="checkbox" value="1">박스1
+                    <input name="box_chk" type="checkbox" value="2">박스2
+                    <input name="box_chk" type="checkbox" value="3">박스3
+                    <input name="box_chk" type="checkbox" value="4">박스4
+                    <input name="box_chk" type="checkbox" value="5">박스5
+            
+
+                    </div>
+                    <div style="text-align: center;"><br><br>
+                        <a href="/data/modifyDataPage"><input class="btn btn-primary"  type="submit" value="선택" style="width:100px"></a>
+                       <input class="btn btn-light" type="reset" value="취소" style="width:100px">
+                    </div> 
+
+                    
+                </div>
+
+
+
+
+
+      <!-- Bootstrap core JavaScript
+      ================================================== -->
+      <!-- Placed at the end of the document so the pages load faster -->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+      <script src="../../dist/js/bootstrap.min.js"></script>
+      <!-- Just to make our placeholder images work. Don't actually copy the next line! -->
+      <script src="../../assets/js/vendor/holder.js"></script>
+      <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+      <script src="../../assets/js/ie10-viewport-bug-workaround.js">
+      </script>
+    
+
+
+
+    
+
+</body>
+</html>

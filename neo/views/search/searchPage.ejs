@@ -14,6 +14,15 @@
    <link href="http://bootstrapk.com/dist/css/bootstrap.min.css" rel="stylesheet">
    <script src="http://bootstrapk.com/assets/js/ie-emulation-modes-warning.js"></script>
    <link href="/public/stylesheets/carousel.css" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css?family=Do+Hyeon&display=swap" rel="stylesheet">
+
+   <style type="text/css"> 
+    body {
+      font-family: 'Do Hyeon';
+      color: #303030;
+      letter-spacing: 1px;
+    }
+  </style>
 
 </head>
 
@@ -32,68 +41,24 @@
     <div class="container marketing">
 
         <!-- Three columns of text below the carousel -->
-        <div class="row">
-            <div style="margin-top: 50px;"></div>
-            <div class="col-lg-4" align = center>
-              <a  href="/viewPage" >
-              <img class="img-circle" src="/images/table.jpg" alt="Generic placeholder image" width="140" height="140">
-              </a>
-              <br><br>
-              <h2>이력 정보 보기</h2>
-            </div><!-- /.col-lg-4 -->
-            <div class="col-lg-4" align = center>
-              <a href="/addPage">
-              <img class="img-circle" src="/images/add.jpg"  alt="Generic placeholder image" width="140" height="140">
-              </a>
-              <br><br>
-              <h2>이력 정보 추가</h2>
-            </div><!-- /.col-lg-4 -->
-            <div class="col-lg-4" align = center>
-              <a href = "/search/searchPage">
-              <img class="img-circle" src="/images/search.jpg" alt="Generic placeholder image" width="140" height="140">
-              </a>
-              <br><br>
-              <h2>이력 정보 검색</h2>
-            </div><!-- /.col-lg-4 -->
-          </div><!-- /.row -->
-
-          <div class="row">
-            <div style="margin-top: 50px;"></div>
-            <div class="col-lg-4" align = center>
-              <a  href="/data/modifyData" >
-              <img class="img-circle" src="/images/modify.png" alt="Generic placeholder image" width="140" height="140">
-              </a>
-              <br><br>
-              <h2>이력 정보 변경</h2>
-            </div><!-- /.col-lg-4 -->
-            <div class="col-lg-4" align = center>
-              <a href="/data/deleteData">
-              <img class="img-circle" src="/images/delete.png"  alt="Generic placeholder image" width="140" height="140">
-              </a>
-              <br><br>
-              <h2>이력 정보 삭제</h2>
-            </div><!-- /.col-lg-4 -->
-            <div class="col-lg-4" align = center>
-              <a href = "/data/uploadData">
-              <img class="img-circle" src="/images/upload.png" alt="Generic placeholder image" width="140" height="140">
-              </a>
-              <br><br>
-              <h2>이력 파일 업로드</h2>
-            </div><!-- /.col-lg-4 -->
-          </div><!-- /.row -->
+        <%include ../menu%>
 
         <hr class="featurette-divider">
         <br><br>
-        <!-- START THE FEATURETTES --><div align = center>
+        <!-- START THE FEATURETTES -->
+        <div align = center>
+        <%if(esession.authenticated == false){%>
+            <% include ../notAuthenticated.ejs %>
+        <% }else{%>
         <a href = "/search/searchConditionPage"><button type="button" class="btn btn-primary btn-lg btn-block" style="width:300px;">조건 검색</button></a>
         <br><br>
         <a href = "/search/searchKeyword"><button type="button" class="btn btn-default btn-lg btn-block" style="width:300px;">키워드 검색</button></a>
-        <br><br></div>
+        <br><br>
+        <% }%>
+        </div>
         <hr class="featurette-divider">
 
-  
       </div><!-- /.container -->
-  
   
       <!-- Bootstrap core JavaScript
       ================================================== -->

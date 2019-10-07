@@ -66,7 +66,7 @@
               <div class="jumbotron">
                 <div style="font-size:2em;">이력 정보 추가</div> <br><br>
                 <div class="fontSize">
-                <form method="post" action="/dataAdd" >
+              
                   <label> 이 름 </label><br>
                   <input type="text" name="name" class="form-control" style="width:180px; margin:0 auto;" />
                   <br>
@@ -91,10 +91,12 @@
                   <label> Device </label><br>
                   <input type="text" name="device" class="form-control" style="width:180px; margin:0 auto;" />
                   <br><br>
-                  <input class="btn btn-primary" type="submit" value="추가" style="width:100px;" onClick="onAdd()">
-                  <input class="btn btn-light" type="reset" value="취소" style="width:100px;">
+                  <div style="text-align: center;"><br><br>
+                    <a href="/data/modifyData"><input class="btn btn-primary" onclick="javascript:btn('해당 이력이 삭제되었습니다.')" type="submit" value="선택" style="width:100px"></a>
+                   <input class="btn btn-light" type="reset" value="취소" style="width:100px">
+                  </div> 
                   <br><br>
-                </form>
+ 
                 </div>
               </div>
             <% }%>

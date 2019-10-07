@@ -14,6 +14,19 @@
    <link href="http://bootstrapk.com/dist/css/bootstrap.min.css" rel="stylesheet">
    <script src="http://bootstrapk.com/assets/js/ie-emulation-modes-warning.js"></script>
    <link href="carousel.css" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css?family=Do+Hyeon&display=swap" rel="stylesheet">
+
+   <style type="text/css"> 
+    body {
+      font-family: 'Do Hyeon';
+      color: #303030;
+      letter-spacing: 1px;
+    }
+
+    th {
+      text-align: center;
+    }
+  </style>
 
 </head>
 
@@ -25,57 +38,10 @@
     <!-- Wrap the rest of the page in another container to center all the content. -->
 
     <div class="container marketing">
-
         <!-- Three columns of text below the carousel -->
-        <div class="row">
-          <div style="margin-top: 50px;"></div>
-          <div class="col-lg-4" align = center>
-            <a  href="/viewPage" >
-            <img class="img-circle" src="/images/table.jpg" alt="Generic placeholder image" width="140" height="140">
-            </a>
-            <br><br>
-            <h2>이력 정보 보기</h2>
-          </div><!-- /.col-lg-4 -->
-          <div class="col-lg-4" align = center>
-            <a href="/addPage">
-            <img class="img-circle" src="/images/add.jpg"  alt="Generic placeholder image" width="140" height="140">
-            </a>
-            <br><br>
-            <h2>이력 정보 추가</h2>
-          </div><!-- /.col-lg-4 -->
-          <div class="col-lg-4" align = center>
-            <a href = "/search/searchPage">
-            <img class="img-circle" src="/images/search.jpg" alt="Generic placeholder image" width="140" height="140">
-            </a>
-            <br><br>
-            <h2>이력 정보 검색</h2>
-          </div><!-- /.col-lg-4 -->
-        </div><!-- /.row -->
 
-        <div class="row">
-          <div style="margin-top: 50px;"></div>
-          <div class="col-lg-4" align = center>
-            <a  href="/data/modifyData" >
-            <img class="img-circle" src="/images/modify.png" alt="Generic placeholder image" width="140" height="140">
-            </a>
-            <br><br>
-            <h2>이력 정보 변경</h2>
-          </div><!-- /.col-lg-4 -->
-          <div class="col-lg-4" align = center>
-            <a href="/data/deleteData">
-            <img class="img-circle" src="/images/delete.png"  alt="Generic placeholder image" width="140" height="140">
-            </a>
-            <br><br>
-            <h2>이력 정보 삭제</h2>
-          </div><!-- /.col-lg-4 -->
-          <div class="col-lg-4" align = center>
-            <a href = "/data/uploadData">
-            <img class="img-circle" src="/images/upload.png" alt="Generic placeholder image" width="140" height="140">
-            </a>
-            <br><br>
-            <h2>이력 파일 업로드</h2>
-          </div><!-- /.col-lg-4 -->
-        </div><!-- /.row -->
+        <!-- START THE FEATURETTES -->
+        <%include ../menu%>
 
         <hr class="featurette-divider">
         <br><br>
@@ -83,13 +49,13 @@
         <!-- START THE FEATURETTES -->
         <div class="jumbotron">
           <div class="container" style="display: inline-block; text-align: center;">
-            <h3>키워드 검색</h3><br><br><br>
+            <div style="text-align: center; font-size:2em;">키워드 검색</div><br><br>
             <form class="form-inline" method="post" action="/keyword">
               <div class="input-group" style="text-align: center;">
                   <input type="text" class="form-control" name = "keyword" style="width:300px;">
               </div>                  
               <!--<input class="btn btn-primary" type="submit" value="Search">-->
-              <a href="/search/searchKeywordResult"><input class="btn btn-primary" type="submit" value="Search"></a>
+              <a href="/search/searchKeywordResult"><input class="btn btn-primary" type="submit" value="검색"></a>
               <br><br><br><br><br>
               </form>
           </div>
@@ -101,44 +67,87 @@
             <br><br>
             <div class="panel panel-default">
               <!-- Default panel contents -->
+              <div class="panel-heading" style="font-size:1.4em;">키워드 검색 결과</div>
+              <!-- Table -->
+              <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>시작</th>
+                      <th></th>
+                      <th></th>
+                      <th>끝</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% for(var i=0, j = 0; i<result3s.length; i++, j++ ) { %>
+                    <tr>
+                      <th scope="row">
+                          <%= (j+1) %>
+                      </th>
+                      <td align = center>
+                        <strong><%= result3s[i] %></strong>
+                      </td>
+                      <td align = center>
+                        <%= result3s[++i] %>
+                      </td>
+                      <td align = center>
+                        <%= result3s[++i] %>
+                      </td> 
+                      <td align = center>
+                        <strong><%= result3s[++i] %></strong>
+                      </td> 
+                    </tr>
+                    <% } %>
+                  </tbody>
+                </table>
+            </div>  
+          </div>
+        </div>
+
+        <div class="jumbotron">
+          <div class="container" style="display: inline-block;text-align: center;">
+            <br><br>
+            <div class="panel panel-default">
+              <!-- Default panel contents -->
               <div class="panel-heading" style = "font-size:medium;"><strong>키워드 검색 결과</strong></div>
               <!-- Table -->
               <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th align = center>#</th>
-                    <th align = center>&nbsp;이름&nbsp;</th>
-                    <th align = center>소&nbsp;&nbsp;&nbsp;속</th>
-                    <th align = center>Activity</th>
-                    <th align = center>날&nbsp짜</th>
-                    <th align = center>len4c :</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <% for(var i=0; i<20; i++ ) { %>
-                  <tr>
-                    <th scope="row">
-                      <%= one %>
-                    </th>
-                    <td align = center>
-                      <%= lend %>
-                    </td>
-                    <td align = center>
-                      <%= one %>
-                    </td> 
-                    <td align = center>
-                      <%= one %>
-                    </td> 
-                    <td align = center>
-                      <%= one %>
-                    </td> 
-                    <td align = center>
-                      <%= one %>
-                    </td> 
-                  </tr>
-                  <% } %>
-                </tbody>
-              </table>
+                  <thead>
+                    <tr>
+                      <th align = center>#</th>
+                      <th align = center>&nbsp;시작&nbsp;</th>
+                      <th align = center></th>
+                      <th align = center></th>
+                      <th align = center></th>
+                      <th align = center>끝</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% for(var i=0, j =0; i<result4s.length; i++, j++ ) { %>
+                    <tr>
+                      <th scope="row">
+                          <%= (j+1) %>
+                      </th>
+                      <td align = center>
+                        <strong><%= result4s[i] %></strong>
+                      </td>
+                      <td align = center>
+                        <%= result4s[++i] %>
+                      </td>
+                      <td align = center>
+                        <%= result4s[++i] %>
+                      </td> 
+                      <td align = center>
+                        <%= result4s[++i] %>
+                      </td>
+                      <td align = center>
+                        <strong><%= result4s[++i] %></strong>
+                      </td>
+                    </tr>
+                    <% } %>
+                  </tbody>
+                </table>
             </div>  
           </div>
         </div>

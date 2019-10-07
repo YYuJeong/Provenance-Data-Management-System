@@ -13,6 +13,7 @@
    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+   <link href="https://fonts.googleapis.com/css?family=Do+Hyeon&display=swap" rel="stylesheet">
 
    <style type="text/css"> 
     .input-group-addon.primary {
@@ -20,6 +21,12 @@
       background-color: rgb(50, 118, 177);
       border-color: rgb(40, 94, 142);
       }
+
+    body {
+      font-family: 'Do Hyeon';
+      color: #303030;
+      letter-spacing: 1px;
+     }
    </style>
 
 </head>
@@ -27,64 +34,21 @@
 <body style="overflow:auto">
 <% include ../header %>
 
+      <div class="container marketing">
+        <!-- Three columns of text below the carousel -->
+  
               <div class="container marketing">
-                    <div class="row">
-                            <div style="margin-top: 50px;"></div>
-                            <div class="col-lg-4" align = center>
-                              <a  href="/viewPage" >
-                              <img class="img-circle" src="/images/table.jpg" alt="Generic placeholder image" width="140" height="140">
-                              </a>
-                              <br><br>
-                              <h2>이력 정보 보기</h2>
-                            </div><!-- /.col-lg-4 -->
-                            <div class="col-lg-4" align = center>
-                              <a href="/addPage">
-                              <img class="img-circle" src="/images/add.jpg"  alt="Generic placeholder image" width="140" height="140">
-                              </a>
-                              <br><br>
-                              <h2>이력 정보 추가</h2>
-                            </div><!-- /.col-lg-4 -->
-                            <div class="col-lg-4" align = center>
-                              <a href = "/search/searchPage">
-                              <img class="img-circle" src="/images/search.jpg" alt="Generic placeholder image" width="140" height="140">
-                              </a>
-                              <br><br>
-                              <h2>이력 정보 검색</h2>
-                            </div><!-- /.col-lg-4 -->
-                    </div><!-- /.row -->
-
-                    <div class="row">
-                      <div style="margin-top: 50px;"></div>
-                      <div class="col-lg-4" align = center>
-                        <a  href="/data/modifyData" >
-                        <img class="img-circle" src="/images/modify.png" alt="Generic placeholder image" width="140" height="140">
-                        </a>
-                        <br><br>
-                        <h2>이력 정보 변경</h2>
-                      </div><!-- /.col-lg-4 -->
-                      <div class="col-lg-4" align = center>
-                        <a href="/data/deleteData">
-                        <img class="img-circle" src="/images/delete.png"  alt="Generic placeholder image" width="140" height="140">
-                        </a>
-                        <br><br>
-                        <h2>이력 정보 삭제</h2>
-                      </div><!-- /.col-lg-4 -->
-                      <div class="col-lg-4" align = center>
-                        <a href = "/data/uploadData">
-                        <img class="img-circle" src="/images/upload.png" alt="Generic placeholder image" width="140" height="140">
-                        </a>
-                        <br><br>
-                        <h2>이력 파일 업로드</h2>
-                      </div><!-- /.col-lg-4 -->
-                    </div><!-- /.row -->
+                  <%include ../menu%>
 
                     <hr class="featurette-divider">
                     <div class="jumbotron">
+                        <%if(esession.authenticated == false){%>
+                            <% include ../notAuthenticated.ejs %>
+                        <% }else{%>
                         <div class="container">
-                            <div style="text-align: center;"><h3>데이터 검색</h3><br>
+                          <div style="text-align: center; font-size:2em;">데이터로 검색<br><br>
                             </div>
                         <form  method="post" action="/DataSearch">
-
                         <div class="row" >
                             <!--Start Here:)-->
                         <div style="margin:0 auto;">
@@ -94,10 +58,23 @@
                             </div>
                             <br>
                             <div class="input-group" style="width:30%; margin:0 auto;">
-                                <span class="input-group-addon">&nbsp 이름 &nbsp</span>
-                                <input type="text" id="name" name="name" class="form-control" />
+                                <span class="input-group-addon">가격</span>
+                                <input type="text" id="dataName" name="dataName" class="form-control" />
                             </div>
                             <br>
+                            <div class="form-group">
+                                <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
+                                <div class="col-sm-6 col-md-4">
+                                  <select id="dataType" name = "dataType" class="form-control">
+                                    <option value = ''>타입</option>
+                                    <option value="건강데이터">건강</option>
+                                    <option value="의료데이터">의료</option>
+                                    <option value="위치데이터">위치</option>
+                                    <option value="음성데이터">음성</option>
+                                  </select> 
+                                </div>
+                            </div>
+                            <br><br>
                             <div class="form-group">
                                 <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
                                 <div class="col-sm-6 col-md-4">
@@ -109,19 +86,6 @@
                                     <option value="스마트워치">스마트워치</option>
                                     <option value="페이션트모니터">페이션트모니터</option>
                                     <option value="캐시비">캐시비</option>
-                                  </select> 
-                                </div>
-                            </div>
-                            <br><br>
-                            <div class="form-group">
-                                <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
-                                <div class="col-sm-6 col-md-4">
-                                  <select id="dataType" name = "dataType" class="form-control">
-                                    <option value = ''>타입</option>
-                                    <option value="건강데이터">건강</option>
-                                    <option value="의료데이터">의료</option>
-                                    <option value="위치데이터">위치</option>
-                                    <option value="음성데이터">음성</option>
                                   </select> 
                                 </div>
                             </div>
@@ -140,6 +104,7 @@
                         </div> 
                       </form><!--원래폼위치-->      
             </div>
+                        <%}%>
     </div>
     <hr class="featurette-divider">
   </div>

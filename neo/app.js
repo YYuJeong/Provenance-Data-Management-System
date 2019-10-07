@@ -10,8 +10,6 @@ var esession = require('express-session');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var contactRouter = require('./routes/contact');
-var adminRouter = require('./routes/admin');
-var logoutRouter = require('./routes/logout');
 
 var viewPage = require('./routes/viewPage');
 var addPage = require('./routes/addPage');
@@ -32,7 +30,12 @@ var searchPeriod = require('./routes/search/searchPeriod');
 var searchPeriodResult = require('./routes/search/searchPeriodResult');
 
 var modifyData = require('./routes/data/modifyData');
+var modifyDataResult = require('./routes/data/modifyDataResult');
+var modifyDataPage = require('./routes/data/modifyDataPage');
+
 var deleteData = require('./routes/data/deleteData');
+var deleteDataResult = require('./routes/data/deleteDataResult');
+
 var uploadData = require('./routes/data/uploadData');
 
 var ejs = require('ejs');
@@ -58,8 +61,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/contact', contactRouter);
-app.use('/admin', adminRouter);
-app.use('/logout', logoutRouter);
 
 app.use('/viewPage', viewPage);
 app.use('/addPage', addPage);
@@ -80,8 +81,14 @@ app.use('/search/searchPeriod', searchPeriod);
 app.use('/search/searchPeriodResult', searchPeriodResult);
 
 app.use('/data/modifyData', modifyData);
+app.use('/data/modifyDataResult', modifyDataResult);
+app.use('/data/modifyDataPage', modifyDataPage);
+
 app.use('/data/deleteData', deleteData);
+app.use('/data/deleteDataResult', deleteDataResult);
+
 app.use('/data/uploadData', uploadData);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
