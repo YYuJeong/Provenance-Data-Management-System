@@ -1,13 +1,11 @@
-
-  
 # -*- coding: utf-8 -*-
-import csv
-import time
+import csv, sys, time
 start_time = time.time()
 
-with open("randomData.csv",'r') as f:
+filename = sys.argv[1]
+with open(filename,'r', encoding='UTF8', errors='ignore') as f:
     matrix = list(csv.reader(f,delimiter=","))
-    
+print(len(matrix))
 
 
 from neo4j import GraphDatabase
@@ -37,7 +35,7 @@ def add_node(tx,sender_name,receiver_name,entity_name, activity_time,activity_pr
  '''       
 
 with driver.session() as session:
-    for i in range(100):
+    for i in range(len(matrix)):
         session.write_transaction(add_node,matrix[i][0],matrix[i][1],matrix[i][2],matrix[i][3],matrix[i][4],matrix[i][5],matrix[i][6],matrix[i][7])
         
         #session.write_transaction(add_node,matrix[i][0],matrix[i][1],matrix[i][2],matrix[i][3],matrix[i][4])
@@ -45,7 +43,7 @@ with driver.session() as session:
   
 # Bi-directional relationship?
 #u1.relationships.create("friends", u2)
-
+'''
 def merge(tx):
    tx.run("MATCH (e:Entity) WITH e.name AS e, collect(e) as node2Merge WITH node2Merge, extract(x IN node2Merge | x.match) AS matches CALL apoc.refactor.mergeNodes(node2Merge) yield node RETURN *")
 with driver.session() as session:
@@ -64,5 +62,6 @@ def merge3(tx):
    tx.run("MATCH (e1:Entity) WITH e1.name AS e1, collect(e1) as node2Merge WITH node2Merge, extract(x IN node2Merge | x.match) AS matches CALL apoc.refactor.mergeNodes(node2Merge) yield node RETURN *")
 with driver.session() as session:
           session.read_transaction(merge3)
+'''
 print("start_time", start_time)
 print("---%s seconds ---" %(time.time() - start_time))

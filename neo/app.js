@@ -36,7 +36,7 @@ var modifyDataPage = require('./routes/data/modifyDataPage');
 var deleteData = require('./routes/data/deleteData');
 var deleteDataResult = require('./routes/data/deleteDataResult');
 
-var uploadData = require('./routes/data/uploadData');
+var fileuploadRouter = require('./routes/data/uploadData');
 
 var ejs = require('ejs');
 var app = express();
@@ -87,7 +87,8 @@ app.use('/data/modifyDataPage', modifyDataPage);
 app.use('/data/deleteData', deleteData);
 app.use('/data/deleteDataResult', deleteDataResult);
 
-app.use('/data/uploadData', uploadData);
+app.use('/data/uploadData', fileuploadRouter);
+//app.use('/upload', express.static('uploads'));
 
 
 // catch 404 and forward to error handler

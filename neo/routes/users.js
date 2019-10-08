@@ -40,6 +40,7 @@ router.get('/', function(req, res, next) {
 
 });
 console.log(esession);
+console.log(message);
 });
 
 

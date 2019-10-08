@@ -11,6 +11,10 @@ var neo4j = require('neo4j-driver').v1;
 var driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', 'wowhi223'));
 var session = driver.session();
 var cookieParser = require('cookie-parser');
+var multer = require("multer");
+var multiparty = require('multiparty');
+var fs = require('fs');
+const exec = require('child_process').exec;
 
 app.use(esession({
     secret:"asdfasffdas",
@@ -84,9 +88,9 @@ router.route('/users').post(
             if(err)
                 console.log(err);
 
-            if(!results[0])
-            //return res.send('아이디를 확인해주십시오');
+            if(!results[0]){
                 return res.render('users', {message:'아이디를 확인해주십시오'});
+              }
             else {
                 if(results[0].password === password){
                     //console.log('aaaaa');
@@ -106,6 +110,88 @@ router.route('/users').post(
         });
     }
 );
+
+let upload = multer({
+  dest: "upload/"
+});
+
+router.get('/data/uploadData', function(req, res, next) {
+    res.render('data/uploadData', {esession: session_value.getSession()});
+});
+
+router.post('/data/uploadData', function (req, res, next) {
+    var form = new multiparty.Form();
+    var name;
+    // get field name & value
+    form.on('field',function(name,value){
+        console.log('normal field / name = '+name+' , value = '+value);
+    });
+
+    // file upload handling
+    form.on('part',function(part){
+        var filename;
+        var size;
+        if (part.filename) {
+            filename = part.filename;
+            name = filename;
+            size = part.byteCount;
+        }else{
+            part.resume();
+        }
+
+        console.log("Write Streaming file :"+filename);
+        var writeStream = fs.createWriteStream('upload/'+filename);
+        writeStream.filename = filename;
+        part.pipe(writeStream);
+
+        part.on('data',function(chunk){
+            console.log(filename+' read '+chunk.length + 'bytes');
+        });
+
+        part.on('end',function(){
+            console.log(filename+' Part read complete');
+            writeStream.end();
+
+        });
+    });
+
+    // all uploads are completed
+    form.on('close',function(){
+        var path = __dirname.split("\\");
+        var len = path.length
+        var tmp = path.splice(0, len -2)
+        path = tmp.join("\\") + "\\"
+
+        var path1 = __dirname.split("\\");
+        path1 = path1.splice(0, len-1)
+        path1 = path1.join("\\") + "\\"
+
+        var cmd = "python "+ path + "readData.py " + path1 + "upload\\"+ name;
+        console.log(cmd)
+        exec(cmd);
+        res.render('data/uploadData', {esession: session_value.getSession()});
+    });
+
+    // track progress
+    form.on('progress',function(byteRead,byteExpected){
+        console.log(' Reading total  '+byteRead+'/'+byteExpected);
+    });
+
+    form.parse(req);
+})
+
+router.post('/create', upload.single("file"), function(req, res, next) {
+  
+  let file = req.file
+  let result = {
+      originalName : file.originalname,
+      size : file.size,
+  }
+
+  res.render('data/uploadData', {esession:session_value.getSession()});
+  //res.json(result);
+});
+
 
 router.post('/dataAdd', function (req, res) {
     var name = req.body.name;
@@ -249,10 +335,12 @@ router.post('/DataSearch', function(req, res){
   var dataName = req.body.dataName;
   var dataType = req.body.dataType;
   var device = req.body.device;
+  var price = req.body.price;
 
   var dataNameFlag = true;
   var dataTypeFlag = true;
   var deviceFlag = true;
+  var priceFlag = true;
 
   var nameArr = [];
   var affiliationArr = [];
@@ -267,6 +355,7 @@ router.post('/DataSearch', function(req, res){
   console.log("dataName: " + dataName);
   console.log("device: " + device);
   console.log("dataType: " + dataType);
+  console.log("price: " + price);
 
   console.log("*******************************************************************************************************");
   var nullcount = 0;
@@ -285,6 +374,7 @@ router.post('/DataSearch', function(req, res){
   var deviceCyper = " entity.device = ";
   var dataNameCyper = " entity.name = ";
   var dataTypeCyper = " entity.d_type = ";
+  var priceCyper = " entity.price = ";
 
   if(device == ''){
     deviceFlag = false;
@@ -298,10 +388,14 @@ router.post('/DataSearch', function(req, res){
     dataTypeFlag = false;
     nullcount++;
   }
+  if(price == ''){
+    priceFlag = false;
+    nullcount++;
+  }
 
   var newQuery = matchCyper + whereCyper;
 
-  for(var i = 0 ; i < (3-nullcount); i++){
+  for(var i = 0 ; i < (4-nullcount); i++){
     if(deviceFlag){
       newQuery = newQuery + deviceCyper + "'" + device + "'";
       deviceFlag = false;
@@ -315,12 +409,16 @@ router.post('/DataSearch', function(req, res){
       newQuery = newQuery + dataTypeCyper + "'" + dataType + "'" ;
       dataTypeFlag = false;
     }
-    if((i+1) != (3-nullcount)){
+    else if(priceFlag){
+      newQuery = newQuery + priceCyper + "'" + price + "'" ;
+      priceFlag = false;
+    }
+    if((i+1) != (4-nullcount)){
       newQuery = newQuery + " AND";
     }
   }
   newQuery = newQuery + returnCyper;
-
+  console.log(newQuery)
   session
   .run(newQuery)
   .then(function (result) {
@@ -713,11 +811,16 @@ router.post('/keyword', function (req, res) {
 
 });
 
+router.post('/getValues', function (req, res) {
+    var checkValues = req.body.deleteCheck;
+    console.log("*****************************", checkValues);
+    res.render('data/deleteData', {esession:session_value.getSession()});
+});
+
 
 router.post('/delete', function(req, res){
   var dataName = req.body.dataName;
   var name = req.body.name;
-
   var dataNameFlag = true;
   var nameFlag = true;
 

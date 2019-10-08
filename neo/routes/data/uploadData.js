@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const multer = require("multer");
 
 var bodyParser = require('body-parser');
 var neo4j = require('neo4j-driver').v1;
@@ -15,11 +16,7 @@ var bodyParser = require('body-parser');
 var session_value = require('../session');
 
 router.get('/', function(req, res, next) {
-  res.render('data/uploadData.ejs', {esession: session_value.getSession()});
+  res.render('data/uploadData', {esession: session_value.getSession()});
 });
-
-
-
-
 
 module.exports = router;

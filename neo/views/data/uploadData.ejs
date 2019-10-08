@@ -51,22 +51,20 @@
                   <% include ../notAuthenticated.ejs %>
               <% }else{%>
                 <div class="jumbotron">
-                <div style="text-align: center; font-size:2em;">이력 파일 업로드<br><br>
+                <div style="text-align: center; font-size:2em;">개인정보 이력 일괄입력(파일)<br><br>
                 </div>
   
           <!-- START THE FEATURETTES -->
-            
-          <form method="post" enctype="multipart/form-data" action="/data/uploadData">
             <div style="width:17%; margin:0 auto;">
-            <input type="file" id="files" name="files" multiple="multiple" />
+              <form method="post" enctype="multipart/form-data" action="/data/uploadData" id="upload">
+                <input type="file" name="uploadFile" /><br><br>
             </div>
-            <br><br>
-            <div style="text-align: center;">
-                <a href=""><input class="btn btn-primary" type="" value="확인" style="width:100px" onClick="upload()"></a>
-                <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px"></a>
+            <div>
+                <input class="btn btn-primary" type="submit" value="확인" style="width:100px;" onClick="upload()">
+                <input class="btn btn-light" type="reset" value="취소" style="width:100px">
+              </form>
             </div>
-          </form>
-          
+
             </div><!-- /.container -->
               <%}%>
           </div>
