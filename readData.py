@@ -1,5 +1,3 @@
-
-  
 # -*- coding: utf-8 -*-
 import csv, sys, time
 start_time = time.time()
