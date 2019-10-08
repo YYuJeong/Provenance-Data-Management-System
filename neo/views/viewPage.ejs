@@ -58,7 +58,11 @@
                 <% }else {%>
               <div class="jumbotron">
               <div class="panel panel-default">
-              <div class="panel-heading" style="font-size:1.4em;">이력 정보 보기 결과</div>
+              <%if(esession.gubun =='관리자'){%>
+              <div class="panel-heading" style="font-size:1.4em;">모든 사용자의 개인정보 이력</div>
+              <% }else{%>
+              <div class="panel-heading" style="font-size:1.4em;"><%=esession.user%>님의 개인정보 이력</div>
+              <%}%>
               <!-- Table -->
               <table class="table table-striped">
                 <thead>
