@@ -30,7 +30,7 @@
 
    <script>
       function onAdd(){
-        alert("이력 정보가 추가되었습니다.");
+        alert("이력 정보가 수정되었습니다.");
       };
   
   </script>
@@ -50,12 +50,7 @@
     <!-- Wrap the rest of the page in another container to center all the content. -->
 
     <div class="container marketing">
-
-        <!-- Three columns of text below the carousel -->
-      
-
-        <%include ../menu%>
-
+      <%include ../menu%>
         <!-- START THE FEATURETTES -->
         <hr class="featurette-divider">
         <!-- /END THE FEATURETTES -->
@@ -64,39 +59,95 @@
             <%include ../notAuthenticated.ejs%>
             <% } else {%>
               <div class="jumbotron">
-                <div style="font-size:2em;">이력 정보 추가</div> <br><br>
+                <div style="font-size:2em;">개인정보 이력 변경</div> <br><br>
                 <div class="fontSize">
-              
-                  <label> 이 름 </label><br>
-                  <input type="text" name="name" class="form-control" style="width:180px; margin:0 auto;" />
-                  <br>
-                  <label> 소 속</label><br>
-                  <input type="text" name="affiliation" class="form-control" style="width:180px; margin:0 auto;" />
-                  <br>
-                  <label> Activity </label><br>
-                  <input type="text" name="activityType" class="form-control" style="width:180px; margin:0 auto;" />
-                  <br>
-                  <label> 날 짜</label><br>
-                  <input type="text" name="date" class="form-control" style="width:180px; margin:0 auto;" />
-                  <br>
-                  <label> 데이터명 </label><br>
-                  <input type="text" name="dataName" class="form-control" style="width:180px; margin:0 auto;" />
-                  <br>
-                  <label> 데이터 종류</label><br>
-                  <input type="text" name="dataType" class="form-control" style="width:180px; margin:0 auto;" />
-                  <br>
-                  <label> 가 격 </label><br>
-                  <input type="text" name="price" class="form-control" style="width:180px; margin:0 auto;" />
-                  <br>
-                  <label> Device </label><br>
-                  <input type="text" name="device" class="form-control" style="width:180px; margin:0 auto;" />
+                <form method="post" action="/dataAdd" >
+                  <div style="text-align: center; font-size:1.5em;">사용자<br></div>
+                  <div class="row" >
+                    <div style="margin:0 auto;">
+                    <div class="input-group" style="width:30%; margin:0 auto;">
+                        <span class="input-group-addon">이름</span>
+                        <input type="text" id="name" name="name"  value = '' class="form-control" />
+                    </div>
+                    <br>
+                    <div class="input-group" style="width:30%; margin:0 auto;">
+                        <span class="input-group-addon">소속</span>
+                        <input type="text" id="affiliation" name="affiliation"  value = '' class="form-control" />
+                    </div>
+                  </div>
+                  </div>
                   <br><br>
-                  <div style="text-align: center;"><br><br>
-                    <a href="/data/modifyData"><input class="btn btn-primary" onclick="javascript:btn('해당 이력이 삭제되었습니다.')" type="submit" value="선택" style="width:100px"></a>
-                   <input class="btn btn-light" type="reset" value="취소" style="width:100px">
-                  </div> 
+                  <div style="text-align: center; font-size:1.5em;">데이터<br></div>
+                  <div class="row" >
+                  <div style="margin:0 auto;">
+                    <div class="input-group" style="width:30%; margin:0 auto;">
+                        <span class="input-group-addon">데이터</span>
+                        <input type="text" id="dataName" name="dataName"  value = '' class="form-control" />
+                    </div>
+                    <br>
+                    <div class="input-group" style="width:30%; margin:0 auto;">
+                        <span class="input-group-addon">가격</span>
+                        <input type="text" id="price" name="price"  value = '' class="form-control" />
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
+                        <div class="col-sm-6 col-md-4">
+                          <select id="dataType" name = "dataType" class="form-control">
+                            <option value = ''>타입</option>
+                            <option value="건강데이터">건강</option>
+                            <option value="의료데이터">의료</option>
+                            <option value="위치데이터">위치</option>
+                            <option value="음성데이터">음성</option>
+                          </select> 
+                        </div>
+                    </div>
+                    <br><br>
+                    <div class="form-group">
+                        <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
+                        <div class="col-sm-6 col-md-4">
+                          <select id="device" name = "device" class="form-control">
+                            <option value = ''>장치</option>
+                            <option value="AI스피커">AI스피커</option>
+                            <option value="T머니">T머니</option>
+                            <option value="레일플러스">레일플러스</option>
+                            <option value="스마트워치">스마트워치</option>
+                            <option value="페이션트모니터">페이션트모니터</option>
+                            <option value="캐시비">캐시비</option>
+                          </select> 
+                        </div>
+                    </div>
+                </div>
+                </div>
+                <br><br>
+                <div style="text-align: center; font-size:1.5em;">활동<br></div>
+                <div class="row" style="width:320px; margin:0 auto;">
+                  <select id="activityType" name = "activityType" class="form-control">
+                      <option value = ''>타입</option>
+                      <option value="판매">판매</option>
+                      <option value="구매">구매</option>
+                      <option value="배포">배포</option>
+                      <option value="수정">수정</option>
+                  </select> 
+              </div>
+              <br>
+              <div class="row">
+                <!-- Include Bootstrap Datepicker -->
+                <div class="form-group" style="text-align: center;">
+                    <div style="width:320px; margin:0 auto;">
+                            <div class="input-group input-append date" id="datePicker" >
+                            <input type="text" class="form-control" name="date" />
+                            <span class="input-group-addon add-on"><span class="glyphicon glyphicon-calendar"></span></span>
+                            </div>
+                    </div>
+                </div>
+            </div>
+            <br><br>
+
+                  <a href = "/data/modifyData"><input class="btn btn-primary" type="submit" value="수정" style="width:100px;" onClick="onAdd()"></a>
+                  <input class="btn btn-light" type="reset" value="취소" style="width:100px;">
                   <br><br>
- 
+                </form>
                 </div>
               </div>
             <% }%>
