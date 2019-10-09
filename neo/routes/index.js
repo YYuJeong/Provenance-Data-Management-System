@@ -269,8 +269,7 @@ router.get('/viewPage', function (req, res) {
   var user_name = session_value.getSession().user;
   '"+user_name +"'
     if(user_gubun == '사용자'){
-      session
-      .run("START n=node(*) MATCH (n:Agent)<-[:wasAttributedTo]-(m:Entity)-[:wasGeneratedBy]-(q:Activity)-[]-(w:Agent) WHERE Not(q.name = '수정') AND (n.name = '"+user_name +"' OR w.name =   '"+user_name +"') RETURN n, m , q, w LIMIT 4")
+      session.run("START n=node(*) MATCH (n:Agent)<-[:wasAttributedTo]-(m:Entity)-[:wasGeneratedBy]-(q:Activity)-[]-(w:Agent) WHERE Not(q.name = '수정') AND (n.name = '"+user_name +"' OR w.name =   '"+user_name +"') RETURN n, m , q, w LIMIT 4")
       .then(function(result){
         result.records.forEach(function (record) {
           console.log("***************view*******************")

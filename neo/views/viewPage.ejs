@@ -59,66 +59,6 @@
                 else {%>
               <div class="jumbotron">
               <div class="panel panel-default">
-              <%if(esession.gubun =='관리자'){%>
-                <div class="panel-heading" style="font-size:1.4em;">모든 사용자의 개인정보 이력</div>
-              <% }
-              else{%>
-                <div class="panel-heading" style="font-size:1.4em;"><%=esession.user%>님의 개인정보 이력</div>
-              <%}%>
-              <!-- Table -->
-
-              
-              <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>이 름</th>
-                    <th>소 속</th>
-                    <th>데이터ID</th>
-                    <th>가격</th>
-                    <th>데이터 타입</th>
-                    <th>장치</th>
-                    <th>활동 타입</th>
-                    <th>날짜</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <% for(var i=0; i<names.length; i++ ) { %>
-                  <tr>
-                    <th scope="row">
-                        <%= (i+1) %>
-                    </th>
-                    <td>
-                        <%= names[i] %>
-                    </td>
-                    <td align = center>
-                      <%= affiliations[i] %>
-                    </td>
-                    <td align = center>
-                      <%= dataNames3[i]  %>
-                    </td>
-                    <td align = center>
-                      <%= prices3[i] %>
-                    </td>
-                    <td align = center>
-                      <%= dataTypes3[i] %>
-                    </td>
-                    <td align = center>
-                      <%= devices3[i] %>
-                    </td>
-                    <td align = center>
-                      <%= activityTypes3[i] %>
-                    </td>
-                    <td align = center>
-                      <%= dates3[i] %>
-                    </td>
-                  </tr>
-                  <% } %>
-                </tbody>
-              </table>
-              </div>
-              <br><br>
-                <div class="panel panel-default">
                 <%if(esession.gubun =='관리자'){%>
                   <div class="panel-heading" style="font-size:1.4em;">모든 사용자의 개인정보 이력</div>
                 <% }
