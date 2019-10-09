@@ -231,12 +231,26 @@ router.get('/',function(req, res, next) {
 router.get('/viewPage', function (req, res) {
   var nameArr = [];
   var affiliationArr = [];
-  var activityTypeArr = [];
-  var dateArr = [];
-  var dataNameArr = [];
-  var dataTypeArr = [];
-  var priceArr = [];
-  var deviceArr = [];
+
+  var s_nameArr = [];
+  var s_affiliationArr = [];
+  var r_nameArr = [];
+  var r_affiliationArr = [];
+  
+  var activityTypeArr4 = [];
+  var dateArr4 = [];
+  var dataNameArr4 = [];
+  var dataTypeArr4 = [];
+  var priceArr4 = [];
+  var deviceArr4 = [];
+
+  var activityTypeArr3 = [];
+  var dateArr3 = [];
+  var dataNameArr3 = [];
+  var dataTypeArr3 = [];
+  var priceArr3 = [];
+  var deviceArr3 = [];
+  
   var i = 0;
   var user_gubun = session_value.getSession().gubun;
   var user_name = session_value.getSession().user;
@@ -279,6 +293,85 @@ router.get('/viewPage', function (req, res) {
             });
     }
     else if(user_gubun =='관리자'){
+
+        session
+        .run("START n=node(*) MATCH (n:Agent)<-[:wasAttributedTo]-(m:Entity)-[:wasGeneratedBy]-(q:Activity)-[]-(w:Agent) WHERE Not(q.name = '수정') RETURN n, m , q, w LIMIT 4")
+        .then(function(result){
+          result.records.forEach(function (record) {
+            console.log("***************view*******************")
+            console.log(record._fields[0]);
+            console.log(record._fields[1]);
+            console.log(record._fields[2]);
+            console.log(record._fields[3]);
+            console.log(record._fields[3].properties.affiliation);
+            
+            s_nameArr.push(record._fields[0].properties.name)
+            s_affiliationArr.push(record._fields[0].properties.affiliation)
+
+            dataNameArr4.push(record._fields[1].properties.name)
+            dataTypeArr4.push(record._fields[1].properties.d_type)
+            deviceArr4.push(record._fields[1].properties.device)
+            priceArr4.push(record._fields[1].properties.price)
+
+            activityTypeArr4.push(record._fields[2].properties.name)
+            dateArr4.push(record._fields[2].properties.date)
+
+            r_nameArr.push(record._fields[3].properties.name)
+            r_affiliationArr.push(record._fields[3].properties.affiliation)
+
+
+            session.run("START n=node(*) MATCH (n:Agent)<-[:wasAttributedTo]-(m:Entity)-[:wasGeneratedBy]-(q:Activity) WHERE q.name = '수정' RETURN n, m, q LIMIT 3")
+            .then(function(result){
+              result.records.forEach(function (record) {
+                console.log("***************view*******************")
+          //      console.log(record._fields[0]);
+            //    console.log(record._fields[1]);
+           //     console.log(record._fields[2]);
+
+                nameArr.push(record._fields[0].properties.name)
+                affiliationArr.push(record._fields[0].properties.affiliation)
+    
+                dataNameArr3.push(record._fields[1].properties.name)
+                dataTypeArr3.push(record._fields[1].properties.d_type)
+                deviceArr3.push(record._fields[1].properties.device)
+                priceArr3.push(record._fields[1].properties.price)
+    
+                activityTypeArr3.push(record._fields[2].properties.name)
+                dateArr3.push(record._fields[2].properties.date)
+              });
+        res.render('viewPage', {
+            esession: session_value.getSession(),
+
+            names: nameArr,
+            affiliations: affiliationArr,
+            dataTypes3: dataTypeArr3,
+            dataNames3: dataNameArr3,
+            devices3: deviceArr3,
+            prices3: priceArr3,
+            activityTypes3: activityTypeArr3,
+            dates3: dateArr3,
+
+            s_names: s_nameArr,
+            s_affiliations: s_affiliationArr,
+            dataTypes4: dataTypeArr4,
+            dataNames4: dataNameArr4,
+            devices4: deviceArr4,
+            prices4: priceArr4,
+            activityTypes4: activityTypeArr4,
+            dates4: dateArr4,            
+            r_names: r_nameArr,
+            r_affiliations: r_affiliationArr,
+            
+            authenticated: true
+        });
+      });
+    });
+        session.close();
+    })
+    .catch(function (err) {
+        console.log(err);
+    });
+        /*
         session
             .run("START n=node(*) MATCH (n)-[:wasAttributedTo]->(m)<-[:wasAssociatedWith]-(k) RETURN n, m, k LIMIT 50")
             .then(function (result) {
@@ -313,19 +406,30 @@ router.get('/viewPage', function (req, res) {
             .catch(function (err) {
                 console.log(err);
             });
+            */
     }
     else {
         res.render('viewPage', {
             esession: session_value.getSession(),
-            dataTypes: undefined,
-            dataNames: undefined,
-            devices: undefined,
-            prices: undefined,
-            affiliations: undefined,
             names: undefined,
-            dates: undefined,
-            activityTypes: undefined,
-            data_length: undefined,
+            affiliations:undefined,
+            dataTypes3:undefined,
+            dataNames3:undefined,
+            devices3: undefined,
+            prices3: undefined,
+            activityTypes3:undefined,
+            dates3: undefined,
+
+            s_names: undefined,
+            s_affiliations: undefined,
+            dataTypes4:undefined,
+            dataNames4: undefined,
+            devices4: undefined,
+            prices4: undefined,
+            activityTypes4: undefined,
+            dates4: undefined,            
+            r_names:undefined,
+            r_affiliations: undefined,
             authenticated: false
         });
     }

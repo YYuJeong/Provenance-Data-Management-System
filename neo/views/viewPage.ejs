@@ -54,16 +54,20 @@
           <div class="container fontSize" style="display: inline-block;text-align: center;">
               <!-- Default panel contents -->
                 <% if(authenticated == false){ %>
-                <% include ./notAuthenticated %>
-                <% }else {%>
+                  <% include ./notAuthenticated %>
+                <% }
+                else {%>
               <div class="jumbotron">
               <div class="panel panel-default">
               <%if(esession.gubun =='관리자'){%>
-              <div class="panel-heading" style="font-size:1.4em;">모든 사용자의 개인정보 이력</div>
-              <% }else{%>
-              <div class="panel-heading" style="font-size:1.4em;"><%=esession.user%>님의 개인정보 이력</div>
+                <div class="panel-heading" style="font-size:1.4em;">모든 사용자의 개인정보 이력</div>
+              <% }
+              else{%>
+                <div class="panel-heading" style="font-size:1.4em;"><%=esession.user%>님의 개인정보 이력</div>
               <%}%>
               <!-- Table -->
+
+              
               <table class="table table-striped">
                 <thead>
                   <tr>
@@ -79,7 +83,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <% for(var i=0; i<data_length; i++ ) { %>
+                  <% for(var i=0; i<names.length; i++ ) { %>
                   <tr>
                     <th scope="row">
                         <%= (i+1) %>
@@ -91,30 +95,99 @@
                       <%= affiliations[i] %>
                     </td>
                     <td align = center>
-                      <%= dataNames[i]  %>
+                      <%= dataNames3[i]  %>
                     </td>
                     <td align = center>
-                      <%= prices[i] %>
+                      <%= prices3[i] %>
                     </td>
                     <td align = center>
-                      <%= dataTypes[i] %>
+                      <%= dataTypes3[i] %>
                     </td>
                     <td align = center>
-                      <%= devices[i] %>
+                      <%= devices3[i] %>
                     </td>
                     <td align = center>
-                      <%= activityTypes[i] %>
+                      <%= activityTypes3[i] %>
                     </td>
                     <td align = center>
-                      <%= dates[i] %>
+                      <%= dates3[i] %>
                     </td>
                   </tr>
                   <% } %>
                 </tbody>
               </table>
+              </div>
+              <br><br>
+                <div class="panel panel-default">
+                <%if(esession.gubun =='관리자'){%>
+                  <div class="panel-heading" style="font-size:1.4em;">모든 사용자의 개인정보 이력</div>
+                <% }
+                else{%>
+                  <div class="panel-heading" style="font-size:1.4em;"><%=esession.user%>님의 개인정보 이력</div>
+                <%}%>
+                <!-- Table -->
+  
+                
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>발송인</th>
+                      <th>소 속</th>
+                      <th>데이터ID</th>
+                      <th>가격</th>
+                      <th>데이터 타입</th>
+                      <th>장치</th>
+                      <th>타입(판매/구매/배포/수정)</th>
+                      <th>날짜</th>
+                      <th>수취인</th>
+                      <th>소 속</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% for(var i=0; i<s_names.length; i++ ) { %>
+                    <tr>
+                      <th scope="row">
+                          <%= (i+1) %>
+                      </th>
+                      <td>
+                          <%= s_names[i] %>
+                      </td>
+                      <td align = center>
+                        <%= s_affiliations[i] %>
+                      </td>
+                      <td align = center>
+                        <%= dataNames4[i]  %>
+                      </td>
+                      <td align = center>
+                        <%= prices4[i] %>
+                      </td>
+                      <td align = center>
+                        <%= dataTypes4[i] %>
+                      </td>
+                      <td align = center>
+                        <%= devices4[i] %>
+                      </td>
+                      <td align = center>
+                        <%= activityTypes4[i] %>
+                      </td>
+                      <td align = center>
+                        <%= dates4[i] %>
+                      </td>
+                      <td align = center>
+                        <%= r_names[i] %>
+                      </td>
+                      <td align = center>
+                        <%= r_affiliations[i] %>
+                      </td>
+                    </tr>
+                    <% } %>
+                  </tbody>
+                </table>
                 <%}%>
             </div>  
           </div>
+          
         </div>
         <!-- /END THE FEATURETTES -->
 
