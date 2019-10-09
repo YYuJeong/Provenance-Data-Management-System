@@ -106,20 +106,6 @@
                   </div>
                 </div>
               </div>
-              <br><br><div style="text-align: center; font-size:1.5em;">수취인<br></div>
-              <div class="row" >
-                <div style="margin:0 auto;">
-                  <div class="input-group" style="width:30%; margin:0 auto;">
-                    <span class="input-group-addon">이름</span>
-                    <input type="text" id="rname" name="rname" class="form-control" />
-                  </div>
-                  <br>
-                  <div class="input-group" style="width:30%; margin:0 auto;">
-                    <span class="input-group-addon">소속</span>
-                    <input type="text" id="raffiliation" name="raffiliation" class="form-control" />
-                  </div>
-                </div>
-              </div>
               <br><br>
               <div style="text-align: center; font-size:1.5em;">데이터<br></div>
               <div class="row" >
@@ -131,7 +117,7 @@
                   <br>
                   <div class="input-group" style="width:30%; margin:0 auto;">
                     <span class="input-group-addon">가격</span>
-                    <input type="text" id="dataName" name="dataName" class="form-control" />
+                    <input type="text" id="price" name="price" class="form-control" />
                   </div>
                   <br>
                   <div class="form-group">
@@ -170,7 +156,7 @@
                   <option value = ''>타입</option>
                   <option value="판매">판매</option>
                   <option value="구매">구매</option>
-                  <option value="출판">출판</option>
+                  <option value="배포">배포</option>
                   <option value="수정">수정</option>
                 </select> 
               </div>
@@ -186,6 +172,22 @@
                   </div>
                 </div>
               </div>
+
+              <br><div style="text-align: center; font-size:1.5em;">수취인<br></div>
+              <div class="row" >
+                <div style="margin:0 auto;">
+                  <div class="input-group" style="width:30%; margin:0 auto;">
+                    <span class="input-group-addon">이름</span>
+                    <input type="text" id="r_name" name="r_name" class="form-control" />
+                  </div>
+                  <br>
+                  <div class="input-group" style="width:30%; margin:0 auto;">
+                    <span class="input-group-addon">소속</span>
+                    <input type="text" id="r_affiliation" name="r_affiliation" class="form-control" />
+                  </div>
+                </div>
+              </div>
+
               <br><br>
               <input class="btn btn-primary" type="submit" value="추가" style="width:100px;" onClick="onAdd()">
               <input class="btn btn-light" type="reset" value="취소" style="width:100px;">
