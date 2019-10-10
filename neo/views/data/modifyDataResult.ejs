@@ -64,61 +64,139 @@
                 <div style="text-align: center; font-size:2em;">개인정보 이력 변경<br><br>
                     </div>
                     <br>
+
+
+
+
                     <div class="panel panel-default">
                         <!-- Default panel contents -->
                         <div class="panel-heading" style="font-size:1.4em;">검색 결과</div>
                         <!-- Table -->
                         
-                        <table class="table table-striped">
+
+                      <table class="table table-striped">
                         <thead>
-                            <tr>
+                          <tr>
                             <th>#</th>
-                            <th>&nbsp;이름&nbsp;</th>
-                            <th>소&nbsp;&nbsp;&nbsp;속</th>
+                            <th>이 름</th>
+                            <th>소 속</th>
                             <th>데이터ID</th>
                             <th>가격</th>
-                            <th>데이터타입</th>
+                            <th>데이터 타입</th>
                             <th>장치</th>
                             <th>활동 타입</th>
                             <th>날짜</th>
                             <th>선택</th>
-                            </tr>
+                          </tr>
                         </thead>
                         <tbody>
-                            <% for(var i=0; i<names.length; i++ ) { %>
-                            <tr>
+                          <% for(var i=0; i<names.length; i++ ) { %>
+                          <tr>
                             <th scope="row">
                                 <%= (i+1) %>
                             </th>
-                            <td align = center>
+                            <td>
                                 <%= names[i] %>
                             </td>
                             <td align = center>
-                                <%= affiliations[i] %>
+                              <%= affiliations[i] %>
                             </td>
                             <td align = center>
-                                <%= dataNames[i] %>
-                            </td> 
-                            <td align = center>
-                                <%= prices[i] %>
+                              <%= dataNames3[i]  %>
                             </td>
                             <td align = center>
-                                <%= dataTypes[i] %>
+                              <%= prices3[i] %>
                             </td>
                             <td align = center>
-                                <%= devices[i] %>
+                              <%= dataTypes3[i] %>
                             </td>
                             <td align = center>
-                                <%= activityTypes[i]  %>
+                              <%= devices3[i] %>
                             </td>
                             <td align = center>
-                                <%= dates[i] %>
+                              <%= activityTypes3[i] %>
                             </td>
-                            <td align = center id = "td3"><input type = "checkbox" name = "deleteCheck" value="1"></td>
-                            </tr>
-                            <% } %>
+                            <td align = center>
+                              <%= dates3[i] %>
+                            </td>
+                            <td align = center id = "td3">
+                                <input type = "checkbox" name = "deleteCheck" value=<%=i%>>
+                            </td>
+                          </tr>
+                          <% } %>
                         </tbody>
-                        </table>
+                      </table>
+                      </div>
+                      <br><br>
+
+
+
+                    <br>
+                    <div class="panel panel-default">
+                        <!-- Default panel contents -->
+                        <div class="panel-heading" style="font-size:1.4em;">검색 결과</div>
+                        <!-- Table -->
+                        <table class="table table-striped">
+                            <thead>
+                              <tr>
+                                <th>#</th>
+                                <th>발송인</th>
+                                <th>소속</th>
+                                <th>데이터ID</th>
+                                <th>가격</th>
+                                <th>데이터타입</th>
+                                <th>장치</th>
+                                <th>활동타입</th>
+                                <th>날짜</th>
+                                <th>수취인</th>
+                                <th>소속</th>
+                                <th>선택</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <% for(var i=0; i<s_names.length; i++ ) { %>
+                              <tr>
+                                <th scope="row">
+                                    <%= (i+1) %>
+                                </th>
+                                <td>
+                                    <%= s_names[i] %>
+                                </td>
+                                <td align = center>
+                                  <%= s_affiliations[i] %>
+                                </td>
+                                <td align = center>
+                                  <%= dataNames4[i]  %>
+                                </td>
+                                <td align = center>
+                                  <%= prices4[i] %>
+                                </td>
+                                <td align = center>
+                                  <%= dataTypes4[i] %>
+                                </td>
+                                <td align = center>
+                                  <%= devices4[i] %>
+                                </td>
+                                <td align = center>
+                                  <%= activityTypes4[i] %>
+                                </td>
+                                <td align = center>
+                                  <%= dates4[i] %>
+                                </td>
+                                <td align = center>
+                                  <%= r_names[i] %>
+                                </td>
+                                <td align = center>
+                                  <%= r_affiliations[i] %>
+                                </td>
+                                <td align = center id = "td3">
+                                    <input type = "checkbox" name = "deleteCheck" value=<%=i%>>
+                                </td>
+                              </tr>
+                              <% } %>
+                            </tbody>
+                          </table>
+                        
                     </div>  
                     </div>
                     <div style="text-align: center;"><br><br>
