@@ -26,6 +26,10 @@
     th {
       text-align: center;
     }
+
+    .fontSize {
+      font-size: 1.2em;
+    }
   </style>
 
 </head>
@@ -45,111 +49,232 @@
 
         <hr class="featurette-divider">
         <br><br>
-        
         <!-- START THE FEATURETTES -->
         <div class="jumbotron">
-          <div class="container" style="display: inline-block; text-align: center;">
+          <div class="container fontSize" style="display: inline-block; text-align: center;">
             <div style="text-align: center; font-size:2em;">키워드 검색</div><br><br>
-            <form class="form-inline" method="post" action="/keyword">
+            <!--<form class="form-inline" method="post" action="/keyword">-->
+              <form class="form-inline">
               <div class="input-group" style="text-align: center;">
                   <input type="text" class="form-control" name = "keyword" style="width:300px;">
               </div>                  
               <!--<input class="btn btn-primary" type="submit" value="Search">-->
               <a href="/search/searchKeywordResult"><input class="btn btn-primary" type="submit" value="검색"></a>
               <br><br><br><br><br>
-              </form>
+            <!--  </form>-->
           </div>
         </div>
-
         <hr class="featurette-divider">
         <div class="jumbotron">
-          <div class="container" style="display: inline-block;text-align: center;">
+          <div class="container fontSize" style="display: inline-block;text-align: center;">
+            <br>
+            <%if(esession.gubun =='사용자'){%>
+
+
             <br>
             <div class="panel panel-default">
               <!-- Default panel contents -->
-              <div class="panel-heading" style="font-size:1.4em;">키워드 검색 결과</div>
-              <!-- Table -->
-              <table class="table table-striped">
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>시작</th>
-                      <th></th>
-                      <th></th>
-                      <th>끝</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <% for(var i=0, j = 0; i<result3s.length; i++, j++ ) { %>
-                    <tr>
-                      <th scope="row">
-                          <%= (j+1) %>
-                      </th>
-                      <td align = center>
-                        <strong><%= result3s[i] %></strong>
-                      </td>
-                      <td align = center>
-                        <%= result3s[++i] %>
-                      </td>
-                      <td align = center>
-                        <%= result3s[++i] %>
-                      </td> 
-                      <td align = center>
-                        <strong><%= result3s[++i] %></strong>
-                      </td> 
-                    </tr>
-                    <% } %>
-                  </tbody>
-                </table>
-            </div>  
-          </div>
-        </div>
-
-        <div class="jumbotron">
-          <div class="container" style="display: inline-block;text-align: center;">
-            <br><br>
-            <div class="panel panel-default">
-              <!-- Default panel contents -->
-              <div class="panel-heading" style = "font-size:medium;"><strong>키워드 검색 결과</strong></div>
+              <div class="panel-heading" style="font-size:1.4em;">키워드 검색 결과></div>
               <!-- Table -->
               <table class="table table-striped">
                   <thead>
                     <tr>
                       <th align = center>#</th>
-                      <th align = center>&nbsp;시작&nbsp;</th>
-                      <th align = center></th>
-                      <th align = center></th>
-                      <th align = center></th>
-                      <th align = center>끝</th>
+                      <th align = center>&nbsp;발송인&nbsp;</th>
+                      <th align = center>데이터ID</th>
+                      <th align = center>활동 타입</th>
+                      <th align = center>수취인</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <% for(var i=0, j =0; i<result4s.length; i++, j++ ) { %>
                     <tr>
                       <th scope="row">
-                          <%= (j+1) %>
+                        1
                       </th>
                       <td align = center>
-                        <strong><%= result4s[i] %></strong>
+                        이진기
                       </td>
                       <td align = center>
-                        <%= result4s[++i] %>
+                        data_176
                       </td>
                       <td align = center>
-                        <%= result4s[++i] %>
+                        판매
                       </td> 
                       <td align = center>
-                        <%= result4s[++i] %>
-                      </td>
-                      <td align = center>
-                        <strong><%= result4s[++i] %></strong>
+                        정다솔
                       </td>
                     </tr>
-                    <% } %>
+                    <tr>
+                        <th scope="row">
+                          2
+                        </th>
+                        <td align = center>
+                          정다솔
+                        </td>
+                        <td align = center>
+                          data_932
+                        </td>
+                        <td align = center>
+                          구매
+                        </td> 
+                        <td align = center>
+                          정윤오
+                        </td>
+                      </tr>
+                      <tr>
+                          <th scope="row">
+                            3
+                          </th>
+                          <td align = center>
+                            정윤오
+                          </td>
+                          <td align = center>
+                            data_483
+                          </td>
+                          <td align = center>
+                            배포
+                          </td> 
+                          <td align = center>
+                            이재인
+                          </td>
+                        </tr>
                   </tbody>
                 </table>
             </div>  
           </div>
+          <%}%>
+          <%if(esession.gubun =='관리자'){%>
+
+          </div>
+  
+          <div class="jumbotron">
+            <div class="container fontSize" style="display: inline-block;text-align: center;">
+              <br>
+              <div class="panel panel-default">
+                <!-- Default panel contents -->
+                <div class="panel-heading" style="font-size:1.4em;">키워드 검색 결과</div>
+                <!-- Table -->
+                <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th align = center>#</th>
+                        <th align = center>&nbsp;발송인&nbsp;</th>
+                        <th align = center>데이터ID</th>
+                        <th align = center>활동 타입</th>
+                        <th align = center>수취인</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th scope="row">
+                          1
+                        </th>
+                        <td align = center>
+                          김태형
+                        </td>
+                        <td align = center>
+                          data_576
+                        </td>
+                        <td align = center>
+                          배포
+                        </td> 
+                        <td align = center>
+                          이치훈
+                        </td>
+                      </tr>
+                      <tr>
+                          <th scope="row">
+                            2
+                          </th>
+                          <td align = center>
+                            이치훈
+                          </td>
+                          <td align = center>
+                            data_233
+                          </td>
+                          <td align = center>
+                            구매
+                          </td> 
+                          <td align = center>
+                            조아라
+                          </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                              3
+                            </th>
+                            <td align = center>
+                              조아라
+                            </td>
+                            <td align = center>
+                              data_463
+                            </td>
+                            <td align = center>
+                              판매
+                            </td> 
+                            <td align = center>
+                              이채연
+                            </td>
+                          </tr>
+                          <tr>
+                              <th scope="row">
+                                4
+                              </th>
+                              <td align = center>
+                                이채연
+                              </td>
+                              <td align = center>
+                                data_866
+                              </td>
+                              <td align = center>
+                                구매
+                              </td> 
+                              <td align = center>
+                                장희은
+                              </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                  5
+                                </th>
+                                <td align = center>
+                                  장희은
+                                </td>
+                                <td align = center>
+                                  data_924
+                                </td>
+                                <td align = center>
+                                  구매
+                                </td> 
+                                <td align = center>
+                                  서지수
+                                </td>
+                              </tr>
+                              <tr>
+                                  <th scope="row">
+                                    6
+                                  </th>
+                                  <td align = center>
+                                    서지수
+                                  </td>
+                                  <td align = center>
+                                    data_566
+                                  </td>
+                                  <td align = center>
+                                    배포
+                                  </td> 
+                                  <td align = center>
+                                    한아름
+                                  </td>
+                                </tr>
+                    </tbody>
+                  </table>
+              </div>  
+            </div>
+            
+            
+            
+            <%}%>
         </div>
 
         <hr class="featurette-divider">

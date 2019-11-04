@@ -51,15 +51,17 @@
                 <% include ../notAuthenticated.ejs %>
             <% }else{%>
             <div class="container" style="display: inline-block; text-align: center;">
-              <div style="text-align: center; font-size:2em;">키워드 검색</div><br><br>
-              <form class="form-inline" method="post" action="/keyword">
+              <div style="text-align: center; font-size:2em;">키워드 검색</div><br>
+              <!--<form class="form-inline" method="post" action="/keyword">-->
+                <div style="margin: auto 0; padding-left:35%;">
                &nbsp&nbsp <div class="input-group" style="text-align: center;">
-                    <input type="text" value=<%=esession.user%> class="form-control" name = "keyword" style="width:300px;">
-                </div>                  
+                    <input type="text" class="form-control" name = "keyword" style="width:300px;">
+                </div>
+              </div>    <br><br>        
                 <!--<input class="btn btn-primary" type="submit" value="Search">-->
                 <a href="/search/searchKeywordResult"><input class="btn btn-primary" type="submit" value="검색"></a>
                 <br><br><br><br><br>
-                </form>
+                <!--</form>-->
             </div>
             <%}%>
           </div>
