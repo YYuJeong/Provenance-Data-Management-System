@@ -51,6 +51,7 @@ with driver.session() as session:
 # Bi-directional relationship?
 #u1.relationships.create("friends", u2)
 
+'''
 def merge(tx):
    tx.run("MATCH (e:Entity) WITH e.name AS e, collect(e) as node2Merge WITH node2Merge, extract(x IN node2Merge | x.match) AS matches CALL apoc.refactor.mergeNodes(node2Merge) yield node RETURN *")
 with driver.session() as session:
@@ -60,16 +61,15 @@ def merge1(tx):
 with driver.session() as session:
           session.read_transaction(merge1)
 
-'''
 def merge2(tx):
    tx.run("MATCH (ac:Activity) WITH ac.name AS ac, collect(ac) as node2Merge WITH node2Merge, extract(x IN node2Merge | x.match) AS matches CALL apoc.refactor.mergeNodes(node2Merge) yield node RETURN *")
 with driver.session() as session:
           session.read_transaction(merge2)
-'''
+
 def merge3(tx):
    tx.run("MATCH (a1:Agent) WITH a1.name AS a1, collect(a1) as node2Merge WITH node2Merge, extract(x IN node2Merge | x.match) AS matches CALL apoc.refactor.mergeNodes(node2Merge) yield node RETURN *")
 with driver.session() as session:
           session.read_transaction(merge3)
-
+'''
 print("start_time", start_time)
 print("---%s seconds ---" %(time.time() - start_time))
