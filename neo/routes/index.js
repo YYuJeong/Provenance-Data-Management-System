@@ -269,68 +269,48 @@ router.get('/viewPage', function (req, res) {
   var user_name = session_value.getSession().user;
 
     if(user_gubun == '사용자'){
-      session.run("START n=node(*) MATCH (n:Agent)<-[:wasAttributedTo]-(m:Entity)-[:wasGeneratedBy]-(q:Activity)-[]-(w:Agent) WHERE Not(q.name = '수정') AND (n.name = '"+user_name +"' OR w.name =   '"+user_name +"') RETURN n, m , q, w LIMIT 30")
+      session.run("START n=node(*) MATCH (n:Agent)<-[:wasAttributedTo]-(m:Entity)-[:wasGeneratedBy]-(q:Activity) WHERE q.name = '수정' AND n.name = '"+user_name +"' RETURN n, m, q LIMIT 30")
       .then(function(result){
         result.records.forEach(function (record) {
 
-          
-          s_nameArr.push(record._fields[0].properties.name)
-          s_affiliationArr.push(record._fields[0].properties.affiliation)
+          nameArr.push(record._fields[0].properties.name)
+          affiliationArr.push(record._fields[0].properties.affiliation)
 
-          dataNameArr4.push(record._fields[1].properties.name)
-          dataTypeArr4.push(record._fields[1].properties.d_type)
-          deviceArr4.push(record._fields[1].properties.device)
-          priceArr4.push(record._fields[1].properties.price)
+          dataNameArr3.push(record._fields[1].properties.name)
+          dataTypeArr3.push(record._fields[1].properties.d_type)
+          deviceArr3.push(record._fields[1].properties.device)
+          priceArr3.push(record._fields[1].properties.price)
 
-          activityTypeArr4.push(record._fields[2].properties.name)
-          dateArr4.push(record._fields[2].properties.date)
+          activityTypeArr3.push(record._fields[2].properties.name)
+          dateArr3.push(record._fields[2].properties.date)
+        });
+        res.render('viewPage', {
+            esession: session_value.getSession(),
 
-          r_nameArr.push(record._fields[3].properties.name)
-          r_affiliationArr.push(record._fields[3].properties.affiliation)
+            names: nameArr,
+            affiliations: affiliationArr,
+            dataTypes3: dataTypeArr3,
+            dataNames3: dataNameArr3,
+            devices3: deviceArr3,
+            prices3: priceArr3,
+            activityTypes3: activityTypeArr3,
+            dates3: dateArr3,
 
+            s_names: s_nameArr,
+            s_affiliations: s_affiliationArr,
+            dataTypes4: dataTypeArr4,
+            dataNames4: dataNameArr4,
+            devices4: deviceArr4,
+            prices4: priceArr4,
+            activityTypes4: activityTypeArr4,
+            dates4: dateArr4,            
+            r_names: r_nameArr,
+            r_affiliations: r_affiliationArr,
+            
+            authenticated: true
+        });
 
-          session.run("START n=node(*) MATCH (n:Agent)<-[:wasAttributedTo]-(m:Entity)-[:wasGeneratedBy]-(q:Activity) WHERE q.name = '수정' AND n.name = '"+user_name +"' RETURN n, m, q LIMIT 30")
-          .then(function(result){
-            result.records.forEach(function (record) {
-
-              nameArr.push(record._fields[0].properties.name)
-              affiliationArr.push(record._fields[0].properties.affiliation)
-  
-              dataNameArr3.push(record._fields[1].properties.name)
-              dataTypeArr3.push(record._fields[1].properties.d_type)
-              deviceArr3.push(record._fields[1].properties.device)
-              priceArr3.push(record._fields[1].properties.price)
-  
-              activityTypeArr3.push(record._fields[2].properties.name)
-              dateArr3.push(record._fields[2].properties.date)
-            });
-            res.render('viewPage', {
-                esession: session_value.getSession(),
-
-                names: nameArr,
-                affiliations: affiliationArr,
-                dataTypes3: dataTypeArr3,
-                dataNames3: dataNameArr3,
-                devices3: deviceArr3,
-                prices3: priceArr3,
-                activityTypes3: activityTypeArr3,
-                dates3: dateArr3,
-
-                s_names: s_nameArr,
-                s_affiliations: s_affiliationArr,
-                dataTypes4: dataTypeArr4,
-                dataNames4: dataNameArr4,
-                devices4: deviceArr4,
-                prices4: priceArr4,
-                activityTypes4: activityTypeArr4,
-                dates4: dateArr4,            
-                r_names: r_nameArr,
-                r_affiliations: r_affiliationArr,
-                
-                authenticated: true
-            });
-          });
-      });
+ 
       session.close();
     })
     .catch(function (err) {
