@@ -3,7 +3,7 @@ import csv, sys, time
 start_time = time.time()
 
 
-with open("testData.csv",'r') as f:
+with open("NewrandomData.csv",'r') as f:
     matrix = list(csv.reader(f,delimiter=","))
 
 
@@ -40,7 +40,7 @@ def add_node(tx,sender_name,receiver_name,entity_name, activity_time,activity_pr
 
 with driver.session() as session:
 
-    for i in range(15):
+    for i in range(10000):
 
         session.write_transaction(add_node,matrix[i][0],matrix[i][1],matrix[i][2],matrix[i][3],matrix[i][4],matrix[i][5],matrix[i][6],matrix[i][7], matrix[i][8],matrix[i][9])
         
