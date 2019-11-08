@@ -558,7 +558,7 @@ else{
         session.run(newQuery3)
         .then(function(result){
           result.records.forEach(function (record) {
-
+            console.log("record.length : " , record.length)
             nameArr.push(record._fields[0].properties.name)
             affiliationArr.push(record._fields[0].properties.affiliation)
 
@@ -604,13 +604,16 @@ else{
     });
   }
   else if(user_gubun == '관리자'){
-
+    console.log("관리자11111111111111111")
     session
     .run(newQuery4)
     .then(function(result){
-      result.records.forEach(function (record) {
+      console.log("-------------record.length : " , result)
+      console.log("-------------record.length : " , result.records.length)
+      if(result.records.length == 0){
 
-        
+      }
+      result.records.forEach(function (record) {
         s_nameArr.push(record._fields[0].properties.name)
         s_affiliationArr.push(record._fields[0].properties.affiliation)
 
@@ -669,10 +672,10 @@ else{
         });
     });
     session.close();
-})
-.catch(function (err) {
-    console.log(err);
-  });
+  })
+  .catch(function (err) {
+      console.log(err);
+    });
   }
 });
 
