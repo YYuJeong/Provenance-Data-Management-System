@@ -1072,6 +1072,20 @@ else{
     }
 });
 
+function getRuntime(){
+  var sum = 0;
+
+  var startTime = new Date().getTime();
+  for (var i = 1; i <= 1000000; i++) {
+    sum += i;
+  }
+  var endTime = new Date().getTime();
+
+  console.log("실행 시간 : ", (endTime - startTime));
+}
+
+getRuntime();
+
 function getKeyword(keywords){
   return new Promise(function(resolve, reject){
     keyword = keywords.split(',');
@@ -1089,26 +1103,32 @@ function getKeyword(keywords){
 }
 
 function getCheckNode(keyword){
+  var nodeType;
   return new Promise(function(resolve, reject){
     if (!isNaN(parseInt(keyword))){
       ;
     }
     else{
-      session.run('MATCH (a:Agent{name:"' + keyword + '"}) RETURN count(a)=1 as check')
+      session.run('MATCH (a:Agent{name:"' + keyword + '"}) RETURN count(a)>=1 as check')
       .then(function(result){
-        //console.log(result)
-        if (result.records[0].get('check'))
+        if (result.records[0].get('check')){
+          nodeType = "Agent";
           resolve('Agent');
+        }
         else{
-          session.run('MATCH (a:Activity{name:"' + keyword + '"}) RETURN count(a)=1 as check')
+          session.run('MATCH (a:Activity{name:"' + keyword + '"}) RETURN count(a)>=1 as check')
           .then(function(result){
-            if (result.records[0].get('check'))
+            if (result.records[0].get('check')){
+              nodeType = "Activity";
               resolve('Activity')
+            }
             else {
-              session.run('MATCH (a:Entity{name:"' + keyword + '"}) RETURN count(a)=1 as check')
+              session.run('MATCH (a:Entity{name:"' + keyword + '"}) RETURN count(a)>=1 as check')
               .then(function(result){
-                if (result.records[0].get('check'))
+                if (result.records[0].get('check')){
+                  nodeType = "Entity";
                   resolve('Entity');
+                }
                 else
                   resolve('NOT EXIST');
               });
@@ -1122,9 +1142,12 @@ function getCheckNode(keyword){
 }
 
 router.post('/keyword', function (req, res) {
+  
   var result4Arr = []
   var result3Arr = []
   var arrLength;
+  var startTime = new Date().getTime();
+  var keye = req.body.keyword;
   getKeyword(req.body.keyword)
   .then(
     function(keywords){
@@ -1141,13 +1164,15 @@ router.post('/keyword', function (req, res) {
     var keyword = keys[2]
     var resultArr = []
     console.log(group, keyword);
+
     var user_gubun = session_value.getSession().gubun;
     var user_name = session_value.getSession().user;
     var query = "MATCH (a1:"+ group[0] +" {name:'"+ keyword[0] +"'}), (a2:"+group[1]+" {name:'"+ keyword[1] +"'}), path=((a1)-[*3..4]-(a2)) RETURN path ORDER BY LENGTH(path)";
-
+    var naiveQuery = "MATCH (s_agent:Agent)<-[:wasAttributedTo]-(entity:Entity)-[:wasGeneratedBy]-(activity:Activity)-[]-(r_agent: Agent) WHERE a1.name:'"+ keyword[1] +"' RETURN path" ;
     session
     .run(query)
     .then(result => {
+      console.log("키워드 서치 실행 시간 : ", (endTime - startTime));
       leng = result.records.length
       console.log(result.records.length)
       return result.records.map(record => {
@@ -1181,11 +1206,17 @@ router.post('/keyword', function (req, res) {
         }
       
         if( arrLength == leng){
-          res.render('search/searchKeywordResult.ejs',{esession: session_value.getSession(), result4s:result4Arr, result3s : result3Arr} );
+          res.render('search/searchKeywordResult.ejs',{
+            esession: session_value.getSession(), 
+            result4s:result4Arr, 
+            result3s : result3Arr} );
           session.close();
         }
         else if( arrLength == 300){
-          res.render('search/searchKeywordResult.ejs',{esession: session_value.getSession(), result4s:result4Arr, result3s : result3Arr} );
+          res.render('search/searchKeywordResult.ejs',{
+            esession: session_value.getSession(), 
+            result4s:result4Arr, 
+            result3s : result3Arr} );
           session.close();
         }
       });
