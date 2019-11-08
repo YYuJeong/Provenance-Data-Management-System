@@ -140,7 +140,7 @@
                               <%= dates3[i] %>
                             </td>
                             <td align = center id = "td3">
-                                <input type = "checkbox" name = "deleteCheck" value=<%=i%>>
+                                <input type = "checkbox" name = "deleteCheck3" value=<%= (i+1) %>>
                             </td>
                           </tr>
                           <% } %>
@@ -197,7 +197,7 @@
                                 <td align = center>
                                   <%= devices4[i] %>
                                 </td>
-                                <td align = center>
+                                <td align = center name = "activityTypes4Val" value=<%= activityTypes4[i] %>>
                                   <%= activityTypes4[i] %>
                                 </td>
                                 <td align = center>
@@ -210,14 +210,12 @@
                                   <%= r_affiliations[i] %>
                                 </td>
                                 <td align = center id = "td3">
-                                    <input type = "checkbox" name = "deleteCheck" value=<%=i%>>
+                                    <input type = "checkbox" name = "deleteCheck4" value=<%= (i+1) %>>
                                 </td>
                               </tr>
                               <% } %>
                             </tbody>
                           </table>
-                        
-
                     </div>
                     </div>
 
