@@ -1024,6 +1024,7 @@ else{
   
   for(var i = 0 ; i < (2-nullcount); i++){
     if(end_dateFlag && start_date){
+      console.log("날짜 not null")
       newQuery4 = newQuery4 +  startDateCyper + "'" + start_date +"'" + " AND" + endDateCyper + "'" + end_date + "'" ;
       newQuery3 = newQuery3 +  startDateCyper + "'" + start_date +"'" + " AND" + endDateCyper + "'" + end_date + "'" ;
 
@@ -1031,11 +1032,13 @@ else{
       start_dateFlag = false;
     }
     else if(activityTypeFlag){
+      console.log("활동 not null")
       activityTypeFlag = false;
       //  newQuery4 = newQuery4 + activityTypeCyper + "'" + activityType + "'" ;
       //  newQuery3 = newQuery3 + activityTypeCyper + "'" + activityType + "'" ;
       if(nullcount == 1){
         if(activityType == '수정'){
+          console.log("활동만 있고 난ㄴ 수정")
           if(user_gubun == '사용자'){
             matchCyper3 = "MATCH (agent:Agent{name: '"+user_name +"' })<-[:wasAttributedTo]-(entity:Entity)-[:wasGeneratedBy]-(activity:Activity)"
             newQuery3 = matchCyper3 + " WHERE (activity.name = '"+activityType +"'";
@@ -1060,13 +1063,15 @@ else{
           newQuery3 = newQuery3 + returnCyper3;
           break;
         }
-        if((i+1) != (2-nullcount)){
-          newQuery3 = newQuery3 + " AND";
-          newQuery4 = newQuery4 + " AND";
-        }
+      }
+      if((i+1) != (2-nullcount)){
+        newQuery3 = newQuery3 + " AND";
+        newQuery4 = newQuery4 + " AND";
       }
       else{
+        console.log("활동이랑 날짜 둘다 있음")
         if(activityType == '수정'){
+          console.log("활동이랑 날짜 둘다 있고 난 수정")
           if(user_gubun == '사용자'){
             matchCyper3 = "MATCH (agent:Agent{name: '"+user_name +"' })<-[:wasAttributedTo]-(entity:Entity)-[:wasGeneratedBy]-(activity:Activity)"
             newQuery3 = matchCyper3 + whereCyper3;
@@ -1077,6 +1082,7 @@ else{
           }
         }
         else{
+          console.log("활동이랑 날짜 둘다 있고 난 수정 아님")
           if(user_gubun == '사용자'){
             matchCyper4 = "MATCH (s_agent:Agent)<-[:wasAttributedTo]-(entity:Entity)-[:wasGeneratedBy]-(activity:Activity)-[]-(r_agent: Agent)";
             newQuery4 = matchCyper4 + whereCyper4 + "s_agent.name = '"+user_name +"' OR r_agent.name = '"+user_name +"') AND (";
@@ -1088,6 +1094,8 @@ else{
             newQuery4 = newQuery4 + "activity.name = '"+activityType +"'";
           }
           if((i+1) != (2-nullcount)){
+            
+            console.log("활동이랑 날짜 둘다 있고 난 수정 아님에서 and 추가")
             newQuery3 = newQuery3 + " AND";
             newQuery4 = newQuery4 + " AND";
           }
