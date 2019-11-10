@@ -1172,6 +1172,7 @@ router.post('/keyword', function (req, res) {
     session
     .run(query)
     .then(result => {
+      var endTime = new Date().getTime();
       console.log("키워드 서치 실행 시간 : ", (endTime - startTime));
       leng = result.records.length
       console.log(result.records.length)
