@@ -1182,7 +1182,7 @@ router.post('/keyword', function (req, res) {
         end = path["end"]["properties"]["name"]
         //console.log(record)
         for(var p in path["segments"]){
-          console.log(path["segments"][p]);
+          //console.log(path["segments"][p]);
         }
         if(path.length == 3){
          // length3count++;
@@ -1201,11 +1201,11 @@ router.post('/keyword', function (req, res) {
         
         arrLength = result4Arr.length;
 
-      
+        /*
         for (var i = 0; i <result3Arr.length ; i++){
           console.log("result3Arr[" , i , "] : ", result3Arr[i])
         }
-      
+      */
         if( arrLength == leng){
           res.render('search/searchKeywordResult.ejs',{
             esession: session_value.getSession(), 
