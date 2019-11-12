@@ -1172,34 +1172,28 @@ router.post('/keyword', function (req, res) {
     var query = "MATCH (a1:"+ group[0] +" {name:'"+ keyword[0] +"'}), (a2:"+group[1]+" {name:'"+ keyword[1] +"'}), path=((a1)-[*3..4]-(a2)) RETURN path ORDER BY LENGTH(path)";
 // "MATCH (s_agent:Agent)<-[:wasAttributedTo]-(entity:Entity)-[:wasGeneratedBy]-(activity:Activity)-[]-(r_agent: Agent) 
 //WHERE a1.name:'"+ keyword[1] +"' RETURN path"
-    var naiveQuery = "MATCH (a1:"+ group[0] +" {name:'"+ keyword[0] +"'}), path=((a1)-[*3..4]-(a2)) RETURN path ORDER BY LENGTH(path)"
+    //var naiveQuery = "MATCH (a1:"+ group[0] +" {name:'"+ keyword[0] +"'}), path=((a1)-[*3..4]-(a2)) RETURN path ORDER BY LENGTH(path)"
+    var naiveQuery = "MATCH path = ((a1:"+ group[0] +") - [*3..4]-(a2)) WHERE a1.name = '"+ keyword[0] +"' RETURN path ORDER BY LENGTH(path)"
     var endArr = []
+
     session
     .run(naiveQuery)
     .then(result => {
-
+      var endTime = new Date().getTime();
+      console.log("키워드 서치 실행 시간 : ", (endTime - startTime));
       leng = result.records.length
       console.log(result.records.length)
       return result.records.map(record => {
         path = record.get("path");
         start = path["start"]["properties"]["name"]
         end = path["end"]["properties"]["name"]
-
         //console.log(record)
-        var correct = 0;
-        var ii = 0;
         for(var p in path["segments"]){
-          //console.log(path["segments"][p]);
-          endArr.push(path["segments"][p].end.properties.name)
           if(path["segments"][p].end.properties.name == keyword[1]){
-            correct++;
+            console.log(path["segments"][p].end.properties.name)
           }
+
         }
-
-        ii++;
-       // console.log("ii", ii)
-
-        //console.log("endTIme", resultTime)
         /*
         if(path.length == 3){
          // length3count++;
@@ -1217,42 +1211,27 @@ router.post('/keyword', function (req, res) {
         }
         
         arrLength = result4Arr.length;
-     
+
+      
         for (var i = 0; i <result3Arr.length ; i++){
           console.log("result3Arr[" , i , "] : ", result3Arr[i])
         }
-      
-
-      console.log("result3Arr[1] : ", result3Arr[1])
-
-     console.log("3len", result3Arr.length)
-
-     console.log("4len", result4Arr.length)
-       
-    
-        if( arrLength == leng){
+      */
           res.render('search/searchKeywordResult.ejs',{
             esession: session_value.getSession(), 
-            result4s:result4Arr, 
-            result3s : result3Arr} );
+            //result4s:result4Arr, 
+            //result3s : result3Arr
+          } );
           session.close();
-        }
-        else if( arrLength == 300){
-          res.render('search/searchKeywordResult.ejs',{
-            esession: session_value.getSession(), 
-            result4s:result4Arr, 
-            result3s : result3Arr} );
-          session.close();
-        }
-        */ 
+        
       });
-      console.log("correct:" , correct )
     })
     .catch(function (err) {
        console.log(err);
     });
   });
 });
+
     /* 키우드 서치 부분
     session
     .run(query)
