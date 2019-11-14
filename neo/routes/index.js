@@ -1190,9 +1190,9 @@ router.post('/keyword', function (req, res) {
     var user_gubun = session_value.getSession().gubun;
     var user_name = session_value.getSession().user;
     var query = "MATCH (a1:"+ group[0] +" {name:'"+ keyword[0] +"'}), (a2:"+group[1]+" {name:'"+ keyword[1] +"'}), path=((a1)-[*3..4]-(a2)) RETURN path ORDER BY LENGTH(path)";
-<<<<<<< HEAD
+
     var naiveQuery = "MATCH (s_agent:Agent)<-[:wasAttributedTo]-(entity:Entity)-[:wasGeneratedBy]-(activity:Activity)-[]-(r_agent: Agent) WHERE a1.name:'"+ keyword[1] +"' RETURN path" ;
-=======
+
 // "MATCH (s_agent:Agent)<-[:wasAttributedTo]-(entity:Entity)-[:wasGeneratedBy]-(activity:Activity)-[]-(r_agent: Agent) 
 //WHERE a1.name:'"+ keyword[1] +"' RETURN path"
     //var naiveQuery = "MATCH (a1:"+ group[0] +" {name:'"+ keyword[0] +"'}), path=((a1)-[*3..4]-(a2)) RETURN path ORDER BY LENGTH(path)"
@@ -1256,7 +1256,6 @@ router.post('/keyword', function (req, res) {
 });
 
     /* 키우드 서치 부분
->>>>>>> bb549fc4c5e51b184089f91235450787bb11cf15
     session
     .run(query)
     .then(result => {
@@ -1316,7 +1315,7 @@ router.post('/keyword', function (req, res) {
             result3s : result3Arr} );
           session.close();
         }
-        */
+      
       });
     })
     .catch(function (err) {
@@ -1324,7 +1323,7 @@ router.post('/keyword', function (req, res) {
     });
   });
 });
-
+  */
 router.post('/getValues', function (req, res) {
     var checkValues4 = req.body.deleteCheck4;
     var checkValues3 = req.body.deleteCheck3;
