@@ -1327,18 +1327,103 @@ router.post('/keyword', function (req, res) {
 router.post('/getValues', function (req, res) {
     var checkValues4 = req.body.deleteCheck4;
     var checkValues3 = req.body.deleteCheck3;
-    console.log("************* checkValues3 ****************", checkValues3);
-    console.log("************* checkValues4 ****************", checkValues4);
 
+    var namelst 
+    var dataNamelst3 
+
+    var s_namelst
+    var r_namelst
+    var activitylst4 
+    var dataNamelst4 
+
+    // WHERE (a1.name IN ["김태연","임윤아"]) and (ac.name in ["판매", "판매"]) and (e.name in ["data_683", "data_964"])
+    var delMatch3 = "MATCH prov = ((a:Agent)-[:wasAssociatedWith]-(ac:Activity)-[:wasGeneratedBy]-(e:Entity)) "
     var delMatch4 = "MATCH prov = ((a1:Agent)-[:wasAssociatedWith]-(ac:Activity)-[:wasGeneratedBy]-(e:Entity)-[:wasAttributedTo]-(a2:Agent)) "
     var delDetach = "DETACH DELETE prov"
-
     
-    for(var i = 0; i < checkValues4.length ; i++){
-      console.log("s_name : ", s_nameArr[checkValues4[i]]);
-    }
+    var query3;
+    var query4;
+    var delFlag3 = false
+    var delFlag4 = false;
 
-    res.render('data/deleteData', {esession:session_value.getSession()});
+
+    if(checkValues3 != undefined){
+      delFlag3 = true;
+      namelst = "\"" + nameArr[checkValues3[0]] +"\""
+      dataNamelst3 = "\"" + dataNameArr3[checkValues3[0]]+ "\""
+      for(var i = 1; i < checkValues3.length ; i++){
+         
+        console.log("name : ", nameArr[checkValues3[i]]);
+        console.log("data : ", dataNameArr3[checkValues3[i]]);
+
+        namelst = namelst + ", \"" + nameArr[checkValues3[i]] +"\""
+        dataNamelst3 = dataNamelst3 + ", \"" + dataNameArr3[checkValues3[i]]+ "\""
+         
+      }
+      console.log("namelst", namelst)
+      console.log("dataNamelst3", dataNamelst3)
+      query3 = delMatch3 + "WHERE a.name = [" + namelst + "] AND ac.name = '수정' AND e.name = [" + dataNamelst3 + "] "
+      query3 = query3 + delDetach
+    }
+    
+    if(checkValues4 != undefined){
+      delFlag4 = true;
+      s_namelst = "\"" + s_nameArr[checkValues4[0]] +"\""
+      r_namelst = "\"" + r_nameArr[checkValues4[0]] +"\""
+      activitylst4 = "\"" + activityTypeArr4[checkValues4[0]] + "\""
+      dataNamelst4 = "\"" + dataNameArr4[checkValues4[0]]+ "\""
+      for(var i = 1; i < checkValues4.length ; i++){
+        s_namelst = s_namelst + ", \"" + s_nameArr[checkValues4[i]] +"\""
+        r_namelst = r_namelst + ", \"" + r_nameArr[checkValues4[i]] +"\""
+        activitylst4 = activitylst4 + ", \"" + activityTypeArr4[checkValues4[i]] + "\""
+        dataNamelst4 = dataNamelst4 + ", \"" + dataNameArr4[checkValues4[i]]+ "\""
+      }
+      console.log("s_namelst", s_namelst)
+      console.log("r_namelst", r_namelst)
+      console.log("dataNamelst4", dataNamelst4)
+      query4 = delMatch4 + "WHERE a1.name = [" + s_namelst + "] AND ac.name = [" + activitylst4 + "] AND e.name = [" + dataNamelst4 + "] AND a2.name = [" + r_namelst + "] "
+      query4 = query4 + delDetach
+    }
+    
+    console.log(query3)
+    console.log("----------------------------------------------------------")
+    console.log(query4)
+    if(delFlag3 && delFlag4){
+      session.run(query3)
+      .then(function(result){
+        session.run(query4)
+        .then(function(result){
+          console.log("삭제 완료")
+          res.render('data/deleteData', {esession:session_value.getSession()});
+        });
+      session.close();
+    })
+    .catch(function (err) {
+        console.log(err);
+    }); 
+  }
+  else{
+    if(delFlag4){
+      session.run(query4)
+      .then(function(result){
+        res.render('data/deleteData', {esession:session_value.getSession()});
+        session.close();
+      })
+      .catch(function(err){
+        console.log(err);
+      });
+    }
+    else if(delFlag3){
+      session.run(query3)
+      .then(function(result){
+        res.render('data/deleteData', {esession:session_value.getSession()});
+        session.close();
+      })
+      .catch(function(err){
+        console.log(err);
+      });
+    }
+  } 
 });
 
 function setArray(){
@@ -1444,98 +1529,98 @@ else{
   console.log(newQuery3)
   console.log("******************************************")
   console.log(newQuery4)
-    session.run(newQuery4)
+  session.run(newQuery4)
+  .then(function(result){
+    query4resultNum = result.records.length
+    if(query4resultNum != 0){
+      result.records.forEach(function (record) {
+
+        
+        s_nameArr.push(record._fields[0].properties.name)
+        s_affiliationArr.push(record._fields[0].properties.affiliation)
+
+        dataNameArr4.push(record._fields[1].properties.name)
+        dataTypeArr4.push(record._fields[1].properties.d_type)
+        deviceArr4.push(record._fields[1].properties.device)
+        priceArr4.push(record._fields[1].properties.price)
+
+        activityTypeArr4.push(record._fields[2].properties.name)
+        dateArr4.push(record._fields[2].properties.date)
+
+        r_nameArr.push(record._fields[3].properties.name)
+        r_affiliationArr.push(record._fields[3].properties.affiliation)
+      });
+    }
+    else{
+      s_nameArr.push(' ')
+      s_affiliationArr.push(' ')
+
+      dataNameArr4.push(' ')
+      dataTypeArr4.push(' ')
+      deviceArr4.push(' ')
+      priceArr4.push(' ')
+
+      activityTypeArr4.push(' ')
+      dateArr4.push(' ')
+
+      r_nameArr.push(' ')
+      r_affiliationArr.push(' ')
+    }
+    session.run(newQuery3)
     .then(function(result){
-      query4resultNum = result.records.length
-      if(query4resultNum != 0){
+      query3resultNum = result.records.length;
+      if(query3resultNum != 0){
         result.records.forEach(function (record) {
 
-          
-          s_nameArr.push(record._fields[0].properties.name)
-          s_affiliationArr.push(record._fields[0].properties.affiliation)
+          nameArr.push(record._fields[0].properties.name)
+          affiliationArr.push(record._fields[0].properties.affiliation)
 
-          dataNameArr4.push(record._fields[1].properties.name)
-          dataTypeArr4.push(record._fields[1].properties.d_type)
-          deviceArr4.push(record._fields[1].properties.device)
-          priceArr4.push(record._fields[1].properties.price)
+          dataNameArr3.push(record._fields[1].properties.name)
+          dataTypeArr3.push(record._fields[1].properties.d_type)
+          deviceArr3.push(record._fields[1].properties.device)
+          priceArr3.push(record._fields[1].properties.price)
 
-          activityTypeArr4.push(record._fields[2].properties.name)
-          dateArr4.push(record._fields[2].properties.date)
-
-          r_nameArr.push(record._fields[3].properties.name)
-          r_affiliationArr.push(record._fields[3].properties.affiliation)
+          activityTypeArr3.push(record._fields[2].properties.name)
+          dateArr3.push(record._fields[2].properties.date)
         });
       }
       else{
-        s_nameArr.push(' ')
-        s_affiliationArr.push(' ')
-  
-        dataNameArr4.push(' ')
-        dataTypeArr4.push(' ')
-        deviceArr4.push(' ')
-        priceArr4.push(' ')
-  
-        activityTypeArr4.push(' ')
-        dateArr4.push(' ')
-  
-        r_nameArr.push(' ')
-        r_affiliationArr.push(' ')
+        nameArr.push(' ')
+        affiliationArr.push(' ')
+
+        dataNameArr3.push(' ')
+        dataTypeArr3.push(' ')
+        deviceArr3.push(' ')
+        priceArr3.push(' ')
+
+        activityTypeArr3.push(' ')
+        dateArr3.push(' ')
       }
-      session.run(newQuery3)
-      .then(function(result){
-        query3resultNum = result.records.length;
-        if(query3resultNum != 0){
-          result.records.forEach(function (record) {
+      res.render('data/deleteDataResult.ejs', {
+          esession: session_value.getSession(),
 
-            nameArr.push(record._fields[0].properties.name)
-            affiliationArr.push(record._fields[0].properties.affiliation)
+          names: nameArr,
+          affiliations: affiliationArr,
+          dataTypes3: dataTypeArr3,
+          dataNames3: dataNameArr3,
+          devices3: deviceArr3,
+          prices3: priceArr3,
+          activityTypes3: activityTypeArr3,
+          dates3: dateArr3,
 
-            dataNameArr3.push(record._fields[1].properties.name)
-            dataTypeArr3.push(record._fields[1].properties.d_type)
-            deviceArr3.push(record._fields[1].properties.device)
-            priceArr3.push(record._fields[1].properties.price)
-
-            activityTypeArr3.push(record._fields[2].properties.name)
-            dateArr3.push(record._fields[2].properties.date)
-          });
-        }
-        else{
-          nameArr.push(' ')
-          affiliationArr.push(' ')
-
-          dataNameArr3.push(' ')
-          dataTypeArr3.push(' ')
-          deviceArr3.push(' ')
-          priceArr3.push(' ')
-
-          activityTypeArr3.push(' ')
-          dateArr3.push(' ')
-        }
-        res.render('data/deleteDataResult.ejs', {
-            esession: session_value.getSession(),
-
-            names: nameArr,
-            affiliations: affiliationArr,
-            dataTypes3: dataTypeArr3,
-            dataNames3: dataNameArr3,
-            devices3: deviceArr3,
-            prices3: priceArr3,
-            activityTypes3: activityTypeArr3,
-            dates3: dateArr3,
-
-            s_names: s_nameArr,
-            s_affiliations: s_affiliationArr,
-            dataTypes4: dataTypeArr4,
-            dataNames4: dataNameArr4,
-            devices4: deviceArr4,
-            prices4: priceArr4,
-            activityTypes4: activityTypeArr4,
-            dates4: dateArr4,            
-            r_names: r_nameArr,
-            r_affiliations: r_affiliationArr,
-            
-            authenticated: true
-        });
+          s_names: s_nameArr,
+          s_affiliations: s_affiliationArr,
+          dataTypes4: dataTypeArr4,
+          dataNames4: dataNameArr4,
+          devices4: deviceArr4,
+          prices4: priceArr4,
+          activityTypes4: activityTypeArr4,
+          dates4: dateArr4,            
+          r_names: r_nameArr,
+          r_affiliations: r_affiliationArr,
+          
+          authenticated: true
+      });
     });
     session.close();
   })
