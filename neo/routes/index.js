@@ -16,6 +16,28 @@ var multiparty = require('multiparty');
 var fs = require('fs');
 const exec = require('child_process').exec;
 
+let s_nameArr = [];
+let s_affiliationArr = [];
+let r_nameArr = [];
+let r_affiliationArr = [];
+
+let activityTypeArr4 = [];
+let dateArr4 = [];
+let dataNameArr4 = [];
+let dataTypeArr4 = [];
+let priceArr4 = [];
+let deviceArr4 = [];
+
+let activityTypeArr3 = [];
+let dateArr3 = [];
+let dataNameArr3 = [];
+let dataTypeArr3 = [];
+let priceArr3 = [];
+let deviceArr3 = [];
+
+
+
+
 app.use(esession({
     secret:"asdfasffdas",
     resave:false,
@@ -1081,7 +1103,7 @@ function getRuntime(){
   }
   var endTime = new Date().getTime();
 
-  console.log("실행 시간 : ", (endTime - startTime));
+  //console.log("실행 시간 : ", (endTime - startTime));
 }
 
 getRuntime();
@@ -1147,7 +1169,6 @@ router.post('/keyword', function (req, res) {
   var result3Arr = []
   var arrLength;
   var startTime = new Date().getTime();
-  console.log("STRART" ,startTime)
   var keye = req.body.keyword;
   getKeyword(req.body.keyword)
   .then(
@@ -1165,95 +1186,11 @@ router.post('/keyword', function (req, res) {
     var keyword = keys[2]
     var resultArr = []
     console.log(group, keyword);
-    var resultTime;
-    var endTime
+
     var user_gubun = session_value.getSession().gubun;
     var user_name = session_value.getSession().user;
     var query = "MATCH (a1:"+ group[0] +" {name:'"+ keyword[0] +"'}), (a2:"+group[1]+" {name:'"+ keyword[1] +"'}), path=((a1)-[*3..4]-(a2)) RETURN path ORDER BY LENGTH(path)";
-// "MATCH (s_agent:Agent)<-[:wasAttributedTo]-(entity:Entity)-[:wasGeneratedBy]-(activity:Activity)-[]-(r_agent: Agent) 
-//WHERE a1.name:'"+ keyword[1] +"' RETURN path"
-    var naiveQuery = "MATCH (a1:"+ group[0] +" {name:'"+ keyword[0] +"'}), path=((a1)-[*3..4]-(a2)) RETURN path ORDER BY LENGTH(path)"
-    var endArr = []
-    session
-    .run(naiveQuery)
-    .then(result => {
-
-      leng = result.records.length
-      console.log(result.records.length)
-      return result.records.map(record => {
-        path = record.get("path");
-        start = path["start"]["properties"]["name"]
-        end = path["end"]["properties"]["name"]
-
-        //console.log(record)
-        var correct = 0;
-        var ii = 0;
-        for(var p in path["segments"]){
-          //console.log(path["segments"][p]);
-          endArr.push(path["segments"][p].end.properties.name)
-          if(path["segments"][p].end.properties.name == keyword[1]){
-            correct++;
-          }
-        }
-
-        ii++;
-       // console.log("ii", ii)
-
-        //console.log("endTIme", resultTime)
-        /*
-        if(path.length == 3){
-         // length3count++;
-          for(var p in path["segments"]){
-            result3Arr.push(path["segments"][p].start.properties.name)
-          }
-          result3Arr.push(end)
-        }
-        else if(path.length == 4){
-        //  length4count++;
-          for(var p in path["segments"]){
-            result4Arr.push(path["segments"][p].start.properties.name)
-          }
-          result4Arr.push(end)
-        }
-        
-        arrLength = result4Arr.length;
-     
-        for (var i = 0; i <result3Arr.length ; i++){
-          console.log("result3Arr[" , i , "] : ", result3Arr[i])
-        }
-      
-
-      console.log("result3Arr[1] : ", result3Arr[1])
-
-     console.log("3len", result3Arr.length)
-
-     console.log("4len", result4Arr.length)
-       
-    
-        if( arrLength == leng){
-          res.render('search/searchKeywordResult.ejs',{
-            esession: session_value.getSession(), 
-            result4s:result4Arr, 
-            result3s : result3Arr} );
-          session.close();
-        }
-        else if( arrLength == 300){
-          res.render('search/searchKeywordResult.ejs',{
-            esession: session_value.getSession(), 
-            result4s:result4Arr, 
-            result3s : result3Arr} );
-          session.close();
-        }
-        */ 
-      });
-      console.log("correct:" , correct )
-    })
-    .catch(function (err) {
-       console.log(err);
-    });
-  });
-});
-    /* 키우드 서치 부분
+    var naiveQuery = "MATCH (s_agent:Agent)<-[:wasAttributedTo]-(entity:Entity)-[:wasGeneratedBy]-(activity:Activity)-[]-(r_agent: Agent) WHERE a1.name:'"+ keyword[1] +"' RETURN path" ;
     session
     .run(query)
     .then(result => {
@@ -1265,7 +1202,15 @@ router.post('/keyword', function (req, res) {
         path = record.get("path");
         start = path["start"]["properties"]["name"]
         end = path["end"]["properties"]["name"]
+
+
+        res.render('search/searchKeywordResult.ejs',{
+          esession: session_value.getSession(), 
+          result4s:result4Arr, 
+          result3s : result3Arr} );
+        session.close();
         //console.log(record)
+        /*
         for(var p in path["segments"]){
           //console.log(path["segments"][p]);
         }
@@ -1285,12 +1230,12 @@ router.post('/keyword', function (req, res) {
         }
         
         arrLength = result4Arr.length;
-
+        */
         /*
         for (var i = 0; i <result3Arr.length ; i++){
           console.log("result3Arr[" , i , "] : ", result3Arr[i])
         }
-      */
+      
         if( arrLength == leng){
           res.render('search/searchKeywordResult.ejs',{
             esession: session_value.getSession(), 
@@ -1305,6 +1250,7 @@ router.post('/keyword', function (req, res) {
             result3s : result3Arr} );
           session.close();
         }
+        */
       });
     })
     .catch(function (err) {
@@ -1312,7 +1258,6 @@ router.post('/keyword', function (req, res) {
     });
   });
 });
-*/
 
 router.post('/getValues', function (req, res) {
     var checkValues4 = req.body.deleteCheck4;
@@ -1320,12 +1265,39 @@ router.post('/getValues', function (req, res) {
     console.log("************* checkValues3 ****************", checkValues3);
     console.log("************* checkValues4 ****************", checkValues4);
 
-    var str = document.getElementsByTagName('td')[5].childNodes[0].nodeValue;
+    var delMatch4 = "MATCH prov = ((a1:Agent)-[:wasAssociatedWith]-(ac:Activity)-[:wasGeneratedBy]-(e:Entity)-[:wasAttributedTo]-(a2:Agent)) "
+    var delDetach = "DETACH DELETE prov"
 
+    
+    for(var i = 0; i < checkValues4.length ; i++){
+      console.log("s_name : ", s_nameArr[checkValues4[i]]);
+    }
 
     res.render('data/deleteData', {esession:session_value.getSession()});
 });
 
+function setArray(){
+  nameArr = [];
+  affiliationArr = [];
+  activityTypeArr3 = [];
+  dateArr3 = [];
+  dataNameArr3 = [];
+  dataTypeArr3 = [];
+  priceArr3 = [];
+  deviceArr3 = [];
+
+  s_nameArr = [];
+  s_affiliationArr = [];
+  activityTypeArr4 = [];
+  dateArr4 = [];
+  dataNameArr4 = [];
+  dataTypeArr4 = [];
+  priceArr4 = [];
+  deviceArr4 = [];
+  r_nameArr = [];
+  r_affiliationArr = [];
+
+}
 
 router.post('/delete', function(req, res){
   var dataName = req.body.dataName;
@@ -1333,25 +1305,7 @@ router.post('/delete', function(req, res){
   var dataNameFlag = true;
   var nameFlag = true;
 
-  var nameArr = [];
-  var affiliationArr = [];
-  var activityTypeArr3 = [];
-  var dateArr3 = [];
-  var dataNameArr3 = [];
-  var dataTypeArr3 = [];
-  var priceArr3 = [];
-  var deviceArr3 = [];
-
-  var s_nameArr = [];
-  var s_affiliationArr = [];
-  var activityTypeArr4 = [];
-  var dateArr4 = [];
-  var dataNameArr4 = [];
-  var dataTypeArr4 = [];
-  var priceArr4 = [];
-  var deviceArr4 = [];
-  var r_nameArr = [];
-  var r_affiliationArr = [];
+  setArray()
 
   var user_gubun = session_value.getSession().gubun;
   var user_name = session_value.getSession().user;
