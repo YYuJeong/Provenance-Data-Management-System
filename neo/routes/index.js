@@ -1324,7 +1324,7 @@ router.post('/keyword', function (req, res) {
   });
 });
   */
-router.post('/getValues', function (req, res) {
+router.post('/getDeleteValues', function (req, res) {
     var checkValues4 = req.body.deleteCheck4;
     var checkValues3 = req.body.deleteCheck3;
 
@@ -1629,31 +1629,25 @@ else{
   });
 });
 
+router.post('/getDeleteValues', function (req, res) {
+  var checkValues4 = req.body.modifyCheck4;
+  var checkValues3 = req.body.modifyCheck3;
+
+  console.log("------------check3 ------------", checkValues3);
+  console.log("------------check4 ------------", checkValues4);
+
+  console.log("------------check3 ------------", checkValues3.length);
+  console.log("------------check4 ------------", checkValues4.length); 
+
+});
+
 router.post('/modify', function(req, res){
   var dataName = req.body.dataName;
   var name = req.body.name;
   var dataNameFlag = true;
   var nameFlag = true;
 
-  var nameArr = [];
-  var affiliationArr = [];
-  var activityTypeArr3 = [];
-  var dateArr3 = [];
-  var dataNameArr3 = [];
-  var dataTypeArr3 = [];
-  var priceArr3 = [];
-  var deviceArr3 = [];
-
-  var s_nameArr = [];
-  var s_affiliationArr = [];
-  var activityTypeArr4 = [];
-  var dateArr4 = [];
-  var dataNameArr4 = [];
-  var dataTypeArr4 = [];
-  var priceArr4 = [];
-  var deviceArr4 = [];
-  var r_nameArr = [];
-  var r_affiliationArr = [];
+  setArray()
 
   var user_gubun = session_value.getSession().gubun;
   var user_name = session_value.getSession().user;
@@ -1662,6 +1656,8 @@ router.post('/modify', function(req, res){
 
   var nullcount = 0;
 
+  var query4resultNum;
+  var query3resultNum;
 
   var matchCyper4;
   var matchCyper3;
@@ -1726,12 +1722,13 @@ else{
   console.log("******************************************")
   console.log(newQuery4)
  
-  if(user_gubun == '사용자'){
-    session.run(newQuery4)
-    .then(function(result){
-      result.records.forEach(function (record) {
 
-        
+  session
+  .run(newQuery4)
+  .then(function(result){
+    query4resultNum = result.records.length
+    if(query4resultNum != 0){
+      result.records.forEach(function (record) {  
         s_nameArr.push(record._fields[0].properties.name)
         s_affiliationArr.push(record._fields[0].properties.affiliation)
 
@@ -1745,128 +1742,84 @@ else{
 
         r_nameArr.push(record._fields[3].properties.name)
         r_affiliationArr.push(record._fields[3].properties.affiliation)
+      })
+    }
+    else{
+      s_nameArr.push(' ')
+      s_affiliationArr.push(' ')
 
+      dataNameArr4.push(' ')
+      dataTypeArr4.push(' ')
+      deviceArr4.push(' ')
+      priceArr4.push(' ')
 
-        session.run(newQuery3)
-        .then(function(result){
-          result.records.forEach(function (record) {
+      activityTypeArr4.push(' ')
+      dateArr4.push(' ')
 
-            nameArr.push(record._fields[0].properties.name)
-            affiliationArr.push(record._fields[0].properties.affiliation)
+      r_nameArr.push(' ')
+      r_affiliationArr.push(' ')
+    }
+    session.run(newQuery3)
+    .then(function(result){
+    query3resultNum = result.records.length;
+    if(query3resultNum != 0){
+      result.records.forEach(function (record) {
 
-            dataNameArr3.push(record._fields[1].properties.name)
-            dataTypeArr3.push(record._fields[1].properties.d_type)
-            deviceArr3.push(record._fields[1].properties.device)
-            priceArr3.push(record._fields[1].properties.price)
+        nameArr.push(record._fields[0].properties.name)
+        affiliationArr.push(record._fields[0].properties.affiliation)
 
-            activityTypeArr3.push(record._fields[2].properties.name)
-            dateArr3.push(record._fields[2].properties.date)
-          });
-          res.render('data/modifyDataResult.ejs', {
-              esession: session_value.getSession(),
+        dataNameArr3.push(record._fields[1].properties.name)
+        dataTypeArr3.push(record._fields[1].properties.d_type)
+        deviceArr3.push(record._fields[1].properties.device)
+        priceArr3.push(record._fields[1].properties.price)
 
-              names: nameArr,
-              affiliations: affiliationArr,
-              dataTypes3: dataTypeArr3,
-              dataNames3: dataNameArr3,
-              devices3: deviceArr3,
-              prices3: priceArr3,
-              activityTypes3: activityTypeArr3,
-              dates3: dateArr3,
+        activityTypeArr3.push(record._fields[2].properties.name)
+        dateArr3.push(record._fields[2].properties.date)
+      });
+    }
+    else{
+      nameArr.push(' ')
+      affiliationArr.push(' ')
 
-              s_names: s_nameArr,
-              s_affiliations: s_affiliationArr,
-              dataTypes4: dataTypeArr4,
-              dataNames4: dataNameArr4,
-              devices4: deviceArr4,
-              prices4: priceArr4,
-              activityTypes4: activityTypeArr4,
-              dates4: dateArr4,            
-              r_names: r_nameArr,
-              r_affiliations: r_affiliationArr,
-              
-              authenticated: true
-          });
-        });
+      dataNameArr3.push(' ')
+      dataTypeArr3.push(' ')
+      deviceArr3.push(' ')
+      priceArr3.push(' ')
+
+      activityTypeArr3.push(' ')
+      dateArr3.push(' ')
+    }
+    res.render('data/modifyDataResult.ejs', {
+        esession: session_value.getSession(),
+
+        names: nameArr,
+        affiliations: affiliationArr,
+        dataTypes3: dataTypeArr3,
+        dataNames3: dataNameArr3,
+        devices3: deviceArr3,
+        prices3: priceArr3,
+        activityTypes3: activityTypeArr3,
+        dates3: dateArr3,
+
+        s_names: s_nameArr,
+        s_affiliations: s_affiliationArr,
+        dataTypes4: dataTypeArr4,
+        dataNames4: dataNameArr4,
+        devices4: deviceArr4,
+        prices4: priceArr4,
+        activityTypes4: activityTypeArr4,
+        dates4: dateArr4,            
+        r_names: r_nameArr,
+        r_affiliations: r_affiliationArr,
+        
+        authenticated: true
     });
+  });
     session.close();
   })
   .catch(function (err) {
-      console.log(err);
-    });
-  }
-  else if(user_gubun == '관리자'){
-
-    session
-    .run(newQuery4)
-    .then(function(result){
-      result.records.forEach(function (record) {
-
-        
-        s_nameArr.push(record._fields[0].properties.name)
-        s_affiliationArr.push(record._fields[0].properties.affiliation)
-
-        dataNameArr4.push(record._fields[1].properties.name)
-        dataTypeArr4.push(record._fields[1].properties.d_type)
-        deviceArr4.push(record._fields[1].properties.device)
-        priceArr4.push(record._fields[1].properties.price)
-
-        activityTypeArr4.push(record._fields[2].properties.name)
-        dateArr4.push(record._fields[2].properties.date)
-
-        r_nameArr.push(record._fields[3].properties.name)
-        r_affiliationArr.push(record._fields[3].properties.affiliation)
-
-
-        session.run(newQuery3)
-        .then(function(result){
-          result.records.forEach(function (record) {
-
-            nameArr.push(record._fields[0].properties.name)
-            affiliationArr.push(record._fields[0].properties.affiliation)
-
-            dataNameArr3.push(record._fields[1].properties.name)
-            dataTypeArr3.push(record._fields[1].properties.d_type)
-            deviceArr3.push(record._fields[1].properties.device)
-            priceArr3.push(record._fields[1].properties.price)
-
-            activityTypeArr3.push(record._fields[2].properties.name)
-            dateArr3.push(record._fields[2].properties.date)
-          });
-          res.render('data/modifyDataResult.ejs', {
-              esession: session_value.getSession(),
-
-              names: nameArr,
-              affiliations: affiliationArr,
-              dataTypes3: dataTypeArr3,
-              dataNames3: dataNameArr3,
-              devices3: deviceArr3,
-              prices3: priceArr3,
-              activityTypes3: activityTypeArr3,
-              dates3: dateArr3,
-
-              s_names: s_nameArr,
-              s_affiliations: s_affiliationArr,
-              dataTypes4: dataTypeArr4,
-              dataNames4: dataNameArr4,
-              devices4: deviceArr4,
-              prices4: priceArr4,
-              activityTypes4: activityTypeArr4,
-              dates4: dateArr4,            
-              r_names: r_nameArr,
-              r_affiliations: r_affiliationArr,
-              
-              authenticated: true
-          });
-        });
-    });
-    session.close();
-})
-.catch(function (err) {
     console.log(err);
   });
-  }
-
 });
 
 

@@ -60,6 +60,7 @@
         <hr class="featurette-divider">
         <br><br>
         <div class="jumbotron">
+          <form action="/getModifyValues" method="post">
             <div class="container" style="display: inline-block;text-align: center;">
                 <div style="text-align: center; font-size:2em;">개인정보 이력 변경<br><br>
                     </div>
@@ -120,7 +121,7 @@
                               <%= dates3[i] %>
                             </td>
                             <td align = center id = "td3">
-                                <input type = "checkbox" name = "deleteCheck" value=<%=i%>>
+                                <input type = "checkbox" name = "modifyCheck3" value=<%=i%>>
                             </td>
                           </tr>
                           <% } %>
@@ -190,7 +191,7 @@
                                   <%= r_affiliations[i] %>
                                 </td>
                                 <td align = center id = "td3">
-                                    <input type = "checkbox" name = "deleteCheck" value=<%=i%>>
+                                    <input type = "checkbox" name = "modifyCheck4" value=<%=i%>>
                                 </td>
                               </tr>
                               <% } %>
@@ -204,7 +205,7 @@
                        <input class="btn btn-light" type="reset" value="취소" style="width:100px">
                     </div> 
 
-                    
+                  </form>
                 </div>
 
 
