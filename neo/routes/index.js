@@ -1337,8 +1337,8 @@ router.post('/getDeleteValues', function (req, res) {
     var dataNamelst4 
 
     // WHERE (a1.name IN ["김태연","임윤아"]) and (ac.name in ["판매", "판매"]) and (e.name in ["data_683", "data_964"])
-    var delMatch3 = "MATCH prov = ((a:Agent)-[:wasAssociatedWith]-(ac:Activity)-[:wasGeneratedBy]-(e:Entity)) "
-    var delMatch4 = "MATCH prov = ((a1:Agent)-[:wasAssociatedWith]-(ac:Activity)-[:wasGeneratedBy]-(e:Entity)-[:wasAttributedTo]-(a2:Agent)) "
+    var delMatch3 = "MATCH prov = ((a:Agent)<-[:wasAttributedTo]-(e:Entity)-[:wasGeneratedBy]-(ac:Activity)) "
+    var delMatch4 = "MATCH prov = ((a1:Agent)<-[:wasAttributedTo]-(e:Entity)-[:wasGeneratedBy]-(ac:Activity)-[:wasAssociatedWith]-(a2:Agent)) "
     var delDetach = "DETACH DELETE prov"
     
     var query3;
@@ -1362,7 +1362,7 @@ router.post('/getDeleteValues', function (req, res) {
       }
       console.log("namelst", namelst)
       console.log("dataNamelst3", dataNamelst3)
-      query3 = delMatch3 + "WHERE a.name = [" + namelst + "] AND ac.name = '수정' AND e.name = [" + dataNamelst3 + "] "
+      query3 = delMatch3 + "WHERE a.name in [" + namelst + "] AND ac.name = '수정' AND e.name in [" + dataNamelst3 + "] "
       query3 = query3 + delDetach
     }
     
@@ -1381,7 +1381,7 @@ router.post('/getDeleteValues', function (req, res) {
       console.log("s_namelst", s_namelst)
       console.log("r_namelst", r_namelst)
       console.log("dataNamelst4", dataNamelst4)
-      query4 = delMatch4 + "WHERE a1.name = [" + s_namelst + "] AND ac.name = [" + activitylst4 + "] AND e.name = [" + dataNamelst4 + "] AND a2.name = [" + r_namelst + "] "
+      query4 = delMatch4 + "WHERE a1.name in [" + s_namelst + "] AND ac.name in [" + activitylst4 + "] AND e.name in [" + dataNamelst4 + "] AND a2.name in [" + r_namelst + "] "
       query4 = query4 + delDetach
     }
     
