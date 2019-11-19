@@ -35,7 +35,8 @@ let dataTypeArr3 = [];
 let priceArr3 = [];
 let deviceArr3 = [];
 
-
+let provInfo3 = []; 
+let provInfo4 = [];
 
 
 app.use(esession({
@@ -1629,16 +1630,160 @@ else{
   });
 });
 
-router.post('/getDeleteValues', function (req, res) {
+router.post('/dataModify' , function (req, res){
+  var name = req.body.name;
+  var affiliation = req.body.affiliation;
+
+  var activityType = req.body.activityType;
+  var date = req.body.date;
+
+  var dataName = req.body.dataName;
+  var dataType = req.body.dataType;
+  var price = req.body.price;
+  var device  = req.body.device;
+
+  var r_name = req.body.r_name;
+  var r_affiliation = req.body.r_affiliation;
+
+  var modiQuery3;
+  var modiQuery4;
+
+  var modiMatch3 = "MATCH (a1:Agent)<-[:wasAttributedTo]-(e:Entity)-[:wasGeneratedBy]-(ac:Activity) "
+  var modiMatch4 = "MATCH (a1:Agent)<-[:wasAttributedTo]-(e:Entity)-[:wasGeneratedBy]-(ac:Activity)-[:wasAssociatedWith]-(a2:Agent) "
+
+
+  for(var i = 0; i < 8 ; i++){
+    console.log("provInfo3[",i,"]: ", provInfo3[i] );
+  }
+
+  for(var i = 0; i < 10 ; i++){
+    console.log("pushInfo4[",i, "]: ", provInfo4[i] );
+  }
+  var modiWhere = "WHERE a1.name = '"+ provInfo3[0] +"' AND e.name = '"+ provInfo3[4] +"' AND ac.name = '" + provInfo3[2] +"' "
+  var modiSet = "SET a1 = {name: '"+ name +"' , affiliation: '"+ affiliation +"'}, e = {name: '"+ dataName +"', d_type: '"+ dataType +"', price: '"+ price +"', device: '"+ device +"' }, ac = {name: '"+ activityType +"', date: '"+ date +"'}"
+
+  
+  if(provInfo3 != undefined){
+    if(provInfo3[2] == activityType){
+      modiQuery3 = modiMatch3 + modiWhere + modiSet
+    }
+    else{ // 수정 아니고 다른 타입으로 바꾼 경우
+
+    }
+  }
+
+  res.render('data/modifyData.ejs', {
+    esession: session_value.getSession(),
+    authenticated: true
+  });
+
+});
+
+router.post('/getModifyValues', function (req, res) {
   var checkValues4 = req.body.modifyCheck4;
   var checkValues3 = req.body.modifyCheck3;
+  var check3Len;
+  var check4Len;
+  
+  var multiCheckFlag = false;
+  var modiFlag3 = false;
+  var modiFlag4 = false;
 
-  console.log("------------check3 ------------", checkValues3);
-  console.log("------------check4 ------------", checkValues4);
+  var activityType = ['수정', '배포', '구매', '판매']; 
+  var deviceType = ['AI스피커', 'T머니','레일플러스','스마트워치','페이션트모니터','캐시비'];
+  var dataType = ['건강데이터','의료데이터','위치데이터','음성데이터'];
 
-  console.log("------------check3 ------------", checkValues3.length);
-  console.log("------------check4 ------------", checkValues4.length); 
+  if(checkValues3 == undefined){
+    check3Len = 0;
+  }else{
+    check3Len = checkValues3.length;
+  }
 
+  if(checkValues4 == undefined){
+    check4Len = 0;
+  }else{
+    check4Len = checkValues4.length;  
+  }
+  
+
+  if(check3Len == 1){
+    console.log("------------check3 ------------", checkValues3, checkValues3.length); 
+    modiFlag3 = true;
+  }
+  else if(check4Len == 1){
+    console.log("------------check4 ------------", checkValues4, checkValues4.length);
+    modiFlag4 = true;
+  }
+
+  if(modiFlag4 && modiFlag3){
+    console.log("all false");
+    modiFlag3 = false;
+    modiFlag4 = false;
+  }
+
+  if((check3Len + check4Len) > 1){
+    modiFlag3 = false;
+    modiFlag4 = false;
+  }
+
+  if(modiFlag3){
+    provInfo3.push(nameArr[checkValues3]);
+    provInfo3.push(affiliationArr[checkValues3]);
+    provInfo3.push(activityTypeArr3[checkValues3]);
+    provInfo3.push(dateArr3[checkValues3]);
+    provInfo3.push(dataNameArr3[checkValues3]);
+    provInfo3.push(priceArr3[checkValues3]);
+    provInfo3.push(deviceArr3[checkValues3]);
+    provInfo3.push(dataTypeArr3[checkValues3]);
+  
+    console.log("modiFlag3 : ", modiFlag3);
+
+
+    res.render('data/modifyDataPage.ejs', {
+      esession: session_value.getSession(),
+
+      modiFlag3 : modiFlag3,
+      modiFlag4 : modiFlag4,
+      provInfo3 : provInfo3,
+      
+      activityType : activityType,
+      dataType : dataType,
+      deviceType : deviceType,
+
+      authenticated: true
+    });
+  }else if(modiFlag4){
+    console.log("수정 아님")
+
+    provInfo4.push(s_nameArr[checkValues4]);
+    provInfo4.push(s_affiliationArr[checkValues4]);
+    provInfo4.push(activityTypeArr4[checkValues4]);
+    provInfo4.push(dateArr4[checkValues4]);
+    provInfo4.push(dataNameArr4[checkValues4]);
+    provInfo4.push(dataTypeArr4[checkValues4]);
+    provInfo4.push(priceArr4[checkValues4]);
+    provInfo4.push(deviceArr4[checkValues4]);
+    provInfo4.push(r_nameArr[checkValues4]);
+    provInfo4.push(r_affiliationArr[checkValues4]);
+
+    console.log("modiFlag4 : ", modiFlag4);
+
+    res.render('data/modifyDataPage.ejs', {
+      esession: session_value.getSession(),
+
+      modiFlag3 : modiFlag3,
+      modiFlag4 : modiFlag4,
+      provInfo4 : provInfo4,
+
+      activityType : activityType,
+      dataType : dataType,
+      deviceType : deviceType,
+
+      authenticated: true
+    });
+  } else{
+    res.send('<script type="text/javascript">alert("하나의 이력만 선택해주세요."); window.history.go(-1);</script>');
+  }
 });
 
 router.post('/modify', function(req, res){
