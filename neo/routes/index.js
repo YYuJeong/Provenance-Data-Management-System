@@ -1648,8 +1648,8 @@ router.post('/dataModify' , function (req, res){
   var modiQuery3;
   var modiQuery4;
 
-  var modiMatch3 = "MATCH (a1:Agent)<-[:wasAttributedTo]-(e:Entity)-[:wasGeneratedBy]-(ac:Activity) "
-  var modiMatch4 = "MATCH (a1:Agent)<-[:wasAttributedTo]-(e:Entity)-[:wasGeneratedBy]-(ac:Activity)-[:wasAssociatedWith]-(a2:Agent) "
+  var modiMatch3 = "(a1:Agent)<-[:wasAttributedTo]-(e:Entity)-[:wasGeneratedBy]-(ac:Activity) "
+  var modiMatch4 = "(a1:Agent)<-[:wasAttributedTo]-(e:Entity)-[:wasGeneratedBy]-(ac:Activity)-[:wasAssociatedWith]-(a2:Agent) "
 
 
   for(var i = 0; i < 8 ; i++){
@@ -1659,23 +1659,82 @@ router.post('/dataModify' , function (req, res){
   for(var i = 0; i < 10 ; i++){
     console.log("pushInfo4[",i, "]: ", provInfo4[i] );
   }
-  var modiWhere = "WHERE a1.name = '"+ provInfo3[0] +"' AND e.name = '"+ provInfo3[4] +"' AND ac.name = '" + provInfo3[2] +"' "
+  var modiWhere3 = "WHERE a1.name = '"+ provInfo3[0] +"' AND e.name = '"+ provInfo3[4] +"' AND ac.name = '" + provInfo3[2] +"' "
+  var modiWhere4 = "WHERE a1.name = '"+ provInfo4[0] +"' AND e.name = '"+ provInfo4[4] +"' AND ac.name = '" + provInfo4[2] +"' "
   var modiSet = "SET a1 = {name: '"+ name +"' , affiliation: '"+ affiliation +"'}, e = {name: '"+ dataName +"', d_type: '"+ dataType +"', price: '"+ price +"', device: '"+ device +"' }, ac = {name: '"+ activityType +"', date: '"+ date +"'}"
 
   
-  if(provInfo3 != undefined){
+  if(provInfo3.length != 0){
+    console.log(provInfo3.length)
+    console.log(provInfo4.length)
+    console.log("수정인 이력들")
     if(provInfo3[2] == activityType){
-      modiQuery3 = modiMatch3 + modiWhere + modiSet
+      modiQuery3 = "MATCH "+ modiMatch3 + modiWhere3 + modiSet;
+      console.log(modiQuery3);
+      session.run(modiQuery3)
+      .then(function(result){
+        res.render('data/modifyData.ejs', {
+          esession: session_value.getSession(),
+          authenticated: true
+        });
+      session.close();
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
     }
-    else{ // 수정 아니고 다른 타입으로 바꾼 경우
-
+    else{ 
+      modiQuery3 = "MATCH prov = (" + modiMatch3 + ") "+ modiWhere3 + "DELETE prov CREATE(a12: Agent {name: '" + name + "' , affiliation: '" + affiliation + "'}) <- [:wasAttributedTo] - (e12: Entity {name: '" + dataName + "' , price: '" + price + "' , d_type: '" + dataType + "', device: '" + device + "'})  - [:wasGeneratedBy] -> (ac12:Activity {name: '" + activityType + "', date: '" + date + "' }) - [:wasAssociatedWith] -> (a122: Agent {name: '" + r_name + "' , affiliation: '" + r_affiliation + "' })"
+      console.log(modiQuery3);
+      session.run(modiQuery3)
+      .then(function(result){
+        res.render('data/modifyData.ejs', {
+          esession: session_value.getSession(),
+          authenticated: true
+        });
+      session.close();
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
+    }
+  }else if (provInfo4.length != 0){
+    console.log(provInfo4.length)
+    console.log("수정 아닌 이력들")
+    if(activityType != "수정"){
+      console.log("수정으로 안바꿈");
+      modiQuery4 = "MATCH " + modiMatch4 + modiWhere4 + "AND a2.name = '"+ provInfo4[8]+ "' " + modiSet + " ,a2 = {name: '"+ r_name +"' , affiliation: '"+ r_affiliation +"'}"
+      console.log(modiQuery4);
+      session.run(modiQuery4)
+      .then(function(result){
+        res.render('data/modifyData.ejs', {
+          esession: session_value.getSession(),
+          authenticated: true
+        });
+      session.close();
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
+    }
+    else{
+      console.log("수정으로 바꿈")
+      modiQuery4 = "MATCH prov = (" + modiMatch4 + ") "+ modiWhere4 + "AND a2.name = '"+ provInfo4[8]+ "' "  + "DELETE prov CREATE(a12: Agent {name: '" + name + "' , affiliation: '" + affiliation + "'}) <- [:wasAttributedTo] - (e12: Entity {name: '" + dataName + "' , price: '" + price + "' , d_type: '" + dataType + "', device: '" + device + "'})  - [:wasGeneratedBy] -> (ac12:Activity {name: '" + activityType + "', date: '" + date + "' }) "
+      console.log(modiQuery4);
+      session.run(modiQuery4)
+      .then(function(result){
+        res.render('data/modifyData.ejs', {
+          esession: session_value.getSession(),
+          authenticated: true
+        });
+      session.close();
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
     }
   }
 
-  res.render('data/modifyData.ejs', {
-    esession: session_value.getSession(),
-    authenticated: true
-  });
 
 });
 
@@ -1959,7 +2018,7 @@ else{
         
         authenticated: true
     });
-  });
+    });
     session.close();
   })
   .catch(function (err) {
