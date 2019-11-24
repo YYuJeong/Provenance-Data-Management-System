@@ -67,10 +67,32 @@ def add_node(tx, o_name, o_affiliation, dataName1, price1, dataType1, device1, a
                activityType = activityType, date = date, 
                a_name = a_name, a_affiliation = a_affiliation, dataName2 = dataName2, price2 = price2, dataType2 = dataType2, device2 = device2)
 
+def merge_data(tx):
+    tx.run("MATCH (d:Data) "
+           "WITH d.name as name, d.owner as owner, d.owner_aff as owner_aff, COLLECT(d) AS ns "
+           "WHERE size(ns) > 1 "
+           "CALL apoc.refactor.mergeNodes(ns) YIELD node "
+           "RETURN node")
 
+def merge_person(tx):
+    tx.run("MATCH (p:Person) "
+           "WITH p.name as name, p.affiliation as affiliation, COLLECT(p) AS ns "
+           "WHERE size(ns) > 1 "
+           "CALL apoc.refactor.mergeNodes(ns) YIELD node "
+           "RETURN node")
+    
+def delete_duplRelation(tx):
+    tx.run("start r=relationship(*) "
+           "match (s)-[r]->(e) "
+           "with s,e,type(r) as typ, tail(collect(r)) as coll "
+           "foreach(x in coll | delete x) ")
+    
 with driver.session() as session:
-    for i in range(2):
+    for i in range(1,6):
         session.write_transaction(add_node,matrix[i][0],matrix[i][1],matrix[i][2],matrix[i][3],matrix[i][4],matrix[i][5],matrix[i][6],matrix[i][7], matrix[i][8],matrix[i][9],matrix[i][10],matrix[i][11], matrix[i][12],matrix[i][13])
-
+    session.read_transaction(merge_data)
+    session.read_transaction(merge_person)
+    session.read_transaction(delete_duplRelation)
+    
 print("start_time", start_time)
 print("---%s seconds ---" %(time.time() - start_time))
