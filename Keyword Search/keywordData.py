@@ -10,7 +10,7 @@ import csv, sys, time
 start_time = time.time()
 
 
-with open("keywordData.csv",'r') as f:
+with open("searchData.csv",'r') as f:
     matrix = list(csv.reader(f,delimiter=","))
 
 
