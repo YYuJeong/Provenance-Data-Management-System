@@ -43,6 +43,10 @@ def get_nodes(tx, keyword, nodeLabel):
                     , nodeLabel = nodeLabel, keyword = keyword)).values()
     return nodes
 
+def subgraphG(nodes):
+    g = nodes
+    return g
+
 
     
 with driver.session() as session:
@@ -51,5 +55,11 @@ with driver.session() as session:
     k1nodes = session.read_transaction(get_nodes, keyword= '양유정', nodeLabel = k1Label)
     k2nodes = session.read_transaction(get_nodes, keyword= '서민지', nodeLabel = k2Label)
 
-
+    #initialize subgraph g and N
+    g = []
+    N = k1nodes
+    for node in k2nodes:
+        N.append(node)
+    print("g : ", g)
+    print("N : ", N)
     
