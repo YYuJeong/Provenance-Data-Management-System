@@ -65,7 +65,7 @@ with driver.session() as session:
     #initialize subgraph g and N
     g = []
     N = k1nodes + k2nodes
-    graphG = [] # pair 저장
+    graphs = [] # pair 저장
     
     #algorithm
     g.append(N[0])
@@ -80,9 +80,10 @@ with driver.session() as session:
     print("")
     for k in range(len(k1nodes)+len(k2nodes)-1):
         print("========================================", k, " 번째 단계 ===========================================")
+        path = []
+        pathLen = []
         for j in range(len(g)):
-            path = []
-            pathLen = []
+            print("g len: ",len(g))
             if len(N) != 0:
                 for i in range(len(N)):
                     print("g[", j, "]: ",g[j])
@@ -91,22 +92,26 @@ with driver.session() as session:
                     path.append(session.read_transaction(shortestPath, n1 = g[j], n2 = N[i])[0])
                     pathLen.append(session.read_transaction(shortestPath, n1 = g[j], n2 = N[i])[1])
                 
-                print("pathLen: " , pathLen)
-                shortestLenIndex = pathLen.index(min(pathLen))
-                print("shortestLenIndex: ", shortestLenIndex )
-                graphG.append(path[shortestLenIndex])
-                g.append(N[shortestLenIndex])
-                del N[shortestLenIndex]
-                print("")
-                for node in g:
-                    print("g :", node)
-                print("")
-                for node in N:
-                    print("N :", node)
-                
-    
-    
-    
+        print("pathLen: " , pathLen)
+        print("N : " , N)
+        shortestLenIndex = pathLen.index(min(pathLen))
+        print("shortestLenIndex: ", shortestLenIndex )
+        print("d: " , int(shortestLenIndex/len(N)))
+        if len(N) != 1:
+            graphs.append(path[shortestLenIndex])
+            g.append(N[int(shortestLenIndex%len(N))])
+            del N[int(shortestLenIndex%len(N))]
+
+        print("")
+        for node in g:
+            print("g :", node)
+        print("")
+        for node in N:
+            print("N :", node)
+            
+        print("====================================== shortest Path ===============================")
+        for graph in graphs:
+            print(graph)
     
     
     
