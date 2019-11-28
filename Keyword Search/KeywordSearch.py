@@ -97,10 +97,10 @@ with driver.session() as session:
         shortestLenIndex = pathLen.index(min(pathLen))
         print("shortestLenIndex: ", shortestLenIndex )
         print("d: " , int(shortestLenIndex/len(N)))
-        if len(N) != 1:
-            graphs.append(path[shortestLenIndex])
-            g.append(N[int(shortestLenIndex%len(N))])
-            del N[int(shortestLenIndex%len(N))]
+  
+        graphs.append(path[shortestLenIndex])
+        g.append(N[int(shortestLenIndex%len(N))])
+        del N[int(shortestLenIndex%len(N))]
 
         print("")
         for node in g:
@@ -113,7 +113,16 @@ with driver.session() as session:
         for graph in graphs:
             print(graph)
     
+    '''
+    graphs[0].start_node["name"]
+    graphs[0].start_node["affiliation"]    
     
+    #graph merge
+    MATCH (k1:Person { name: '서민지', affiliation:"숙대" }),(k2:Person { name: '서민지', affiliation : "고대" }), p1 = shortestPath((k1)-[*]-(k2))
+    MATCH (k11:Person { name: '서민지', affiliation:"숙대" }),(k22:Person { name: '양유정', affiliation : "고대" }), p2 = shortestPath((k11)-[*]-(k22))
+    MATCH (k111:Person { name: '양유정', affiliation:"숙대" }),(k222:Person { name: '서민지', affiliation : "숙대" }), p3 = shortestPath((k111)-[*]-(k222))
+    RETURN p1, p2, p3
+    '''
     
     
     
