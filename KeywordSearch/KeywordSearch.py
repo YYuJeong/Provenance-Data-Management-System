@@ -4,6 +4,7 @@ Created on Mon Nov 25 14:50:29 2019
 
 @author: SookmyungWomensUniv
 """
+import sys, time
 
 
 from neo4j import GraphDatabase
@@ -56,6 +57,7 @@ def shortestPath(tx, n1, n2):
     return length
 
 with driver.session() as session:
+    start_time = time.time()
     k1Label = session.read_transaction(check_nodeLabel,  keyword= '양유정')
     k2Label = session.read_transaction(check_nodeLabel,  keyword= '서민지')    
     k1nodes = session.read_transaction(get_nodes, keyword= '양유정', nodeLabel = k1Label)
@@ -89,6 +91,9 @@ with driver.session() as session:
         graphs.append(path[i][shortestLenIndex])
         g.append(N[shortestLenIndex])
         del N[shortestLenIndex]
+        
+    print("start_time", start_time)
+    print("---%s seconds ---" %(time.time() - start_time))
         
     print("")
     for node in g:
