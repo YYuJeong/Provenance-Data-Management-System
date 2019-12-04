@@ -25,7 +25,10 @@
     "neod3": "^1.0.7",
     "nodemon": "^1.19.3",
     "promise": "^8.0.3",
+
+    "python-shell": "^1.0.8",
     "sweetalert": "^2.1.2",
     "vendor": "^1.7.0"
+
   }
 }

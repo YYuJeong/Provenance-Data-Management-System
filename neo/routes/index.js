@@ -16,6 +16,7 @@ var multiparty = require('multiparty');
 var fs = require('fs');
 const exec = require('child_process').exec;
 
+
 let s_nameArr = [];
 let s_affiliationArr = [];
 let r_nameArr = [];
@@ -142,6 +143,23 @@ router.get('/data/uploadData', function(req, res, next) {
     res.render('data/uploadData', {esession: session_value.getSession()});
 });
 
+var PythonShell = require('python-shell');
+var options = {
+
+  mode: 'text',
+
+  pythonPath: '',
+
+  pythonOptions: ['-u'],
+
+  scriptPath: '',
+
+  args: ['value1', 'value2', 'value3']
+
+};
+
+
+
 router.post('/data/uploadData', function (req, res, next) {
     var form = new multiparty.Form();
     var name;
@@ -189,9 +207,34 @@ router.post('/data/uploadData', function (req, res, next) {
         path1 = path1.splice(0, len-1)
         path1 = path1.join("\\") + "\\"
 
+<<<<<<< HEAD
+        var cmd = "python "+ path + "keywordData.py " + path1 + "upload\\"+ name;
+        var c = "python "+ path + "s.py "
+=======
         var cmd = "python "+ path + "KeywordSearch\\keywordData.py " + path1 + "upload\\"+ name;
+>>>>>>> cb099b8b512bf5beef6c94d31d90e84d56a51f8b
         console.log(cmd)
         exec(cmd);
+        
+        var spawn = require("child_process").spawn; 
+      
+        // Parameters passed in spawn - 
+        // 1. type_of_script 
+        // 2. list containing Path of the script 
+        //    and arguments for the script  
+          
+        // E.g : http://localhost:3000/name?firstname=Mike&lastname=Will 
+        // so, first name = Mike and last name = Will 
+        var process = spawn('python',[c, 
+                                "DD", 
+                                "SSS"] ); 
+      
+        // Takes stdout data from script which executed 
+        // with arguments and send this data to res object 
+        process.stdout.on('data', function(data) { 
+            res.send(data.toString()); 
+        } ) 
+
         res.render('data/uploadData', {esession: session_value.getSession()});
     });
 
@@ -1731,6 +1774,7 @@ router.post('/dataModify' , function (req, res){
       session.run(modiQuery4)
       .then(function(result){
         res.render('data/modifyData.ejs', {
+          
           esession: session_value.getSession(),
           authenticated: true
         });
