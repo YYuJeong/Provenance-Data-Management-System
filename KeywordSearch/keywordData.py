@@ -9,12 +9,9 @@ Created on Sat Nov 23 13:39:37 2019
 import csv, sys, time
 start_time = time.time()
 
-#filename = sys.argv[1]
 
 with open("searchData.csv",'r') as f:
-#with open(filename,'r', encoding='euc-kr', errors='ignore') as f:
     matrix = list(csv.reader(f,delimiter=","))
-    print(matrix)
 
 
 from neo4j import GraphDatabase
@@ -32,7 +29,7 @@ create (p) <- [o:own] -(d), (ac) - [g:generate] ->(d), (ac)-[a:act]->(p)
 '''
 
 def add_node(tx, o_name, o_affiliation, dataName1, price1, dataType1, device1, activityType, date, a_name, a_affiliation, dataName2, price2, dataType2, device2):
-
+    print("activityType: ", activityType)
     if activityType == "생성":
         tx.run("CREATE (p:Person), (d:Data), (ac:Activity)"
                "SET p = {name: $o_name, affiliation: $o_affiliation}, "
@@ -93,7 +90,6 @@ def delete_duplRelation(tx):
 with driver.session() as session:
     for i in range(1,6):
         session.write_transaction(add_node,matrix[i][0],matrix[i][1],matrix[i][2],matrix[i][3],matrix[i][4],matrix[i][5],matrix[i][6],matrix[i][7], matrix[i][8],matrix[i][9],matrix[i][10],matrix[i][11], matrix[i][12],matrix[i][13])
-
     session.read_transaction(merge_data)
     session.read_transaction(merge_person)
     session.read_transaction(delete_duplRelation)
