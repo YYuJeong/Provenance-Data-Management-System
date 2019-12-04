@@ -55,7 +55,53 @@ def shortestPath(tx, n1, n2):
                     , k2_name = n2[0]["name"], k2_aff = n2[0]["affiliation"])).values()[0]
     return length
 
+with driver.session() as session:
+    k1Label = session.read_transaction(check_nodeLabel,  keyword= '양유정')
+    k2Label = session.read_transaction(check_nodeLabel,  keyword= '서민지')    
+    k1nodes = session.read_transaction(get_nodes, keyword= '양유정', nodeLabel = k1Label)
+    k2nodes = session.read_transaction(get_nodes, keyword= '서민지', nodeLabel = k2Label)
+    print("")
+    #initialize subgraph g and N
+    g = []
+    N = k1nodes + k2nodes
     
+    path = []
+    pathLen = []
+    for i in range(len(N)):
+        pathTmp = []
+        pathLenTmp = []
+        for j in range(i+1, len(N)):
+            pathTmp.append(session.read_transaction(shortestPath, n1 = N[i], n2 = N[j])[0])
+            pathLenTmp.append(session.read_transaction(shortestPath, n1 = N[i], n2 = N[j])[1])
+        path.append(pathTmp)
+        pathLen.append(pathLenTmp)
+
+
+    graphs = [] # pair 저장
+    
+    #algorithm
+    g.append(N[0])
+    del N[0]
+    j = 0 
+    for i in range(len(k1nodes + k2nodes)-1):
+        shortestLenIndex = pathLen[i].index(min(pathLen[i]))
+        print("shrtestLEnindex : " , shortestLenIndex)
+        graphs.append(path[i][shortestLenIndex])
+        g.append(N[shortestLenIndex])
+        del N[shortestLenIndex]
+        
+    print("")
+    for node in g:
+        print("g :", node)
+    print("")
+    for node in N:
+        print("N :", node)
+    print("=="*50)
+    
+
+
+'''    
+#naive
 with driver.session() as session:
     k1Label = session.read_transaction(check_nodeLabel,  keyword= '양유정')
     k2Label = session.read_transaction(check_nodeLabel,  keyword= '서민지')    
@@ -113,7 +159,7 @@ with driver.session() as session:
         for graph in graphs:
             print(graph)
     
-    '''
+
     graphs[0].start_node["name"]
     graphs[0].start_node["affiliation"]    
     
@@ -122,7 +168,7 @@ with driver.session() as session:
     MATCH (k11:Person { name: '서민지', affiliation:"숙대" }),(k22:Person { name: '양유정', affiliation : "고대" }), p2 = shortestPath((k11)-[*]-(k22))
     MATCH (k111:Person { name: '양유정', affiliation:"숙대" }),(k222:Person { name: '서민지', affiliation : "숙대" }), p3 = shortestPath((k111)-[*]-(k222))
     RETURN p1, p2, p3
-    '''
+'''
     
     
     

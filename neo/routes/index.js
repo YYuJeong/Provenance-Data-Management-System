@@ -207,8 +207,12 @@ router.post('/data/uploadData', function (req, res, next) {
         path1 = path1.splice(0, len-1)
         path1 = path1.join("\\") + "\\"
 
+<<<<<<< HEAD
         var cmd = "python "+ path + "keywordData.py " + path1 + "upload\\"+ name;
         var c = "python "+ path + "s.py "
+=======
+        var cmd = "python "+ path + "KeywordSearch\\keywordData.py " + path1 + "upload\\"+ name;
+>>>>>>> cb099b8b512bf5beef6c94d31d90e84d56a51f8b
         console.log(cmd)
         exec(cmd);
         
@@ -1222,6 +1226,7 @@ router.post('/keyword', function (req, res) {
     }
   )
   .then(function(keys){
+    
     var group = [keys[0], keys[1]];
     var keyword = keys[2]
     var resultArr = []
@@ -1238,7 +1243,7 @@ router.post('/keyword', function (req, res) {
     //var naiveQuery = "MATCH (a1:"+ group[0] +" {name:'"+ keyword[0] +"'}), path=((a1)-[*3..4]-(a2)) RETURN path ORDER BY LENGTH(path)"
     var naiveQuery = "MATCH path = ((a1:"+ group[0] +") - [*3..4]-(a2)) WHERE a1.name = '"+ keyword[0] +"' RETURN path ORDER BY LENGTH(path)"
     var endArr = []
-
+/*
     session
     .run(naiveQuery)
     .then(result => {
@@ -1257,7 +1262,7 @@ router.post('/keyword', function (req, res) {
           }
 
         }
-        /*
+
         if(path.length == 3){
          // length3count++;
           for(var p in path["segments"]){
@@ -1279,7 +1284,7 @@ router.post('/keyword', function (req, res) {
         for (var i = 0; i <result3Arr.length ; i++){
           console.log("result3Arr[" , i , "] : ", result3Arr[i])
         }
-      */
+      
           res.render('search/searchKeywordResult.ejs',{
             esession: session_value.getSession(), 
             //result4s:result4Arr, 
@@ -1289,9 +1294,15 @@ router.post('/keyword', function (req, res) {
         
       });
     })
+    
     .catch(function (err) {
        console.log(err);
-    });
+    });*/
+    res.render('search/searchKeywordResult.ejs',{
+      esession: session_value.getSession(), 
+      //result4s:result4Arr, 
+      //result3s : result3Arr
+    } );
   });
 });
 

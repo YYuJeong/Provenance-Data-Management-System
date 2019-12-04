@@ -38,6 +38,7 @@ var deleteDataResult = require('./routes/data/deleteDataResult');
 
 var fileuploadRouter = require('./routes/data/uploadData');
 
+
 var ejs = require('ejs');
 var app = express();
 
@@ -48,7 +49,7 @@ var session = driver.session();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static('public'));
+app.use(express.static(__dirname + '/public'));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -57,7 +58,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -90,6 +91,9 @@ app.use('/data/deleteDataResult', deleteDataResult);
 
 app.use('/data/uploadData', fileuploadRouter);
 //app.use('/upload', express.static('uploads'));
+
+app.set('scripts', express.static(path.join(__dirname , "scripts")))
+
 
 
 // catch 404 and forward to error handler
