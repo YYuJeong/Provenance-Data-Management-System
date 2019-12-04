@@ -11,10 +11,10 @@ start_time = time.time()
 
 #filename = sys.argv[1]
 
-with open("searchData.csv",'r') as f:
+with open("output.csv",'r') as f:
 #with open(filename,'r', encoding='euc-kr', errors='ignore') as f:
     matrix = list(csv.reader(f,delimiter=","))
-    print(matrix)
+
 
 
 from neo4j import GraphDatabase
@@ -32,7 +32,6 @@ create (p) <- [o:own] -(d), (ac) - [g:generate] ->(d), (ac)-[a:act]->(p)
 '''
 
 def add_node(tx, o_name, o_affiliation, dataName1, price1, dataType1, device1, activityType, date, a_name, a_affiliation, dataName2, price2, dataType2, device2):
-
     if activityType == "생성":
         tx.run("CREATE (p:Person), (d:Data), (ac:Activity)"
                "SET p = {name: $o_name, affiliation: $o_affiliation}, "
@@ -91,8 +90,13 @@ def delete_duplRelation(tx):
            "foreach(x in coll | delete x) ")
     
 with driver.session() as session:
-    for i in range(1,6):
+    for i in range(len(matrix)):
         session.write_transaction(add_node,matrix[i][0],matrix[i][1],matrix[i][2],matrix[i][3],matrix[i][4],matrix[i][5],matrix[i][6],matrix[i][7], matrix[i][8],matrix[i][9],matrix[i][10],matrix[i][11], matrix[i][12],matrix[i][13])
+
+        #session.write_transaction(add_node,matrix[0][0],matrix[0][1],matrix[0][2],matrix[0][3],matrix[0][4],matrix[0][5],matrix[0][6],matrix[0][7], matrix[0][8],matrix[0][9],matrix[0][10],matrix[0][11], matrix[0][12],matrix[0][13])
+
+    #    for i in range(6):
+#        session.write_transaction(add_node,matrix[i][0],matrix[i][1],matrix[i][2],matrix[i][3],matrix[i][4],matrix[i][5],matrix[i][6],matrix[i][7], matrix[i][8],matrix[i][9],matrix[i][10],matrix[i][11], matrix[i][12],matrix[i][13])
 
     session.read_transaction(merge_data)
     session.read_transaction(merge_person)
