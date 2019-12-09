@@ -6,6 +6,7 @@ Created on Mon Nov 25 14:50:29 2019
 """
 import sys, time
 import numpy as np
+from itertools import product
 
 from neo4j import GraphDatabase
 
@@ -46,7 +47,40 @@ def shortestPath(tx, n1, n2):
                     , k2_name = n2[0]["name"], k2_aff = n2[0]["affiliation"])).values()[0]
     return length
             
+with driver.session() as session:
+    keywords = ['양유정' , '서민지'] 
+    kLabels = []
+    kNodes = []
 
+    for i in range(len(keywords)):
+        kLabels.append(session.read_transaction(check_nodeLabel,  keyword= keywords[i]))
+
+    for i in range(len(keywords)):
+        kNodes.append(session.read_transaction(get_nodes, keyword= keywords[i], nodeLabel = kLabels[i]))    
+
+    candidN = list(product(*kNodes))
+        
+
+    #initialize subgraph g and N
+    g = []
+    N = []
+    pathLen = []
+    
+    for i in range(len(N)):
+        pathTmp = []
+        pathLenTmp = []
+        for j in range(i+1, len(N)):
+            print("i:", i, " j : " , j)
+            print(N[i][0]["name"], N[i][0]["affiliation"])
+            print(N[j][0]["name"], N[j][0]["affiliation"])
+        
+            pathTmp.append(session.read_transaction(shortestPath, n1 = N[i], n2 = N[j])[0])
+   
+            pathLenTmp.append(session.read_transaction(shortestPath, n1 = N[i], n2 = N[j])[1])
+        path.append(pathTmp)
+        pathLen.append(pathLenTmp)
+
+'''
 with driver.session() as session:
     keywords = ['양유정' , '서민지'] 
     kLabels = []
@@ -99,8 +133,8 @@ with driver.session() as session:
     print("proposed start_time", start_time)
     print("---%s seconds ---" %(time.time() - start_time))
 
-
-    '''   
+'''
+'''   
 #naive
 with driver.session() as session:
     keywords = ['양유정' , '서민지', '이주연'] 
@@ -143,8 +177,8 @@ with driver.session() as session:
     print("---%s seconds ---" %(time.time() - start_time))
             
             
-    '''        
-    '''
+'''        
+'''
     graphs[0].start_node["name"]
     graphs[0].start_node["affiliation"]    
    
@@ -152,7 +186,7 @@ with driver.session() as session:
     MATCH (k1:Person { name: '서민지', affiliation:"숙대" }),(k2:Person { name: '서민지', affiliation : "고대" }), p1 = shortestPath((k1)-[*]-(k2))
     MATCH (k11:Person { name: '서민지', affiliation:"숙대" }),(k22:Person { name: '양유정', affiliation : "고대" }), p2 = shortestPath((k11)-[*]-(k22))
     MATCH (k111:Person { name: '양유정', affiliation:"숙대" }),(k222:Person { name: '서민지', affiliation : "숙대" }), p3 = shortestPath((k111)-[*]-(k222))
-    '''
+'''
     
     
     
