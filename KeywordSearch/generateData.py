@@ -87,8 +87,8 @@ for i in range(2500, 10000):
         wlist[i].append(typeTmp[i])
         wlist[i].append(deviceTmp[i])
         
+random.shuffle(wlist)        
 f = open('output.csv', 'w', encoding='euc-kr', newline='')
-
 wr = csv.writer(f)
 for i in range(10000):
     wr.writerow(wlist[i])
