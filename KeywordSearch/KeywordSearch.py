@@ -48,10 +48,12 @@ def shortestPath(tx, n1, n2):
     return length
             
 with driver.session() as session:
-    keywords = ['양유정' , '서민지'] 
+    keywords = ['양유정', '서민지'] 
     kLabels = []
     kNodes = []
 
+
+    
     for i in range(len(keywords)):
         kLabels.append(session.read_transaction(check_nodeLabel,  keyword= keywords[i]))
 
@@ -59,26 +61,54 @@ with driver.session() as session:
         kNodes.append(session.read_transaction(get_nodes, keyword= keywords[i], nodeLabel = kLabels[i]))    
 
     candidN = list(product(*kNodes))
-        
+    #id 로 쉽게 계산하려고 id만 저장
+    candidNid = []
+    for i in range(len(candidN)):
+        candidNid.append([])
+        for j in range(len(candidN[i])):
+            candidNid[i].append(candidN[i][j][0].id)
+            
+    pathLst = []
+    nodeSum = 0
+    for i in range(len(keywords)):
+        nodeSum = nodeSum + len(kNodes[i])
+        pathLst = pathLst + kNodes[i]
 
     #initialize subgraph g and N
     g = []
     N = []
-    pathLen = []
-    
-    for i in range(len(N)):
-        pathTmp = []
-        pathLenTmp = []
-        for j in range(i+1, len(N)):
+    pathDic = {}
+    #모든 path 다 구해서 딕셔너리에 저장
+    for i in range(len(pathLst)):
+        for j in range(i+1, len(pathLst)):
             print("i:", i, " j : " , j)
-            print(N[i][0]["name"], N[i][0]["affiliation"])
-            print(N[j][0]["name"], N[j][0]["affiliation"])
+            print(pathLst[i][0]["name"], pathLst[i][0]["affiliation"])
+            print(pathLst[j][0]["name"], pathLst[j][0]["affiliation"])
+            shortP = session.read_transaction(shortestPath, n1 =  pathLst[i], n2 =  pathLst[j])
+            pathDic[(pathLst[i][0].id, pathLst[j][0].id)] = [shortP[0], shortP[1]]
+            
+    for i in range(len(candidN)):
+        N = list(candidN[i])
+        g = N[0]
+        del N[0]
+        lenTmp = {}
+        for j in range(len(N)):
+            print(N)
+            lenTmp[g[0].id, N[j][0].id] = pathDic[g[0].id, N[j][0].id]
+            print(g[0].id)
+            print(N[j][0].id)
+            print("lenTmp", lenTmp)
+            print(min(lenTmp, key = lambda k: lenTmp[k][1]))
+        minKey = min(lenTmp, key = lambda k: lenTmp[k][1])
+        print("mk: " , minKey)
+        if minKey[0] in g:
+            print("T")
+        print("")
         
-            pathTmp.append(session.read_transaction(shortestPath, n1 = N[i], n2 = N[j])[0])
-   
-            pathLenTmp.append(session.read_transaction(shortestPath, n1 = N[i], n2 = N[j])[1])
-        path.append(pathTmp)
-        pathLen.append(pathLenTmp)
+            
+        
+            
+    
 
 '''
 with driver.session() as session:
