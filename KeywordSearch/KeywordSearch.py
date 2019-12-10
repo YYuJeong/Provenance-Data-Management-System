@@ -47,13 +47,13 @@ def shortestPath(tx, n1, n2):
                     , k2_name = n2[0]["name"], k2_aff = n2[0]["affiliation"])).values()[0]
     return length
 
-'''
+# proposed
 with driver.session() as session:
     keywords = ['양유정', '서민지', '김이진'] 
     kLabels = []
     kNodes = []
 
-
+    start_time = time.time()
     
     for i in range(len(keywords)):
         kLabels.append(session.read_transaction(check_nodeLabel,  keyword= keywords[i]))
@@ -70,8 +70,8 @@ with driver.session() as session:
     graphs = [] # pair 저장
 
     for k in range(len(candidN)):
-        N = list(candidN[i])
-        nodeSum = len(candidN[i])
+        N = list(candidN[k])
+        nodeSum = len(candidN[k])
         print("NNN: ", N)
         path = []
         pathLen = []
@@ -109,13 +109,17 @@ with driver.session() as session:
         N = []
         g = []
         
-'''        
+    print("proposed start_time", start_time)
+    print("---%s seconds ---" %(time.time() - start_time))
         
+        
+# naive        
 with driver.session() as session:
-    keywords = ['양유정' , '서민지', '이주연'] 
+    keywords = ['양유정' , '서민지', '김이진'] 
     kLabels = []
     kNodes = []
     start_time = time.time()
+    
     for i in range(len(keywords)):
         kLabels.append(session.read_transaction(check_nodeLabel,  keyword= keywords[i]))
         
@@ -129,37 +133,44 @@ with driver.session() as session:
     N = []
     graphs = [] # pair 저장
     
-    
-    
     #algorithm
     
     for m in range(len(candidN)):
-        N = list(candidN[i])
-        nodeSum = len(candidN[i])
+        N = list(candidN[m])
+        nodeSum = len(candidN[m])
+        print(nodeSum)
         g2.append(N[0])
         del N[0]
-        print("NNN: ", N)    
-        print("GGG: ", g2) 
+        print("FNNN: ", N)    
+        print("FGGG: ", g2) 
         graphs.append([])
         for k in range(nodeSum-1):
             path = []
             pathLen = []
             for j in range(len(g2)):
+                print(len(g2))
+                print("JL : " , j)
                 if len(N) != 0:
                     for i in range(len(N)):
-                        shortP = session.read_transaction(shortestPath, n1 = N[i], n2 = N[j])
+                        print("g2[j]: ", g2[j])
+                        print("N[i]: " , N[i])
+                        shortP = session.read_transaction(shortestPath, n1 = g2[j], n2 = N[i])
                         path.append(shortP[0])
                         pathLen.append(shortP[1])
+                print("path: " , pathLen)
+                print("")
+                
             shortestLenIndex = pathLen.index(min(pathLen))
             graphs[m].append(path[shortestLenIndex])
             g2.append(N[int(shortestLenIndex%len(N))])
             del N[int(shortestLenIndex%len(N))]
             print("NNN: ", N)    
             print("GGG: ", g2)    
-            print("Graph:", graphs)
-            N = []
-            g = []
-
+        N = []
+        g2 = []
+ 
+    print("naive start_time", start_time)
+    print("---%s seconds ---" %(time.time() - start_time))
 '''            
 with driver.session() as session:
     keywords = ['양유정', '서민지', '김이진'] 
@@ -225,6 +236,8 @@ with driver.session() as session:
     print("")
     print("g: ", g)
     print("N: ", N)
+    
+    
             
 '''       
             
@@ -284,7 +297,7 @@ with driver.session() as session:
     print("---%s seconds ---" %(time.time() - start_time))
 
 '''
-'''   
+'''
 #naive
 with driver.session() as session:
     keywords = ['양유정' , '서민지', '이주연'] 
@@ -326,8 +339,7 @@ with driver.session() as session:
     print("naive start_time", start_time)
     print("---%s seconds ---" %(time.time() - start_time))
             
-            
-'''        
+'''     
 '''
     graphs[0].start_node["name"]
     graphs[0].start_node["affiliation"]    
