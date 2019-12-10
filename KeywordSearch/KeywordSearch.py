@@ -48,7 +48,7 @@ def shortestPath(tx, n1, n2):
     return length
             
 with driver.session() as session:
-    keywords = ['양유정', '서민지'] 
+    keywords = ['양유정', '서민지', '김이진'] 
     kLabels = []
     kNodes = []
 
@@ -76,7 +76,6 @@ with driver.session() as session:
 
     #initialize subgraph g and N
     g = []
-    N = []
     pathDic = {}
     #모든 path 다 구해서 딕셔너리에 저장
     for i in range(len(pathLst)):
@@ -87,16 +86,17 @@ with driver.session() as session:
             shortP = session.read_transaction(shortestPath, n1 =  pathLst[i], n2 =  pathLst[j])
             pathDic[(pathLst[i][0].id, pathLst[j][0].id)] = [shortP[0], shortP[1]]
             
-    for i in range(len(candidN)):
-        N = list(candidN[i])
+    for i in range(len(candidNid)):
+        N = candidNid[i]
         g = N[0]
         del N[0]
+        print("g: ", g)
+        print("N: ", N)
         lenTmp = {}
         for j in range(len(N)):
-            print(N)
-            lenTmp[g[0].id, N[j][0].id] = pathDic[g[0].id, N[j][0].id]
-            print(g[0].id)
-            print(N[j][0].id)
+            lenTmp[g[0], N[j][0]] = pathDic[g[0], N[j][0]]
+            print(g[0])
+            print(N[j][0])
             print("lenTmp", lenTmp)
             print(min(lenTmp, key = lambda k: lenTmp[k][1]))
         minKey = min(lenTmp, key = lambda k: lenTmp[k][1])
