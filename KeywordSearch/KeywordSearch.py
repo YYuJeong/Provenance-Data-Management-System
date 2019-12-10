@@ -46,7 +46,121 @@ def shortestPath(tx, n1, n2):
                     , k1_name = n1[0]["name"], k1_aff = n1[0]["affiliation"]
                     , k2_name = n2[0]["name"], k2_aff = n2[0]["affiliation"])).values()[0]
     return length
-            
+
+'''
+with driver.session() as session:
+    keywords = ['양유정', '서민지', '김이진'] 
+    kLabels = []
+    kNodes = []
+
+
+    
+    for i in range(len(keywords)):
+        kLabels.append(session.read_transaction(check_nodeLabel,  keyword= keywords[i]))
+
+    for i in range(len(keywords)):
+        kNodes.append(session.read_transaction(get_nodes, keyword= keywords[i], nodeLabel = kLabels[i]))    
+
+    candidN = list(product(*kNodes))
+
+    #initialize subgraph g and N
+    
+    g = []
+    N = []
+    graphs = [] # pair 저장
+
+    for k in range(len(candidN)):
+        N = list(candidN[i])
+        nodeSum = len(candidN[i])
+        print("NNN: ", N)
+        path = []
+        pathLen = []
+    
+        for i in range(len(N)):
+            pathTmp = []
+            pathLenTmp = []
+            for j in range(i+1, len(N)):
+                print("i:", i, " j : " , j)
+                print(N[i][0]["name"], N[i][0]["affiliation"])
+                print(N[j][0]["name"], N[j][0]["affiliation"])
+                shortP = session.read_transaction(shortestPath, n1 = N[i], n2 = N[j])
+                pathTmp.append(shortP[0])
+                pathLenTmp.append(shortP[1])
+            path.append(pathTmp)
+            pathLen.append(pathLenTmp)
+    
+    
+
+        
+        #algorithm
+        g.append(N[0])
+        del N[0]
+        print("NNN: ", N)    
+        print("GGG: ", g) 
+        graphs.append([])
+        for i in range(nodeSum-1):
+            shortestLenIndex = pathLen[i].index(min(pathLen[i]))
+            graphs[k].append(path[i][shortestLenIndex])
+            g.append(N[shortestLenIndex])
+            del N[shortestLenIndex]
+        print("NNN: ", N)    
+        print("GGG: ", g)    
+        print("Graph:", graphs)
+        N = []
+        g = []
+        
+'''        
+        
+with driver.session() as session:
+    keywords = ['양유정' , '서민지', '이주연'] 
+    kLabels = []
+    kNodes = []
+    start_time = time.time()
+    for i in range(len(keywords)):
+        kLabels.append(session.read_transaction(check_nodeLabel,  keyword= keywords[i]))
+        
+    for i in range(len(keywords)):
+        kNodes.append(session.read_transaction(get_nodes, keyword= keywords[i], nodeLabel = kLabels[i]))    
+   
+    candidN = list(product(*kNodes))
+    
+    #initialize subgraph g and N
+    g2 = []
+    N = []
+    graphs = [] # pair 저장
+    
+    
+    
+    #algorithm
+    
+    for m in range(len(candidN)):
+        N = list(candidN[i])
+        nodeSum = len(candidN[i])
+        g2.append(N[0])
+        del N[0]
+        print("NNN: ", N)    
+        print("GGG: ", g2) 
+        graphs.append([])
+        for k in range(nodeSum-1):
+            path = []
+            pathLen = []
+            for j in range(len(g2)):
+                if len(N) != 0:
+                    for i in range(len(N)):
+                        shortP = session.read_transaction(shortestPath, n1 = N[i], n2 = N[j])
+                        path.append(shortP[0])
+                        pathLen.append(shortP[1])
+            shortestLenIndex = pathLen.index(min(pathLen))
+            graphs[m].append(path[shortestLenIndex])
+            g2.append(N[int(shortestLenIndex%len(N))])
+            del N[int(shortestLenIndex%len(N))]
+            print("NNN: ", N)    
+            print("GGG: ", g2)    
+            print("Graph:", graphs)
+            N = []
+            g = []
+
+'''            
 with driver.session() as session:
     keywords = ['양유정', '서민지', '김이진'] 
     kLabels = []
@@ -86,27 +200,33 @@ with driver.session() as session:
             shortP = session.read_transaction(shortestPath, n1 =  pathLst[i], n2 =  pathLst[j])
             pathDic[(pathLst[i][0].id, pathLst[j][0].id)] = [shortP[0], shortP[1]]
             
-    for i in range(len(candidNid)):
-        N = candidNid[i]
-        g = N[0]
-        del N[0]
-        print("g: ", g)
-        print("N: ", N)
-        lenTmp = {}
-        for j in range(len(N)):
-            lenTmp[g[0], N[j][0]] = pathDic[g[0], N[j][0]]
-            print(g[0])
-            print(N[j][0])
-            print("lenTmp", lenTmp)
-            print(min(lenTmp, key = lambda k: lenTmp[k][1]))
-        minKey = min(lenTmp, key = lambda k: lenTmp[k][1])
-        print("mk: " , minKey)
-        if minKey[0] in g:
-            print("T")
-        print("")
+  #  for i in range(len(candidNid)):
+    N = candidNid[0]
+    g.append(N[0])
+    del N[0]
+    print("g: ", g)
+    print("N: ", N)
+    lenTmp = {}
+    for j in range(len(N)):
+        lenTmp[g[0], N[j]] = pathDic[g[0], N[j]]
+        print("G: " , g[0])
+        print("N: " , N[j])
+        print("lenTmp", lenTmp)
         
+        print(min(lenTmp, key = lambda k: lenTmp[k][1]))
+    minKey = min(lenTmp, key = lambda k: lenTmp[k][1])
+    print("mk: " , minKey)
+    if minKey[0] in g:
+        g.append(minKey[1])
+        del  N[N.index(minKey[1])]
+    elif minKey[1] in g:
+        g.append(minKey[0])
+        del  N[N.index(minKey[0])]
+    print("")
+    print("g: ", g)
+    print("N: ", N)
             
-        
+'''       
             
     
 
