@@ -9,7 +9,7 @@ Created on Sat Nov 23 13:39:37 2019
 import csv, sys, time
 start_time = time.time()
 
-with open("output.csv",'r') as f:
+with open("SearchData.csv",'r') as f:
 #with open(filename,'r', encoding='euc-kr', errors='ignore') as f:
     matrix = list(csv.reader(f,delimiter=","))
 
