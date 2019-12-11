@@ -40,16 +40,18 @@ def get_nodes(tx, keyword, nodeLabel):
 
 
 def shortestPath(tx, n1, n2):
+
     length = (tx.run("MATCH (k1:"+next(iter(n1[0].labels))+"{ name: $k1_name, affiliation: $k1_aff }),(k2: " + next(iter(n2[0].labels))+ " { name: $k2_name, affiliation : $k2_aff }), "
                     "p = shortestPath((k1)-[*]-(k2)) "
                     "RETURN p, length(p)" 
                     , k1_name = n1[0]["name"], k1_aff = n1[0]["affiliation"]
                     , k2_name = n2[0]["name"], k2_aff = n2[0]["affiliation"])).values()[0]
     return length
-
+'''
 # proposed
 with driver.session() as session:
-    keywords = ['양유정', '서민지', '김이진'] 
+    #keywords = ['가가가', '나나나', '다다다']
+    keywords = ['양유정', '정예인'] 
     kLabels = []
     kNodes = []
 
@@ -72,50 +74,42 @@ with driver.session() as session:
     for k in range(len(candidN)):
         N = list(candidN[k])
         nodeSum = len(candidN[k])
-        print("NNN: ", N)
+        
         path = []
         pathLen = []
-    
+
         for i in range(len(N)):
+
             pathTmp = []
             pathLenTmp = []
             for j in range(i+1, len(N)):
-                print("i:", i, " j : " , j)
-                print(N[i][0]["name"], N[i][0]["affiliation"])
-                print(N[j][0]["name"], N[j][0]["affiliation"])
                 shortP = session.read_transaction(shortestPath, n1 = N[i], n2 = N[j])
                 pathTmp.append(shortP[0])
                 pathLenTmp.append(shortP[1])
             path.append(pathTmp)
             pathLen.append(pathLenTmp)
-    
-    
-
         
         #algorithm
         g.append(N[0])
         del N[0]
-        print("NNN: ", N)    
-        print("GGG: ", g) 
         graphs.append([])
         for i in range(nodeSum-1):
             shortestLenIndex = pathLen[i].index(min(pathLen[i]))
             graphs[k].append(path[i][shortestLenIndex])
             g.append(N[shortestLenIndex])
             del N[shortestLenIndex]
-        print("NNN: ", N)    
-        print("GGG: ", g)    
-        print("Graph:", graphs)
+
         N = []
         g = []
-        
     print("proposed start_time", start_time)
     print("---%s seconds ---" %(time.time() - start_time))
-        
-        
+
+  
+'''  
 # naive        
 with driver.session() as session:
-    keywords = ['양유정' , '서민지', '김이진'] 
+    #keywords = ['가가가', '나나나', '다다다']
+    keywords = ['양유정' , '정예인', '이태민'] 
     kLabels = []
     kNodes = []
     start_time = time.time()
@@ -138,40 +132,39 @@ with driver.session() as session:
     for m in range(len(candidN)):
         N = list(candidN[m])
         nodeSum = len(candidN[m])
-        print(nodeSum)
+
         g2.append(N[0])
         del N[0]
-        print("FNNN: ", N)    
-        print("FGGG: ", g2) 
+
         graphs.append([])
         for k in range(nodeSum-1):
             path = []
             pathLen = []
             for j in range(len(g2)):
-                print(len(g2))
-                print("JL : " , j)
+
                 if len(N) != 0:
                     for i in range(len(N)):
-                        print("g2[j]: ", g2[j])
-                        print("N[i]: " , N[i])
+
                         shortP = session.read_transaction(shortestPath, n1 = g2[j], n2 = N[i])
                         path.append(shortP[0])
                         pathLen.append(shortP[1])
-                print("path: " , pathLen)
-                print("")
+
                 
             shortestLenIndex = pathLen.index(min(pathLen))
             graphs[m].append(path[shortestLenIndex])
             g2.append(N[int(shortestLenIndex%len(N))])
             del N[int(shortestLenIndex%len(N))]
-            print("NNN: ", N)    
-            print("GGG: ", g2)    
+
+            
         N = []
         g2 = []
  
+
     print("naive start_time", start_time)
     print("---%s seconds ---" %(time.time() - start_time))
-'''            
+
+
+'''           
 with driver.session() as session:
     keywords = ['양유정', '서민지', '김이진'] 
     kLabels = []
@@ -238,10 +231,7 @@ with driver.session() as session:
     print("N: ", N)
     
     
-            
-'''       
-            
-    
+'''
 
 '''
 with driver.session() as session:
