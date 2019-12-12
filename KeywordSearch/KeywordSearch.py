@@ -47,11 +47,11 @@ def shortestPath(tx, n1, n2):
                     , k1_name = n1[0]["name"], k1_aff = n1[0]["affiliation"]
                     , k2_name = n2[0]["name"], k2_aff = n2[0]["affiliation"])).values()[0]
     return length
-'''
+
 # proposed
 with driver.session() as session:
     #keywords = ['가가가', '나나나', '다다다']
-    keywords = ['양유정', '정예인'] 
+    keywords = ['양유정' , '서민지'] 
     kLabels = []
     kNodes = []
 
@@ -74,7 +74,7 @@ with driver.session() as session:
     for k in range(len(candidN)):
         N = list(candidN[k])
         nodeSum = len(candidN[k])
-        
+        '''
         path = []
         pathLen = []
 
@@ -88,7 +88,7 @@ with driver.session() as session:
                 pathLenTmp.append(shortP[1])
             path.append(pathTmp)
             pathLen.append(pathLenTmp)
-        
+        '''    
         #algorithm
         g.append(N[0])
         del N[0]
@@ -104,12 +104,11 @@ with driver.session() as session:
     print("proposed start_time", start_time)
     print("---%s seconds ---" %(time.time() - start_time))
 
-  
 '''  
 # naive        
 with driver.session() as session:
     #keywords = ['가가가', '나나나', '다다다']
-    keywords = ['양유정' , '정예인', '이태민'] 
+    keywords = ['양유정' , '서민지', '김이진'] 
     kLabels = []
     kNodes = []
     start_time = time.time()
@@ -163,8 +162,8 @@ with driver.session() as session:
     print("naive start_time", start_time)
     print("---%s seconds ---" %(time.time() - start_time))
 
-
-'''           
+''' 
+'''          
 with driver.session() as session:
     keywords = ['양유정', '서민지', '김이진'] 
     kLabels = []
@@ -285,8 +284,8 @@ with driver.session() as session:
         
     print("proposed start_time", start_time)
     print("---%s seconds ---" %(time.time() - start_time))
-
 '''
+
 '''
 #naive
 with driver.session() as session:
