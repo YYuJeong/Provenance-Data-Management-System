@@ -124,17 +124,15 @@
 <script src="/scripts/cy2neod3.js"></script>
 <script src="/scripts/jquery.dataTables.min.js"></script>
 <script src="/scripts/cypher.datatable.js"></script>
+<script src="/scripts/config.js"></script>
 
 <script type="text/javascript">
     $(document).ready(function () {
-        //todo dynamic configuration
+        //todo dynamic configurationW
         var config = {}
-        var url = "http://localhost:7474";
-        var user = "neo4j";
-        var passwd = "wowhi223";
         var cypher = "MATCH (n)-[r]->(m) RETURN n,r,m LIMIT 50;"
         var connection = function () {
-            return {url: url, user: user, pass: passwd};
+            return {url: Neo4j.DB_URL, user: Neo4j.DB_USR, pass: Neo4j.DB_PWD};
         }
         new Cy2NeoD3(config, "graph", "datatable", cypher, "execute", connection, true);
     });
