@@ -15,6 +15,14 @@
    <script src="http://bootstrapk.com/assets/js/ie-emulation-modes-warning.js"></script>
    <link href="/public/stylesheets/carousel.css" rel="stylesheet">
    <link href="https://fonts.googleapis.com/css?family=Do+Hyeon&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/codemirror.css">
+    <link rel="stylesheet" href="/styles/codemirror-neo.css">
+    <link rel="stylesheet" href="/styles/cy2neo.css">
+    <link rel="stylesheet" href="/styles/neod3.css">
+    <link rel="stylesheet" href="/styles/datatable.css">
+    <link rel="stylesheet" href="/styles/vendor.css"> <!-- bootstrap-->
+    <link rel="stylesheet" href="/styles/sweet-alert.css">
+    <link rel="stylesheet" href="/styles/gh-fork-ribbon.css">
 
    <style type="text/css"> 
     body {
@@ -51,25 +59,56 @@
                 <% include ../notAuthenticated.ejs %>
             <% }else{%>
             <div class="container" style="display: inline-block; text-align: center;">
-              <div style="text-align: center; font-size:2em;">키워드 검색</div><br>
+              <div style="text-align: center; font-size:2em;">키워드 검색
+
+
+              </div><br>
               <form class="form-inline" method="post" action="/keyword">
-                <div style="margin: auto 0;">
-               &nbsp&nbsp <div class="input-group" style="text-align: center;">
-                    <input type="text" value= <%= esession.user %> class="form-control" name = "keyword" style="width:300px;">
-                </div>
-              </div>    <br><br>        
-                <!--<input class="btn btn-primary" type="submit" value="Search">-->
-                <a href="/search/searchKeywordResult"><input class="btn btn-primary" type="submit" value="검색"></a>
-                <br><br><br><br><br>
+                <table style="margin: auto; border: 0px;">
+                    <tr>
+                        <td><input type="text" value= <%= esession.user %> class="form-control" name = "keyword" style="width:300px;"></td>
+                    </tr>
+                    <tr>
+                        <td><br><a href="#" title="Execute" id="execute" style="position: relative;"><input class="btn btn-primary" value="검색"></a></td>
+                    </tr>
+                </table>
                 </form>
             </div>
             <%}%>
           </div>
-  
 
         <hr class="featurette-divider">
-  
+        <div>
+            <div>
+                <input class="form-control" type="hidden" value="http://localhost:7474" id="neo4jUrl" /><br/>
+                <input class="form-control" type="hidden" size="8" value="neo4j" id="neo4jUser"/>
+                <input class="form-control" type="hidden" size="8" placeholder="password" value="wowhi223" id="neo4jPass"/><br/>
+            </div>
+            <div role="tabpanel">
+                    <div style="display: none;">
+                        <textarea name="cypher" id="cypher" rows="4" cols="120" data-lang="cypher" class="code form-control">
+                            MATCH (n)-[r]->(m) RETURN n,r,m LIMIT 50;
+                        </textarea>
+                    </div>
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#graph" aria-controls="home" role="tab" data-toggle="tab">Graph</a></li>
+                        <li role="presentation"><a href="#table" aria-controls="table" role="tab" data-toggle="tab">Table</a></li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content" style="overflow: hidden;">
+                        <div role="tabpanel" class="tab-pane active" id="graph" style="height: 800px;">
+                            <div class="tab-pane active" id="graph" >&nbsp;</div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="table">
+                            <div id="datatable"></div>
+                        </div>
+                    </div>
+                </div>
+        </div>
       </div><!-- /.container -->
+
   
   
       <!-- Bootstrap core JavaScript
@@ -82,10 +121,27 @@
       <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
       <script src="../../assets/js/ie10-viewport-bug-workaround.js">
       </script>
-    
 
+    <script src="/scripts/codemirror.js"></script>
+    <script src="/scripts/codemirror-cypher.js"></script>
+    <script src="/scripts/vendor.js"></script>
+    <script src="/scripts/sweet-alert.min.js"></script>
+    <script src="/scripts/neod3.js"></script>
+    <script src="/scripts/neod3-visualization.js"></script>
+    <script src="/scripts/neo4d3.js"></script>
+    <script src="/scripts/cy2neod3.js"></script>
+    <script src="/scripts/jquery.dataTables.min.js"></script>
+    <script src="/scripts/cypher.datatable.js"></script>
 
-
+    <script type="text/javascript">
+        $(document).ready(function() {
+            //todo dynamic configuration
+            var config = {}
+            var cypher = "MATCH (n)-[r]->(m) RETURN n,r,m LIMIT 50;"
+            var connection = function() { return {url:$("#neo4jUrl").val(), user:$("#neo4jUser").val(),pass:$("#neo4jPass").val()}; }
+            new Cy2NeoD3(config,"graph","datatable","cypher","execute", connection , true);
+        });
+    </script>
     
 
 </body>
