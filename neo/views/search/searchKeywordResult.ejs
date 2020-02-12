@@ -12,25 +12,29 @@
 </head>
 <body>
   <div>
-  <input class="form-control" type="url" value="http://localhost:7474" id="neo4jUrl"/><br/>
-  <input class="form-control" type="text" size="8" value="neo4j" id="neo4jUser"/>
-  <input class="form-control" type="password" size="8" placeholder="password" value="wowhi223" id="neo4jPass"/><br/>
+      <% include ../header %>
+      <%include ../menu%>
+      <input class="form-control" type="hidden" value="http://localhost:7474" id="neo4jUrl" /><br/>
+  <input class="form-control" type="hidden" size="8" value="neo4j" id="neo4jUser"/>
+  <input class="form-control" type="hidden" size="8" placeholder="password" value="wowhi223" id="neo4jPass"/><br/>
 
-  <a href="#" title="Execute" id="execute"><i class="fa fa-play-circle-o"></i></a>
+  <a href="#" title="Execute" id="execute" style="margin-top: 10%"><i class="fa fa-play-circle-o"></i></a>
   </div>
 
   <div role="tabpanel">
+      <div style="display: none;">
       <textarea name="cypher" id="cypher" rows="4" cols="120" data-lang="cypher" class="code form-control">
           MATCH (n)-[r]->(m)
           RETURN n,r,m
           LIMIT 50;
       </textarea>
+      </div>
       <!-- Nav tabs -->
       <ul class="nav nav-tabs" role="tablist">
         <li role="presentation" class="active"><a href="#graph" aria-controls="home" role="tab" data-toggle="tab">Graph</a></li>
         <li role="presentation"><a href="#table" aria-controls="table" role="tab" data-toggle="tab">Table</a></li>
       </ul>
-    
+
       <!-- Tab panes -->
       <div class="tab-content">
         <div role="tabpanel" class="tab-pane active" id="graph">
