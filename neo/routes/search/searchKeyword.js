@@ -7,19 +7,14 @@ var driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', 'wo
 var session = driver.session();
 var session_value = require('../session');
 router.use(bodyParser.json());
-router.use(bodyParser.urlencoded({ extended: false }));
+router.use(bodyParser.urlencoded({extended: false}));
 
 var path = require('path');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 
-
-router.get('/', function(req, res, next) {
-  res.render('search/searchKeyword.ejs', {esession: session_value.getSession()});
+router.get('/', function (req, res, next) {
+    res.render('search/searchKeyword.ejs', {esession: session_value.getSession()});
 });
-
-
-
-
 
 module.exports = router;

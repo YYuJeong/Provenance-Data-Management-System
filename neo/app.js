@@ -16,7 +16,6 @@ var addPage = require('./routes/addPage');
 var searchPage =  require('./routes/search/searchPage');
 
 var searchKeyword =  require('./routes/search/searchKeyword');
-var searchKeywordResult = require('./routes/search/searchKeywordResult')
 
 var searchConditionPage = require('./routes/search/searchConditionPage');
 
@@ -69,7 +68,6 @@ app.use('/addPage', addPage);
 app.use('/search/searchPage', searchPage);
 
 app.use('/search/searchKeyword', searchKeyword);
-app.use('/search/searchKeywordResult', searchKeywordResult);
 
 app.use('/search/searchConditionPage', searchConditionPage);
 
