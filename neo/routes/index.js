@@ -207,12 +207,11 @@ router.post('/data/uploadData', function (req, res, next) {
         path1 = path1.splice(0, len-1)
         path1 = path1.join("\\") + "\\"
 
-<<<<<<< HEAD
-        var cmd = "python "+ path + "keywordData.py " + path1 + "upload\\"+ name;
+
+       // var cmd = "python "+ path + "keywordData.py " + path1 + "upload\\"+ name;
         var c = "python "+ path + "s.py "
-=======
         var cmd = "python "+ path + "KeywordSearch\\keywordData.py " + path1 + "upload\\"+ name;
->>>>>>> cb099b8b512bf5beef6c94d31d90e84d56a51f8b
+
         console.log(cmd)
         exec(cmd);
         
@@ -333,7 +332,7 @@ router.get('/viewPage', function (req, res) {
   var i = 0;
   var user_gubun = session_value.getSession().gubun;
   var user_name = session_value.getSession().user;
-
+  console.log("DDDDd")
     if(user_gubun == '사용자'){
       session.run("START n=node(*) MATCH (n:Agent)<-[:wasAttributedTo]-(m:Entity)-[:wasGeneratedBy]-(q:Activity) WHERE q.name = '수정' AND n.name = '"+user_name +"' RETURN n, m, q LIMIT 30")
       .then(function(result){
@@ -384,7 +383,7 @@ router.get('/viewPage', function (req, res) {
       });
     }
     else if(user_gubun =='관리자'){
-
+        console.log("관리자")
         session
         .run("START n=node(*) MATCH (n:Agent)<-[:wasAttributedTo]-(m:Entity)-[:wasGeneratedBy]-(q:Activity)-[]-(w:Agent) WHERE Not(q.name = '수정') RETURN n, m , q, w LIMIT 30")
         .then(function(result){
