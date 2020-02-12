@@ -207,12 +207,9 @@ router.post('/data/uploadData', function (req, res, next) {
         path1 = path1.splice(0, len-1)
         path1 = path1.join("\\") + "\\"
 
-<<<<<<< HEAD
-        var cmd = "python "+ path + "keywordData.py " + path1 + "upload\\"+ name;
+        //var cmd = "python "+ path + "keywordData.py " + path1 + "upload\\"+ name;
         var c = "python "+ path + "s.py "
-=======
-        var cmd = "python "+ path + "KeywordSearch\\keywordData.py " + path1 + "upload\\"+ name;
->>>>>>> cb099b8b512bf5beef6c94d31d90e84d56a51f8b
+        //var cmd = "python "+ path + "KeywordSearch\\keywordData.py " + path1 + "upload\\"+ name;
         console.log(cmd)
         exec(cmd);
         
