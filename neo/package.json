@@ -26,12 +26,9 @@
     "promise": "^8.0.3",
     "python-shell": "^1.0.8",
     "sweetalert": "^2.1.2",
-    "vendor": "^1.7.0"
-<<<<<<< Updated upstream
-=======
-  },
-  "devDependencies": {
-    "nodemon": "^1.19.4"
->>>>>>> Stashed changes
+    "vendor": "^1.7.0",
+    "devDependencies": {
+      "nodemon": "^1.19.4"
+    }
   }
 }
