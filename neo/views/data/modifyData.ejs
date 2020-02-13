@@ -1,104 +1,80 @@
-<!DOCTYPE html> 
-<html lang="ko"> 
+<!DOCTYPE html>
+<html lang="ko">
 
 <head>
-   <meta charset="UTF-8">
-   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-     <!-- favicon -->
-     <link rel="shortcut icon" href="/images/favicon.ico">
-     <link rel="icon" href="/images/favicon.ico">
-   
-   <title>이력 정보 관리시스템</title>
-   
-   <link href="http://bootstrapk.com/dist/css/bootstrap.min.css" rel="stylesheet">
-   <script src="http://bootstrapk.com/assets/js/ie-emulation-modes-warning.js"></script>
-   <link href="/public/stylesheets/carousel.css" rel="stylesheet">
-   <link href="https://fonts.googleapis.com/css?family=Do+Hyeon&display=swap" rel="stylesheet">
-
-   <style type="text/css">
-    body {
-      font-family: 'Do Hyeon';
-      color: #303030;
-      letter-spacing: 1px;
-      }
-  </style>
+    <% include ../before_loading.ejs %>
+    <title>이력 정보 관리시스템</title>
+    <style type="text/css">
+        body {
+            font-family: 'Do Hyeon';
+            color: #303030;
+            letter-spacing: 1px;
+        }
+    </style>
 
 </head>
 
 <body style="overflow:auto">
 <% include ../header %>
 
+<!-- Carousel
+================================================== -->
 
-    <!-- Carousel
-    ================================================== -->
 
+<!-- Marketing messaging and featurettes
+================================================== -->
+<!-- Wrap the rest of the page in another container to center all the content. -->
 
-    <!-- Marketing messaging and featurettes
-    ================================================== -->
-    <!-- Wrap the rest of the page in another container to center all the content. -->
+<div class="container marketing">
 
-    <div class="container marketing">
+    <!-- Three columns of text below the carousel -->
+    <% include ../menu %>
 
-        <!-- Three columns of text below the carousel -->
-        <%include ../menu%>
-
-        <hr class="featurette-divider">
-        <div class="container" style="display: inline-block; text-align: center;">
-            <%if(esession.authenticated == false){%>
-                <% include ../notAuthenticated.ejs %>
-            <% }else{%>
-              <div class="jumbotron">
-              <div style="text-align: center; font-size:2em;">개인정보 이력 변경<br><br>
-              </div>
-
-        <!-- START THE FEATURETTES -->
-            <form  method="post" action="/modify">
-            <div class="row" >
-                <!--Start Here:)-->
-            <div style="margin:0 auto;">
-                <div class="input-group" style="width:30%; margin:0 auto;">
-                    <span class="input-group-addon">데이터ID</span>
-                    <input type="text" id="dataName" name="dataName" class="form-control" />
-                </div>
-                <br>
-                <%if (esession.gubun == '관리자'){%>
-                <div class="input-group" style="width:30%; margin:0 auto;">
-                        <span class="input-group-addon">이  름</span>
-                        <input type="text" id="name" name="name" class="form-control" />
-                </div>
-                <%}%>
+    <hr class="featurette-divider">
+    <div class="container" style="display: inline-block; text-align: center;">
+        <% if(esession.authenticated == false){ %>
+            <% include ../notAuthenticated.ejs %>
+        <% }else{ %>
+        <div class="jumbotron">
+            <div style="text-align: center; font-size:2em;">개인정보 이력 변경<br><br>
             </div>
 
-          <!--</form>-->  <!--디비연결전송오류로잠시위치이동-->
-            <div style="text-align: center;"><br><br>
-                <a href="/data/modifyDataResult"><input class="btn btn-primary" type="submit" value="확인" style="width:100px"></a>
-                <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px"></a>
-            </div> 
-          </div>
-          </form><!--원래폼위치-->      
+            <!-- START THE FEATURETTES -->
+            <form method="post" action="/modify">
+                <div class="row">
+                    <!--Start Here:)-->
+                    <div style="margin:0 auto;">
+                        <div class="input-group" style="width:30%; margin:0 auto;">
+                            <span class="input-group-addon">데이터ID</span>
+                            <input type="text" id="dataName" name="dataName" class="form-control"/>
+                        </div>
+                        <br>
+                        <% if (esession.gubun == '관리자'){ %>
+                            <div class="input-group" style="width:30%; margin:0 auto;">
+                                <span class="input-group-addon">이  름</span>
+                                <input type="text" id="name" name="name" class="form-control"/>
+                            </div>
+                        <% } %>
+                    </div>
+
+                    <!--</form>-->  <!--디비연결전송오류로잠시위치이동-->
+                    <div style="text-align: center;"><br><br>
+                        <a href="/data/modifyDataResult"><input class="btn btn-primary" type="submit" value="확인"
+                                                                style="width:100px"></a>
+                        <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px"></a>
+                    </div>
+                </div>
+            </form><!--원래폼위치-->
         </div>
-            <%}%>
-          </div><!-- /.container -->
-      <hr class="featurette-divider">
-    </div>
-    
-  
-      <!-- Bootstrap core JavaScript
-      ================================================== -->
-      <!-- Placed at the end of the document so the pages load faster -->
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-      <script src="../../dist/js/bootstrap.min.js"></script>
-      <!-- Just to make our placeholder images work. Don't actually copy the next line! -->
-      <script src="../../assets/js/vendor/holder.js"></script>
-      <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-      <script src="../../assets/js/ie10-viewport-bug-workaround.js">
-      </script>
-    
+        <% } %>
+    </div><!-- /.container -->
+    <hr class="featurette-divider">
+</div>
 
 
-
-    
-
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 </body>
 </html>

@@ -1,126 +1,101 @@
-<!DOCTYPE html> 
-<html lang="ko"> 
+<!DOCTYPE html>
+<html lang="ko">
 
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-   
-     <!-- favicon -->
-  <link rel="shortcut icon" href="/images/favicon.ico">
-  <link rel="icon" href="/images/favicon.ico">
-
-  <title>이력 정보 관리시스템</title>
-   
-  <link href="http://bootstrapk.com/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="http://bootstrapk.com/assets/js/ie-emulation-modes-warning.js"></script>
-  <link href="../public/stylesheets/carousel.css" rel="stylesheet">
-  <link href="../public/stylesheets/style.css">
-  <link href="https://fonts.googleapis.com/css?family=Do+Hyeon|Song+Myung:300&display=swap" rel="stylesheet">
-
-  <style type="text/css">
-  body {
-	font-family: 'Do Hyeon';
-	color: #303030;
-  letter-spacing: 1px;
-  background-image: url("/images/solution.png");
-  background-position: 960px 740px;
-  background-size: 20% 20%;
-  background-repeat: no-repeat;
-  }
-  .s {
-    font-size: 2em;
-  }
-  </style>
+    <% include ./before_loading.ejs %>
+    <title>이력 정보 관리시스템</title>
+    <style type="text/css">
+        body {
+            font-family: 'Do Hyeon';
+            color: #303030;
+            letter-spacing: 1px;
+            background-image: url("/images/solution.png");
+            background-position: 960px 740px;
+            background-size: 20% 20%;
+            background-repeat: no-repeat;
+        }
+        .s {
+            font-size: 2em;
+        }
+    </style>
 
 </head>
 
 <body class="" style="overflow:auto">
-  <% include ./header %>
-    <!-- Marketing messaging and featurettes
-    ================================================== -->
-    <!-- Wrap the rest of the page in another container to center all the content. -->
-    <div class="container marketing">
+<% include ./header %>
+<!-- Marketing messaging and featurettes
+================================================== -->
+<!-- Wrap the rest of the page in another container to center all the content. -->
+<div class="container marketing">
 
-        <!-- Three columns of text below the carousel -->
-        <%include ./menu%>
-  
-        <br><br>
-        <!-- START THE FEATURETTES -->
-        <hr class="featurette-divider">
-  
-        <div class="row featurette" style="text-align: center;">
-          <div style="margin-top: 50px;"></div>
-            <div style="font-size: 25px;">
+    <!-- Three columns of text below the carousel -->
+    <%include ./menu%>
+
+    <br><br>
+    <!-- START THE FEATURETTES -->
+    <hr class="featurette-divider">
+
+    <div class="row featurette" style="text-align: center;">
+        <div style="margin-top: 50px;"></div>
+        <div style="font-size: 25px;">
             과학기술정보통신부 정보통신 산업융합 원천기술 개발사업<br>
             (사회문제해결형 과제)<br><br>
-            </div>
-            <div style="font-size: 60px;">
+        </div>
+        <div style="font-size: 60px;">
             개인정보를 안전하고 편리하게<br>
             빅데이터 처리할 수 있는 방법<br>
-            </div>
-            <p class="lead"></p>
-            <div style="margin-top: 50px;"></div>
         </div>
-  
-        <hr class="featurette-divider">
-  
-        <div class="row featurette">
-          <div style="margin-top: 10px;"></div>
-          <div class="col-md-5 col-md-push-1">
-              <img class="featurette-image img-responsive center-block" src="/images/smlogo.png" alt="SM image" width="920" height="220">
+        <p class="lead"></p>
+        <div style="margin-top: 50px;"></div>
+    </div>
+
+    <hr class="featurette-divider">
+
+    <div class="row featurette">
+        <div style="margin-top: 10px;"></div>
+        <div class="col-md-5 col-md-push-1">
+            <img class="featurette-image img-responsive center-block" src="/images/smlogo.png" alt="SM image" width="920" height="220">
             <p class="lead"></p>
-          </div>
-          <div class="col-md-5 col-md-push-2">
+        </div>
+        <div class="col-md-5 col-md-push-2">
             <img class="featurette-image img-responsive center-block" src="/images/dblablogo.png" alt="DILab image" width="731" height="220">
             <div style="margin-top: 10px;"></div>
-          </div>
         </div>
-  
-        <hr class="featurette-divider">
-  
-        <div class="row featurette">
-          <div style="margin-top: 10px;"></div>
-          <div class="col-md-5 col-md-push-1">
-              <img class="featurette-image img-responsive center-block" src="/images/ictlogo.png" alt="ICT image" width="1096" height="220">
+    </div>
+
+    <hr class="featurette-divider">
+
+    <div class="row featurette">
+        <div style="margin-top: 10px;"></div>
+        <div class="col-md-5 col-md-push-1">
+            <img class="featurette-image img-responsive center-block" src="/images/ictlogo.png" alt="ICT image" width="1096" height="220">
             <p class="lead"></p>
-          </div>
-          <div class="col-md-5 col-md-push-2">
-            <img class="featurette-image img-responsive center-block" src="/images/iitplogo.png" alt="IITP image" width="1188" height="220">
-          </div>
         </div>
-  
-        <hr class="featurette-divider">
-  
-        <!-- /END THE FEATURETTES -->
+        <div class="col-md-5 col-md-push-2">
+            <img class="featurette-image img-responsive center-block" src="/images/iitplogo.png" alt="IITP image" width="1188" height="220">
+        </div>
+    </div>
 
-     
-        
-  
+    <hr class="featurette-divider">
 
-
-        <!-- FOOTER -->
-        <footer>
-        </footer>
-  
-      </div><!-- /.container -->
-  
-  
-      <!-- Bootstrap core JavaScript
-      ================================================== -->
-      <!-- Placed at the end of the document so the pages load faster -->
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-      <script src="../../dist/js/bootstrap.min.js"></script>
-      <!-- Just to make our placeholder images work. Don't actually copy the next line! -->
-      <script src="../../assets/js/vendor/holder.js"></script>
-      <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-      <script src="../../assets/js/ie10-viewport-bug-workaround.js">
-      </script>
-    
+    <!-- /END THE FEATURETTES -->
 
 
 
-    
+
+
+
+    <!-- FOOTER -->
+    <footer>
+    </footer>
+
+</div><!-- /.container -->
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 
 </body>
 </html>

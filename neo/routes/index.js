@@ -3,19 +3,15 @@ var router = express.Router();
 var app = express();
 var mysql = require("mysql");
 var esession = require('express-session');
-var crypto = require('crypto');
 var session_value = require('./session');
 var Promise = require('promise');
-var bodyParser = require('body-parser');
 var neo4j = require('neo4j-driver').v1;
 var driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', 'wowhi223'));
 var session = driver.session();
-var cookieParser = require('cookie-parser');
 var multer = require("multer");
 var multiparty = require('multiparty');
 var fs = require('fs');
 const exec = require('child_process').exec;
-
 
 let s_nameArr = [];
 let s_affiliationArr = [];
@@ -39,15 +35,13 @@ let deviceArr3 = [];
 let provInfo3 = [];
 let provInfo4 = [];
 
-
 app.use(esession({
     secret: "asdfasffdas",
     resave: false,
     saveUninitialized: true,
 }));
 
-
-let con = mysql.createConnection({
+const con = mysql.createConnection({
     host: 'localhost',
     user: "root",
     password: "1234",
@@ -109,27 +103,20 @@ router.route('/users').post(
 
         var sql = 'SELECT * FROM users WHERE email=?';
         con.query(sql, [email], function (err, results) {
-            if (err)
+            if (err) {
                 console.log(err);
-
+            }
             if (!results[0]) {
-                return res.render('users', {message: '아이디를 확인해주십시오'});
+                return res.render('users', {message: '아이디를 확인해주십시오', esession: undefined});
             }
             else {
                 if (results[0].password === password) {
-                    //console.log('aaaaa');
-                    //return res.send('로그인 되었습니다');
-
-                    //session_info.email = body.email;
-                    //session_info.password = body.password;
-                    //session_info.user = results[0]["name"];
-                    //session_info.gubun = results[0]["gubun"];
                     session_value.setSession(body.email, results[0]["name"], results[0]["gubun"], body.password, true);
-
                     res.render('index', {message: '로그인 되었습니다', esession: session_value.getSession()});
                 }
-                else //return res.send('비밀번호를 확인해주십시오');
+                else {
                     res.render('users', {message: '비밀번호를 확인해주십시오', esession: undefined});
+                }
             }
         });
     }
