@@ -1,20 +1,20 @@
-<!DOCTYPE html> 
-<html lang="ko"> 
+<!DOCTYPE html>
+<html lang="ko">
 
 <head>
-   <meta charset="UTF-8">
-   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-     <!-- favicon -->
-     <link rel="shortcut icon" href="/images/favicon.ico">
-     <link rel="icon" href="/images/favicon.ico">
-   
-   <title>이력 정보 관리시스템</title>
-   
-   <link href="http://bootstrapk.com/dist/css/bootstrap.min.css" rel="stylesheet">
-   <script src="http://bootstrapk.com/assets/js/ie-emulation-modes-warning.js"></script>
-   <link href="/public/stylesheets/carousel.css" rel="stylesheet">
-   <link href="https://fonts.googleapis.com/css?family=Do+Hyeon&display=swap" rel="stylesheet">
+    <!-- favicon -->
+    <link rel="shortcut icon" href="/images/favicon.ico">
+    <link rel="icon" href="/images/favicon.ico">
+
+    <title>이력 정보 관리시스템</title>
+
+    <link href="http://bootstrapk.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="http://bootstrapk.com/assets/js/ie-emulation-modes-warning.js"></script>
+    <link href="/public/stylesheets/carousel.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Do+Hyeon&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/styles/codemirror.css">
     <link rel="stylesheet" href="/styles/codemirror-neo.css">
     <link rel="stylesheet" href="/styles/cy2neo.css">
@@ -24,125 +24,120 @@
     <link rel="stylesheet" href="/styles/sweet-alert.css">
     <link rel="stylesheet" href="/styles/gh-fork-ribbon.css">
 
-   <style type="text/css"> 
-    body {
-      font-family: 'Do Hyeon';
-      color: #303030;
-      letter-spacing: 1px;
-    }
-  </style>
+    <style type="text/css">
+        body {
+            font-family: 'Do Hyeon';
+            color: #303030;
+            letter-spacing: 1px;
+        }
+    </style>
 
 </head>
 
 <body style="overflow:auto">
 <% include ../header %>
 
+<!-- Carousel
+================================================== -->
 
-    <!-- Carousel
-    ================================================== -->
 
+<!-- Marketing messaging and featurettes
+================================================== -->
+<!-- Wrap the rest of the page in another container to center all the content. -->
 
-    <!-- Marketing messaging and featurettes
-    ================================================== -->
-    <!-- Wrap the rest of the page in another container to center all the content. -->
+<div class="container marketing">
 
-    <div class="container marketing">
+    <!-- Three columns of text below the carousel -->
+    <% include ../menu %>
 
-        <!-- Three columns of text below the carousel -->
-        <%include ../menu%>
-
-        <hr class="featurette-divider">
-        <br><br>
-        <!-- START THE FEATURETTES -->
-        <div class="jumbotron">
-            <%if(esession.authenticated == false){%>
-                <% include ../notAuthenticated.ejs %>
-            <% }else{%>
+    <hr class="featurette-divider">
+    <br><br>
+    <!-- START THE FEATURETTES -->
+    <div class="jumbotron">
+        <% if(esession.authenticated == false){ %>
+            <% include ../notAuthenticated.ejs %>
+        <% }else{ %>
             <div class="container" style="display: inline-block; text-align: center;">
-              <div style="text-align: center; font-size:2em;">키워드 검색
+                <div style="text-align: center; font-size:2em;">키워드 검색
 
 
-              </div><br>
-              <form class="form-inline" method="post" action="/keyword">
-                <table style="margin: auto; border: 0px;">
-                    <tr>
-                        <td><input type="text" value= <%= esession.user %> class="form-control" name = "keyword" style="width:300px;"></td>
-                    </tr>
-                    <tr>
-                        <td><br><a href="#" title="Execute" id="execute" style="position: relative;"><input class="btn btn-primary" value="검색"></a></td>
-                    </tr>
-                </table>
+                </div>
+                <br>
+                <form class="form-inline" method="post" action="/keyword">
+                    <table style="margin: auto; border: 0px;">
+                        <tr>
+                            <td><input type="text" value= <%= esession.user %> class="form-control" name="keyword"
+                                       style="width:300px;"></td>
+                        </tr>
+                        <tr>
+                            <td><br><a href="#" title="Execute" id="execute"><input class="btn btn-primary" value="검색"></a>
+                            </td>
+                        </tr>
+                    </table>
                 </form>
             </div>
-            <%}%>
-          </div>
+        <% } %>
+    </div>
 
-        <hr class="featurette-divider">
-        <div>
-            <div>
-                <input class="form-control" type="hidden" value="http://localhost:7474" id="neo4jUrl" /><br/>
-                <input class="form-control" type="hidden" size="8" value="neo4j" id="neo4jUser"/>
-                <input class="form-control" type="hidden" size="8" placeholder="password" value="wowhi223" id="neo4jPass"/><br/>
-            </div>
-            <div role="tabpanel">
-                    <div style="display: none;">
-                        <textarea name="cypher" id="cypher" rows="4" cols="120" data-lang="cypher" class="code form-control">
-                            MATCH (n)-[r]->(m) RETURN n,r,m LIMIT 50;
-                        </textarea>
-                    </div>
-                    <!-- Nav tabs -->
-                    <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" class="active"><a href="#graph" aria-controls="home" role="tab" data-toggle="tab">Graph</a></li>
-                        <li role="presentation"><a href="#table" aria-controls="table" role="tab" data-toggle="tab">Table</a></li>
-                    </ul>
+    <hr class="featurette-divider">
+    <div>
+        <div role="tabpanel">
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#graph" aria-controls="home" role="tab"
+                                                          data-toggle="tab">Graph</a></li>
+                <li role="presentation"><a href="#table" aria-controls="table" role="tab" data-toggle="tab">Table</a>
+                </li>
+            </ul>
 
-                    <!-- Tab panes -->
-                    <div class="tab-content" style="overflow: hidden;">
-                        <div role="tabpanel" class="tab-pane active" id="graph" style="height: 800px;">
-                            <div class="tab-pane active" id="graph" >&nbsp;</div>
-                        </div>
-                        <div role="tabpanel" class="tab-pane" id="table">
-                            <div id="datatable"></div>
-                        </div>
-                    </div>
+            <!-- Tab panes -->
+            <div class="tab-content" style="overflow: hidden;">
+                <div role="tabpanel" class="tab-pane active" id="graph" style="height: 800px;">
+                    <div class="tab-pane active" id="graph">&nbsp;</div>
                 </div>
+                <div role="tabpanel" class="tab-pane" id="table">
+                    <div id="datatable"></div>
+                </div>
+            </div>
         </div>
-      </div><!-- /.container -->
+    </div>
+</div><!-- /.container -->
 
-  
-  
-      <!-- Bootstrap core JavaScript
-      ================================================== -->
-      <!-- Placed at the end of the document so the pages load faster -->
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-      <script src="../../dist/js/bootstrap.min.js"></script>
-      <!-- Just to make our placeholder images work. Don't actually copy the next line! -->
-      <script src="../../assets/js/vendor/holder.js"></script>
-      <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-      <script src="../../assets/js/ie10-viewport-bug-workaround.js">
-      </script>
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="../../dist/js/bootstrap.min.js"></script>
+<!-- Just to make our placeholder images work. Don't actually copy the next line! -->
+<script src="../../assets/js/vendor/holder.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../../assets/js/ie10-viewport-bug-workaround.js">
+</script>
 
-    <script src="/scripts/codemirror.js"></script>
-    <script src="/scripts/codemirror-cypher.js"></script>
-    <script src="/scripts/vendor.js"></script>
-    <script src="/scripts/sweet-alert.min.js"></script>
-    <script src="/scripts/neod3.js"></script>
-    <script src="/scripts/neod3-visualization.js"></script>
-    <script src="/scripts/neo4d3.js"></script>
-    <script src="/scripts/cy2neod3.js"></script>
-    <script src="/scripts/jquery.dataTables.min.js"></script>
-    <script src="/scripts/cypher.datatable.js"></script>
+<script src="/scripts/codemirror.js"></script>
+<script src="/scripts/codemirror-cypher.js"></script>
+<script src="/scripts/vendor.js"></script>
+<script src="/scripts/sweet-alert.min.js"></script>
+<script src="/scripts/neod3.js"></script>
+<script src="/scripts/neod3-visualization.js"></script>
+<script src="/scripts/neo4d3.js"></script>
+<script src="/scripts/cy2neod3.js"></script>
+<script src="/scripts/jquery.dataTables.min.js"></script>
+<script src="/scripts/cypher.datatable.js"></script>
+<script src="/scripts/config.js"></script>
 
-    <script type="text/javascript">
-        $(document).ready(function() {
-            //todo dynamic configuration
-            var config = {}
-            var cypher = "MATCH (n)-[r]->(m) RETURN n,r,m LIMIT 50;"
-            var connection = function() { return {url:$("#neo4jUrl").val(), user:$("#neo4jUser").val(),pass:$("#neo4jPass").val()}; }
-            new Cy2NeoD3(config,"graph","datatable","cypher","execute", connection , true);
-        });
-    </script>
-    
+<script type="text/javascript">
+    $(document).ready(function () {
+        //todo dynamic configurationW
+        var config = {}
+        var cypher = "MATCH (n)-[r]->(m) RETURN n,r,m LIMIT 50;"
+        var connection = function () {
+            return {url: Neo4j.DB_URL, user: Neo4j.DB_USR, pass: Neo4j.DB_PWD};
+        }
+        new Cy2NeoD3(config, "graph", "datatable", cypher, "execute", connection, true);
+    });
+</script>
+
 
 </body>
 </html>
