@@ -42,6 +42,7 @@
     <% include ./menu %>
 
     <!-- START THE FEATURETTES -->
+    
 
     <hr class="featurette-divider">
     <div class="container fontSize" style="display: inline-block;text-align: center;">
@@ -58,20 +59,21 @@
                 else{ %>
                 <div class="panel-heading" style="font-size:1.4em;"><%= esession.user %>님의 개인정보 이력</div>
                 <% } %>
-                <!-- Table -->
 
                 <table class="table table-striped">
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th>이 름</th>
+                        <th>소유자</th>
                         <th>소 속</th>
                         <th>데이터ID</th>
                         <th>가격</th>
-                        <th>데이터 타입</th>
-                        <th>장치</th>
-                        <th>활동 타입</th>
+                        <th>데이터 종류</th>
+                        <th>수집 장치</th>
+                        <th>활동</th>
                         <th>날짜</th>
+                        <th>행위자</th>
+                        <th>소 속</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -104,13 +106,19 @@
                             <td align=center>
                                 <%= dates3[i] %>
                             </td>
+                            <td align=center>
+                                <%= names2[i] %>
+                            </td>
+                            <td align=center>
+                                <%= affiliations2[i] %>
+                            </td>
                         </tr>
                     <% } %>
                     </tbody>
                 </table>
             </div>
         </div>
-
+        
         <hr class="featurette-divider">
         <div class="jumbotron">
             <div class="panel panel-default">
@@ -121,26 +129,22 @@
                 <div class="panel-heading" style="font-size:1.4em;"><%= esession.user %>님의 개인정보 이력</div>
                 <% } %>
                 <!-- Table -->
-
-
                 <table class="table table-striped">
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th>발송인</th>
+                        <th>소유자</th>
                         <th>소 속</th>
                         <th>데이터ID</th>
                         <th>가격</th>
-                        <th>데이터 타입</th>
-                        <th>장치</th>
-                        <th>활동 타입</th>
+                        <th>데이터 종류</th>
+                        <th>수집 장치</th>
+                        <th>행동</th>
                         <th>날짜</th>
-                        <th>수취인</th>
-                        <th>소 속</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <% for(var i = 0; i < s_names.length; i++ ) { %>
+                    <% for(var i = 0; i < s_names.length; i++) { %>
                         <tr>
                             <th scope="row">
                                 <%= (i + 1) %>
@@ -148,7 +152,7 @@
                             <td>
                                 <%= s_names[i] %>
                             </td>
-                            <td align=center width=130;>
+                            <td align=center width=150;>
                                 <%= s_affiliations[i] %>
                             </td>
                             <td align=center>
@@ -169,11 +173,90 @@
                             <td align=center>
                                 <%= dates4[i] %>
                             </td>
-                            <td align=center>
-                                <%= r_names[i] %>
+                        </tr>
+                    <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <hr class="featurette-divider">
+        <div class="jumbotron">
+            <div class="panel panel-default">
+                <% if(esession.gubun == '관리자'){ %>
+                    <div class="panel-heading" style="font-size:1.4em;">모든 사용자의 개인정보 이력</div>
+                <% }
+                else{ %>
+                <div class="panel-heading" style="font-size:1.4em;"><%= esession.user %>님의 개인정보 이력</div>
+                <% } %>
+                <!-- Table -->
+                <table class="table table-striped" style="font-size:0.5em;">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>소유자</th>
+                        <th>소 속</th>
+                        <th>데이터ID</th>
+                        <th>가격</th>
+                        <th>데이터 종류</th>
+                        <th>수집 장치</th>
+                        <th>활동</th>
+                        <th>날짜</th>
+                        <th>행위자</th>
+                        <th>소 속</th>
+                        <th>데이터ID</th>
+                        <th>가격</th>
+                        <th>데이터 종류</th>
+                        <th>수집 장치</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% for(var i = 0; i < names10.length; i++ ) { %>
+                        <tr>
+                            <th scope="row">
+                                <%= (i + 1) %>
+                            </th>
+                            <td>
+                                <%= names10[i] %>
                             </td>
-                            <td align=center width=130;>
-                                <%= r_affiliations[i] %>
+                            <td align=center>
+                                <%= affiliations10[i] %>
+                            </td>
+                            <td align=center>
+                                <%= dateNames10[i] %>
+                            </td>
+                            <td align=center>
+                                <%= prices10[i] %>
+                            </td>
+                            <td align=center>
+                                <%= dateTypes10[i] %>
+                            </td>
+                            <td align=center>
+                                <%= devices10[i] %>
+                            </td>
+                            <td align=center>
+                                <%= activityTypes10[i] %>
+                            </td>
+                            <td align=center>
+                                <%= dates10[i] %>
+                            </td>
+                            <td align=center>
+                                <%= names11[i] %>
+                            </td>
+                            <td align=center>
+                                <%= affiliations11[i] %>
+                            </td>
+                            <td align=center>
+                                <%= dateNames11[i] %>
+                            </td>
+                            <td align=center>
+                                <%= prices11[i] %>
+                            </td>
+                            <td align=center>
+                                <%= dateTypes11[i] %>
+                            </td>
+                            <td align=center>
+                                <%= devices11[i] %>
                             </td>
                         </tr>
                     <% } %>

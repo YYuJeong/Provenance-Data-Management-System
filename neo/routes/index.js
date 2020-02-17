@@ -6,7 +6,6 @@ var esession = require('express-session');
 var session_value = require('./session');
 var Promise = require('promise');
 var neo4j = require('neo4j-driver').v1;
-var driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', 'wowhi223'));
 var session = driver.session();
 var multer = require("multer");
 var multiparty = require('multiparty');
@@ -292,6 +291,8 @@ router.get('/', function (req, res, next) {
 router.get('/viewPage', function (req, res) {
     var nameArr = [];
     var affiliationArr = [];
+    var nameArr2 = [];
+    var affiliationArr2 = [];
 
     var s_nameArr = [];
     var s_affiliationArr = [];
@@ -312,25 +313,98 @@ router.get('/viewPage', function (req, res) {
     var priceArr3 = [];
     var deviceArr3 = [];
 
+    var nameArr10 = [];
+    var affiliationArr10 = [];
+
+    var activityTypeArr10 = [];
+    var dateArr10 = [];
+    var dataNameArr10 = [];
+    var dataTypeArr10 = [];
+    var priceArr10 = [];
+    var deviceArr10 = [];
+
+    var nameArr11 = [];
+    var affiliationArr11 = [];
+
+    var dataNameArr11 = [];
+    var dataTypeArr11 = [];
+    var priceArr11 = [];
+    var deviceArr11 = [];
+
+
+    //var dataOwner = [];
+    //var dataOwnerAff = [];
+
     var i = 0;
     var user_gubun = session_value.getSession().gubun;
     var user_name = session_value.getSession().user;
     
     if (user_gubun == '사용자') {
-        session.run("START n=node(*) MATCH (n:Agent)<-[:wasAttributedTo]-(m:Entity)-[:wasGeneratedBy]-(q:Activity) WHERE q.name = '수정' AND n.name = '" + user_name + "' RETURN n, m, q LIMIT 30")
-            .then(function (result) {
+        console.log('사용자')
+        session
+          .run("MATCH (p:Person)<-[:Own]-(d:Data)<-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' AND p.name = '" + user_name + "' RETURN p, d, ac LIMIT 10")
+          .then(function (result) {
+            result.records.forEach(function (record) {
+
+              s_nameArr.push(record._fields[0].properties.name)
+              s_affiliationArr.push(record._fields[0].properties.affiliation)
+
+              dataNameArr4.push(record._fields[1].properties.name)
+              dataTypeArr4.push(record._fields[1].properties.d_type)
+              deviceArr4.push(record._fields[1].properties.device)
+              priceArr4.push(record._fields[1].properties.price)
+              //dataOwner.push(record._fields[1].properties.owner)
+              //dataOwnerAff.push(record._fields[1].properties.owner_aff)
+
+              activityTypeArr4.push(record._fields[2].properties.name)
+              dateArr4.push(record._fields[2].properties.date)
+            });
+            
+            session.run("MATCH (p1:Person)<-[:Own]-(d1:Data)-[:Generate]-(ac:Activity)-[:Generate]-(d2:Data)-[:Own]-(p2:Person) WHERE ac.name IN ['배포', '판매', '전달'] AND p1.name = '" + user_name + "' OR p2.name = '" + user_name + "' RETURN p1, d1, ac, p2 LIMIT 10")
+          .then(function (result) {
+            result.records.forEach(function (record) {
+
+              nameArr.push(record._fields[0].properties.name)
+              affiliationArr.push(record._fields[0].properties.affiliation)
+
+              dataNameArr3.push(record._fields[1].properties.name)
+              dataTypeArr3.push(record._fields[1].properties.d_type)
+              deviceArr3.push(record._fields[1].properties.device)
+              priceArr3.push(record._fields[1].properties.price)
+              //dataOwner.push(record._fields[1].properties.owner)
+              //dataOwnerAff.push(record._fields[1].properties.owner_aff)
+
+              activityTypeArr3.push(record._fields[2].properties.name)
+              dateArr3.push(record._fields[2].properties.date)
+
+              nameArr2.push(record._fields[3].properties.name)
+              affiliationArr2.push(record._fields[3].properties.affiliation)
+            });
+
+              session.run("MATCH (p1:Person)<-[:Own]-(d1:Data), (d1:Data)<-[:Generate]-(ac:Activity), (ac:Activity)-[:Act]-(p2:Person), (d2:Data)-[:Generate]-(ac:Activity) WHERE ac.name IN ['수정', '가공', '변환'] AND p1.name = '" + user_name + "' OR p2.name = '" + user_name + "' RETURN p1, d1, ac, p2, d2 LIMIT 10")
+              .then(function (result) {
                 result.records.forEach(function (record) {
+    
+                  nameArr10.push(record._fields[0].properties.name)
+                  affiliationArr10.push(record._fields[0].properties.affiliation)
+    
+                  dataNameArr10.push(record._fields[1].properties.name)
+                  dataTypeArr10.push(record._fields[1].properties.d_type)
+                  deviceArr10.push(record._fields[1].properties.device)
+                  priceArr10.push(record._fields[1].properties.price)
+                  //dataOwner.push(record._fields[1].properties.owner)
+                  //dataOwnerAff.push(record._fields[1].properties.owner_aff)
+    
+                  activityTypeArr10.push(record._fields[2].properties.name)
+                  dateArr10.push(record._fields[2].properties.date)
+    
+                  nameArr11.push(record._fields[3].properties.name)
+                  affiliationArr11.push(record._fields[3].properties.affiliation)
 
-                    nameArr.push(record._fields[0].properties.name)
-                    affiliationArr.push(record._fields[0].properties.affiliation)
-
-                    dataNameArr3.push(record._fields[1].properties.name)
-                    dataTypeArr3.push(record._fields[1].properties.d_type)
-                    deviceArr3.push(record._fields[1].properties.device)
-                    priceArr3.push(record._fields[1].properties.price)
-
-                    activityTypeArr3.push(record._fields[2].properties.name)
-                    dateArr3.push(record._fields[2].properties.date)
+                  dataNameArr11.push(record._fields[1].properties.name)
+                  dataTypeArr11.push(record._fields[1].properties.d_type)
+                  deviceArr11.push(record._fields[1].properties.device)
+                  priceArr11.push(record._fields[1].properties.price)
                 });
                 res.render('viewPage', {
                     esession: session_value.getSession(),
@@ -355,10 +429,27 @@ router.get('/viewPage', function (req, res) {
                     r_names: r_nameArr,
                     r_affiliations: r_affiliationArr,
 
+                    names2 : nameArr2,
+                    affiliations2 : affiliationArr2,
+                    names10 : nameArr10,
+                    affiliations10 : affiliationArr10,
+                    activityTypes10 : activityTypeArr10,
+                    dates10 : dateArr10,
+                    dateNames10 : dataNameArr10,
+                    dateTypes10 : dataTypeArr10,
+                    prices10: priceArr10,
+                    devices10: deviceArr10,
+                    names11 : nameArr11,
+                    affiliations11 : affiliationArr11,
+                    dateNames11 : dataNameArr11,
+                    dateTypes11 : dataTypeArr11,
+                    prices11: priceArr11,
+                    devices11: deviceArr11,
+
                     authenticated: true
                 });
-
-
+            });
+          });
                 session.close();
             })
             .catch(function (err) {
@@ -368,73 +459,122 @@ router.get('/viewPage', function (req, res) {
     else if (user_gubun == '관리자') {
         console.log("관리자")
         session
-            .run("START n=node(*) MATCH (n:Agent)<-[:wasAttributedTo]-(m:Entity)-[:wasGeneratedBy]-(q:Activity)-[]-(w:Agent) WHERE Not(q.name = '수정') RETURN n, m , q, w LIMIT 30")
-            .then(function (result) {
-                result.records.forEach(function (record) {
+          .run("MATCH (p:Person)<-[:Own]-(d:Data)<-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' RETURN p, d, ac LIMIT 10")
+          .then(function (result) {
+            result.records.forEach(function (record) {
 
+              s_nameArr.push(record._fields[0].properties.name)
+              s_affiliationArr.push(record._fields[0].properties.affiliation)
 
-                    s_nameArr.push(record._fields[0].properties.name)
-                    s_affiliationArr.push(record._fields[0].properties.affiliation)
+              dataNameArr4.push(record._fields[1].properties.name)
+              dataTypeArr4.push(record._fields[1].properties.d_type)
+              deviceArr4.push(record._fields[1].properties.device)
+              priceArr4.push(record._fields[1].properties.price)
+              //dataOwner.push(record._fields[1].properties.owner)
+              //dataOwnerAff.push(record._fields[1].properties.owner_aff)
 
-                    dataNameArr4.push(record._fields[1].properties.name)
-                    dataTypeArr4.push(record._fields[1].properties.d_type)
-                    deviceArr4.push(record._fields[1].properties.device)
-                    priceArr4.push(record._fields[1].properties.price)
-
-                    activityTypeArr4.push(record._fields[2].properties.name)
-                    dateArr4.push(record._fields[2].properties.date)
-
-                    r_nameArr.push(record._fields[3].properties.name)
-                    r_affiliationArr.push(record._fields[3].properties.affiliation)
-
-
-                    session.run("START n=node(*) MATCH (n:Agent)<-[:wasAttributedTo]-(m:Entity)-[:wasGeneratedBy]-(q:Activity) WHERE q.name = '수정' RETURN n, m, q LIMIT 30")
-                        .then(function (result) {
-                            result.records.forEach(function (record) {
-
-                                nameArr.push(record._fields[0].properties.name)
-                                affiliationArr.push(record._fields[0].properties.affiliation)
-
-                                dataNameArr3.push(record._fields[1].properties.name)
-                                dataTypeArr3.push(record._fields[1].properties.d_type)
-                                deviceArr3.push(record._fields[1].properties.device)
-                                priceArr3.push(record._fields[1].properties.price)
-
-                                activityTypeArr3.push(record._fields[2].properties.name)
-                                dateArr3.push(record._fields[2].properties.date)
-                            });
-                            res.render('viewPage', {
-                                esession: session_value.getSession(),
-
-                                names: nameArr,
-                                affiliations: affiliationArr,
-                                dataTypes3: dataTypeArr3,
-                                dataNames3: dataNameArr3,
-                                devices3: deviceArr3,
-                                prices3: priceArr3,
-                                activityTypes3: activityTypeArr3,
-                                dates3: dateArr3,
-
-                                s_names: s_nameArr,
-                                s_affiliations: s_affiliationArr,
-                                dataTypes4: dataTypeArr4,
-                                dataNames4: dataNameArr4,
-                                devices4: deviceArr4,
-                                prices4: priceArr4,
-                                activityTypes4: activityTypeArr4,
-                                dates4: dateArr4,
-                                r_names: r_nameArr,
-                                r_affiliations: r_affiliationArr,
-
-                                authenticated: true
-                            });
-                        });
-                });
-                session.close();
-            })
-            .catch(function (err) {
-                console.log(err);
+              activityTypeArr4.push(record._fields[2].properties.name)
+              dateArr4.push(record._fields[2].properties.date)
             });
+
+
+          session.run("MATCH (p1:Person)<-[:Own]-(d1:Data)-[:Generate]-(ac:Activity)-[:Generate]-(d2:Data)-[:Own]-(p2:Person) WHERE ac.name IN ['배포', '판매', '전달'] RETURN p1, d1, ac, p2 LIMIT 10")
+          .then(function (result) {
+            result.records.forEach(function (record) {
+
+              nameArr.push(record._fields[0].properties.name)
+              affiliationArr.push(record._fields[0].properties.affiliation)
+
+              dataNameArr3.push(record._fields[1].properties.name)
+              dataTypeArr3.push(record._fields[1].properties.d_type)
+              deviceArr3.push(record._fields[1].properties.device)
+              priceArr3.push(record._fields[1].properties.price)
+              //dataOwner.push(record._fields[1].properties.owner)
+              //dataOwnerAff.push(record._fields[1].properties.owner_aff)
+
+              activityTypeArr3.push(record._fields[2].properties.name)
+              dateArr3.push(record._fields[2].properties.date)
+
+              nameArr2.push(record._fields[3].properties.name)
+              affiliationArr2.push(record._fields[3].properties.affiliation)
+            });
+
+              session.run("MATCH (p1:Person)<-[:Own]-(d1:Data), (d1:Data)<-[:Generate]-(ac:Activity), (ac:Activity)-[:Act]-(p2:Person), (d2:Data)-[:Generate]-(ac:Activity) WHERE ac.name IN ['수정', '가공', '변환'] RETURN p1, d1, ac, p2, d2 LIMIT 10")
+              .then(function (result) {
+                result.records.forEach(function (record) {
+    
+                  nameArr10.push(record._fields[0].properties.name)
+                  affiliationArr10.push(record._fields[0].properties.affiliation)
+    
+                  dataNameArr10.push(record._fields[1].properties.name)
+                  dataTypeArr10.push(record._fields[1].properties.d_type)
+                  deviceArr10.push(record._fields[1].properties.device)
+                  priceArr10.push(record._fields[1].properties.price)
+                  //dataOwner.push(record._fields[1].properties.owner)
+                  //dataOwnerAff.push(record._fields[1].properties.owner_aff)
+    
+                  activityTypeArr10.push(record._fields[2].properties.name)
+                  dateArr10.push(record._fields[2].properties.date)
+    
+                  nameArr11.push(record._fields[3].properties.name)
+                  affiliationArr11.push(record._fields[3].properties.affiliation)
+
+                  dataNameArr11.push(record._fields[1].properties.name)
+                  dataTypeArr11.push(record._fields[1].properties.d_type)
+                  deviceArr11.push(record._fields[1].properties.device)
+                  priceArr11.push(record._fields[1].properties.price)
+                });
+
+
+          res.render('viewPage', {
+            esession: session_value.getSession(),
+
+            names: nameArr,
+            affiliations: affiliationArr,
+            dataTypes3: dataTypeArr3,
+            dataNames3: dataNameArr3,
+            devices3: deviceArr3,
+            prices3: priceArr3,
+            activityTypes3: activityTypeArr3,
+            dates3: dateArr3,
+
+            s_names: s_nameArr,
+            s_affiliations: s_affiliationArr,
+            dataTypes4: dataTypeArr4,
+            dataNames4: dataNameArr4,
+            devices4: deviceArr4,
+            prices4: priceArr4,
+            activityTypes4: activityTypeArr4,
+            dates4: dateArr4,
+            r_names: r_nameArr,
+            r_affiliations: r_affiliationArr,
+
+            names2 : nameArr2,
+            affiliations2 : affiliationArr2,
+            names10 : nameArr10,
+            affiliations10 : affiliationArr10,
+            activityTypes10 : activityTypeArr10,
+            dates10 : dateArr10,
+            dateNames10 : dataNameArr10,
+            dateTypes10 : dataTypeArr10,
+            prices10: priceArr10,
+            devices10: deviceArr10,
+            names11 : nameArr11,
+            affiliations11 : affiliationArr11,
+            dateNames11 : dataNameArr11,
+            dateTypes11 : dataTypeArr11,
+            prices11: priceArr11,
+            devices11: deviceArr11,
+
+            authenticated: true
+      });
+    });
+  });
+      session.close();
+ })
+ .catch(function (err) {
+  console.log(err);
+});
     }
     else {
         res.render('viewPage', {
@@ -458,6 +598,28 @@ router.get('/viewPage', function (req, res) {
             dates4: undefined,
             r_names: undefined,
             r_affiliations: undefined,
+
+            names2 : undefined,
+            affiliations2 : undefined,
+
+            names10 : undefined,
+            affiliations10 : undefined,
+            
+            activityTypes10 : undefined,
+            dates10 : undefined,
+            dateNames10 : undefined,
+            dateTypes10 : undefined,
+            prices10: undefined,
+            devices10: undefined,
+
+            names11 : undefined,
+            affiliations11 : undefined,
+
+            dateNames11 : undefined,
+            dateTypes11 : undefined,
+            prices11: undefined,
+            devices11: undefined,
+
             authenticated: false
         });
     }
@@ -494,8 +656,24 @@ router.post('/DataSearch', function (req, res) {
     var r_nameArr = [];
     var r_affiliationArr = [];
 
+    var nameArr5 = [];
+    var affiliationArr5 = [];
+    var activityTypeArr5 = [];
+    var dateArr5 = [];
+    var dataNameArr5 = [];
+    var dataTypeArr5 = [];
+    var priceArr5 = [];
+    var deviceArr5 = [];
+    var nameArr6 = [];
+    var affiliationArr6 = [];
+    var dataNameArr6 = [];
+    var dataTypeArr6 = [];
+    var priceArr6 = [];
+    var deviceArr6 = [];
+
     var query4resultNum;
     var query3resultNum;
+    var query5resultNum;
 
     console.log("dataName: " + dataName);
     console.log("device: " + device);
@@ -506,10 +684,18 @@ router.post('/DataSearch', function (req, res) {
     var user_gubun = session_value.getSession().gubun;
     var user_name = session_value.getSession().user;
 
-    var deviceCyper = " entity.device = ";
-    var dataNameCyper = " entity.name = ";
-    var dataTypeCyper = " entity.d_type = ";
-    var priceCyper = " entity.price = ";
+    var deviceCyper3 = " d.device = ";
+    var dataNameCyper3 = " d.name = ";
+    var dataTypeCyper3 = " d.d_type = ";
+    var priceCyper3 = " d.price = ";
+    var deviceCyper4 = " d1.device = ";
+    var dataNameCyper4 = " d1.name = ";
+    var dataTypeCyper4 = " d1.d_type = ";
+    var priceCyper4 = " d1.price = ";
+    var deviceCyper5 = " d1.device = ";
+    var dataNameCyper5 = " d2.name = ";
+    var dataTypeCyper5 = " d2.d_type = ";
+    var priceCyper5 = " d2.price = ";
 
     if (device == '') {
         deviceFlag = false;
@@ -528,66 +714,128 @@ router.post('/DataSearch', function (req, res) {
         nullcount++;
     }
 
+    var matchCyper5;
     var matchCyper4;
     var matchCyper3;
 
-    var returnCyper4 = ") RETURN s_agent, entity, activity, r_agent LIMIT 50"
-    var returnCyper3 = ") RETURN agent, entity, activity LIMIT 50"
-    var whereCyper4 = " WHERE Not(activity.name = '수정') AND ("
-    var whereCyper3 = " WHERE (activity.name = '수정') AND ("
+    var returnCyper5 = ") RETURN p1, d1, ac, p2, d2 LIMIT 10"
+    var returnCyper4 = ") RETURN p1, d1, ac, p2 LIMIT 10"
+    var returnCyper3 = ") RETURN p, d, ac LIMIT 10"
+    var whereCyper5 = " WHERE ac.name IN ['수정', '가공', '변환'] AND ("
+    var whereCyper4 = " WHERE ac.name IN ['배포', '판매', '전달'] AND ("
+    var whereCyper3 = " WHERE ac.name = '생성' AND ("
+    var newQuery5;
     var newQuery4;
     var newQuery3;
+
     if (user_gubun == '관리자') {
-        matchCyper4 = "MATCH (s_agent:Agent)<-[:wasAttributedTo]-(entity:Entity)-[:wasGeneratedBy]-(activity:Activity)-[]-(r_agent: Agent)";
-        matchCyper3 = "MATCH (agent:Agent)<-[:wasAttributedTo]-(entity:Entity)-[:wasGeneratedBy]-(activity:Activity)"
+        matchCyper5 = "MATCH (p1:Person)<-[:Own]-(d1:Data), (d1:Data)<-[:Generate]-(ac:Activity), (ac:Activity)-[:Act]-(p2:Person), (d2:Data)-[:Generate]-(ac:Activity)"
+        matchCyper4 = "MATCH (p1:Person)<-[:Own]-(d1:Data)-[:Generate]-(ac:Activity)-[:Generate]-(d2:Data)-[:Own]-(p2:Person)"
+        matchCyper3 = "MATCH (p:Person)<-[:Own]-(d:Data)<-[:Generate]-(ac:Activity)-[:Act]-(p:Person)"
+        newQuery5 = matchCyper5 + whereCyper5;
         newQuery4 = matchCyper4 + whereCyper4;
         newQuery3 = matchCyper3 + whereCyper3;
     }
     else {
-        matchCyper4 = "MATCH (s_agent:Agent)<-[:wasAttributedTo]-(entity:Entity)-[:wasGeneratedBy]-(activity:Activity)-[]-(r_agent: Agent)";
-        matchCyper3 = "MATCH (agent:Agent{name: '" + user_name + "' })<-[:wasAttributedTo]-(entity:Entity)-[:wasGeneratedBy]-(activity:Activity)"
-        newQuery4 = matchCyper4 + whereCyper4 + "s_agent.name = '" + user_name + "' OR r_agent.name = '" + user_name + "') AND (";
+        matchCyper5 = "MATCH (p1:Person)<-[:Own]-(d1:Data), (d1:Data)<-[:Generate]-(ac:Activity), (ac:Activity)-[:Act]-(p2:Person), (d2:Data)-[:Generate]-(ac:Activity)"
+        matchCyper4 = "MATCH (p1:Person)<-[:Own]-(d1:Data)-[:Generate]-(ac:Activity)-[:Generate]-(d2:Data)-[:Own]-(p2:Person)"
+        matchCyper3 = "MATCH (p:Person{name: '" + user_name + "' })<-[:Own]-(d:Data)<-[:Generate]-(ac:Activity)-[:Act]-(p:Person)"
+        newQuery5 = matchCyper5 + whereCyper5 + "p1.name = '" + user_name + "' OR p2.name = '" + user_name + "') AND (";
+        newQuery4 = matchCyper4 + whereCyper4 + "p1.name = '" + user_name + "' OR p2.name = '" + user_name + "') AND (";
         newQuery3 = matchCyper3 + whereCyper3;
     }
 
     for (var i = 0; i < (4 - nullcount); i++) {
         if (deviceFlag) {
-            newQuery4 = newQuery4 + deviceCyper + "'" + device + "'";
-            newQuery3 = newQuery3 + deviceCyper + "'" + device + "'";
+            newQuery5 = newQuery5 + deviceCyper5 + "'" + device + "' OR " + deviceCyper4 + "'" + device + "'";
+            newQuery4 = newQuery4 + deviceCyper4 + "'" + device + "'";
+            newQuery3 = newQuery3 + deviceCyper3 + "'" + device + "'";
             deviceFlag = false;
         }
         else if (dataNameFlag) {
-            newQuery4 = newQuery4 + dataNameCyper + "'" + dataName + "'";
-            newQuery3 = newQuery3 + dataNameCyper + "'" + dataName + "'";
+            newQuery5 = newQuery5 + dataNameCyper5 + "'" + dataName + "' OR " + dataNameCyper4 + "'" + dataName + "'";
+            newQuery4 = newQuery4 + dataNameCyper4 + "'" + dataName + "'";
+            newQuery3 = newQuery3 + dataNameCyper3 + "'" + dataName + "'";
             dataNameFlag = false;
         }
 
         else if (dataTypeFlag) {
-            newQuery4 = newQuery4 + dataTypeCyper + "'" + dataType + "'";
-            newQuery3 = newQuery3 + dataTypeCyper + "'" + dataType + "'";
+            newQuery5 = newQuery5 + dataTypeCyper5 + "'" + dataType + "' OR " + dataTypeCyper4 + "'" + dataType + "'";
+            newQuery4 = newQuery4 + dataTypeCyper4 + "'" + dataType + "'";
+            newQuery3 = newQuery3 + dataTypeCyper3 + "'" + dataType + "'";
             dataTypeFlag = false;
         }
         else if (priceFlag) {
-            newQuery4 = newQuery4 + priceCyper + "'" + price + "'";
-            newQuery3 = newQuery3 + priceCyper + "'" + price + "'";
+            newQuery5 = newQuery5 + priceCyper5 + "'" + price + "' OR " + priceCyper4 + "'" + price + "'";
+            newQuery4 = newQuery4 + priceCyper4 + "'" + price + "'";
+            newQuery3 = newQuery3 + priceCyper3 + "'" + price + "'";
             priceFlag = false;
         }
         if ((i + 1) != (4 - nullcount)) {
+            newQuery5 = newQuery5 + " AND";
             newQuery4 = newQuery4 + " AND";
             newQuery3 = newQuery3 + " AND";
         }
     }
+    newQuery5 = newQuery5 + returnCyper5;
     newQuery4 = newQuery4 + returnCyper4;
     newQuery3 = newQuery3 + returnCyper3;
     console.log(newQuery3)
     console.log(newQuery4)
+    console.log(newQuery5)
+
+    session.run(newQuery5)
+        .then(function (result) {
+            query5resultNum = result.records.length;
+            if (query5resultNum != 0) {
+                result.records.forEach(function (record) {
+
+                    nameArr5.push(record._fields[0].properties.name)
+                    affiliationArr5.push(record._fields[0].properties.affiliation)
+
+                    dataNameArr5.push(record._fields[1].properties.name)
+                    dataTypeArr5.push(record._fields[1].properties.d_type)
+                    deviceArr5.push(record._fields[1].properties.device)
+                    priceArr5.push(record._fields[1].properties.price)
+
+                    activityTypeArr5.push(record._fields[2].properties.name)
+                    dateArr5.push(record._fields[2].properties.date)
+
+                    nameArr6.push(record._fields[3].properties.name)
+                    affiliationArr6.push(record._fields[3].properties.affiliation)
+
+                    dataNameArr6.push(record._fields[4].properties.name)
+                    dataTypeArr6.push(record._fields[4].properties.d_type)
+                    deviceArr6.push(record._fields[4].properties.device)
+                    priceArr6.push(record._fields[4].properties.price)
+                });
+            }
+            else {
+                nameArr5.push(' ')
+                affiliationArr5.push(' ')
+
+                dataNameArr5.push(' ')
+                dataTypeArr5.push(' ')
+                deviceArr5.push(' ')
+                priceArr5.push(' ')
+
+                activityTypeArr5.push(' ')
+                dateArr5.push(' ')
+
+                nameArr6.push(' ')
+                affiliationArr6.push(' ')
+
+                dataNameArr6.push(' ')
+                dataTypeArr6.push(' ')
+                deviceArr6.push(' ')
+                priceArr6.push(' ')
+            }
 
     session.run(newQuery4)
         .then(function (result) {
             query4resultNum = result.records.length;
             if (query4resultNum != 0) {
                 result.records.forEach(function (record) {
-
 
                     s_nameArr.push(record._fields[0].properties.name)
                     s_affiliationArr.push(record._fields[0].properties.affiliation)
@@ -619,36 +867,39 @@ router.post('/DataSearch', function (req, res) {
                 r_nameArr.push(' ')
                 r_affiliationArr.push(' ')
             }
-            session.run(newQuery3)
-                .then(function (result) {
-                    query3resultNum = result.records.length;
-                    if (query3resultNum != 0) {
-                        result.records.forEach(function (record) {
 
-                            nameArr.push(record._fields[0].properties.name)
-                            affiliationArr.push(record._fields[0].properties.affiliation)
+    session.run(newQuery3)
+        .then(function (result) {
+            query3resultNum = result.records.length;
+            if (query3resultNum != 0) {
+                result.records.forEach(function (record) {
 
-                            dataNameArr3.push(record._fields[1].properties.name)
-                            dataTypeArr3.push(record._fields[1].properties.d_type)
-                            deviceArr3.push(record._fields[1].properties.device)
-                            priceArr3.push(record._fields[1].properties.price)
+                    nameArr.push(record._fields[0].properties.name)
+                    affiliationArr.push(record._fields[0].properties.affiliation)
 
-                            activityTypeArr3.push(record._fields[2].properties.name)
-                            dateArr3.push(record._fields[2].properties.date)
-                        });
-                    }
-                    else {
-                        nameArr.push(' ')
-                        affiliationArr.push(' ')
+                    dataNameArr3.push(record._fields[1].properties.name)
+                    dataTypeArr3.push(record._fields[1].properties.d_type)
+                    deviceArr3.push(record._fields[1].properties.device)
+                    priceArr3.push(record._fields[1].properties.price)
 
-                        dataNameArr3.push(' ')
-                        dataTypeArr3.push(' ')
-                        deviceArr3.push(' ')
-                        priceArr3.push(' ')
+                    activityTypeArr3.push(record._fields[2].properties.name)
+                    dateArr3.push(record._fields[2].properties.date)
+                 });
+            }
+            else {
+                nameArr.push(' ')
+                affiliationArr.push(' ')
 
-                        activityTypeArr3.push(' ')
-                        dateArr3.push(' ')
-                    }
+                dataNameArr3.push(' ')
+                dataTypeArr3.push(' ')
+                deviceArr3.push(' ')
+                priceArr3.push(' ')
+
+                activityTypeArr3.push(' ')
+                dateArr3.push(' ')
+            }
+
+
                     res.render('search/searchDataResult.ejs', {
                         esession: session_value.getSession(),
 
@@ -672,9 +923,26 @@ router.post('/DataSearch', function (req, res) {
                         r_names: r_nameArr,
                         r_affiliations: r_affiliationArr,
 
+                        names5 : nameArr5,
+                        affiliations5 : affiliationArr5,
+                        dataTypes5: dataTypeArr5,
+                        dataNames5: dataNameArr5,
+                        devices5: deviceArr5,
+                        prices5: priceArr5,
+                        activityTypes5: activityTypeArr5,
+                        dates5: dateArr5,
+
+                        names6 : nameArr6,
+                        affiliations6 : affiliationArr6,
+                        dataTypes6: dataTypeArr6,
+                        dataNames6: dataNameArr6,
+                        devices6: deviceArr6,
+                        prices6: priceArr6,
+
                         authenticated: true
                     });
                 });
+            });
             session.close();
         })
         .catch(function (err) {
@@ -709,30 +977,52 @@ router.post('/nameSearch', function (req, res) {
     var r_nameArr = [];
     var r_affiliationArr = [];
 
+    var nameArr5 = [];
+    var affiliationArr5 = [];
+    var activityTypeArr5 = [];
+    var dateArr5 = [];
+    var dataNameArr5 = [];
+    var dataTypeArr5 = [];
+    var priceArr5 = [];
+    var deviceArr5 = [];
+    var nameArr6 = [];
+    var affiliationArr6 = [];
+    var dataNameArr6 = [];
+    var dataTypeArr6 = [];
+    var priceArr6 = [];
+    var deviceArr6 = [];
+
     var query4resultNum;
     var query3resultNum;
+    var query5resultNum;
 
     console.log("affiliation: " + affiliation);
     console.log("name: " + name);
 
     var nullcount = 0;
+    var matchCyper5;
     var matchCyper4;
     var matchCyper3;
 
-    var returnCyper4 = " RETURN s_agent, entity, activity, r_agent LIMIT 30"
-    var returnCyper3 = ") RETURN agent, entity, activity LIMIT 30"
-    var whereCyper4 = " WHERE Not(activity.name = '수정') AND "
-    var whereCyper3 = " WHERE (activity.name = '수정') AND ("
+    var returnCyper5 = ") RETURN p1, d1, ac, p2, d2 LIMIT 10"
+    var returnCyper4 = ") RETURN p1, d1, ac, p2 LIMIT 10"
+    var returnCyper3 = ") RETURN p, d, ac LIMIT 10"
+    var whereCyper5 = " WHERE ac.name IN ['수정', '가공', '변환'] AND ("
+    var whereCyper4 = " WHERE ac.name IN ['배포', '판매', '전달'] AND ("
+    var whereCyper3 = " WHERE ac.name = '생성' AND ("
     var newQuery4;
     var newQuery3;
+    var newQuery5;
 
-    matchCyper4 = "MATCH (s_agent:Agent)<-[:wasAttributedTo]-(entity:Entity)-[:wasGeneratedBy]-(activity:Activity)-[]-(r_agent: Agent)";
-    matchCyper3 = "MATCH (agent:Agent)<-[:wasAttributedTo]-(entity:Entity)-[:wasGeneratedBy]-(activity:Activity)"
+    matchCyper5 = "MATCH (p1:Person)<-[:Own]-(d1:Data), (d1:Data)<-[:Generate]-(ac:Activity), (ac:Activity)-[:Act]-(p2:Person), (d2:Data)-[:Generate]-(ac:Activity)"
+    matchCyper4 = "MATCH (p1:Person)<-[:Own]-(d1:Data)-[:Generate]-(ac:Activity)-[:Generate]-(d2:Data)-[:Own]-(p2:Person)"
+    matchCyper3 = "MATCH (p:Person)<-[:Own]-(d:Data)<-[:Generate]-(ac:Activity)-[:Act]-(p:Person)"
+    newQuery5 = matchCyper5 + whereCyper5;
     newQuery4 = matchCyper4 + whereCyper4;
     newQuery3 = matchCyper3 + whereCyper3;
 
-    var affiliationCyper = " agent.affiliation = ";
-    var nameCyper = " agent.name = ";
+    var affiliationCyper = " p.affiliation = ";
+    var nameCyper = " p.name = ";
 
     if (affiliation == '' || affiliation == undefined) {
         console.log("affiliation null");
@@ -747,7 +1037,8 @@ router.post('/nameSearch', function (req, res) {
 
     for (var i = 0; i < (2 - nullcount); i++) {
         if (nullcount == 0) {
-            newQuery4 = newQuery4 + "(s_agent.affiliation = '" + affiliation + "'  AND s_agent.name = '" + name + "') OR (r_agent.affiliation = '" + affiliation + "' AND r_agent.name = '" + name + "')";
+            newQuery5 = newQuery5 + "(p1.affiliation = '" + affiliation + "'  AND p1.name = '" + name + "') OR (p2.affiliation = '" + affiliation + "' AND p2.name = '" + name + "')";
+            newQuery4 = newQuery4 + "(p1.affiliation = '" + affiliation + "'  AND p1.name = '" + name + "') OR (p2.affiliation = '" + affiliation + "' AND p2.name = '" + name + "')";
             newQuery3 = newQuery3 + affiliationCyper + "'" + affiliation + "' AND ";
             newQuery3 = newQuery3 + nameCyper + "'" + name + "'";
             affiliationFlag = false;
@@ -756,28 +1047,80 @@ router.post('/nameSearch', function (req, res) {
         }
         else {
             if (affiliationFlag) {
-                newQuery4 = newQuery4 + "(s_agent.affiliation = '" + affiliation + "' OR r_agent.affiliation = '" + affiliation + "') ";
+                newQuery5 = newQuery4 + "(p1.affiliation = '" + affiliation + "' OR p2.affiliation = '" + affiliation + "') ";
+                newQuery4 = newQuery4 + "(p1.affiliation = '" + affiliation + "' OR p2.affiliation = '" + affiliation + "') ";
                 newQuery3 = newQuery3 + affiliationCyper + "'" + affiliation + "'";
                 affiliationFlag = false;
             }
             else if (nameFlag) {
-                newQuery4 = newQuery4 + "(s_agent.name = '" + name + "' OR r_agent.name = '" + name + "') "
+                newQuery5 = newQuery4 + "(p1.name = '" + name + "' OR p2.name = '" + name + "') "
+                newQuery4 = newQuery4 + "(p1.name = '" + name + "' OR p2.name = '" + name + "') "
                 newQuery3 = newQuery3 + nameCyper + "'" + name + "'";
                 nameFlag = false;
             }
         }
         if ((i + 1) != (2 - nullcount)) {
+            newQuery5 = newQuery5 + " AND ";
             newQuery4 = newQuery4 + " AND ";
             newQuery3 = newQuery3 + " AND";
         }
     }
     newQuery3 = newQuery3 + returnCyper3;
     newQuery4 = newQuery4 + returnCyper4;
+    newQuery5 = newQuery5 + returnCyper5;
 
     console.log(newQuery3)
     console.log("********************************************")
     console.log(newQuery4)
+    console.log("********************************************")
+    console.log(newQuery5)
 
+    session.run(newQuery5)
+    .then(function (result) {
+        query5resultNum = result.records.length;
+        if (query5resultNum != 0) {
+            result.records.forEach(function (record) {
+
+                nameArr5.push(record._fields[0].properties.name)
+                affiliationArr5.push(record._fields[0].properties.affiliation)
+
+                dataNameArr5.push(record._fields[1].properties.name)
+                dataTypeArr5.push(record._fields[1].properties.d_type)
+                deviceArr5.push(record._fields[1].properties.device)
+                priceArr5.push(record._fields[1].properties.price)
+
+                activityTypeArr5.push(record._fields[2].properties.name)
+                dateArr5.push(record._fields[2].properties.date)
+
+                nameArr6.push(record._fields[3].properties.name)
+                affiliationArr6.push(record._fields[3].properties.affiliation)
+
+                dataNameArr6.push(record._fields[4].properties.name)
+                dataTypeArr6.push(record._fields[4].properties.d_type)
+                deviceArr6.push(record._fields[4].properties.device)
+                priceArr6.push(record._fields[4].properties.price)
+            });
+        }
+        else {
+            nameArr5.push(' ')
+            affiliationArr5.push(' ')
+
+            dataNameArr5.push(' ')
+            dataTypeArr5.push(' ')
+            deviceArr5.push(' ')
+            priceArr5.push(' ')
+
+            activityTypeArr5.push(' ')
+            dateArr5.push(' ')
+
+            nameArr6.push(' ')
+            affiliationArr6.push(' ')
+
+            dataNameArr6.push(' ')
+            dataTypeArr6.push(' ')
+            deviceArr6.push(' ')
+            priceArr6.push(' ')
+    }
 
     session
         .run(newQuery4)
@@ -869,9 +1212,26 @@ router.post('/nameSearch', function (req, res) {
                         r_names: r_nameArr,
                         r_affiliations: r_affiliationArr,
 
+                        names5 : nameArr5,
+                        affiliations5 : affiliationArr5,
+                        dataTypes5: dataTypeArr5,
+                        dataNames5: dataNameArr5,
+                        devices5: deviceArr5,
+                        prices5: priceArr5,
+                        activityTypes5: activityTypeArr5,
+                        dates5: dateArr5,
+
+                        names6 : nameArr6,
+                        affiliations6 : affiliationArr6,
+                        dataTypes6: dataTypeArr6,
+                        dataNames6: dataNameArr6,
+                        devices6: deviceArr6,
+                        prices6: priceArr6,
+
                         authenticated: true
                     });
                 });
+            });
             session.close();
         })
         .catch(function (err) {
@@ -905,12 +1265,28 @@ router.post('/periodSearch', function (req, res) {
     var r_nameArr = [];
     var r_affiliationArr = [];
 
+    var nameArr5 = [];
+    var affiliationArr5 = [];
+    var activityTypeArr5 = [];
+    var dateArr5 = [];
+    var dataNameArr5 = [];
+    var dataTypeArr5 = [];
+    var priceArr5 = [];
+    var deviceArr5 = [];
+    var nameArr6 = [];
+    var affiliationArr6 = [];
+    var dataNameArr6 = [];
+    var dataTypeArr6 = [];
+    var priceArr6 = [];
+    var deviceArr6 = [];
+
     var end_dateFlag = true;
     var start_dateFlag = true;
     var activityTypeFlag = true;
 
     var query4resultNum;
     var query3resultNum;
+    var query5resultNum;
 
     console.log("starDate:  " + start_date);
     console.log("end: " + end_date);
@@ -920,29 +1296,34 @@ router.post('/periodSearch', function (req, res) {
     var user_gubun = session_value.getSession().gubun;
     var user_name = session_value.getSession().user;
 
+    var matchCyper5;
     var matchCyper4;
     var matchCyper3;
 
-    var returnCyper4 = " RETURN s_agent, entity, activity, r_agent LIMIT 30"
-    var returnCyper3 = " RETURN agent, entity, activity LIMIT 30"
+    var returnCyper5 = " RETURN p1, d1, ac, p2, d2 LIMIT 10"
+    var returnCyper4 = " RETURN p1, d1, ac, p2 LIMIT 10"
+    var returnCyper3 = " RETURN p, d, ac LIMIT 10"
 
+    var newQuery5;
     var newQuery4;
     var newQuery3;
 
-
-    matchCyper4 = "MATCH (s_agent:Agent)<-[:wasAttributedTo]-(entity:Entity)-[:wasGeneratedBy]-(activity:Activity)-[]-(r_agent: Agent)";
+    matchCyper5 = "MATCH (p1:Person)<-[:Own]-(d1:Data), (d1:Data)<-[:Generate]-(ac:Activity), (ac:Activity)-[:Act]-(p2:Person), (d2:Data)-[:Generate]-(ac:Activity)"
+    matchCyper4 = "MATCH (p1:Person)<-[:Own]-(d1:Data)-[:Generate]-(ac:Activity)-[:Generate]-(d2:Data)-[:Own]-(p2:Person)"
     if (user_gubun == '관리자') {
-        matchCyper3 = "MATCH (agent:Agent)<-[:wasAttributedTo]-(entity:Entity)-[:wasGeneratedBy]-(activity:Activity)"
+        matchCyper3 = "MATCH (p:Person)<-[:Own]-(d:Data)<-[:Generate]-(ac:Activity)-[:Act]-(p:Person)"
+        newQuery5 = matchCyper5 + " WHERE "
         newQuery4 = matchCyper4 + " WHERE "
         newQuery3 = matchCyper3 + " WHERE "
     }
     else {
-        matchCyper3 = "MATCH (agent:Agent{name: '" + user_name + "' })<-[:wasAttributedTo]-(entity:Entity)-[:wasGeneratedBy]-(activity:Activity)"
-        newQuery4 = matchCyper4 + " WHERE (s_agent.name = '" + user_name + "' OR r_agent.name = '" + user_name + "') AND";
-        newQuery3 = matchCyper3 + " WHERE (agent.name = '" + user_name + "') AND";
+        matchCyper3 = "MATCH (p:Person{name: '" + user_name + "' })<-[:Own]-(d:Data)<-[:Generate]-(ac:Activity)-[:Act]-(p:Person)"
+        newQuery5 = matchCyper5 + " WHERE (p1.name = '" + user_name + "' OR p2.name = '" + user_name + "') AND";
+        newQuery4 = matchCyper4 + " WHERE (p1.name = '" + user_name + "' OR p2.name = '" + user_name + "') AND";
+        newQuery3 = matchCyper3 + " WHERE (p.name = '" + user_name + "') AND";
     }
-    var startDateCyper = " (activity.date >= ";
-    var endDateCyper = " activity.date < ";
+    var startDateCyper = " (ac.date >= ";
+    var endDateCyper = " ac.date < ";
 
     if (end_date == '' || end_date == undefined) {
         end_dateFlag = false;
@@ -961,16 +1342,20 @@ router.post('/periodSearch', function (req, res) {
     }
 
     if (nullcount == 0) {
-        if (activityType == '수정') {
-            newQuery3 = newQuery3 + startDateCyper + "'" + start_date + "'" + " AND" + endDateCyper + "'" + end_date + "') AND (activity.name = '수정') "
+        if (activityType == '생성') {
+            newQuery3 = newQuery3 + startDateCyper + "'" + start_date + "'" + " AND" + endDateCyper + "'" + end_date + "') AND (ac.name = '생성') "
         }
+        else if (activityType == '배포' || activityType == '판매' || activityType == '전달'){
+            newQuery4 = newQuery4 + startDateCyper + "'" + start_date + "'" + " AND" + endDateCyper + "'" + end_date + "') AND (ac.name = " + "'" + activityType + "') "
+        } 
         else {
-            newQuery4 = newQuery4 + startDateCyper + "'" + start_date + "'" + " AND" + endDateCyper + "'" + end_date + "') AND (activity.name = " + "'" + activityType + "') "
+            newQuery5 = newQuery5 + startDateCyper + "'" + start_date + "'" + " AND" + endDateCyper + "'" + end_date + "') AND (ac.name = " + "'" + activityType + "') "
         }
     }
     else {
         for (var i = 0; i < (2 - nullcount); i++) {
             if (end_dateFlag && start_date) {
+                newQuery5 = newQuery5 + startDateCyper + "'" + start_date + "'" + " AND" + endDateCyper + "'" + end_date + "') ";
                 newQuery4 = newQuery4 + startDateCyper + "'" + start_date + "'" + " AND" + endDateCyper + "'" + end_date + "') ";
                 newQuery3 = newQuery3 + startDateCyper + "'" + start_date + "'" + " AND" + endDateCyper + "'" + end_date + "') ";
 
@@ -979,29 +1364,37 @@ router.post('/periodSearch', function (req, res) {
             }
             else if (activityTypeFlag) {
                 activityTypeFlag = false;
-                if (activityType == '수정') {
-                    newQuery3 = newQuery3 + " (activity.name = '수정') "
+                if (activityType == '생성') {
+                    newQuery3 = newQuery3 + " (ac.name = '생성') "
+                }
+                if (activityType == '배포' || activityType == '판매' || activityType == '전달'){
+                    newQuery4 = newQuery4 + " (ac.name = " + "'" + activityType + "') "
                 }
                 else {
-                    newQuery4 = newQuery4 + " (activity.name = " + "'" + activityType + "') "
+                    newQuery5 = newQuery5 + " (ac.name = " + "'" + activityType + "') "
                 }
             }
         }
     }
+    newQuery5 = newQuery5 + returnCyper5;
     newQuery4 = newQuery4 + returnCyper4;
     newQuery3 = newQuery3 + returnCyper3;
 
     console.log(newQuery3)
     console.log(newQuery4)
+    console.log(newQuery5)
     var query3 = false;
     var query4 = false;
-    if (activityType == '수정') {
+    var query5 = false;
+    if (activityType == '생성') {
         query3 = true;
         query4 = false;
+        query5 = false;
         session.run(newQuery3)
             .then(function (result) {
                 query3 = true;
                 query4 = false;
+                query5 = false;
                 query3resultNum = result.records.length;
                 if (query3resultNum != 0) {
                     result.records.forEach(function (record) {
@@ -1034,6 +1427,7 @@ router.post('/periodSearch', function (req, res) {
                     esession: session_value.getSession(),
                     query3: query3,
                     query4: query4,
+                    query5: query5,
                     names: nameArr,
                     affiliations: affiliationArr,
                     dataTypes3: dataTypeArr3,
@@ -1052,13 +1446,15 @@ router.post('/periodSearch', function (req, res) {
                 console.log(err);
             });
     }
-    else {
+    else if (activityType == '배포' || activityType == '판매' || activityType == '전달') {
+        query5 = false;
         query4 = true;
         query3 = false;
         session.run(newQuery4)
             .then(function (result) {
                 query3 = false;
                 query4 = true;
+                query5 = false;
                 query4resultNum = result.records.length;
                 if (query4resultNum != 0) {
                     result.records.forEach(function (record) {
@@ -1098,6 +1494,7 @@ router.post('/periodSearch', function (req, res) {
 
                     query3: query3,
                     query4: query4,
+                    query5: query5, 
                     s_names: s_nameArr,
                     s_affiliations: s_affiliationArr,
                     dataTypes4: dataTypeArr4,
@@ -1111,13 +1508,97 @@ router.post('/periodSearch', function (req, res) {
 
                     authenticated: true
                 });
-
+                
                 session.close();
             })
             .catch(function (err) {
                 console.log(err);
             });
-    }
+        }
+        else {
+            query5 = true;
+            query4 = false;
+            query3 = false;
+            session.run(newQuery5)
+                .then(function (result) {
+                    query3 = false;
+                    query4 = false;
+                    query5 = true;
+                    query5resultNum = result.records.length;
+                    if (query5resultNum != 0) {
+                        result.records.forEach(function (record) {
+    
+                            nameArr5.push(record._fields[0].properties.name)
+                            affiliationArr5.push(record._fields[0].properties.affiliation)
+        
+                            dataNameArr5.push(record._fields[1].properties.name)
+                            dataTypeArr5.push(record._fields[1].properties.d_type)
+                            deviceArr5.push(record._fields[1].properties.device)
+                            priceArr5.push(record._fields[1].properties.price)
+        
+                            activityTypeArr5.push(record._fields[2].properties.name)
+                            dateArr5.push(record._fields[2].properties.date)
+        
+                            nameArr6.push(record._fields[3].properties.name)
+                            affiliationArr6.push(record._fields[3].properties.affiliation)
+        
+                            dataNameArr6.push(record._fields[4].properties.name)
+                            dataTypeArr6.push(record._fields[4].properties.d_type)
+                            deviceArr6.push(record._fields[4].properties.device)
+                            priceArr6.push(record._fields[4].properties.price)
+                        });
+                    }
+                    else {
+                        nameArr5.push(' ')
+                        affiliationArr5.push(' ')
+        
+                        dataNameArr5.push(' ')
+                        dataTypeArr5.push(' ')
+                        deviceArr5.push(' ')
+                        priceArr5.push(' ')
+        
+                        activityTypeArr5.push(' ')
+                        dateArr5.push(' ')
+        
+                        nameArr6.push(' ')
+                        affiliationArr6.push(' ')
+        
+                        dataNameArr6.push(' ')
+                        dataTypeArr6.push(' ')
+                        deviceArr6.push(' ')
+                        priceArr6.push(' ')
+                    }
+                    res.render('search/searchPeriodResult.ejs', {
+                        esession: session_value.getSession(),
+                        query3: query3,
+                        query4: query4,
+                        query5: query5, 
+    
+                        names5 : nameArr5,
+                        affiliations5 : affiliationArr5,
+                        dataTypes5: dataTypeArr5,
+                        dataNames5: dataNameArr5,
+                        devices5: deviceArr5,
+                        prices5: priceArr5,
+                        activityTypes5: activityTypeArr5,
+                        dates5: dateArr5,
+
+                        names6 : nameArr6,
+                        affiliations6 : affiliationArr6,
+                        dataTypes6: dataTypeArr6,
+                        dataNames6: dataNameArr6,
+                        devices6: deviceArr6,
+                        prices6: priceArr6,
+    
+                        authenticated: true
+                    });
+                    
+                    session.close();
+                })
+                .catch(function (err) {
+                    console.log(err);
+                });
+        }
 });
 
 function getRuntime() {
