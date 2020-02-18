@@ -36,15 +36,6 @@
 
 <body style="overflow:auto">
 <% include ../header %>
-
-<!-- Carousel
-================================================== -->
-
-
-<!-- Marketing messaging and featurettes
-================================================== -->
-<!-- Wrap the rest of the page in another container to center all the content. -->
-
 <div class="container marketing">
 
     <!-- Three columns of text below the carousel -->
@@ -70,7 +61,9 @@
                                        style="width:300px;"></td>
                         </tr>
                         <tr>
-                            <td><br><a href="#" title="Execute" id="execute"><input class="btn btn-primary" value="검색"></a>
+                            <td><br>
+                                <a title="Execute" id="execute"></a>
+                                <input class="btn btn-primary" value="검색" id="keywordBtn" onclick="location.href='searchkey'">
                             </td>
                         </tr>
                     </table>
@@ -102,17 +95,11 @@
         </div>
     </div>
 </div><!-- /.container -->
-
+<div style="display: none;" id="keyResult"><%=data%></div>
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<script src="../../dist/js/bootstrap.min.js"></script>
-<!-- Just to make our placeholder images work. Don't actually copy the next line! -->
-<script src="../../assets/js/vendor/holder.js"></script>
-<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-<script src="../../assets/js/ie10-viewport-bug-workaround.js">
-</script>
 
 <script src="/scripts/codemirror.js"></script>
 <script src="/scripts/codemirror-cypher.js"></script>
@@ -127,6 +114,7 @@
 <script src="/scripts/config.js"></script>
 
 <script type="text/javascript">
+    var data = document.getElementById("keyResult").innerHTML;
     $(document).ready(function () {
         //todo dynamic configurationW
         var config = {}
@@ -134,7 +122,7 @@
         var connection = function () {
             return {url: Neo4j.DB_URL, user: Neo4j.DB_USR, pass: Neo4j.DB_PWD};
         }
-        new Cy2NeoD3(config, "graph", "datatable", cypher, "execute", connection, true);
+        new Cy2NeoD3(data, config, "graph", "datatable", cypher, "keywordBtn", connection, true);
     });
 </script>
 

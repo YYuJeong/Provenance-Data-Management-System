@@ -4,7 +4,6 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
-
 var esession = require('express-session');
 
 var indexRouter = require('./routes/index');
@@ -36,7 +35,6 @@ var deleteData = require('./routes/data/deleteData');
 var deleteDataResult = require('./routes/data/deleteDataResult');
 
 var fileuploadRouter = require('./routes/data/uploadData');
-
 
 var ejs = require('ejs');
 var app = express();
@@ -91,8 +89,6 @@ app.use('/data/uploadData', fileuploadRouter);
 //app.use('/upload', express.static('uploads'));
 
 app.set('scripts', express.static(path.join(__dirname , "scripts")))
-
-
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
