@@ -6,13 +6,14 @@ var esession = require('express-session');
 var session_value = require('./session');
 var Promise = require('promise');
 var neo4j = require('neo4j-driver').v1;
-let Neo4j = require('../public/scripts/config');
-var driver = neo4j.driver('bolt://localhost"7687', neo4j.auth.basic(Neo4j.DB_USR, Neo4j.DB_PWD));
-var session = driver.session();
 var multer = require("multer");
 var multiparty = require('multiparty');
 var fs = require('fs');
 const exec = require('child_process').exec;
+const neo4j_connection = require('../public/scripts/config');
+const db_info = neo4j_connection.Neo4j;
+const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic(db_info.DB_USR, db_info.DB_PWD));
+const session = driver.session();
 
 let s_nameArr = [];
 let s_affiliationArr = [];
