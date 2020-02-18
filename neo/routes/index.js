@@ -360,7 +360,7 @@ router.get('/viewPage', function (req, res) {
     if (user_gubun == '사용자') {
         console.log('사용자')
         session
-          .run("MATCH (p:Person)<-[:Own]-(d:Data)<-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' AND p.name = '" + user_name + "' RETURN p, d, ac LIMIT 10")
+          .run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' AND p.name = '" + user_name + "' RETURN p, d, ac LIMIT 10")
           .then(function (result) {
             result.records.forEach(function (record) {
 
@@ -378,7 +378,7 @@ router.get('/viewPage', function (req, res) {
               dateArr4.push(record._fields[2].properties.date)
             });
             
-            session.run("MATCH (p1:Person)<-[:Own]-(d1:Data)-[:Generate]-(ac:Activity)-[:Generate]-(d2:Data)-[:Own]-(p2:Person) WHERE ac.name IN ['배포', '판매', '전달'] AND p1.name = '" + user_name + "' OR p2.name = '" + user_name + "' RETURN p1, d1, ac, p2 LIMIT 10")
+            session.run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[s:Send]-(p1:Person), (ac:Activity)-[r:Receive]-(p2:Person) WHERE ac.name IN ['배포', '판매'] AND ( p1.name = '" + user_name + "' OR p2.name = '" + user_name + "' ) RETURN p1, d, ac, p2 LIMIT 10")
           .then(function (result) {
             result.records.forEach(function (record) {
 
@@ -399,7 +399,7 @@ router.get('/viewPage', function (req, res) {
               affiliationArr2.push(record._fields[3].properties.affiliation)
             });
 
-              session.run("MATCH (p1:Person)<-[:Own]-(d1:Data), (d1:Data)<-[:Generate]-(ac:Activity), (ac:Activity)-[:Act]-(p2:Person), (d2:Data)-[:Generate]-(ac:Activity) WHERE ac.name IN ['수정', '가공', '변환'] AND p1.name = '" + user_name + "' OR p2.name = '" + user_name + "' RETURN p1, d1, ac, p2, d2 LIMIT 10")
+              session.run("MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person) WHERE ac.name IN ['가공', '변환'] AND p.name = '" + user_name + "' RETURN p, d1, ac, d2 LIMIT 10")
               .then(function (result) {
                 result.records.forEach(function (record) {
     
@@ -416,13 +416,10 @@ router.get('/viewPage', function (req, res) {
                   activityTypeArr10.push(record._fields[2].properties.name)
                   dateArr10.push(record._fields[2].properties.date)
     
-                  nameArr11.push(record._fields[3].properties.name)
-                  affiliationArr11.push(record._fields[3].properties.affiliation)
-
-                  dataNameArr11.push(record._fields[1].properties.name)
-                  dataTypeArr11.push(record._fields[1].properties.d_type)
-                  deviceArr11.push(record._fields[1].properties.device)
-                  priceArr11.push(record._fields[1].properties.price)
+                  dataNameArr11.push(record._fields[3].properties.name)
+                  dataTypeArr11.push(record._fields[3].properties.d_type)
+                  deviceArr11.push(record._fields[3].properties.device)
+                  priceArr11.push(record._fields[3].properties.price)
                 });
                 res.render('viewPage', {
                     esession: session_value.getSession(),
