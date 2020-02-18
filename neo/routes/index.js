@@ -273,10 +273,15 @@ router.post('/dataAdd', function (req, res) {
     var r_name = req.body.r_name;
     var r_affiliation = req.body.r_affiliation;
 
+    var dataName2 = req.body.dataName2;
+    var price2 = req.body.price2;
+    var dataType2 = req.body.dataType2;
+    var device2 = req.body.device2;
 
-    if (activityType == '수정') {
+
+    if (r_name == '' && dataName2 == '') {
         session
-            .run("CREATE(a: Agent {name: '" + name + "' , affiliation: '" + affiliation + "' }) <- [:wasAttributedTo] - (e: Entity {name: '" + dataName + "' , price: '" + price + "' , d_type: '" + dataType + "', device: '" + device + "'})  - [:wasGeneratedBy] -> (ac:Activity {name: '" + activityType + "', date: '" + date + "'})")
+            .run("CREATE (d:Data {name: '" + dataName + "' , price: '" + price + "' , d_type: '" + dataType + "', device: '" + device + "'})-[:Generate]->(ac:Activity {name: '" + activityType + "', date: '" + date + "'})-[:Act]->(p:Person {name: '" + name + "' , affiliation: '" + affiliation + "' })")
             .then(function (result) {
                 session.close();
             })
@@ -284,9 +289,19 @@ router.post('/dataAdd', function (req, res) {
                 console.log(err);
             });
     }
-    else {
+    else if (r_name != '' && dataName2 == '') {
         session
-            .run("CREATE(a: Agent {name: '" + name + "' , affiliation: '" + affiliation + "'}) <- [:wasAttributedTo] - (e: Entity {name: '" + dataName + "' , price: '" + price + "' , d_type: '" + dataType + "', device: '" + device + "'})  - [:wasGeneratedBy] -> (ac:Activity {name: '" + activityType + "', date: '" + date + "' }) - [:wasAssociatedWith] -> (a1: Agent {name: '" + r_name + "' , affiliation: '" + r_affiliation + "' })")
+            .run("CREATE (d:Data {name: '" + dataName + "' , price: '" + price + "' , d_type: '" + dataType + "', device: '" + device + "'})-[:Generate]->(ac:Activity {name: '" + activityType + "', date: '" + date + "'})-[s:Send]->(p1:Person {name: '" + name + "' , affiliation: '" + affiliation + "' }), (ac)-[r:Receive]->(p2:Person {name: '" + r_name + "' , affiliation: '" + r_affiliation + "' })")
+            .then(function (result) {
+                session.close();
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+    }
+    else if (r_name == '' && dataName2 != '') {
+        session
+            .run("CREATE (d2:Data {name: '" + dataName + "' , price: '" + price + "' , d_type: '" + dataType + "', device: '" + device + "'})<-[:Generate]-(ac:Activity {name: '" + activityType + "', date: '" + date + "'})<-[:Generate]-(d1:Data {name: '" + dataName2 + "' , price: '" + price2 + "' , d_type: '" + dataType2 + "', device: '" + device2 + "'}), (ac)-[:Act]->(p:Person {name: '" + name + "' , affiliation: '" + affiliation + "' })")
             .then(function (result) {
                 session.close();
             })
