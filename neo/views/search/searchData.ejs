@@ -19,6 +19,25 @@
         }
     </style>
 
+<script type="text/javascript">
+
+    function checkForm(){
+    var dataName= get.ElementByName("dataName");
+    var price= get.ElementByName("price");
+    var dataType = document.getElementById('dataType').options[document.getElementById('device').selectedIndex].value;
+    var device = document.getElementById('device').options[document.getElementById('device').selectedIndex].value;
+    alert(device.value);
+    
+    if(dataName.value =="" && price.value =="" && dataType.value =="" && device.value =="") {
+        alert("아무것도 입력되지 않았습니다.");
+        return false; 
+    }
+    else {
+        document.search.submit();
+    }
+}
+</script>
+
 </head>
 
 <body style="overflow:auto">
@@ -38,7 +57,7 @@
                 <div class="container">
                     <div style="text-align: center; font-size:2em;">데이터로 검색<br><br>
                     </div>
-                    <form method="post" action="/DataSearch">
+                    <form method="post" action="/DataSearch" id = "search">
                         <div class="row">
                             <!--Start Here:)-->
                             <div style="margin:0 auto;">
@@ -90,7 +109,7 @@
                         <!--</form>-->  <!--디비연결전송오류로잠시위치이동-->
                         <div style="text-align: center;"><br><br>
                             <a href="/search/searchDataResult"><input class="btn btn-primary" type="submit" value="검색"
-                                                                      style="width:100px"></a>
+                                                                      style="width:100px" onclick="checkForm();"></a>
                             <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px"></a>
                         </div>
                     </form><!--원래폼위치-->

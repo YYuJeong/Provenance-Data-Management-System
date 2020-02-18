@@ -63,14 +63,14 @@
                         <thead>
                         <tr>
                             <th>#</th>
-                            <th>이 름</th>
+                            <th>소유자</th>
                             <th>소 속</th>
                             <th>데이터ID</th>
-                            <th>가격</th>
-                            <th>데이터 타입</th>
-                            <th>장치</th>
-                            <th>활동 타입</th>
-                            <th>날짜</th>
+                            <th>가 격</th>
+                            <th>데이터종류</th>
+                            <th>수집장치</th>
+                            <th>행 동</th>
+                            <th>날 짜</th>
                             <th>선택</th>
                         </tr>
                         </thead>
@@ -114,8 +114,6 @@
                 </div>
                 <br><br>
 
-
-                <br>
                 <div class="panel panel-default">
                     <!-- Default panel contents -->
                     <div class="panel-heading" style="font-size:1.4em;">검색 결과</div>
@@ -124,17 +122,17 @@
                         <thead>
                         <tr>
                             <th>#</th>
-                            <th>발송인</th>
-                            <th>소속</th>
+                            <th>소유자</th>
+                            <th>소 속</th>
                             <th>데이터ID</th>
-                            <th>가격</th>
-                            <th>데이터타입</th>
-                            <th>장치</th>
-                            <th>활동타입</th>
-                            <th>날짜</th>
-                            <th>수취인</th>
-                            <th>소속</th>
-                            <th>선택</th>
+                            <th>가 격</th>
+                            <th>데이터종류</th>
+                            <th>수집장치</th>
+                            <th>활 동</th>
+                            <th>날 짜</th>
+                            <th>행위자</th>
+                            <th>소 속</th>
+                            <th>선 택</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -180,8 +178,83 @@
                         <% } %>
                         </tbody>
                     </table>
-
                 </div>
+                <br><br>
+                <div class="panel panel-default">
+
+                    <div class="panel-heading" style="font-size:1.5em;">검색 결과</div>
+
+                    <!-- Table -->
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>소유자</th>
+                            <th>소 속</th>
+                            <th>데이터ID</th>
+                            <th>가 격</th>
+                            <th>데이터종류</th>
+                            <th>수집장치</th>
+                            <th>활 동</th>
+                            <th>날 짜</th>
+                            <th>데이터ID</th>
+                            <th>가 격</th>
+                            <th>데이터종류</th>
+                            <th>수집장치</th>
+                            <th>선 택</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <% for(var i = 0; i < names5.length; i++ ) { %>
+                            <tr>
+                                <th scope="row">
+                                    <%= (i + 1) %>
+                                </th>
+                                <td>
+                                    <%= names5[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= affiliations5[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= dataNames5[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= prices5[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= dataTypes5[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= devices5[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= activityTypes5[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= dates5[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= dataNames6[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= prices6[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= dataTypes6[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= devices6[i] %>
+                                </td>
+                                <td align=center id="td3">
+                                    <input type="checkbox" name="modifyCheck5" value=<%= i %>>
+                                </td>
+                            </tr>
+                        <% } %>
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
             <div style="text-align: center;"><br><br>
                 <a href="/data/modifyDataPage"><input class="btn btn-primary" onclick="javascript:btn()" type="submit"

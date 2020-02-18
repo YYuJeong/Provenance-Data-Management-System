@@ -83,7 +83,7 @@
         <div style="font-size:2em;">개인정보 이력 변경</div><br><br>
           <div class="fontSize">
             <form method="post" action="/dataModify" >
-              <div style="text-align: center; font-size:1.5em;">제공자<br></div>
+              <div style="text-align: center; font-size:1.5em;">소유자<br></div>
               <div class="row" >
                 <div style="margin:0 auto;">
                   <div class="input-group" style="width:30%; margin:0 auto;">
@@ -92,6 +92,8 @@
                       <input type="text"  value= <%= provInfo3[0] %> id="name" name="name" class="form-control" />
                     <% }else if(modiFlag4) { %>
                       <input type="text"  value= <%= provInfo4[0] %> id="name" name="name" class="form-control" />
+                    <% }else if(modiFlag5) { %>
+                      <input type="text"  value= <%= provInfo5[0] %> id="name" name="name" class="form-control" />
                     <% } %>
                   </div>
                   <br>
@@ -101,6 +103,8 @@
                       <input type="text" value= <%= provInfo3[1] %> id="affiliation" name="affiliation" class="form-control" />
                     <% }else if(modiFlag4) { %>
                       <input type="text" value= <%= provInfo4[1] %> id="affiliation" name="affiliation" class="form-control" />
+                    <% }else if(modiFlag5) { %>
+                      <input type="text" value= <%= provInfo5[1] %> id="affiliation" name="affiliation" class="form-control" />
                     <% } %> 
                   </div>
                 </div>
@@ -115,6 +119,8 @@
                       <input type="text" value= <%= provInfo3[4] %> id="dataName" name="dataName" class="form-control" />
                     <% }else if(modiFlag4) { %>
                       <input type="text" value= <%= provInfo4[4] %> id="dataName" name="dataName" class="form-control" />
+                    <% }else if(modiFlag5) { %>
+                      <input type="text" value= <%= provInfo5[2] %> id="dataName" name="dataName" class="form-control" />
                     <% } %>  
                   </div>
                   <br>
@@ -124,6 +130,8 @@
                       <input type="text" value= <%= provInfo3[5] %> id="price" name="price" class="form-control" />
                     <% }else if(modiFlag4) { %>
                       <input type="text" value= <%= provInfo4[6] %> id="price" name="price" class="form-control" />
+                    <% }else if(modiFlag5) { %>
+                      <input type="text" value= <%= provInfo5[5] %> id="price" name="price" class="form-control" />
                     <% } %>
                   </div>
                   <br>
@@ -142,6 +150,11 @@
                             <% var selected = ( provInfo4[5] == dataType[i] ) ? "selected" : ""; %>
                             <option value='<%= dataType[i] %>' <%=selected %>><%= dataType[i] %></option>
                             <% } %>
+                        <% }else if(modiFlag5) { %>
+                          <% for(var i = 0; i<dataType.length ; i++) { %>
+                            <% var selected = ( provInfo5[3] == dataType[i] ) ? "selected" : ""; %>
+                              <option value='<%= dataType[i] %>' <%=selected %>><%= dataType[i] %></option>
+                            <% } %>  
                         <% } %>
                       </select> 
                     </div>
@@ -162,6 +175,11 @@
                             <% var selected = ( provInfo4[7] == deviceType[i] ) ? "selected" : ""; %>
                             <option value='<%= deviceType[i] %>' <%=selected %>><%= deviceType[i] %></option>
                           <% } %>
+                        <% }else if(modiFlag5) { %>
+                          <% for(var i = 0; i<deviceType.length ; i++) { %>
+                            <% var selected = ( provInfo5[4] == deviceType[i] ) ? "selected" : ""; %>
+                            <option value='<%= deviceType[i] %>' <%=selected %>><%= deviceType[i] %></option>
+                            <% } %>
                         <% } %>  
                       </select> 
                     </div>
@@ -183,6 +201,11 @@
                       <% var selected = ( provInfo4[2] == activityType[i] ) ? "selected" : ""; %>
                       <option value='<%= activityType[i] %>' <%=selected %>><%= activityType[i] %></option>
                     <% } %>
+                  <% }else if(modiFlag5) { %>
+                    <% for(var i = 0; i<activityType.length ; i++) { %>
+                      <% var selected = ( provInfo5[6] == activityType[i] ) ? "selected" : ""; %>
+                      <option value='<%= activityType[i] %>' <%=selected %>><%= activityType[i] %></option>
+                  <% } %>
                   <% } %>
                 </select> 
               </div>
@@ -196,6 +219,8 @@
                       <input type="text" value= <%= provInfo3[3] %> class="form-control" name="date" />
                     <% }else if(modiFlag4) { %>  
                       <input type="text" value= <%= provInfo4[3] %> class="form-control" name="date" />
+                    <% }else if(modiFlag5) { %> 
+                      <input type="text" value= <%= provInfo5[7] %> class="form-control" name="date" />
                     <% } %>
                       <span class="input-group-addon add-on"><span class="glyphicon glyphicon-calendar"></span></span>
                     </div>
@@ -203,7 +228,9 @@
                 </div>
               </div>
               <br>
-              <div style="text-align: center; font-size:1.5em;">수신자<br></div>
+
+              <% if(modiFlag4) { %>
+              <div style="text-align: center; font-size:1.5em;">행위자<br></div>
               <div class="row" >
                 <div style="margin:0 auto;">
                 <div class="input-group" style="width:30%; margin:0 auto;">
@@ -212,6 +239,8 @@
                       <input type="text" id="r_name" name="r_name"  value = '' class="form-control" />
                     <% }else if(modiFlag4) { %>    
                       <input type="text" value= <%= provInfo4[8] %> id="r_name" name="r_name"  value = '' class="form-control" />
+                    <% }else if(modiFlag5) { %> 
+                      <input type="text" id="r_name" name="r_name"  value = '' class="form-control" />
                     <% } %>
                   </div>
                 <br>
@@ -221,11 +250,93 @@
                       <input type="text" id="r_affiliation" name="r_affiliation"  value = '' class="form-control" />
                     <% }else if(modiFlag4) { %>  
                      <input type="text" value= <%= provInfo4[9] %> id="r_affiliation" name="r_affiliation"  value = '' class="form-control" />
+                    <% }else if(modiFlag5) { %> 
+                      <input type="text" id="r_name" name="r_name"  value = '' class="form-control" />
+                    <% } %>
+                </div>
+                <% } %>
+
+                <% if(modiFlag5) { %>
+              <div style="text-align: center; font-size:1.5em;">데이터<br></div>
+              <div class="row" >
+                <div style="margin:0 auto;">
+                  <div class="input-group" style="width:30%; margin:0 auto;">
+                    <span class="input-group-addon">데이터ID</span>
+                    <% if(modiFlag3) { %>
+                      <input type="text" value= '' id="dataName2" name="dataName2" class="form-control" />
+                    <% }else if(modiFlag4) { %>
+                      <input type="text" value= '' id="dataName2" name="dataName2" class="form-control" />
+                    <% }else if(modiFlag5) { %>
+                      <input type="text" value= <%= provInfo5[8] %> id="dataName2" name="dataName2" class="form-control" />
+                    <% } %>  
+                  </div>
+                  <br>
+                  <div class="input-group" style="width:30%; margin:0 auto;">
+                    <span class="input-group-addon">가격</span>
+                    <% if(modiFlag3) { %>
+                      <input type="text" value= '' id="price2" name="price2" class="form-control" />
+                    <% }else if(modiFlag4) { %>
+                      <input type="text" value= '' id="price2" name="price2" class="form-control" />
+                    <% }else if(modiFlag5) { %>
+                      <input type="text" value= <%= provInfo5[11] %> id="price2" name="price2" class="form-control" />
                     <% } %>
                   </div>
+                  <br>
+                  <div class="form-group">
+                    <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
+                    <div class="col-sm-6 col-md-4">
+                      <select id="dataType2" name = "dataType2" class="form-control">
+                        <option value = ''>타입</option>
+                        <% if(modiFlag3) { %>
+                          <% for(var i = 0; i<dataType.length ; i++) { %>
+                            <% var selected = ( provInfo3[7] == dataType[i] ) ? "selected" : ""; %>
+                            <option value=''></option>
+                          <% } %>
+                        <% }else if(modiFlag4) { %>
+                          <% for(var i = 0; i<dataType.length ; i++) { %>
+                            <% var selected = ( provInfo4[5] == dataType[i] ) ? "selected" : ""; %>
+                            <option value=''></option>
+                            <% } %>
+                        <% }else if(modiFlag5) { %>
+                          <% for(var i = 0; i<dataType.length ; i++) { %>
+                            <% var selected = ( provInfo5[9] == dataType[i] ) ? "selected" : ""; %>
+                            <option value='<%= dataType[i] %>' <%=selected %>><%= dataType[i] %></option>
+                            <% } %>  
+                        <% } %>
+                      </select> 
+                    </div>
+                  </div>
+                  <br><br>
+                  <div class="form-group">
+                    <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
+                    <div class="col-sm-6 col-md-4">
+                      <select id="device2" name = "device2" class="form-control">
+                        <option value = ''>장치</option>
+                        <% if(modiFlag3) { %>
+                          <% for(var i = 0; i<deviceType.length ; i++) { %>
+                            <% var selected = ( provInfo3[6] == deviceType[i] ) ? "selected" : ""; %>
+                            <option value=''></option>
+                          <% } %>
+                        <% }else if(modiFlag4) { %>
+                          <% for(var i = 0; i<deviceType.length ; i++) { %>
+                            <% var selected = ( provInfo4[7] == deviceType[i] ) ? "selected" : ""; %>
+                            <option value=''></option>
+                          <% } %>
+                        <% }else if(modiFlag5) { %>
+                          <% for(var i = 0; i<deviceType.length ; i++) { %>
+                            <% var selected = ( provInfo5[10] == deviceType[i] ) ? "selected" : ""; %>
+                            <option value='<%= deviceType[i] %>' <%=selected %>><%= deviceType[i] %></option>
+                            <% } %>
+                        <% } %>  
+                      </select> 
+                    </div>
+                  </div>
+                </div>
               </div>
-              </div>
+              <% } %>
 
+              </div>
+              </div>
               <br><br>
               <input class="btn btn-primary" type="submit" value="변경" style="width:100px;" onClick="onAdd()">
               <input class="btn btn-light" type="reset" value="취소" style="width:100px;">
