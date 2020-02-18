@@ -1,93 +1,71 @@
-<!DOCTYPE html> 
-<html lang="ko"> 
+<!DOCTYPE html>
+<html lang="ko">
 
 <head>
-   <meta charset="UTF-8">
-   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-     <!-- favicon -->
-     <link rel="shortcut icon" href="/images/favicon.ico">
-     <link rel="icon" href="/images/favicon.ico">
-   
-   <title>이력 정보 관리시스템</title>
-   
-   <link href="http://bootstrapk.com/dist/css/bootstrap.min.css" rel="stylesheet">
-   <script src="http://bootstrapk.com/assets/js/ie-emulation-modes-warning.js"></script>
-   <link href="/public/stylesheets/carousel.css" rel="stylesheet">
-   <link href="https://fonts.googleapis.com/css?family=Do+Hyeon&display=swap" rel="stylesheet">
+    <% include ../before_loading.ejs %>
+    <title>이력 정보 관리시스템</title>
+    <style type="text/css">
+        body {
+            font-family: 'Do Hyeon';
+            color: #303030;
+            letter-spacing: 1px;
+        }
+    </style>
 
-   <style type="text/css">
-    body {
-      font-family: 'Do Hyeon';
-      color: #303030;
-      letter-spacing: 1px;
-      }
-  </style>
+    <script>
+        function upload() {
 
-<script>
-  function upload(){
+            //$("#upload").submit();
+            alert("csv 형식의 파일만 업로드 가능합니다.");
+            //location.href="/data/uploadData";
 
-    //$("#upload").submit();
-    alert("csv 형식의 파일만 업로드 가능합니다.");
-    //location.href="/data/uploadData";
+        };
 
-  };
+    </script>
 
-</script>
-   
 
 </head>
 
 <body style="overflow:auto">
 <% include ../header %>
 
-    <div class="container marketing">
+<div class="container marketing">
 
-        <!-- Three columns of text below the carousel -->
-        <%include ../menu%>
-          <hr class="featurette-divider">
-          <div class="container" style="display: inline-block;text-align: center;">
-              <%if(esession.authenticated == false){%>
-                  <% include ../notAuthenticated.ejs %>
-              <% }else{%>
-                <div class="jumbotron">
+    <!-- Three columns of text below the carousel -->
+    <% include ../menu %>
+    <hr class="featurette-divider">
+    <div class="container" style="display: inline-block;text-align: center;">
+        <% if(esession.authenticated == false){ %>
+            <% include ../notAuthenticated.ejs %>
+        <% }else{ %>
+            <div class="jumbotron">
                 <div style="text-align: center; font-size:2em;">개인정보 이력 일괄입력(파일)<br><br>
                 </div>
-  
-          <!-- START THE FEATURETTES -->
-            <div style="width:17%; margin:0 auto;">
-              <form method="post" enctype="multipart/form-data" action="/data/uploadData" id="upload">
-                <input type="file" name="uploadFile" /><br><br>
-            </div>
-            <div>
-                <input class="btn btn-primary" type="submit" value="확인" style="width:100px;" onClick="upload()">
-                <input class="btn btn-light" type="reset" value="취소" style="width:100px">
-              </form>
-            </div>
+
+                <!-- START THE FEATURETTES -->
+                <div style="width:17%; margin:0 auto;">
+                    <form method="post" enctype="multipart/form-data" action="/data/uploadData" id="upload">
+                        <input type="file" name="uploadFile"/><br><br>
+                    </form>
+                </div>
+                <div>
+                    <input class="btn btn-primary" type="submit" value="확인" style="width:100px;" onClick="upload()">
+                    <input class="btn btn-light" type="reset" value="취소" style="width:100px">
+                    </form>
+                </div>
 
             </div><!-- /.container -->
-              <%}%>
-          </div>
-        </div>
-        <hr class="featurette-divider">
-      </div>
-  
-  
-      <!-- Bootstrap core JavaScript
-      ================================================== -->
-      <!-- Placed at the end of the document so the pages load faster -->
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-      <script src="../../dist/js/bootstrap.min.js"></script>
-      <!-- Just to make our placeholder images work. Don't actually copy the next line! -->
-      <script src="../../assets/js/vendor/holder.js"></script>
-      <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-      <script src="../../assets/js/ie10-viewport-bug-workaround.js">
-      </script>
-    
+        <% } %>
+    </div>
+</div>
+<hr class="featurette-divider">
+</div>
 
 
-
-    
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 
 </body>
 </html>

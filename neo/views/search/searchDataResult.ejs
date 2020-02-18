@@ -1,93 +1,83 @@
-<!DOCTYPE html> 
-<html lang="ko"> 
+<!DOCTYPE html>
+<html lang="ko">
 
 <head>
-   <meta charset="UTF-8">
-   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-     <!-- favicon -->
-     <link rel="shortcut icon" href="/images/favicon.ico">
-     <link rel="icon" href="/images/favicon.ico">
-     
-   <title>이력 정보 관리시스템</title>
-   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-   <link href="https://fonts.googleapis.com/css?family=Do+Hyeon&display=swap" rel="stylesheet">
+    <% include ../before_loading.ejs %>
+    <title>이력 정보 관리시스템</title>
 
-   <style type="text/css"> 
-    .input-group-addon.primary {
-      color: rgb(255, 255, 255);
-      background-color: rgb(50, 118, 177);
-      border-color: rgb(40, 94, 142);
-      }
+    <style type="text/css">
+        .input-group-addon.primary {
+            color: rgb(255, 255, 255);
+            background-color: rgb(50, 118, 177);
+            border-color: rgb(40, 94, 142);
+        }
 
-    body {
-      font-family: 'Do Hyeon';
-      color: #303030;
-      letter-spacing: 1px;
-      }
+        body {
+            font-family: 'Do Hyeon';
+            color: #303030;
+            letter-spacing: 1px;
+        }
 
-    th {
-      text-align: center;
-      }
-   </style>
+        th {
+            text-align: center;
+        }
+    </style>
 
 </head>
 
 <body style="overflow:auto">
 <% include ../header %>
 
-      <div class="container marketing">
-        <!-- Three columns of text below the carousel -->
-      
-              <div class="container marketing">
-                  <%include ../menu%>
+<div class="container marketing">
+    <!-- Three columns of text below the carousel -->
 
-                    <hr class="featurette-divider">
-                    <div class="jumbotron">
-                        <div class="container">
-                          <div style="text-align: center; font-size:2em;">데이터로 검색<br><br>
-                            </div>
-                        <form method="post" action="/DataSearch">
-                        <div class="row" >
-                            <!--Start Here:)-->
+    <div class="container marketing">
+        <% include ../menu %>
+
+        <hr class="featurette-divider">
+        <div class="jumbotron">
+            <div class="container">
+                <div style="text-align: center; font-size:2em;">데이터로 검색<br><br>
+                </div>
+                <form method="post" action="/DataSearch">
+                    <div class="row">
+                        <!--Start Here:)-->
                         <div style="margin:0 auto;">
                             <div class="input-group" style="width:30%; margin:0 auto;">
                                 <span class="input-group-addon">데이터</span>
-                                <input type="text" id="dataName" name="dataName"  value = '' class="form-control" />
+                                <input type="text" id="dataName" name="dataName" value='' class="form-control"/>
                             </div>
                             <br>
                             <div class="input-group" style="width:30%; margin:0 auto;">
                                 <span class="input-group-addon">가격</span>
-                                <input type="text" id="price" name="price"  value = '' class="form-control" />
+                                <input type="text" id="price" name="price" value='' class="form-control"/>
                             </div>
                             <br>
                             <div class="form-group">
                                 <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
                                 <div class="col-sm-6 col-md-4">
-                                  <select id="dataType" name = "dataType" class="form-control">
-                                    <option value = ''>타입</option>
-                                    <option value="건강데이터">건강</option>
-                                    <option value="의료데이터">의료</option>
-                                    <option value="위치데이터">위치</option>
-                                    <option value="음성데이터">음성</option>
-                                  </select> 
+                                    <select id="dataType" name="dataType" class="form-control">
+                                        <option value=''>타입</option>
+                                        <option value="건강데이터">건강</option>
+                                        <option value="의료데이터">의료</option>
+                                        <option value="위치데이터">위치</option>
+                                        <option value="음성데이터">음성</option>
+                                    </select>
                                 </div>
                             </div>
                             <br><br>
                             <div class="form-group">
                                 <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
                                 <div class="col-sm-6 col-md-4">
-                                  <select id="device" name = "device" class="form-control">
-                                    <option value = ''>장치</option>
-                                    <option value="AI스피커">AI스피커</option>
-                                    <option value="T머니">T머니</option>
-                                    <option value="레일플러스">레일플러스</option>
-                                    <option value="스마트워치">스마트워치</option>
-                                    <option value="페이션트모니터">페이션트모니터</option>
-                                    <option value="캐시비">캐시비</option>
-                                  </select> 
+                                    <select id="device" name="device" class="form-control">
+                                        <option value=''>장치</option>
+                                        <option value="AI스피커">AI스피커</option>
+                                        <option value="T머니">T머니</option>
+                                        <option value="레일플러스">레일플러스</option>
+                                        <option value="스마트워치">스마트워치</option>
+                                        <option value="페이션트모니터">페이션트모니터</option>
+                                        <option value="캐시비">캐시비</option>
+                                    </select>
                                 </div>
                             </div>
 
@@ -97,153 +87,236 @@
                                 <input type="text" aria-label="price2" class="form-control" />
                             </div>-->
                         </div>
-                        </div>
-    
-                        <div style="text-align: center;"><br><br>
-                            <a href="/search/searchDataResult"><input class="btn btn-primary" type="submit" value="검색" style="width:100px"></a>
-                            <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px"></a>
-                        </div> 
-                      </form>
+                    </div>
+
+                    <div style="text-align: center;"><br><br>
+                        <a href="/search/searchDataResult"><input class="btn btn-primary" type="submit" value="검색"
+                                                                  style="width:100px"></a>
+                        <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px"></a>
+                    </div>
+                </form>
             </div>
         </div>
-      <hr class="featurette-divider">
-      <div class="jumbotron">
-        <div class="container" style="display: inline-block;text-align: center;">
-              <!-- Default panel contents -->
-              <% if(authenticated == false){ %>
-                <% include ../notAuthenticated %>
-              <% }
-              else {%>
-            <div class="jumbotron">
-            <div class="panel panel-default">
-              <div class="panel-heading" style="font-size:1.4em;">데이터 검색 결과</div>
-            <!-- Table -->
+        <hr class="featurette-divider">
+        <div class="jumbotron">
+            <div class="container" style="display: inline-block;text-align: center;">
+                <!-- Default panel contents -->
+                <% if(authenticated == false){ %>
+                    <% include ../notAuthenticated %>
+                <% }
+                else { %>
+                <div class="jumbotron">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" style="font-size:1.5em;">데이터 검색 결과</div>
+                        <!-- Table -->
 
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>이 름</th>
-                  <th>소 속</th>
-                  <th>데이터ID</th>
-                  <th>가격</th>
-                  <th>데이터 타입</th>
-                  <th>장치</th>
-                  <th>활동 타입</th>
-                  <th>날짜</th>
-                </tr>
-              </thead>
-              <tbody>
-                <% for(var i=0; i<names.length; i++ ) { %>
-                <tr>
-                  <th scope="row">
-                      <%= (i+1) %>
-                  </th>
-                  <td>
-                      <%= names[i] %>
-                  </td>
-                  <td align = center>
-                    <%= affiliations[i] %>
-                  </td>
-                  <td align = center>
-                    <%= dataNames3[i]  %>
-                  </td>
-                  <td align = center>
-                    <%= prices3[i] %>
-                  </td>
-                  <td align = center>
-                    <%= dataTypes3[i] %>
-                  </td>
-                  <td align = center>
-                    <%= devices3[i] %>
-                  </td>
-                  <td align = center>
-                    <%= activityTypes3[i] %>
-                  </td>
-                  <td align = center>
-                    <%= dates3[i] %>
-                  </td>
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>소유자</th>
+                                <th>소 속</th>
+                                <th>데이터ID</th>
+                                <th>가격</th>
+                                <th>데이터 종류</th>
+                                <th>수집 장치</th>
+                                <th>행동</th>
+                                <th>날짜</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <% for(var i = 0; i < names.length; i++ ) { %>
+                                <tr>
+                                    <th scope="row">
+                                        <%= (i + 1) %>
+                                    </th>
+                                    <td>
+                                        <%= names[i] %>
+                                    </td>
+                                    <td align=center>
+                                        <%= affiliations[i] %>
+                                    </td>
+                                    <td align=center>
+                                        <%= dataNames3[i] %>
+                                    </td>
+                                    <td align=center>
+                                        <%= prices3[i] %>
+                                    </td>
+                                    <td align=center>
+                                        <%= dataTypes3[i] %>
+                                    </td>
+                                    <td align=center>
+                                        <%= devices3[i] %>
+                                    </td>
+                                    <td align=center>
+                                        <%= activityTypes3[i] %>
+                                    </td>
+                                    <td align=center>
+                                        <%= dates3[i] %>
+                                    </td>
 
-                </tr>
-                <% } %>
-              </tbody>
-            </table>
+                                </tr>
+                            <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                    <br><br>
+
+                    <div class="panel panel-default">
+
+                        <div class="panel-heading" style="font-size:1.5em;">데이터 검색 결과</div>
+
+                        <!-- Table -->
+
+
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>소유자</th>
+                                <th>소 속</th>
+                                <th>데이터ID</th>
+                                <th>가격</th>
+                                <th>데이터 종류</th>
+                                <th>수집 장치</th>
+                                <th>활동</th>
+                                <th>날짜</th>
+                                <th>행위자</th>
+                                <th>소 속</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <% for(var i = 0; i < s_names.length; i++ ) { %>
+                                <tr>
+                                    <th scope="row">
+                                        <%= (i + 1) %>
+                                    </th>
+                                    <td>
+                                        <%= s_names[i] %>
+                                    </td>
+                                    <td align=center>
+                                        <%= s_affiliations[i] %>
+                                    </td>
+                                    <td align=center>
+                                        <%= dataNames4[i] %>
+                                    </td>
+                                    <td align=center>
+                                        <%= prices4[i] %>
+                                    </td>
+                                    <td align=center>
+                                        <%= dataTypes4[i] %>
+                                    </td>
+                                    <td align=center>
+                                        <%= devices4[i] %>
+                                    </td>
+                                    <td align=center>
+                                        <%= activityTypes4[i] %>
+                                    </td>
+                                    <td align=center>
+                                        <%= dates4[i] %>
+                                    </td>
+                                    <td align=center>
+                                        <%= r_names[i] %>
+                                    </td>
+                                    <td align=center>
+                                        <%= r_affiliations[i] %>
+                                    </td>
+                                </tr>
+                            <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <br><br>
+
+                    <div class="panel panel-default">
+
+                        <div class="panel-heading" style="font-size:1.5em;">데이터 검색 결과</div>
+
+                        <!-- Table -->
+                        <table class="table table-striped" style="font-size:0.5em;">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>소유자</th>
+                                <th>소 속</th>
+                                <th>데이터ID</th>
+                                <th>가격</th>
+                                <th>데이터 종류</th>
+                                <th>수집 장치</th>
+                                <th>활동</th>
+                                <th>날짜</th>
+                                <th>행위자</th>
+                                <th>소 속</th>
+                                <th>데이터ID</th>
+                                <th>가격</th>
+                                <th>데이터 종류</th>
+                                <th>수집 장치</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <% for(var i = 0; i < s_names.length; i++ ) { %>
+                                <tr>
+                                    <th scope="row">
+                                        <%= (i + 1) %>
+                                    </th>
+                                    <td>
+                                        <%= names5[i] %>
+                                    </td>
+                                    <td align=center>
+                                        <%= affiliations5[i] %>
+                                    </td>
+                                    <td align=center>
+                                        <%= dataNames5[i] %>
+                                    </td>
+                                    <td align=center>
+                                        <%= prices5[i] %>
+                                    </td>
+                                    <td align=center>
+                                        <%= dataTypes5[i] %>
+                                    </td>
+                                    <td align=center>
+                                        <%= devices5[i] %>
+                                    </td>
+                                    <td align=center>
+                                        <%= activityTypes5[i] %>
+                                    </td>
+                                    <td align=center>
+                                        <%= dates5[i] %>
+                                    </td>
+                                    <td align=center>
+                                        <%= names6[i] %>
+                                    </td>
+                                    <td align=center>
+                                        <%= affiliations6[i] %>
+                                    </td>
+                                    <td align=center>
+                                        <%= dataNames6[i] %>
+                                    </td>
+                                    <td align=center>
+                                        <%= prices6[i] %>
+                                    </td>
+                                    <td align=center>
+                                        <%= dataTypes6[i] %>
+                                    </td>
+                                    <td align=center>
+                                        <%= devices6[i] %>
+                                    </td>
+                                </tr>
+                            <% } %>
+                            </tbody>
+                        </table>
+                        <% } %>
+                    </div>
+                </div>
+
+                </div>
+
             </div>
-            <br><br>
-
-            <div class="panel panel-default">
- 
-              <div class="panel-heading" style="font-size:1.4em;">데이터 검색 결과</div>
-
-            <!-- Table -->
-
-            
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>발송인</th>
-                  <th>소 속</th>
-                  <th>데이터ID</th>
-                  <th>가격</th>
-                  <th>데이터 타입</th>
-                  <th>장치</th>
-                  <th>활동 타입</th>
-                  <th>날짜</th>
-                  <th>수취인</th>
-                  <th>소 속</th>
-                </tr>
-              </thead>
-              <tbody>
-                <% for(var i=0; i<s_names.length; i++ ) { %>
-                <tr>
-                  <th scope="row">
-                      <%= (i+1) %>
-                  </th>
-                  <td>
-                      <%= s_names[i] %>
-                  </td>
-                  <td align = center>
-                    <%= s_affiliations[i] %>
-                  </td>
-                  <td align = center>
-                    <%= dataNames4[i]  %>
-                  </td>
-                  <td align = center>
-                    <%= prices4[i] %>
-                  </td>
-                  <td align = center>
-                    <%= dataTypes4[i] %>
-                  </td>
-                  <td align = center>
-                    <%= devices4[i] %>
-                  </td>
-                  <td align = center>
-                    <%= activityTypes4[i] %>
-                  </td>
-                  <td align = center>
-                    <%= dates4[i] %>
-                  </td>
-                  <td align = center>
-                    <%= r_names[i] %>
-                  </td>
-                  <td align = center>
-                    <%= r_affiliations[i] %>
-                  </td>
-                </tr>
-                <% } %>
-              </tbody>
-            </table>
-            <%}%>
-        </div>  
-
-        </div>
-        
-      </div>
-      <!-- /END THE FEATURETTES -->
-      <!-- FOOTER -->
-      <footer>
-      </footer>
-    <!-- /.container -->
+            <!-- /END THE FEATURETTES -->
+            <!-- FOOTER -->
+            <footer>
+            </footer>
+            <!-- /.container -->
 </body>
 </html>

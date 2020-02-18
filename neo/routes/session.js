@@ -1,6 +1,4 @@
-var express = require('express');
-var router = express.Router();
-var session_info ={
+let session_info ={
     email: '',
     user: '',
     gubun: '',
@@ -20,7 +18,6 @@ function setSession(email, user, gubun, password, authenticated, message){
 }
 
 function getSession(){
-    console.log(session_info)
     return session_info;
 }
 

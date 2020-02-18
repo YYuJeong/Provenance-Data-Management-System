@@ -1,77 +1,68 @@
-<!DOCTYPE html> 
-<html lang="ko"> 
+<!DOCTYPE html>
+<html lang="ko">
 
 <head>
-   <meta charset="UTF-8">
-   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-     <!-- favicon -->
-     <link rel="shortcut icon" href="/images/favicon.ico">
-     <link rel="icon" href="/images/favicon.ico">
-     
-   <title>이력 정보 관리시스템t</title>
-   <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-<link href="https://fonts.googleapis.com/css?family=Do+Hyeon&display=swap" rel="stylesheet">
+    <% include ../before_loading.ejs %>
+    <title>이력 정보 관리시스템t</title>
 
-<style type="text/css"> 
-    body {
-      font-family: 'Do Hyeon';
-      color: #303030;
-      letter-spacing: 1px;
-    }
-</style>
+    <style type="text/css">
+        body {
+            font-family: 'Do Hyeon';
+            color: #303030;
+            letter-spacing: 1px;
+        }
+    </style>
 
 </head>
 
 <body style="overflow:auto">
 <% include ../header %>
 
-      <div class="container marketing">
-        <!-- Three columns of text below the carousel -->
-              <div class="container marketing">
-                  <%include ../menu%>
+<div class="container marketing">
+    <!-- Three columns of text below the carousel -->
+    <div class="container marketing">
+        <% include ../menu %>
 
-                    <hr class="featurette-divider">
-                    <div class="jumbotron">
-                            <%if(esession.authenticated == false){%>
-                                <% include ../notAuthenticated.ejs %>
-                            <% }else{%>
-                        <div class="container">
-                            <div style="text-align: center; font-size:2em;">사용자로 검색<br><br>
-                            </div>
-                        <form method="post" action="/nameSearch">
+        <hr class="featurette-divider">
+        <div class="jumbotron">
+            <% if(esession.authenticated == false){ %>
+                <% include ../notAuthenticated.ejs %>
+            <% }else{ %>
+                <div class="container">
+                    <div style="text-align: center; font-size:2em;">사용자로 검색<br><br>
+                    </div>
+                    <form method="post" action="/nameSearch">
 
-                        <div class="row" >
+                        <div class="row">
                             <!--Start Here:)-->
-                        <div style="margin:0 auto;">
-                            <div class="input-group" style="width:30%; margin:0 auto;">
-                                <span class="input-group-addon">이름</span>
-                                <input type="text" id="name" name="name" class="form-control" />
-                                <!--placeholder="이름을 입력해주세요"-->
-                            </div>
-                            <br>
-                            <div class="input-group" style="width:30%; margin:0 auto;">
-                                <span class="input-group-addon">소속</span>
-                                <input type="text" id="affiliation" name="affiliation" class="form-control" />
+                            <div style="margin:0 auto;">
+                                <div class="input-group" style="width:30%; margin:0 auto;">
+                                    <span class="input-group-addon">이름</span>
+                                    <input type="text" id="name" name="name" class="form-control"/>
+                                    <!--placeholder="이름을 입력해주세요"-->
+                                </div>
+                                <br>
+                                <div class="input-group" style="width:30%; margin:0 auto;">
+                                    <span class="input-group-addon">소속</span>
+                                    <input type="text" id="affiliation" name="affiliation" class="form-control"/>
+                                </div>
                             </div>
                         </div>
-                        </div>
-                      <!--디비연결전송오류로잠시위치이동-->
+                        <!--디비연결전송오류로잠시위치이동-->
                         <div style="text-align: center;"><br><br>
-                            <a href="/search/searchNameResult"><input class="btn btn-primary" type="submit" value="검색" style="width:100px"></a>
+                            <a href="/search/searchNameResult"><input class="btn btn-primary" type="submit" value="검색"
+                                                                      style="width:100px"></a>
                             <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px"></a>
-                        </div> 
+                        </div>
                         <!--원래폼위치-->
                     </form>
-            </div>
-                            <%}%>
+                </div>
+            <% } %>
         </div>
-      <hr class="featurette-divider">
-      <!-- FOOTER -->
-      <footer>
-      </footer>
-    <!-- /.container -->
+        <hr class="featurette-divider">
+        <!-- FOOTER -->
+        <footer>
+        </footer>
+        <!-- /.container -->
 </body>
 </html>

@@ -1,112 +1,103 @@
-<!DOCTYPE html> 
-<html lang="ko"> 
+<!DOCTYPE html>
+<html lang="ko">
 
 <head>
-   <meta charset="UTF-8">
-   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-     <!-- favicon -->
-     <link rel="shortcut icon" href="/images/favicon.ico">
-     <link rel="icon" href="/images/favicon.ico">
-     
-   <title>이력 정보 관리시스템</title>
-   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-   <link href="https://fonts.googleapis.com/css?family=Do+Hyeon&display=swap" rel="stylesheet">
+    <% include ../before_loading.ejs %>
+    <title>이력 정보 관리시스템</title>
 
-   <style type="text/css"> 
-    .input-group-addon.primary {
-      color: rgb(255, 255, 255);
-      background-color: rgb(50, 118, 177);
-      border-color: rgb(40, 94, 142);
-      }
+    <style type="text/css">
+        .input-group-addon.primary {
+            color: rgb(255, 255, 255);
+            background-color: rgb(50, 118, 177);
+            border-color: rgb(40, 94, 142);
+        }
 
-    body {
-      font-family: 'Do Hyeon';
-      color: #303030;
-      letter-spacing: 1px;
-     }
-   </style>
+        body {
+            font-family: 'Do Hyeon';
+            color: #303030;
+            letter-spacing: 1px;
+        }
+    </style>
 
 </head>
 
 <body style="overflow:auto">
 <% include ../header %>
 
-      <div class="container marketing">
-        <!-- Three columns of text below the carousel -->
-  
-              <div class="container marketing">
-                  <%include ../menu%>
+<div class="container marketing">
+    <!-- Three columns of text below the carousel -->
 
-                    <hr class="featurette-divider">
-                    <div class="jumbotron">
-                        <%if(esession.authenticated == false){%>
-                            <% include ../notAuthenticated.ejs %>
-                        <% }else{%>
-                        <div class="container">
-                          <div style="text-align: center; font-size:2em;">데이터로 검색<br><br>
-                            </div>
-                        <form  method="post" action="/DataSearch">
-                        <div class="row" >
+    <div class="container marketing">
+        <% include ../menu %>
+
+        <hr class="featurette-divider">
+        <div class="jumbotron">
+            <% if(esession.authenticated == false){ %>
+                <% include ../notAuthenticated.ejs %>
+            <% }else{ %>
+                <div class="container">
+                    <div style="text-align: center; font-size:2em;">데이터로 검색<br><br>
+                    </div>
+                    <form method="post" action="/DataSearch">
+                        <div class="row">
                             <!--Start Here:)-->
-                        <div style="margin:0 auto;">
-                            <div class="input-group" style="width:30%; margin:0 auto;">
-                                <span class="input-group-addon">데이터ID</span>
-                                <input type="text" id="dataName" name="dataName" value = '' class="form-control" />
-                            </div>
-                            <br>
-                            <div class="input-group" style="width:30%; margin:0 auto;">
-                                <span class="input-group-addon">가격</span>
-                                <input type="text" id="price" name="price" value = '' class="form-control" />
-                            </div>
-                            <br>
-                            <div class="form-group">
-                                <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
-                                <div class="col-sm-6 col-md-4">
-                                  <select id="dataType" name = "dataType" class="form-control">
-                                    <option value = ''>타입</option>
-                                    <option value="건강데이터">건강</option>
-                                    <option value="의료데이터">의료</option>
-                                    <option value="위치데이터">위치</option>
-                                    <option value="음성데이터">음성</option>
-                                  </select> 
+                            <div style="margin:0 auto;">
+                                <div class="input-group" style="width:30%; margin:0 auto;">
+                                    <span class="input-group-addon">데이터ID</span>
+                                    <input type="text" id="dataName" name="dataName" value='' class="form-control"/>
                                 </div>
-                            </div>
-                            <br><br>
-                            <div class="form-group">
-                                <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
-                                <div class="col-sm-6 col-md-4">
-                                  <select id="device" name = "device" class="form-control">
-                                    <option value = ''>장치</option>
-                                    <option value="AI스피커">AI스피커</option>
-                                    <option value="T머니">T머니</option>
-                                    <option value="레일플러스">레일플러스</option>
-                                    <option value="스마트워치">스마트워치</option>
-                                    <option value="페이션트모니터">페이션트모니터</option>
-                                    <option value="캐시비">캐시비</option>
-                                  </select> 
+                                <br>
+                                <div class="input-group" style="width:30%; margin:0 auto;">
+                                    <span class="input-group-addon">가격</span>
+                                    <input type="text" id="price" name="price" value='' class="form-control"/>
                                 </div>
-                            </div>
+                                <br>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
+                                    <div class="col-sm-6 col-md-4">
+                                        <select id="dataType" name="dataType" class="form-control">
+                                            <option value=''>데이터 종류</option>
+                                            <option value="건강데이터">건강</option>
+                                            <option value="의료데이터">의료</option>
+                                            <option value="위치데이터">위치</option>
+                                            <option value="음성데이터">음성</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <br><br>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
+                                    <div class="col-sm-6 col-md-4">
+                                        <select id="device" name="device" class="form-control">
+                                            <option value=''>수집 장치</option>
+                                            <option value="AI스피커">AI스피커</option>
+                                            <option value="T머니">T머니</option>
+                                            <option value="레일플러스">레일플러스</option>
+                                            <option value="스마트워치">스마트워치</option>
+                                            <option value="페이션트모니터">페이션트모니터</option>
+                                            <option value="캐시비">캐시비</option>
+                                        </select>
+                                    </div>
+                                </div>
 
-                            <!--<div class="input-group" style="width:30%; margin:0 auto;">
-                                <span class="input-group-addon">&nbsp 가격 &nbsp </span>
-                                <input type="text" aria-label="price1" class="form-control" />
-                                <input type="text" aria-label="price2" class="form-control" />
-                            </div>-->
+                                <!--<div class="input-group" style="width:30%; margin:0 auto;">
+                                    <span class="input-group-addon">&nbsp 가격 &nbsp </span>
+                                    <input type="text" aria-label="price1" class="form-control" />
+                                    <input type="text" aria-label="price2" class="form-control" />
+                                </div>-->
+                            </div>
                         </div>
-                        </div>
-                      <!--</form>-->  <!--디비연결전송오류로잠시위치이동-->
+                        <!--</form>-->  <!--디비연결전송오류로잠시위치이동-->
                         <div style="text-align: center;"><br><br>
-                            <a href="/search/searchDataResult"><input class="btn btn-primary" type="submit" value="검색" style="width:100px"></a>
+                            <a href="/search/searchDataResult"><input class="btn btn-primary" type="submit" value="검색"
+                                                                      style="width:100px"></a>
                             <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px"></a>
-                        </div> 
-                      </form><!--원래폼위치-->      
-            </div>
-                        <%}%>
+                        </div>
+                    </form><!--원래폼위치-->
+                </div>
+            <% } %>
+        </div>
+        <hr class="featurette-divider">
     </div>
-    <hr class="featurette-divider">
-  </div>
 </body>
 </html>

@@ -1,26 +1,15 @@
-<!DOCTYPE html> 
-<html lang="ko"> 
+<!DOCTYPE html>
+<html lang="ko">
 
 <head>
-   <meta charset="UTF-8">
-   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-     <!-- favicon -->
-     <link rel="shortcut icon" href="/images/favicon.ico">
-     <link rel="icon" href="/images/favicon.ico">
-   
-   <title>이력 정보 관리시스템</title>
-   
-   <link href="http://bootstrapk.com/dist/css/bootstrap.min.css" rel="stylesheet">
-   <script src="http://bootstrapk.com/assets/js/ie-emulation-modes-warning.js"></script>
-   <link href="/public/stylesheets/carousel.css" rel="stylesheet">
-   <link href="https://fonts.googleapis.com/css?family=Do+Hyeon&display=swap" rel="stylesheet">
+    <% include ../before_loading.ejs %>
+    <title>이력 정보 관리시스템</title>
 
-   <style type="text/css">
-    body {
-        font-family: 'Do Hyeon';
-        color: #303030;
-        letter-spacing: 1px;
+    <style type="text/css">
+        body {
+            font-family: 'Do Hyeon';
+            color: #303030;
+            letter-spacing: 1px;
         }
     </style>
 
@@ -29,58 +18,52 @@
 <body style="overflow:auto">
 <% include ../header %>
 
+<!-- Carousel
+================================================== -->
 
-    <!-- Carousel
-    ================================================== -->
 
+<!-- Marketing messaging and featurettes
+================================================== -->
+<!-- Wrap the rest of the page in another container to center all the content. -->
 
-    <!-- Marketing messaging and featurettes
-    ================================================== -->
-    <!-- Wrap the rest of the page in another container to center all the content. -->
+<div class="container marketing">
 
-    <div class="container marketing">
+    <!-- Three columns of text below the carousel -->
+    <% include ../menu %>
 
-        <!-- Three columns of text below the carousel -->
-        <%include ../menu%>
-
-        <hr class="featurette-divider">
+    <hr class="featurette-divider">
+    <br><br>
+    <!-- START THE FEATURETTES -->
+    <div align=center>
+        <% if(esession.authenticated == false){ %>
+            <% include ../notAuthenticated.ejs %>
+        <% }else{ %>
+        <a href="/search/searchData">
+            <button type="button" class="btn btn-primary btn-lg btn-block" style="width:300px;">데이터로 검색</button>
+        </a>
         <br><br>
-        <!-- START THE FEATURETTES -->
-        <div align = center>
-            <%if(esession.authenticated == false){%>
-                <% include ../notAuthenticated.ejs %>
-            <% }else{%>
-        <a href = "/search/searchData"><button type="button" class="btn btn-primary btn-lg btn-block" style="width:300px;">데이터로 검색</button></a>
-        <br><br>
-        <%if(esession.gubun =='관리자'){%>
-            <a href = "/search/searchName"><button type="button" class="btn btn-default btn-lg btn-block" style="width:300px;">사용자로 검색</button></a>
+        <% if(esession.gubun == '관리자'){ %>
+            <a href="/search/searchName">
+                <button type="button" class="btn btn-default btn-lg btn-block" style="width:300px;">사용자로 검색</button>
+            </a>
             <br><br>
-        <%}%>
-        <a href = "/search/searchPeriod"><button type="button" class="btn btn-dark btn-lg btn-block" style="width:300px;">활동으로 검색</button></a>
+        <% } %>
+        <a href="/search/searchPeriod">
+            <button type="button" class="btn btn-dark btn-lg btn-block" style="width:300px;">활동으로 검색</button>
+        </a>
         <br><br>
-            <% }%>
-        </div>
-        <hr class="featurette-divider">
-
-  
-      </div><!-- /.container -->
-  
-  
-      <!-- Bootstrap core JavaScript
-      ================================================== -->
-      <!-- Placed at the end of the document so the pages load faster -->
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-      <script src="../../dist/js/bootstrap.min.js"></script>
-      <!-- Just to make our placeholder images work. Don't actually copy the next line! -->
-      <script src="../../assets/js/vendor/holder.js"></script>
-      <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-      <script src="../../assets/js/ie10-viewport-bug-workaround.js">
-      </script>
-    
+        <% } %>
+    </div>
+    <hr class="featurette-divider">
 
 
+</div><!-- /.container -->
 
-    
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 
 </body>
 </html>
