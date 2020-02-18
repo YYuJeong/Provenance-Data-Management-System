@@ -6,11 +6,14 @@ var esession = require('express-session');
 var session_value = require('./session');
 var Promise = require('promise');
 var neo4j = require('neo4j-driver').v1;
-var session = driver.session();
 var multer = require("multer");
 var multiparty = require('multiparty');
 var fs = require('fs');
 const exec = require('child_process').exec;
+const neo4j_connection = require('../public/scripts/config');
+const db_info = neo4j_connection.Neo4j;
+const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic(db_info.DB_USR, db_info.DB_PWD));
+const session = driver.session();
 
 let nameArr5 = [];
 let affiliationArr5 = [];
@@ -209,7 +212,7 @@ router.post('/data/uploadData', function (req, res, next) {
 
         var cmd = "python "+ path + "KeywordSearch\\keywordData.py " + path1 + "upload\\"+ name;
 
-        console.log(cmd)
+        //console.log(cmd)
         exec(cmd);
 
         var spawn = require("child_process").spawn;

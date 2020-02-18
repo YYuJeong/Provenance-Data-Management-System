@@ -18,6 +18,7 @@ function Cy2NeoD3(config, graphId, tableId, sourceId, execId, urlSource, renderG
                         c.empty();
                         neod3.render(graphId, c, graph);
                         renderResult(tableId, res.table);
+                        console.log(graph)
                     } else {
                         if (err) {
                             console.log(err);
