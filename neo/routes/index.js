@@ -206,7 +206,7 @@ router.post('/data/uploadData', function (req, res, next) {
         var cmd = "python " + path + "KeywordSearch\\keywordData.py " + path1 + "upload\\" + name;
 
 
-        console.log(cmd)
+        //console.log(cmd)
         exec(cmd);
 
         var spawn = require("child_process").spawn;
