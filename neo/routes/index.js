@@ -10,9 +10,13 @@ var multer = require("multer");
 var multiparty = require('multiparty');
 var fs = require('fs');
 const exec = require('child_process').exec;
+const spawn = require('child_process').spawn;
 const neo4j_connection = require('../public/scripts/config');
 const db_info = neo4j_connection.Neo4j;
+const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic(db_info.DB_USR, db_info.DB_PWD));
 const session = driver.session();
+const iconv = require('iconv-lite');
+var keyResult = require('./keyResult');
 
 let nameArr5 = [];
 let affiliationArr5 = [];
@@ -67,6 +71,34 @@ const con = mysql.createConnection({
     insecureAuth: true
 });
 con.connect();
+
+function promiseFromChildProcess(child) {
+    return new Promise(function (resolve, reject) {
+        child.addListener("error", reject);
+        child.addListener("exit", resolve);
+    });
+}
+
+router.get('/search/searchkey', function (req, res, next) {
+    var process = spawn('python', [__dirname + '/search/search.py']);
+    var wrote = 0;
+    promiseFromChildProcess(process)
+        .then(function (result) {
+            console.log('promise complete: ', result);
+            process.stdout.on('data', function (data) {
+                if (wrote == 0) {
+                    keyword_result = iconv.decode(data, 'EUC-KR').toString();
+                    keyResult.setKeywordResult(keyword_result);
+                }
+                wrote += 1;
+            });
+            process.on('close', function (data) {
+                res.redirect('/search/searchKeyword');
+            });
+        }, function (err) {
+            console.log('promise rejected: ', err);
+        });
+});
 
 router.get('/contact', function (req, res, next) {
     con.query("SELECT * FROM iitp.users;", function (err, result, fields) {
