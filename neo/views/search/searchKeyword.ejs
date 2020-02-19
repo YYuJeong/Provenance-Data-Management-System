@@ -62,8 +62,10 @@
                         </tr>
                         <tr>
                             <td><br>
-                                <a title="Execute" id="execute"></a>
-                                <input class="btn btn-primary" value="검색" id="keywordBtn" onclick="location.href='searchkey'">
+                                <a title="Execute" id="execute">
+                                    <!--<input class="btn btn-primary" value="검색" id="keywordBtn" onclick="location.href='searchkey'">-->
+                                    <input class="btn btn-primary" value="검색" id="keywordBtn">
+                                </a>
                             </td>
                         </tr>
                     </table>
@@ -95,7 +97,7 @@
         </div>
     </div>
 </div><!-- /.container -->
-<div style="display: none;" id="keyResult"><%=data%></div>
+<div style="display: none;" id="keyResult"><%= data %></div>
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
@@ -112,17 +114,15 @@
 <script src="/scripts/jquery.dataTables.min.js"></script>
 <script src="/scripts/cypher.datatable.js"></script>
 <script src="/scripts/config.js"></script>
-
+<!--var data = document.getElementById("keyResult").innerHTML;-->
 <script type="text/javascript">
-    var data = document.getElementById("keyResult").innerHTML;
     $(document).ready(function () {
-        //todo dynamic configurationW
         var config = {}
-        var cypher = "MATCH (n)-[r]->(m) RETURN n,r,m LIMIT 50;"
+        var cypher = "MATCH (k1:Person{ name: '양유정', affiliation: '고려대학교'}),(k2: Person{ name: '정은비'}), p = shortestPath((k1)-[*]-(k2)) RETURN p;"
         var connection = function () {
             return {url: Neo4j.DB_URL, user: Neo4j.DB_USR, pass: Neo4j.DB_PWD};
         }
-        new Cy2NeoD3(data, config, "graph", "datatable", cypher, "keywordBtn", connection, true);
+        new Cy2NeoD3(config, "graph", "datatable", cypher, "execute", connection, true);
     });
 </script>
 
