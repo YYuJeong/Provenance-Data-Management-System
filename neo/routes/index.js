@@ -12,7 +12,6 @@ var fs = require('fs');
 const exec = require('child_process').exec;
 const neo4j_connection = require('../public/scripts/config');
 const db_info = neo4j_connection.Neo4j;
-const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic(db_info.DB_USR, db_info.DB_PWD));
 const session = driver.session();
 
 let nameArr5 = [];
@@ -51,6 +50,7 @@ let deviceArr3 = [];
 
 let provInfo3 = [];
 let provInfo4 = [];
+let provInfo5 = [];
 
 app.use(esession({
     secret: "asdfasffdas",
@@ -273,10 +273,15 @@ router.post('/dataAdd', function (req, res) {
     var r_name = req.body.r_name;
     var r_affiliation = req.body.r_affiliation;
 
+    var dataName2 = req.body.dataName2;
+    var price2 = req.body.price2;
+    var dataType2 = req.body.dataType2;
+    var device2 = req.body.device2;
 
-    if (activityType == '수정') {
+
+    if (r_name == '' && dataName2 == '') {
         session
-            .run("CREATE(a: Agent {name: '" + name + "' , affiliation: '" + affiliation + "' }) <- [:wasAttributedTo] - (e: Entity {name: '" + dataName + "' , price: '" + price + "' , d_type: '" + dataType + "', device: '" + device + "'})  - [:wasGeneratedBy] -> (ac:Activity {name: '" + activityType + "', date: '" + date + "'})")
+            .run("CREATE (d:Data {name: '" + dataName + "' , price: '" + price + "' , d_type: '" + dataType + "', device: '" + device + "'})-[:Generate]->(ac:Activity {name: '" + activityType + "', date: '" + date + "'})-[:Act]->(p:Person {name: '" + name + "' , affiliation: '" + affiliation + "' })")
             .then(function (result) {
                 session.close();
             })
@@ -284,9 +289,19 @@ router.post('/dataAdd', function (req, res) {
                 console.log(err);
             });
     }
-    else {
+    else if (r_name != '' && dataName2 == '') {
         session
-            .run("CREATE(a: Agent {name: '" + name + "' , affiliation: '" + affiliation + "'}) <- [:wasAttributedTo] - (e: Entity {name: '" + dataName + "' , price: '" + price + "' , d_type: '" + dataType + "', device: '" + device + "'})  - [:wasGeneratedBy] -> (ac:Activity {name: '" + activityType + "', date: '" + date + "' }) - [:wasAssociatedWith] -> (a1: Agent {name: '" + r_name + "' , affiliation: '" + r_affiliation + "' })")
+            .run("CREATE (d:Data {name: '" + dataName + "' , price: '" + price + "' , d_type: '" + dataType + "', device: '" + device + "'})-[:Generate]->(ac:Activity {name: '" + activityType + "', date: '" + date + "'})-[s:Send]->(p1:Person {name: '" + name + "' , affiliation: '" + affiliation + "' }), (ac)-[r:Receive]->(p2:Person {name: '" + r_name + "' , affiliation: '" + r_affiliation + "' })")
+            .then(function (result) {
+                session.close();
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+    }
+    else if (r_name == '' && dataName2 != '') {
+        session
+            .run("CREATE (d2:Data {name: '" + dataName + "' , price: '" + price + "' , d_type: '" + dataType + "', device: '" + device + "'})<-[:Generate]-(ac:Activity {name: '" + activityType + "', date: '" + date + "'})<-[:Generate]-(d1:Data {name: '" + dataName2 + "' , price: '" + price2 + "' , d_type: '" + dataType2 + "', device: '" + device2 + "'}), (ac)-[:Act]->(p:Person {name: '" + name + "' , affiliation: '" + affiliation + "' })")
             .then(function (result) {
                 session.close();
             })
@@ -512,7 +527,7 @@ router.get('/viewPage', function (req, res) {
               affiliationArr2.push(record._fields[3].properties.affiliation)
             });
 
-              session.run("MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person) WHERE ac.name IN ['가공', '변환'] RETURN p, d1, ac, d2 LIMIT 10")
+              session.run("MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person) WHERE ac.name IN ['가공', '변환'] RETURN p, d2, ac, d1 LIMIT 10")
               .then(function (result) {
                 result.records.forEach(function (record) {
     
@@ -620,9 +635,6 @@ router.get('/viewPage', function (req, res) {
             prices10: undefined,
             devices10: undefined,
 
-            names11 : undefined,
-            affiliations11 : undefined,
-
             dateNames11 : undefined,
             dateTypes11 : undefined,
             prices11: undefined,
@@ -672,8 +684,6 @@ router.post('/DataSearch', function (req, res) {
     var dataTypeArr5 = [];
     var priceArr5 = [];
     var deviceArr5 = [];
-    var nameArr6 = [];
-    var affiliationArr6 = [];
     var dataNameArr6 = [];
     var dataTypeArr6 = [];
     var priceArr6 = [];
@@ -700,7 +710,7 @@ router.post('/DataSearch', function (req, res) {
     var dataNameCyper4 = " d1.name = ";
     var dataTypeCyper4 = " d1.d_type = ";
     var priceCyper4 = " d1.price = ";
-    var deviceCyper5 = " d1.device = ";
+    var deviceCyper5 = " d2.device = ";
     var dataNameCyper5 = " d2.name = ";
     var dataTypeCyper5 = " d2.d_type = ";
     var priceCyper5 = " d2.price = ";
@@ -721,61 +731,64 @@ router.post('/DataSearch', function (req, res) {
         priceFlag = false;
         nullcount++;
     }
-
+    if(deviceFlag == false && dataName == false && dataType == false && price == false) {
+        res.send('<script type="text/javascript">alert("검색어를 입력해주세요."); window.history.go(-1);</script>');
+    }
+    
     var matchCyper5;
     var matchCyper4;
     var matchCyper3;
 
-    var returnCyper5 = ") RETURN p1, d1, ac, p2, d2 LIMIT 10"
-    var returnCyper4 = ") RETURN p1, d1, ac, p2 LIMIT 10"
+    var returnCyper5 = ") RETURN p, d2, ac, d1 LIMIT 10"
+    var returnCyper4 = ") RETURN p1, d, ac, p2 LIMIT 10"
     var returnCyper3 = ") RETURN p, d, ac LIMIT 10"
-    var whereCyper5 = " WHERE ac.name IN ['수정', '가공', '변환'] AND ("
-    var whereCyper4 = " WHERE ac.name IN ['배포', '판매', '전달'] AND ("
+    var whereCyper5 = " WHERE ac.name IN ['가공', '변환'] AND ("
+    var whereCyper4 = " WHERE ac.name IN ['배포', '판매'] AND ("
     var whereCyper3 = " WHERE ac.name = '생성' AND ("
     var newQuery5;
     var newQuery4;
     var newQuery3;
 
     if (user_gubun == '관리자') {
-        matchCyper5 = "MATCH (p1:Person)<-[:Own]-(d1:Data), (d1:Data)<-[:Generate]-(ac:Activity), (ac:Activity)-[:Act]-(p2:Person), (d2:Data)-[:Generate]-(ac:Activity)"
-        matchCyper4 = "MATCH (p1:Person)<-[:Own]-(d1:Data)-[:Generate]-(ac:Activity)-[:Generate]-(d2:Data)-[:Own]-(p2:Person)"
-        matchCyper3 = "MATCH (p:Person)<-[:Own]-(d:Data)<-[:Generate]-(ac:Activity)-[:Act]-(p:Person)"
+        matchCyper5 = "MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person)"
+        matchCyper4 = "MATCH (d:Data)-[:Generate]-(ac:Activity)-[s:Send]-(p1:Person), (ac:Activity)-[r:Receive]-(p2:Person)"
+        matchCyper3 = "MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person)"
         newQuery5 = matchCyper5 + whereCyper5;
         newQuery4 = matchCyper4 + whereCyper4;
         newQuery3 = matchCyper3 + whereCyper3;
     }
     else {
-        matchCyper5 = "MATCH (p1:Person)<-[:Own]-(d1:Data), (d1:Data)<-[:Generate]-(ac:Activity), (ac:Activity)-[:Act]-(p2:Person), (d2:Data)-[:Generate]-(ac:Activity)"
-        matchCyper4 = "MATCH (p1:Person)<-[:Own]-(d1:Data)-[:Generate]-(ac:Activity)-[:Generate]-(d2:Data)-[:Own]-(p2:Person)"
-        matchCyper3 = "MATCH (p:Person{name: '" + user_name + "' })<-[:Own]-(d:Data)<-[:Generate]-(ac:Activity)-[:Act]-(p:Person)"
-        newQuery5 = matchCyper5 + whereCyper5 + "p1.name = '" + user_name + "' OR p2.name = '" + user_name + "') AND (";
+        matchCyper5 = "MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person)"
+        matchCyper4 = "MATCH (d:Data)-[:Generate]-(ac:Activity)-[s:Send]-(p1:Person), (ac:Activity)-[r:Receive]-(p2:Person)"
+        matchCyper3 = "MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person)"
+        newQuery5 = matchCyper5 + whereCyper5 + "p.name = '" + user_name + "' ) AND (";
         newQuery4 = matchCyper4 + whereCyper4 + "p1.name = '" + user_name + "' OR p2.name = '" + user_name + "') AND (";
-        newQuery3 = matchCyper3 + whereCyper3;
+        newQuery3 = matchCyper3 + whereCyper3 + "p.name = '" + user_name + "' ) AND (";
     }
 
     for (var i = 0; i < (4 - nullcount); i++) {
         if (deviceFlag) {
             newQuery5 = newQuery5 + deviceCyper5 + "'" + device + "' OR " + deviceCyper4 + "'" + device + "'";
-            newQuery4 = newQuery4 + deviceCyper4 + "'" + device + "'";
+            newQuery4 = newQuery4 + deviceCyper3 + "'" + device + "'";
             newQuery3 = newQuery3 + deviceCyper3 + "'" + device + "'";
             deviceFlag = false;
         }
         else if (dataNameFlag) {
             newQuery5 = newQuery5 + dataNameCyper5 + "'" + dataName + "' OR " + dataNameCyper4 + "'" + dataName + "'";
-            newQuery4 = newQuery4 + dataNameCyper4 + "'" + dataName + "'";
+            newQuery4 = newQuery4 + dataNameCyper3 + "'" + dataName + "'";
             newQuery3 = newQuery3 + dataNameCyper3 + "'" + dataName + "'";
             dataNameFlag = false;
         }
 
         else if (dataTypeFlag) {
             newQuery5 = newQuery5 + dataTypeCyper5 + "'" + dataType + "' OR " + dataTypeCyper4 + "'" + dataType + "'";
-            newQuery4 = newQuery4 + dataTypeCyper4 + "'" + dataType + "'";
+            newQuery4 = newQuery4 + dataTypeCyper3 + "'" + dataType + "'";
             newQuery3 = newQuery3 + dataTypeCyper3 + "'" + dataType + "'";
             dataTypeFlag = false;
         }
         else if (priceFlag) {
             newQuery5 = newQuery5 + priceCyper5 + "'" + price + "' OR " + priceCyper4 + "'" + price + "'";
-            newQuery4 = newQuery4 + priceCyper4 + "'" + price + "'";
+            newQuery4 = newQuery4 + priceCyper3 + "'" + price + "'";
             newQuery3 = newQuery3 + priceCyper3 + "'" + price + "'";
             priceFlag = false;
         }
@@ -809,13 +822,10 @@ router.post('/DataSearch', function (req, res) {
                     activityTypeArr5.push(record._fields[2].properties.name)
                     dateArr5.push(record._fields[2].properties.date)
 
-                    nameArr6.push(record._fields[3].properties.name)
-                    affiliationArr6.push(record._fields[3].properties.affiliation)
-
-                    dataNameArr6.push(record._fields[4].properties.name)
-                    dataTypeArr6.push(record._fields[4].properties.d_type)
-                    deviceArr6.push(record._fields[4].properties.device)
-                    priceArr6.push(record._fields[4].properties.price)
+                    dataNameArr6.push(record._fields[3].properties.name)
+                    dataTypeArr6.push(record._fields[3].properties.d_type)
+                    deviceArr6.push(record._fields[3].properties.device)
+                    priceArr6.push(record._fields[3].properties.price)
                 });
             }
             else {
@@ -829,9 +839,6 @@ router.post('/DataSearch', function (req, res) {
 
                 activityTypeArr5.push(' ')
                 dateArr5.push(' ')
-
-                nameArr6.push(' ')
-                affiliationArr6.push(' ')
 
                 dataNameArr6.push(' ')
                 dataTypeArr6.push(' ')
@@ -940,8 +947,6 @@ router.post('/DataSearch', function (req, res) {
                         activityTypes5: activityTypeArr5,
                         dates5: dateArr5,
 
-                        names6 : nameArr6,
-                        affiliations6 : affiliationArr6,
                         dataTypes6: dataTypeArr6,
                         dataNames6: dataNameArr6,
                         devices6: deviceArr6,
@@ -993,8 +998,6 @@ router.post('/nameSearch', function (req, res) {
     var dataTypeArr5 = [];
     var priceArr5 = [];
     var deviceArr5 = [];
-    var nameArr6 = [];
-    var affiliationArr6 = [];
     var dataNameArr6 = [];
     var dataTypeArr6 = [];
     var priceArr6 = [];
@@ -1012,19 +1015,19 @@ router.post('/nameSearch', function (req, res) {
     var matchCyper4;
     var matchCyper3;
 
-    var returnCyper5 = ") RETURN p1, d1, ac, p2, d2 LIMIT 10"
-    var returnCyper4 = ") RETURN p1, d1, ac, p2 LIMIT 10"
+    var returnCyper5 = ") RETURN p, d2, ac, d1 LIMIT 10"
+    var returnCyper4 = ") RETURN p1, d, ac, p2 LIMIT 10"
     var returnCyper3 = ") RETURN p, d, ac LIMIT 10"
-    var whereCyper5 = " WHERE ac.name IN ['수정', '가공', '변환'] AND ("
-    var whereCyper4 = " WHERE ac.name IN ['배포', '판매', '전달'] AND ("
+    var whereCyper5 = " WHERE ac.name IN ['가공', '변환'] AND ("
+    var whereCyper4 = " WHERE ac.name IN ['배포', '판매'] AND ("
     var whereCyper3 = " WHERE ac.name = '생성' AND ("
+    var newQuery5;
     var newQuery4;
     var newQuery3;
-    var newQuery5;
 
-    matchCyper5 = "MATCH (p1:Person)<-[:Own]-(d1:Data), (d1:Data)<-[:Generate]-(ac:Activity), (ac:Activity)-[:Act]-(p2:Person), (d2:Data)-[:Generate]-(ac:Activity)"
-    matchCyper4 = "MATCH (p1:Person)<-[:Own]-(d1:Data)-[:Generate]-(ac:Activity)-[:Generate]-(d2:Data)-[:Own]-(p2:Person)"
-    matchCyper3 = "MATCH (p:Person)<-[:Own]-(d:Data)<-[:Generate]-(ac:Activity)-[:Act]-(p:Person)"
+    matchCyper5 = "MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person)"
+    matchCyper4 = "MATCH (d:Data)-[:Generate]-(ac:Activity)-[s:Send]-(p1:Person), (ac:Activity)-[r:Receive]-(p2:Person)"
+    matchCyper3 = "MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person)"
     newQuery5 = matchCyper5 + whereCyper5;
     newQuery4 = matchCyper4 + whereCyper4;
     newQuery3 = matchCyper3 + whereCyper3;
@@ -1042,10 +1045,13 @@ router.post('/nameSearch', function (req, res) {
         nameFlag = false;
         nullcount++;
     }
+    if(affiliationFlag == false && nameFlag == false) {
+        res.send('<script type="text/javascript">alert("검색어를 입력해주세요."); window.history.go(-1);</script>');
+    }
 
     for (var i = 0; i < (2 - nullcount); i++) {
         if (nullcount == 0) {
-            newQuery5 = newQuery5 + "(p1.affiliation = '" + affiliation + "'  AND p1.name = '" + name + "') OR (p2.affiliation = '" + affiliation + "' AND p2.name = '" + name + "')";
+            newQuery5 = newQuery5 + nameCyper + "'" + name + "'";
             newQuery4 = newQuery4 + "(p1.affiliation = '" + affiliation + "'  AND p1.name = '" + name + "') OR (p2.affiliation = '" + affiliation + "' AND p2.name = '" + name + "')";
             newQuery3 = newQuery3 + affiliationCyper + "'" + affiliation + "' AND ";
             newQuery3 = newQuery3 + nameCyper + "'" + name + "'";
@@ -1055,13 +1061,13 @@ router.post('/nameSearch', function (req, res) {
         }
         else {
             if (affiliationFlag) {
-                newQuery5 = newQuery4 + "(p1.affiliation = '" + affiliation + "' OR p2.affiliation = '" + affiliation + "') ";
+                newQuery5 = newQuery5 + affiliationCyper + "'" + affiliation + "'";
                 newQuery4 = newQuery4 + "(p1.affiliation = '" + affiliation + "' OR p2.affiliation = '" + affiliation + "') ";
                 newQuery3 = newQuery3 + affiliationCyper + "'" + affiliation + "'";
                 affiliationFlag = false;
             }
             else if (nameFlag) {
-                newQuery5 = newQuery4 + "(p1.name = '" + name + "' OR p2.name = '" + name + "') "
+                newQuery5 = newQuery5 + nameCyper + "'" + name + "'";
                 newQuery4 = newQuery4 + "(p1.name = '" + name + "' OR p2.name = '" + name + "') "
                 newQuery3 = newQuery3 + nameCyper + "'" + name + "'";
                 nameFlag = false;
@@ -1100,9 +1106,6 @@ router.post('/nameSearch', function (req, res) {
                 activityTypeArr5.push(record._fields[2].properties.name)
                 dateArr5.push(record._fields[2].properties.date)
 
-                nameArr6.push(record._fields[3].properties.name)
-                affiliationArr6.push(record._fields[3].properties.affiliation)
-
                 dataNameArr6.push(record._fields[4].properties.name)
                 dataTypeArr6.push(record._fields[4].properties.d_type)
                 deviceArr6.push(record._fields[4].properties.device)
@@ -1120,9 +1123,6 @@ router.post('/nameSearch', function (req, res) {
 
             activityTypeArr5.push(' ')
             dateArr5.push(' ')
-
-            nameArr6.push(' ')
-            affiliationArr6.push(' ')
 
             dataNameArr6.push(' ')
             dataTypeArr6.push(' ')
@@ -1229,8 +1229,6 @@ router.post('/nameSearch', function (req, res) {
                         activityTypes5: activityTypeArr5,
                         dates5: dateArr5,
 
-                        names6 : nameArr6,
-                        affiliations6 : affiliationArr6,
                         dataTypes6: dataTypeArr6,
                         dataNames6: dataNameArr6,
                         devices6: deviceArr6,
@@ -1281,8 +1279,6 @@ router.post('/periodSearch', function (req, res) {
     var dataTypeArr5 = [];
     var priceArr5 = [];
     var deviceArr5 = [];
-    var nameArr6 = [];
-    var affiliationArr6 = [];
     var dataNameArr6 = [];
     var dataTypeArr6 = [];
     var priceArr6 = [];
@@ -1308,26 +1304,26 @@ router.post('/periodSearch', function (req, res) {
     var matchCyper4;
     var matchCyper3;
 
-    var returnCyper5 = " RETURN p1, d1, ac, p2, d2 LIMIT 10"
-    var returnCyper4 = " RETURN p1, d1, ac, p2 LIMIT 10"
-    var returnCyper3 = " RETURN p, d, ac LIMIT 10"
+    var returnCyper5 = "RETURN p, d2, ac, d1 LIMIT 10"
+    var returnCyper4 = "RETURN p1, d, ac, p2 LIMIT 10"
+    var returnCyper3 = "RETURN p, d, ac LIMIT 10"
 
     var newQuery5;
     var newQuery4;
     var newQuery3;
 
-    matchCyper5 = "MATCH (p1:Person)<-[:Own]-(d1:Data), (d1:Data)<-[:Generate]-(ac:Activity), (ac:Activity)-[:Act]-(p2:Person), (d2:Data)-[:Generate]-(ac:Activity)"
-    matchCyper4 = "MATCH (p1:Person)<-[:Own]-(d1:Data)-[:Generate]-(ac:Activity)-[:Generate]-(d2:Data)-[:Own]-(p2:Person)"
+    matchCyper5 = "MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person)"
+    matchCyper4 = "MATCH (d:Data)-[:Generate]-(ac:Activity)-[s:Send]-(p1:Person), (ac:Activity)-[r:Receive]-(p2:Person)"
     if (user_gubun == '관리자') {
-        matchCyper3 = "MATCH (p:Person)<-[:Own]-(d:Data)<-[:Generate]-(ac:Activity)-[:Act]-(p:Person)"
+        matchCyper3 = "MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person)"
         newQuery5 = matchCyper5 + " WHERE "
         newQuery4 = matchCyper4 + " WHERE "
         newQuery3 = matchCyper3 + " WHERE "
     }
     else {
-        matchCyper3 = "MATCH (p:Person{name: '" + user_name + "' })<-[:Own]-(d:Data)<-[:Generate]-(ac:Activity)-[:Act]-(p:Person)"
-        newQuery5 = matchCyper5 + " WHERE (p1.name = '" + user_name + "' OR p2.name = '" + user_name + "') AND";
-        newQuery4 = matchCyper4 + " WHERE (p1.name = '" + user_name + "' OR p2.name = '" + user_name + "') AND";
+        matchCyper3 = "MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person{name: '" + user_name + "' })"
+        newQuery5 = matchCyper5 + " WHERE (p.name = '" + user_name + "') AND";
+        newQuery4 = matchCyper4 + " WHERE (p1.name = '" + user_name + "' OR p2.name = '" + user_name + "') AND";;
         newQuery3 = matchCyper3 + " WHERE (p.name = '" + user_name + "') AND";
     }
     var startDateCyper = " (ac.date >= ";
@@ -1348,12 +1344,15 @@ router.post('/periodSearch', function (req, res) {
         activityTypeFlag = false;
         nullcount++;
     }
+    if(activityTypeFlag == false || end_dateFlag == false && start_dateFlag == false && activityTypeFlag == false) {
+        res.send('<script type="text/javascript">alert("검색어를 입력해주세요."); window.history.go(-1);</script>');
+    }
 
     if (nullcount == 0) {
         if (activityType == '생성') {
             newQuery3 = newQuery3 + startDateCyper + "'" + start_date + "'" + " AND" + endDateCyper + "'" + end_date + "') AND (ac.name = '생성') "
         }
-        else if (activityType == '배포' || activityType == '판매' || activityType == '전달'){
+        else if (activityType == '배포' || activityType == '판매'){
             newQuery4 = newQuery4 + startDateCyper + "'" + start_date + "'" + " AND" + endDateCyper + "'" + end_date + "') AND (ac.name = " + "'" + activityType + "') "
         } 
         else {
@@ -1375,7 +1374,7 @@ router.post('/periodSearch', function (req, res) {
                 if (activityType == '생성') {
                     newQuery3 = newQuery3 + " (ac.name = '생성') "
                 }
-                if (activityType == '배포' || activityType == '판매' || activityType == '전달'){
+                if (activityType == '배포' || activityType == '판매'){
                     newQuery4 = newQuery4 + " (ac.name = " + "'" + activityType + "') "
                 }
                 else {
@@ -1394,6 +1393,7 @@ router.post('/periodSearch', function (req, res) {
     var query3 = false;
     var query4 = false;
     var query5 = false;
+
     if (activityType == '생성') {
         query3 = true;
         query4 = false;
@@ -1454,7 +1454,7 @@ router.post('/periodSearch', function (req, res) {
                 console.log(err);
             });
     }
-    else if (activityType == '배포' || activityType == '판매' || activityType == '전달') {
+    else if (activityType == '배포' || activityType == '판매') {
         query5 = false;
         query4 = true;
         query3 = false;
@@ -1547,13 +1547,10 @@ router.post('/periodSearch', function (req, res) {
                             activityTypeArr5.push(record._fields[2].properties.name)
                             dateArr5.push(record._fields[2].properties.date)
         
-                            nameArr6.push(record._fields[3].properties.name)
-                            affiliationArr6.push(record._fields[3].properties.affiliation)
-        
-                            dataNameArr6.push(record._fields[4].properties.name)
-                            dataTypeArr6.push(record._fields[4].properties.d_type)
-                            deviceArr6.push(record._fields[4].properties.device)
-                            priceArr6.push(record._fields[4].properties.price)
+                            dataNameArr6.push(record._fields[3].properties.name)
+                            dataTypeArr6.push(record._fields[3].properties.d_type)
+                            deviceArr6.push(record._fields[3].properties.device)
+                            priceArr6.push(record._fields[3].properties.price)
                         });
                     }
                     else {
@@ -1567,9 +1564,6 @@ router.post('/periodSearch', function (req, res) {
         
                         activityTypeArr5.push(' ')
                         dateArr5.push(' ')
-        
-                        nameArr6.push(' ')
-                        affiliationArr6.push(' ')
         
                         dataNameArr6.push(' ')
                         dataTypeArr6.push(' ')
@@ -1591,8 +1585,6 @@ router.post('/periodSearch', function (req, res) {
                         activityTypes5: activityTypeArr5,
                         dates5: dateArr5,
 
-                        names6 : nameArr6,
-                        affiliations6 : affiliationArr6,
                         dataTypes6: dataTypeArr6,
                         dataNames6: dataNameArr6,
                         devices6: deviceArr6,
@@ -1847,10 +1839,12 @@ console.log(err);
 });
 */
 router.post('/getDeleteValues', function (req, res) {
+    var checkValues5 = req.body.deleteCheck5;
     var checkValues4 = req.body.deleteCheck4;
     var checkValues3 = req.body.deleteCheck3;
 
     var namelst
+    var activitylst3
     var dataNamelst3
 
     var s_namelst
@@ -1858,20 +1852,28 @@ router.post('/getDeleteValues', function (req, res) {
     var activitylst4
     var dataNamelst4
 
+    var namelst5
+    var activitylst5
+    var dataNamelst5
+    var dataNamelst6
+
     // WHERE (a1.name IN ["김태연","임윤아"]) and (ac.name in ["판매", "판매"]) and (e.name in ["data_683", "data_964"])
-    var delMatch3 = "MATCH prov = ((a:Agent)<-[:wasAttributedTo]-(e:Entity)-[:wasGeneratedBy]-(ac:Activity)) "
-    var delMatch4 = "MATCH prov = ((a1:Agent)<-[:wasAttributedTo]-(e:Entity)-[:wasGeneratedBy]-(ac:Activity)-[:wasAssociatedWith]-(a2:Agent)) "
+    var delMatch3 = "MATCH prov = ((d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person)) "
+    var delMatch4 = "MATCH prov = (d:Data)-[:Generate]-(ac:Activity)-[s:Send]-(p1:Person), (ac:Activity)-[r:Receive]-(p2:Person) "
+    var delMatch5 = "MATCH prov = (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person) "
     var delDetach = "DETACH DELETE prov"
 
     var query3;
     var query4;
-    var delFlag3 = false
+    var query5;
+    var delFlag3 = false;
     var delFlag4 = false;
-
+    var delFlag5 = false;
 
     if (checkValues3 != undefined) {
         delFlag3 = true;
         namelst = "\"" + nameArr[checkValues3[0]] + "\""
+        activitylst3 = "\"" + activityTypeArr3[checkValues3[0]] + "\""
         dataNamelst3 = "\"" + dataNameArr3[checkValues3[0]] + "\""
         for (var i = 1; i < checkValues3.length; i++) {
 
@@ -1879,12 +1881,13 @@ router.post('/getDeleteValues', function (req, res) {
             console.log("data : ", dataNameArr3[checkValues3[i]]);
 
             namelst = namelst + ", \"" + nameArr[checkValues3[i]] + "\""
+            activitylst3 = activitylst3 + ", \"" + activityTypeArr3[checkValues3[i]] + "\""
             dataNamelst3 = dataNamelst3 + ", \"" + dataNameArr3[checkValues3[i]] + "\""
 
         }
         console.log("namelst", namelst)
         console.log("dataNamelst3", dataNamelst3)
-        query3 = delMatch3 + "WHERE a.name in [" + namelst + "] AND ac.name = '수정' AND e.name in [" + dataNamelst3 + "] "
+        query3 = delMatch3 + "WHERE p.name in [" + namelst + "] AND ac.name in [" + activitylst3 + "] AND d.name in [" + dataNamelst3 + "] "
         query3 = query3 + delDetach
     }
 
@@ -1903,17 +1906,84 @@ router.post('/getDeleteValues', function (req, res) {
         console.log("s_namelst", s_namelst)
         console.log("r_namelst", r_namelst)
         console.log("dataNamelst4", dataNamelst4)
-        query4 = delMatch4 + "WHERE a1.name in [" + s_namelst + "] AND ac.name in [" + activitylst4 + "] AND e.name in [" + dataNamelst4 + "] AND a2.name in [" + r_namelst + "] "
+        query4 = delMatch4 + "WHERE p1.name in [" + s_namelst + "] AND ac.name in [" + activitylst4 + "] AND d.name in [" + dataNamelst4 + "] AND p2.name in [" + r_namelst + "] "
         query4 = query4 + delDetach
+    }
+
+    if (checkValues5 != undefined) {
+        delFlag5 = true;
+        namelst5 = "\"" + nameArr5[checkValues5[0]] + "\""
+        activitylst5 = "\"" + activityTypeArr5[checkValues5[0]] + "\""
+        dataNamelst5 = "\"" + dataNameArr5[checkValues5[0]] + "\""
+        dataNamelst6 = "\"" + dataNameArr6[checkValues5[0]] + "\""
+        for (var i = 1; i < checkValues5.length; i++) {
+            namelst5 = namelst5 + ", \"" + nameArr5[checkValues5[i]] + "\""
+            activitylst5 = activitylst5 + ", \"" + activityTypeArr5[checkValues5[i]] + "\""
+            dataNamelst5 = dataNamelst5 + ", \"" + dataNameArr5[checkValues5[i]] + "\""
+            dataNamelst6 = dataNamelst6 + ", \"" + dataNameArr6[checkValues5[i]] + "\""
+        }
+        console.log("namelst5", namelst5)
+        console.log("activitylst5", activitylst5)
+        console.log("dataNamelst5", dataNamelst5)
+        console.log("dataNamelst6", dataNamelst6)
+        query5 = delMatch5 + "WHERE p.name in [" + namelst5 + "] AND ac.name in [" + activitylst5 + "] AND d2.name in [" + dataNamelst5 + "] AND d1.name in [" + dataNamelst6 + "] "
+        query5 = query5 + delDetach
     }
 
     console.log(query3)
     console.log("----------------------------------------------------------")
     console.log(query4)
-    if (delFlag3 && delFlag4) {
+    console.log("----------------------------------------------------------")
+    console.log(query5)
+    if (delFlag3 && delFlag4 && delFlag5) {
         session.run(query3)
             .then(function (result) {
                 session.run(query4)
+                    .then(function (result) {
+                        session.run(query5)
+                            .then(function (result) {
+                                console.log("삭제 완료")
+                                res.render('data/deleteData', {esession: session_value.getSession()});
+                            });
+                        });
+                session.close();
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+    }
+    else if (delFlag3 && delFlag4) {
+        session.run(query3)
+            .then(function (result) {
+                session.run(query4)
+                    .then(function (result) {
+                        console.log("삭제 완료")
+                        res.render('data/deleteData', {esession: session_value.getSession()});
+                    });
+                session.close();
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+    }
+    else if (delFlag3 && delFlag5) {
+        session.run(query3)
+            .then(function (result) {
+                session.run(query5)
+                    .then(function (result) {
+                        console.log("삭제 완료")
+                        res.render('data/deleteData', {esession: session_value.getSession()});
+                    });
+                session.close();
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+    }
+    else if (delFlag4 && delFlag5) {
+        session.run(query4)
+            .then(function (result) {
+                session.run(query5)
                     .then(function (result) {
                         console.log("삭제 완료")
                         res.render('data/deleteData', {esession: session_value.getSession()});
@@ -1937,6 +2007,16 @@ router.post('/getDeleteValues', function (req, res) {
         }
         else if (delFlag3) {
             session.run(query3)
+                .then(function (result) {
+                    res.render('data/deleteData', {esession: session_value.getSession()});
+                    session.close();
+                })
+                .catch(function (err) {
+                    console.log(err);
+                });
+        }
+        else {
+            session.run(query5)
                 .then(function (result) {
                     res.render('data/deleteData', {esession: session_value.getSession()});
                     session.close();
@@ -1969,6 +2049,24 @@ function setArray() {
     r_nameArr = [];
     r_affiliationArr = [];
 
+    nameArr5 = [];
+    affiliationArr5 = [];
+    activityTypeArr5 = [];
+    dateArr5 = [];
+    dataNameArr5 = [];
+    dataTypeArr5 = [];
+    priceArr5 = [];
+    deviceArr5 = [];
+    nameArr6 = [];
+    affiliationArr6 = [];
+    dataNameArr6 = [];
+    dataTypeArr6 = [];
+    priceArr6 = [];
+    deviceArr6 = [];
+
+    provInfo3 = [];
+    provInfo4 = [];
+    provInfo5 = [];
 }
 
 router.post('/delete', function (req, res) {
@@ -1986,38 +2084,47 @@ router.post('/delete', function (req, res) {
 
     var nullcount = 0;
 
-    var query3resultNum;
+    var query5resultNum;
     var query4resultNum;
+    var query3resultNum;
 
+    var matchCyper5;
     var matchCyper4;
     var matchCyper3;
 
-    var returnCyper4 = ") RETURN s_agent, entity, activity, r_agent LIMIT 30"
-    var returnCyper3 = ") RETURN agent, entity, activity LIMIT 30"
-    var whereCyper4 = " WHERE Not(activity.name = '수정') AND ("
-    var whereCyper3 = " WHERE (activity.name = '수정') AND ("
+    var returnCyper5 = ") RETURN p, d2, ac, d1 LIMIT 10"
+    var returnCyper4 = ") RETURN p1, d, ac, p2 LIMIT 10"
+    var returnCyper3 = ") RETURN p, d, ac LIMIT 10"
+    var whereCyper5 = " WHERE ac.name IN ['가공', '변환'] AND ("
+    var whereCyper4 = " WHERE ac.name IN ['배포', '판매'] AND ("
+    var whereCyper3 = " WHERE ac.name = '생성' AND ("
+    var newQuery5;
     var newQuery4;
     var newQuery3;
 
     if (user_gubun == '관리자') {
-        matchCyper4 = "MATCH (s_agent:Agent)<-[:wasAttributedTo]-(entity:Entity)-[:wasGeneratedBy]-(activity:Activity)-[]-(r_agent: Agent)";
-        matchCyper3 = "MATCH (agent:Agent)<-[:wasAttributedTo]-(entity:Entity)-[:wasGeneratedBy]-(activity:Activity)"
+        matchCyper5 = "MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person)"
+        matchCyper4 = "MATCH (d:Data)-[:Generate]-(ac:Activity)-[s:Send]-(p1:Person), (ac:Activity)-[r:Receive]-(p2:Person)"
+        matchCyper3 = "MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person)"
+        newQuery5 = matchCyper5 + whereCyper5;
         newQuery4 = matchCyper4 + whereCyper4;
         newQuery3 = matchCyper3 + whereCyper3;
     }
     else {
-        matchCyper4 = "MATCH (s_agent:Agent)<-[:wasAttributedTo]-(entity:Entity)-[:wasGeneratedBy]-(activity:Activity)-[]-(r_agent: Agent)";
-        matchCyper3 = "MATCH (agent:Agent{name: '" + user_name + "' })<-[:wasAttributedTo]-(entity:Entity)-[:wasGeneratedBy]-(activity:Activity)"
-        newQuery4 = matchCyper4 + whereCyper4 + "s_agent.name = '" + user_name + "' OR r_agent.name = '" + user_name + "') AND (";
-        newQuery3 = matchCyper3 + whereCyper3;
+        matchCyper5 = "MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person)"
+        matchCyper4 = "MATCH (d:Data)-[:Generate]-(ac:Activity)-[s:Send]-(p1:Person), (ac:Activity)-[r:Receive]-(p2:Person)"
+        matchCyper3 = "MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person)"
+        newQuery5 = matchCyper5 + whereCyper5 + "p.name = '" + user_name + "' ) AND (";
+        newQuery4 = matchCyper4 + whereCyper4 + "p1.name = '" + user_name + "' OR p2.name = '" + user_name + "') AND (";
+        newQuery3 = matchCyper3 + whereCyper3 + "p.name = '" + user_name + "' ) AND (";
     }
 
     var user_gubun = session_value.getSession().gubun;
     var user_name = session_value.getSession().user;
 
 
-    var dataNameCyper = " entity.name = ";
-    var nameCyper = " agent.name = ";
+    var dataNameCyper = " d.name = ";
+    var nameCyper = " p.name = ";
 
     if (dataName == '' || dataName == undefined) {
         console.log("dataName null");
@@ -2029,28 +2136,77 @@ router.post('/delete', function (req, res) {
         nameFlag = false;
         nullcount++;
     }
+    if(dataNameFlag == false && nameFlag == false) {
+        res.send('<script type="text/javascript">alert("검색어를 입력해주세요."); window.history.go(-1);</script>');
+    }
 
     for (var i = 0; i < (2 - nullcount); i++) {
         if (dataNameFlag) {
+            newQuery5 = newQuery5 + " d1.name = '" + dataName + "' OR d2.name = '" + dataName + "'";
             newQuery4 = newQuery4 + dataNameCyper + "'" + dataName + "'";
             newQuery3 = newQuery3 + dataNameCyper + "'" + dataName + "'";
             dataNameFlag = false;
         }
         else if (nameFlag) {
-            newQuery4 = newQuery4 + " s_agent.name = '" + name + "' OR r_agent.name = '" + name + "'";
+            newQuery5 = newQuery5 + nameCyper + "'" + name + "'";
+            newQuery4 = newQuery4 + " p1.name = '" + name + "' OR p2.name = '" + name + "'";
             newQuery3 = newQuery3 + nameCyper + "'" + name + "'";
             nameFlag = false;
         }
         if ((i + 1) != (2 - nullcount)) {
+            newQuery5 = newQuery5 + " AND";
             newQuery4 = newQuery4 + " AND";
             newQuery3 = newQuery3 + " AND";
         }
     }
+    newQuery5 = newQuery5 + returnCyper5;
     newQuery4 = newQuery4 + returnCyper4;
     newQuery3 = newQuery3 + returnCyper3;
     console.log(newQuery3)
     console.log("******************************************")
     console.log(newQuery4)
+    console.log("******************************************")
+    console.log(newQuery5)
+    session.run(newQuery5)
+        .then(function (result) {
+            query5resultNum = result.records.length;
+            if (query5resultNum != 0) {
+                result.records.forEach(function (record) {
+
+                    nameArr5.push(record._fields[0].properties.name)
+                    affiliationArr5.push(record._fields[0].properties.affiliation)
+
+                    dataNameArr5.push(record._fields[1].properties.name)
+                    dataTypeArr5.push(record._fields[1].properties.d_type)
+                    deviceArr5.push(record._fields[1].properties.device)
+                    priceArr5.push(record._fields[1].properties.price)
+
+                    activityTypeArr5.push(record._fields[2].properties.name)
+                    dateArr5.push(record._fields[2].properties.date)
+
+                    dataNameArr6.push(record._fields[3].properties.name)
+                    dataTypeArr6.push(record._fields[3].properties.d_type)
+                    deviceArr6.push(record._fields[3].properties.device)
+                    priceArr6.push(record._fields[3].properties.price)
+                });
+            }
+            else {
+                nameArr5.push(' ')
+                affiliationArr5.push(' ')
+
+                dataNameArr5.push(' ')
+                dataTypeArr5.push(' ')
+                deviceArr5.push(' ')
+                priceArr5.push(' ')
+
+                activityTypeArr5.push(' ')
+                dateArr5.push(' ')
+
+                dataNameArr6.push(' ')
+                dataTypeArr6.push(' ')
+                deviceArr6.push(' ')
+                priceArr6.push(' ')
+            }
     session.run(newQuery4)
         .then(function (result) {
             query4resultNum = result.records.length
@@ -2141,9 +2297,24 @@ router.post('/delete', function (req, res) {
                         r_names: r_nameArr,
                         r_affiliations: r_affiliationArr,
 
+                        names5 : nameArr5,
+                        affiliations5 : affiliationArr5,
+                        dataTypes5: dataTypeArr5,
+                        dataNames5: dataNameArr5,
+                        devices5: deviceArr5,
+                        prices5: priceArr5,
+                        activityTypes5: activityTypeArr5,
+                        dates5: dateArr5,
+
+                        dataTypes6: dataTypeArr6,
+                        dataNames6: dataNameArr6,
+                        devices6: deviceArr6,
+                        prices6: priceArr6,
+
                         authenticated: true
                     });
                 });
+            });
             session.close();
         })
         .catch(function (err) {
@@ -2162,24 +2333,34 @@ router.post('/dataModify', function (req, res) {
     var device = req.body.device;
     var r_name = req.body.r_name;
     var r_affiliation = req.body.r_affiliation;
+    var dataName2 = req.body.dataName2;
+    var price2 = req.body.price2;
+    var dataType2 = req.body.dataType2;
+    var device2 = req.body.device2;
     var modiQuery3;
     var modiQuery4;
-    var modiMatch3 = "(a1:Agent)<-[:wasAttributedTo]-(e:Entity)-[:wasGeneratedBy]-(ac:Activity) "
-    var modiMatch4 = "(a1:Agent)<-[:wasAttributedTo]-(e:Entity)-[:wasGeneratedBy]-(ac:Activity)-[:wasAssociatedWith]-(a2:Agent) "
+    var modiQuery5;
+    var modiMatch3 = "(d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person) "
+    var modiMatch4 = "(d:Data)-[:Generate]-(ac:Activity)-[s:Send]-(p1:Person), (ac:Activity)-[r:Receive]-(p2:Person) "
+    var modiMatch5 = "(d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person) "
     for (var i = 0; i < 8; i++) {
         console.log("provInfo3[", i, "]: ", provInfo3[i]);
     }
     for (var i = 0; i < 10; i++) {
         console.log("pushInfo4[", i, "]: ", provInfo4[i]);
     }
-    var modiWhere3 = "WHERE a1.name = '" + provInfo3[0] + "' AND e.name = '" + provInfo3[4] + "' AND ac.name = '" + provInfo3[2] + "' "
-    var modiWhere4 = "WHERE a1.name = '" + provInfo4[0] + "' AND e.name = '" + provInfo4[4] + "' AND ac.name = '" + provInfo4[2] + "' "
-    var modiSet = "SET a1 = {name: '" + name + "' , affiliation: '" + affiliation + "'}, e = {name: '" + dataName + "', d_type: '" + dataType + "', price: '" + price + "', device: '" + device + "' }, ac = {name: '" + activityType + "', date: '" + date + "'}"
+    for (var i = 0; i < 12; i++) {
+        console.log("pushInfo5[", i, "]: ", provInfo5[i]);
+    }
+    var modiWhere3 = "WHERE p.name = '" + provInfo3[0] + "' AND d.name = '" + provInfo3[4] + "' AND ac.name = '" + provInfo3[2] + "' "
+    var modiWhere4 = "WHERE p1.name = '" + provInfo4[0] + "' AND d.name = '" + provInfo4[4] + "' AND ac.name = '" + provInfo4[2] + "' AND p2.name = '" + provInfo4[8] + "' "
+    var modiWhere5 = "WHERE p.name = '" + provInfo5[0] + "' AND d2.name = '" + provInfo5[2] + "' AND ac.name = '" + provInfo5[6] + "' AND d1.name = '" + provInfo5[8] + "' "
+    var modiSet = "SET p = {name: '" + name + "' , affiliation: '" + affiliation + "'}, d = {name: '" + dataName + "', d_type: '" + dataType + "', price: '" + price + "', device: '" + device + "' }, ac = {name: '" + activityType + "', date: '" + date + "'}"
+    var modiSet2 = "SET p1 = {name: '" + name + "' , affiliation: '" + affiliation + "'}, d = {name: '" + dataName + "', d_type: '" + dataType + "', price: '" + price + "', device: '" + device + "' }, ac = {name: '" + activityType + "', date: '" + date + "'}"
+    var modiSet3 = "SET p = {name: '" + name + "' , affiliation: '" + affiliation + "'}, d2 = {name: '" + dataName + "', d_type: '" + dataType + "', price: '" + price + "', device: '" + device + "' }, ac = {name: '" + activityType + "', date: '" + date + "'}"
     if (provInfo3.length != 0) {
         console.log(provInfo3.length)
-        console.log(provInfo4.length)
-        console.log("수정인 이력들")
-        if (provInfo3[2] == activityType) {
+        //if (provInfo3[2] == activityType) {
             modiQuery3 = "MATCH " + modiMatch3 + modiWhere3 + modiSet;
             console.log(modiQuery3);
             session.run(modiQuery3)
@@ -2193,9 +2374,9 @@ router.post('/dataModify', function (req, res) {
                 .catch(function (err) {
                     console.log(err);
                 });
-        }
-        else {
-            modiQuery3 = "MATCH prov = (" + modiMatch3 + ") " + modiWhere3 + "DELETE prov CREATE(a12: Agent {name: '" + name + "' , affiliation: '" + affiliation + "'}) <- [:wasAttributedTo] - (e12: Entity {name: '" + dataName + "' , price: '" + price + "' , d_type: '" + dataType + "', device: '" + device + "'})  - [:wasGeneratedBy] -> (ac12:Activity {name: '" + activityType + "', date: '" + date + "' }) - [:wasAssociatedWith] -> (a122: Agent {name: '" + r_name + "' , affiliation: '" + r_affiliation + "' })"
+        //}
+        /* else {
+            modiQuery3 = "MATCH prov = (" + modiMatch3 + ") " + modiWhere3 + "DELETE prov CREATE (d12:Data {name: '" + dataName + "' , price: '" + price + "' , d_type: '" + dataType + "', device: '" + device + "'})-[:Generate]-(ac12:Activity {name: '" + activityType + "', date: '" + date + "' })-[:Act]-(p12:Person {name: '" + name + "' , affiliation: '" + affiliation + "'})"
             console.log(modiQuery3);
             session.run(modiQuery3)
                 .then(function (result) {
@@ -2208,13 +2389,11 @@ router.post('/dataModify', function (req, res) {
                 .catch(function (err) {
                     console.log(err);
                 });
-        }
+        } */
     } else if (provInfo4.length != 0) {
         console.log(provInfo4.length)
-        console.log("수정 아닌 이력들")
-        if (activityType != "수정") {
-            console.log("수정으로 안바꿈");
-            modiQuery4 = "MATCH " + modiMatch4 + modiWhere4 + "AND a2.name = '" + provInfo4[8] + "' " + modiSet + " ,a2 = {name: '" + r_name + "' , affiliation: '" + r_affiliation + "'}"
+        //if (activityType != "수정") {
+            modiQuery4 = "MATCH " + modiMatch4 + modiWhere4 + modiSet2 + " ,p2 = {name: '" + r_name + "' , affiliation: '" + r_affiliation + "'}"
             console.log(modiQuery4);
             session.run(modiQuery4)
                 .then(function (result) {
@@ -2227,10 +2406,10 @@ router.post('/dataModify', function (req, res) {
                 .catch(function (err) {
                     console.log(err);
                 });
-        }
-        else {
+        //}
+        /* else {
             console.log("수정으로 바꿈")
-            modiQuery4 = "MATCH prov = (" + modiMatch4 + ") " + modiWhere4 + "AND a2.name = '" + provInfo4[8] + "' " + "DELETE prov CREATE(a12: Agent {name: '" + name + "' , affiliation: '" + affiliation + "'}) <- [:wasAttributedTo] - (e12: Entity {name: '" + dataName + "' , price: '" + price + "' , d_type: '" + dataType + "', device: '" + device + "'})  - [:wasGeneratedBy] -> (ac12:Activity {name: '" + activityType + "', date: '" + date + "' }) "
+            modiQuery4 = "MATCH prov = (" + modiMatch4 + ") " + modiWhere4 + "AND p2.name = '" + provInfo4[8] + "' " + "DELETE prov CREATE (d12:Data {name: '" + dataName + "' , price: '" + price + "' , d_type: '" + dataType + "', device: '" + device + "'})-[:Generate]-(ac12:Activity {name: '" + activityType + "', date: '" + date + "' })-[s:Send]-(p12:Person {name: '" + name + "' , affiliation: '" + affiliation + "'}), (ac12:Activity {name: '" + activityType + "', date: '" + date + "' })-[r:Receive]-(p122:Person {name: '" + name + "' , affiliation: '" + affiliation + "'})"
             console.log(modiQuery4);
             session.run(modiQuery4)
                 .then(function (result) {
@@ -2243,8 +2422,43 @@ router.post('/dataModify', function (req, res) {
                 .catch(function (err) {
                     console.log(err);
                 });
-        }
+        } */
     }
+    else if (provInfo5.length != 0) {
+        console.log(provInfo5.length)
+        //if (activityType != "수정") {
+            modiQuery5 = "MATCH " + modiMatch5 + modiWhere5 + modiSet3 + " , d1 = {name: '" + dataName2 + "' , d_type: '" + dataType2 + "' , price: '" + price2 + "' , device: '" + device2 + "'}"
+            console.log(modiQuery5);
+            session.run(modiQuery5)
+                .then(function (result) {
+                    res.render('data/modifyData.ejs', {
+                        esession: session_value.getSession(),
+                        authenticated: true
+                    });
+                    session.close();
+                })
+                .catch(function (err) {
+                    console.log(err);
+                });
+        //}
+        /* else {
+            console.log("수정으로 바꿈")
+            modiQuery5 = "MATCH prov = (" + modiMatch5 + ") " + modiWhere5 + "AND d2.name = '" + provInfo5[8] + "' " + "DELETE prov CREATE (d12:Data {name: '" + dataName + "' , price: '" + price + "' , d_type: '" + dataType + "', device: '" + device + "'})<-[:Generate]-(ac12:Activity {name: '" + activityType + "', date: '" + date + "' })<-[:Generate]-(d122:Data {name: '" + dataName2 + "' , price: '" + price2 + "' , d_type: '" + dataType2 + "', device: '" + device2 + "'}), (ac12:Activity {name: '" + activityType + "', date: '" + date + "' })-[:Act]-(p12:Person {name: '" + name + "' , affiliation: '" + affiliation + "'})"
+            console.log(modiQuery5);
+            session.run(modiQuery5)
+                .then(function (result) {
+                    res.render('data/modifyData.ejs', {
+                        esession: session_value.getSession(),
+                        authenticated: true
+                    });
+                    session.close();
+                })
+                .catch(function (err) {
+                    console.log(err);
+                });
+        } */
+    }
+
 });
 
 router.post('/getModifyValues', function (req, res) {
@@ -2260,7 +2474,7 @@ router.post('/getModifyValues', function (req, res) {
     var modiFlag4 = false;
     var modiFlag5 = false;
 
-    var activityType = ['생성', '수정', '가공', '변환', '배포', '전달', '판매'];
+    var activityType = ['생성', '가공', '변환', '배포', '판매'];
     var deviceType = ['AI스피커', 'T머니', '레일플러스', '스마트워치', '페이션트모니터', '캐시비'];
     var dataType = ['건강데이터', '의료데이터', '위치데이터', '음성데이터'];
 
@@ -2276,6 +2490,11 @@ router.post('/getModifyValues', function (req, res) {
         check4Len = checkValues4.length;
     }
 
+    if (checkValues5== undefined) {
+        check5Len = 0;
+    } else {
+        check5Len = checkValues5.length;
+    }
 
     if (check3Len == 1) {
         console.log("------------check3 ------------", checkValues3, checkValues3.length);
@@ -2285,16 +2504,22 @@ router.post('/getModifyValues', function (req, res) {
         console.log("------------check4 ------------", checkValues4, checkValues4.length);
         modiFlag4 = true;
     }
+    else if (check5Len == 1) {
+        console.log("------------check5 ------------", checkValues5, checkValues5.length);
+        modiFlag5 = true;
+    }
 
-    if (modiFlag4 && modiFlag3) {
+    if (modiFlag4 && modiFlag3 && modiFlag5) {
         console.log("all false");
         modiFlag3 = false;
         modiFlag4 = false;
+        modiFlag5 = false;
     }
 
-    if ((check3Len + check4Len) > 1) {
+    if ((check3Len + check4Len + check5Len) > 1) {
         modiFlag3 = false;
         modiFlag4 = false;
+        modiFlag5 = false;
     }
 
     if (modiFlag3) {
@@ -2315,6 +2540,7 @@ router.post('/getModifyValues', function (req, res) {
 
             modiFlag3: modiFlag3,
             modiFlag4: modiFlag4,
+            modiFlag5: modiFlag5,
             provInfo3: provInfo3,
 
             activityType: activityType,
@@ -2324,8 +2550,6 @@ router.post('/getModifyValues', function (req, res) {
             authenticated: true
         });
     } else if (modiFlag4) {
-        console.log("수정 아님")
-
         provInfo4.push(s_nameArr[checkValues4]);
         provInfo4.push(s_affiliationArr[checkValues4]);
         provInfo4.push(activityTypeArr4[checkValues4]);
@@ -2338,13 +2562,45 @@ router.post('/getModifyValues', function (req, res) {
         provInfo4.push(r_affiliationArr[checkValues4]);
 
         console.log("modiFlag4 : ", modiFlag4);
+        console.log(provInfo4[0]);
 
         res.render('data/modifyDataPage.ejs', {
             esession: session_value.getSession(),
 
             modiFlag3: modiFlag3,
             modiFlag4: modiFlag4,
+            modiFlag5: modiFlag5,
             provInfo4: provInfo4,
+
+            activityType: activityType,
+            dataType: dataType,
+            deviceType: deviceType,
+
+            authenticated: true
+        });
+    } else if (modiFlag5) {
+        provInfo5.push(nameArr5[checkValues5]);
+        provInfo5.push(affiliationArr5[checkValues5]);
+        provInfo5.push(dataNameArr5[checkValues5]);
+        provInfo5.push(dataTypeArr5[checkValues5]);
+        provInfo5.push(deviceArr5[checkValues5]);
+        provInfo5.push(priceArr5[checkValues5]);
+        provInfo5.push(activityTypeArr5[checkValues5]);
+        provInfo5.push(dateArr5[checkValues5]);
+        provInfo5.push(dataNameArr6[checkValues5]);
+        provInfo5.push(dataTypeArr6[checkValues5]);
+        provInfo5.push(deviceArr6[checkValues5]);
+        provInfo5.push(priceArr6[checkValues5]);
+
+        console.log("modiFlag5 : ", modiFlag5);
+
+        res.render('data/modifyDataPage.ejs', {
+            esession: session_value.getSession(),
+
+            modiFlag3: modiFlag3,
+            modiFlag4: modiFlag4,
+            modiFlag5: modiFlag5,
+            provInfo5: provInfo5,
 
             activityType: activityType,
             dataType: dataType,
@@ -2380,29 +2636,29 @@ router.post('/modify', function (req, res) {
     var matchCyper4;
     var matchCyper3;
 
-    var returnCyper5 = ") RETURN p1, d1, ac, p2, d2 LIMIT 10"
-    var returnCyper4 = ") RETURN p1, d1, ac, p2 LIMIT 10"
+    var returnCyper5 = ") RETURN p, d2, ac, d1 LIMIT 10"
+    var returnCyper4 = ") RETURN p1, d, ac, p2 LIMIT 10"
     var returnCyper3 = ") RETURN p, d, ac LIMIT 10"
-    var whereCyper5 = " WHERE ac.name IN ['수정', '가공', '변환'] AND ("
-    var whereCyper4 = " WHERE ac.name IN ['배포', '판매', '전달'] AND ("
+    var whereCyper5 = " WHERE ac.name IN ['가공', '변환'] AND ("
+    var whereCyper4 = " WHERE ac.name IN ['배포', '판매'] AND ("
     var whereCyper3 = " WHERE ac.name = '생성' AND ("
     var newQuery5;
     var newQuery4;
     var newQuery3;
 
     if (user_gubun == '관리자') {
-        matchCyper5 = "MATCH (p1:Person)<-[:Own]-(d1:Data), (d1:Data)<-[:Generate]-(ac:Activity), (ac:Activity)-[:Act]-(p2:Person), (d2:Data)-[:Generate]-(ac:Activity)"
-        matchCyper4 = "MATCH (p1:Person)<-[:Own]-(d1:Data)-[:Generate]-(ac:Activity)-[:Generate]-(d2:Data)-[:Own]-(p2:Person)"
-        matchCyper3 = "MATCH (p:Person)<-[:Own]-(d:Data)<-[:Generate]-(ac:Activity)-[:Act]-(p:Person)"
+        matchCyper5 = "MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person)"
+        matchCyper4 = "MATCH (d:Data)-[:Generate]-(ac:Activity)-[s:Send]-(p1:Person), (ac:Activity)-[r:Receive]-(p2:Person)"
+        matchCyper3 = "MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person)"
         newQuery5 = matchCyper5 + whereCyper5;
         newQuery4 = matchCyper4 + whereCyper4;
         newQuery3 = matchCyper3 + whereCyper3;
     }
     else {
-        matchCyper5 = "MATCH (p1:Person)<-[:Own]-(d1:Data), (d1:Data)<-[:Generate]-(ac:Activity), (ac:Activity)-[:Act]-(p2:Person), (d2:Data)-[:Generate]-(ac:Activity)"
-        matchCyper4 = "MATCH (p1:Person)<-[:Own]-(d1:Data)-[:Generate]-(ac:Activity)-[:Generate]-(d2:Data)-[:Own]-(p2:Person)"
-        matchCyper3 = "MATCH (p:Person{name: '" + user_name + "' })<-[:Own]-(d:Data)<-[:Generate]-(ac:Activity)-[:Act]-(p:Person)"
-        newQuery5 = matchCyper5 + whereCyper5 + "p1.name = '" + user_name + "' OR p2.name = '" + user_name + "') AND (";
+        matchCyper5 = "MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person{name: '" + user_name + "' })"
+        matchCyper4 = "MATCH (d:Data)-[:Generate]-(ac:Activity)-[s:Send]-(p1:Person), (ac:Activity)-[r:Receive]-(p2:Person)"
+        matchCyper3 = "MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person{name: '" + user_name + "' })"
+        newQuery5 = matchCyper5 + whereCyper5;
         newQuery4 = matchCyper4 + whereCyper4 + "p1.name = '" + user_name + "' OR p2.name = '" + user_name + "') AND (";
         newQuery3 = matchCyper3 + whereCyper3;
     }
@@ -2410,10 +2666,9 @@ router.post('/modify', function (req, res) {
     var user_gubun = session_value.getSession().gubun;
     var user_name = session_value.getSession().user;
 
-
+    var dataNameCyper4 = " d1.name = ";
     var dataNameCyper3 = " d.name = ";
     var nameCyper3 = " p.name = ";
-    var dataNameCyper4 = " d1.name = ";
 
     if (dataName == '' || dataName == undefined) {
         console.log("dataName null");
@@ -2425,16 +2680,19 @@ router.post('/modify', function (req, res) {
         nameFlag = false;
         nullcount++;
     }
+    if (dataNameFlag == false && nameFlag == false) {
+        res.send('<script type="text/javascript">alert("검색어를 입력해주세요."); window.history.go(-1);</script>');
+    }
 
     for (var i = 0; i < (2 - nullcount); i++) {
         if (dataNameFlag) {
             newQuery5 = newQuery5 + dataNameCyper4 + "'" + dataName + "' OR d2.name = '" + dataName + "' ";
-            newQuery4 = newQuery4 + dataNameCyper4 + "'" + dataName + "' ";
+            newQuery4 = newQuery4 + dataNameCyper3 + "'" + dataName + "' ";
             newQuery3 = newQuery3 + dataNameCyper3 + "'" + dataName + "' ";
             dataNameFlag = false;
         }
         else if (nameFlag) {
-            newQuery5 = newQuery5 + " p1.name = '" + name + "' OR p2.name = '" + name + "' ";
+            newQuery5 = newQuery5 + nameCyper3 + "'" + name + "'";
             newQuery4 = newQuery4 + " p1.name = '" + name + "' OR p2.name = '" + name + "' ";
             newQuery3 = newQuery3 + nameCyper3 + "'" + name + "'";
             nameFlag = false;
@@ -2471,13 +2729,10 @@ router.post('/modify', function (req, res) {
                     activityTypeArr5.push(record._fields[2].properties.name)
                     dateArr5.push(record._fields[2].properties.date)
 
-                    nameArr6.push(record._fields[3].properties.name)
-                    affiliationArr6.push(record._fields[3].properties.affiliation)
-
-                    dataNameArr6.push(record._fields[4].properties.name)
-                    dataTypeArr6.push(record._fields[4].properties.d_type)
-                    deviceArr6.push(record._fields[4].properties.device)
-                    priceArr6.push(record._fields[4].properties.price)
+                    dataNameArr6.push(record._fields[3].properties.name)
+                    dataTypeArr6.push(record._fields[3].properties.d_type)
+                    deviceArr6.push(record._fields[3].properties.device)
+                    priceArr6.push(record._fields[3].properties.price)
                 });
             }
             else {
@@ -2491,9 +2746,6 @@ router.post('/modify', function (req, res) {
 
                 activityTypeArr5.push(' ')
                 dateArr5.push(' ')
-
-                nameArr6.push(' ')
-                affiliationArr6.push(' ')
 
                 dataNameArr6.push(' ')
                 dataTypeArr6.push(' ')
@@ -2599,8 +2851,6 @@ router.post('/modify', function (req, res) {
                         activityTypes5: activityTypeArr5,
                         dates5: dateArr5,
 
-                        names6 : nameArr6,
-                        affiliations6 : affiliationArr6,
                         dataTypes6: dataTypeArr6,
                         dataNames6: dataNameArr6,
                         devices6: deviceArr6,

@@ -88,7 +88,7 @@
                 <br><br>
                 <div class="fontSize">
                     <form method="post" action="/dataAdd">
-                        <div style="text-align: center; font-size:1.5em;">제공자<br></div>
+                        <div style="text-align: center; font-size:1.5em;">소유자<br></div>
                         <div class="row">
                             <div style="margin:0 auto;">
                                 <div class="input-group" style="width:30%; margin:0 auto;">
@@ -149,11 +149,11 @@
                         <div style="text-align: center; font-size:1.5em;">활동<br></div>
                         <div class="row" style="width:320px; margin:0 auto;">
                             <select id="activityType" name="activityType" class="form-control">
-                                <option value=''>타입</option>
-                                <option value="판매">판매</option>
-                                <option value="구매">구매</option>
+                                <option value="생성">생성</option>
                                 <option value="배포">배포</option>
-                                <option value="수정">수정</option>
+                                <option value="판매">판매</option>
+                                <option value="가공">가공</option>
+                                <option value="변환">변환</option>
                             </select>
                         </div>
                         <br>
@@ -170,7 +170,7 @@
                             </div>
                         </div>
                         <br>
-                        <div style="text-align: center; font-size:1.5em;">수신자<br></div>
+                        <div style="text-align: center; font-size:1.5em;">행위자<br></div>
                         <div class="row">
                             <div style="margin:0 auto;">
                                 <div class="input-group" style="width:30%; margin:0 auto;">
@@ -182,6 +182,50 @@
                                     <span class="input-group-addon">소속</span>
                                     <input type="text" id="r_affiliation" name="r_affiliation" value=''
                                            class="form-control"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <br>
+                        <div style="text-align: center; font-size:1.5em;">데이터<br></div>
+                        <div class="row">
+                            <div style="margin:0 auto;">
+                                <div class="input-group" style="width:30%; margin:0 auto;">
+                                    <span class="input-group-addon">데이터ID</span>
+                                    <input type="text" id="dataName2" name="dataName2" class="form-control"/>
+                                </div>
+                                <br>
+                                <div class="input-group" style="width:30%; margin:0 auto;">
+                                    <span class="input-group-addon">가격</span>
+                                    <input type="text" id="price2" name="price2" class="form-control"/>
+                                </div>
+                                <br>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
+                                    <div class="col-sm-6 col-md-4">
+                                        <select id="dataType2" name="dataType2" class="form-control">
+                                            <option value=''>타입</option>
+                                            <option value="건강데이터">건강</option>
+                                            <option value="의료데이터">의료</option>
+                                            <option value="위치데이터">위치</option>
+                                            <option value="음성데이터">음성</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <br><br>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-offset-2 col-sm-2" for="company"></label>
+                                    <div class="col-sm-6 col-md-4">
+                                        <select id="device2" name="device2" class="form-control">
+                                            <option value=''>장치</option>
+                                            <option value="AI스피커">AI스피커</option>
+                                            <option value="T머니">T머니</option>
+                                            <option value="레일플러스">레일플러스</option>
+                                            <option value="스마트워치">스마트워치</option>
+                                            <option value="페이션트모니터">페이션트모니터</option>
+                                            <option value="캐시비">캐시비</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
