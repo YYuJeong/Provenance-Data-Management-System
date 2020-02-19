@@ -74,7 +74,7 @@ with driver.session() as session:
     for k in range(len(candidN)):
         N = list(candidN[k])
         nodeSum = len(candidN[k])
-        '''
+   
         path = []
         pathLen = []
 
@@ -88,7 +88,7 @@ with driver.session() as session:
                 pathLenTmp.append(shortP[1])
             path.append(pathTmp)
             pathLen.append(pathLenTmp)
-        '''    
+   
         #algorithm
         g.append(N[0])
         del N[0]
