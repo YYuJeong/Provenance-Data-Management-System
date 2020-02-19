@@ -118,7 +118,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         var config = {}
-        var cypher = "MATCH (k1:Person{ name: '양유정', affiliation: '고려대학교'}),(k2: Person{ name: '정은비'}), p = shortestPath((k1)-[*]-(k2)) RETURN p;"
+        var cypher = "MATCH (k1:Person{ name: '양유정', affiliation: '고려대학교'}),(k2: Person{ name: '정은비', affiliation:'안랩'}), p = shortestPath((k1)-[*]-(k2)) RETURN p;"
         var connection = function () {
             return {url: Neo4j.DB_URL, user: Neo4j.DB_USR, pass: Neo4j.DB_PWD};
         }
