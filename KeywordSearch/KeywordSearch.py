@@ -45,13 +45,15 @@ def shortestPath(tx, n1, n2):
                     "p = shortestPath((k1)-[*]-(k2)) "
                     "RETURN p, length(p)" 
                     , k1_name = n1[0]["name"], k1_aff = n1[0]["affiliation"]
-                    , k2_name = n2[0]["name"], k2_aff = n2[0]["affiliation"])).values()[0]
-    return length
+                    , k2_name = n2[0]["name"], k2_aff = n2[0]["affiliation"])).values()
+
+    if length:
+        return length
 
 # proposed
 with driver.session() as session:
     #keywords = ['가가가', '나나나', '다다다']
-    keywords = ['양유정' , '서민지'] 
+    keywords = ['양유정' , '서민지', '장보라' ] 
     kLabels = []
     kNodes = []
 
@@ -66,46 +68,89 @@ with driver.session() as session:
     candidN = list(product(*kNodes))
 
     #initialize subgraph g and N
-    
+
     g = []
     N = []
     graphs = [] # pair 저장
 
     for k in range(len(candidN)):
+
         N = list(candidN[k])
         nodeSum = len(candidN[k])
 
         path = []
         pathLen = []
-
+        #print("k : ", k)
+        flag = True
         for i in range(len(N)):
 
             pathTmp = []
             pathLenTmp = []
+            #print("i 한다 : " , i)
+            if not flag:
+                break
             for j in range(i+1, len(N)):
+                #print(i, N[i])
+                #print(j, N[j])
                 shortP = session.read_transaction(shortestPath, n1 = N[i], n2 = N[j])
-                pathTmp.append(shortP[0])
-                pathLenTmp.append(shortP[1])
+                
+                if shortP is not None:
+                    #print(shortP[0])
+                    pathTmp.append(shortP[0][0])
+                    pathLenTmp.append(shortP[0][1])
+                else:
+                    #print(N[i], N[j] , "경로 없음")
+                    flag = False  
+                    break
             path.append(pathTmp)
-            pathLen.append(pathLenTmp)
-
+            pathLen.append(pathLenTmp)  
+        '''
+            print("j 반복 끝")
+        print("i 반복 끝")
+        print("pathLen: ", pathLen)
+        print("path: " , path)
+        print(" ")
+        '''
         #algorithm
-        g.append(N[0])
-        del N[0]
-        graphs.append([])
-        for i in range(nodeSum-1):
-            shortestLenIndex = pathLen[i].index(min(pathLen[i]))
-            graphs[k].append(path[i][shortestLenIndex])
-            g.append(N[shortestLenIndex])
-            del N[shortestLenIndex]
+        if pathLen and flag:
+            #print("N : ", N)
+            g.append(N[0])
+            del N[0]
+            graphs.append([])
 
-        N = []
-        g = []
+            for i in range(nodeSum-1):
+                '''
+                print("  i : ", i)
+                print("pathLen: ", pathLen)
+                print("path: " , path)
+                '''
+                shortestLenIndex = pathLen[i].index(min(pathLen[i]))
+
+                graphs[k].append(path[i][shortestLenIndex])
+                g.append(N[shortestLenIndex])
+                del N[shortestLenIndex]
+                #print("g: ",g)
+    
+            #print("="*100)
+            #'''
+            
+            N = []
+            g = []
+        else:
+
+            graphs.append([])
+
+
+ 
     print("proposed start_time", start_time)
     print("---%s seconds ---" %(time.time() - start_time))
+
+    count = 0
     for each in graphs:
-        print(each)
-    
+        if not each:
+            count = count + 1
+    print(count)
+
 
 '''  
 # naive        
