@@ -53,7 +53,7 @@ def shortestPath(tx, n1, n2):
 # proposed
 with driver.session() as session:
     #keywords = ['가가가', '나나나', '다다다']
-    keywords = ['양유정' , '서민지', '장보라' ] 
+    keywords = ['양유정' , '서민지', '김이진' ] 
     kLabels = []
     kNodes = []
 
@@ -146,11 +146,24 @@ with driver.session() as session:
     print("---%s seconds ---" %(time.time() - start_time))
 
     count = 0
+    results = []
     for each in graphs:
-        if not each:
+        if each:
+            print(each)
             count = count + 1
+            results.append(each) 
     print(count)
-
+    
+    resultLen = []
+    for each in results:
+        sumLen = 0
+        for i in range(len(keywords)-1):
+            sumLen = sumLen + len(each[i])
+        resultLen.append(sumLen)
+    resultIndex = sorted(range(len(resultLen)), key=lambda k: resultLen[k])         
+    ranking = []
+    for i in resultIndex:   
+        ranking.append(results[i])
 
 '''  
 # naive        
