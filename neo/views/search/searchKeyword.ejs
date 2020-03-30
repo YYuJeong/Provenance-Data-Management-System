@@ -50,21 +50,21 @@
         <% }else{ %>
             <div class="container" style="display: inline-block; text-align: center;">
                 <div style="text-align: center; font-size:2em;">키워드 검색
-
-
                 </div>
                 <br>
-                <form class="form-inline" method="post" action="/keyword">
+                <form class="form-inline" method="post" action="/eyword">
                     <table style="margin: auto; border: 0px;">
                         <tr>
-                            <td><input type="text" value= <%= esession.user %> class="form-control" name="keyword"
-                                       style="width:300px;"></td>
+                            <td><input type="text" class="form-control" name="keyword" id="keyword" style="width:300px;">
+                            </td>
                         </tr>
                         <tr>
                             <td><br>
+                                <!--
                                 <a title="Execute" id="execute">
+                                -->
                                     <!--<input class="btn btn-primary" value="검색" id="keywordBtn" onclick="location.href='searchkey'">-->
-                                    <input class="btn btn-primary" value="검색" id="keywordBtn">
+                                    <input class="btn btn-primary" onclick="searchData();" value="검색">
                                 </a>
                             </td>
                         </tr>
@@ -116,16 +116,36 @@
 <script src="/scripts/config.js"></script>
 <!--var data = document.getElementById("keyResult").innerHTML;-->
 <script type="text/javascript">
+    var config = {}
+    var cypher;
+
+    /*
     $(document).ready(function () {
-        var config = {}
-        var cypher = "MATCH (k1:Person{ name: '양유정', affiliation: '고려대학교'}),(k2: Person{ name: '정은비', affiliation:'안랩'}), p = shortestPath((k1)-[*]-(k2)) RETURN p;"
+        
+        cypher = "MATCH (k1:Person{ name: '양유정'}),(k2: Person{ name: '정은비'}), p =(k1)-[*3..5]-(k2) RETURN p;"
         var connection = function () {
             return {url: Neo4j.DB_URL, user: Neo4j.DB_USR, pass: Neo4j.DB_PWD};
         }
         new Cy2NeoD3(config, "graph", "datatable", cypher, "execute", connection, true);
+        
     });
-</script>
+*/
+    function searchData() {
 
+        console.log(document.getElementById('keyword').value);
+        var keyStr = document.getElementById('keyword').value;
+        var keyword = keyStr.split(" ");
+        
+        cypher = "MATCH (k1:Person{name:'" + keyword[0] + "'}),(k2: Person{name:'" + keyword[1] + "'}), p =(k1)-[*3..5]-(k2) RETURN p;"
+        //var cypher = "MATCH (k1:Person{ name: '양유정'}),(k2: Person{ name: '정은비'}), p =(k1)-[*3..5]-(k2) RETURN p;"
+        var connection = function () {
+            return {url: Neo4j.DB_URL, user: Neo4j.DB_USR, pass: Neo4j.DB_PWD};
+        }
+        new Cy2NeoD3(config, "graph", "datatable", cypher, "execute", connection, true);
+
+    }
+
+</script>
 
 </body>
 </html>
