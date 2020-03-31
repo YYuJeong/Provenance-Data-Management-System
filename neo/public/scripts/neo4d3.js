@@ -8,6 +8,9 @@ function Neo(urlSource) {
 		executeQuery: function(query, params, cb) {
 			var connection = urlSource();
 			var auth = ((connection.user || "") == "") ? "" : "Basic " + btoa(connection.user + ":" + connection.pass);
+			//jQuery.ajaxSettings.traditional = true;
+
+
 			$.ajax(txUrl(), {
 				type: "POST",
 				data: JSON.stringify({
@@ -18,6 +21,7 @@ function Neo(urlSource) {
 					}]
 				}),
 				contentType: "application/json",
+				async:false,
 				error: function(err) {
 					cb(err);
 				},
@@ -25,15 +29,20 @@ function Neo(urlSource) {
 				    if (auth && auth.length) xhr.setRequestHeader ("Authorization", auth);
 				},
 				success: function(res) {
+
+					//console.log("ajax query: ", queries[0])
 					if (res.errors.length > 0) {
 						cb(res.errors);
 					} else {
 						var cols = res.results[0].columns;
+						//console.log("dd " +JSON.stringify(res.results[0].data))
 						var rows = res.results[0].data.map(function(row) {
 							var r = {};
 							cols.forEach(function(col, index) {
 								r[col] = row.row[index];
 							});
+							//console.log("r: " + JSON.stringify(r))
+
 							return r;
 						});
 						var nodes = [];
@@ -46,6 +55,7 @@ function Neo(urlSource) {
 						   return -1;
 					    }
 						res.results[0].data.forEach(function(row) {
+
 							row.graph.nodes.forEach(function(n) {
 							   var found = nodes.filter(function (m) { return m.id == n.id; }).length > 0;
 							   if (!found) {
@@ -64,7 +74,9 @@ function Neo(urlSource) {
 						cb(null,{table:rows,graph:{nodes:nodes, links:rels},labels:labels});
 					}
 				}
+
 			});
+
 		}
 	};
 	return me;
