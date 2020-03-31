@@ -7,78 +7,49 @@ function Cy2NeoD3(config, graphId, tableId, sourceId, execId, urlSource, renderG
         //evt.preventDefault();
 
         var queries = editor;
-        var ss = [] 
-        var gs = []
-        console.log("Executing Query",queries);
-        /*
+        var resArr = [] 
+        var graphs = []
+        
         queries.forEach(function (query, index){
             console.log(index, query);
             neo.executeQuery(query , {}, function (err, res) {
-                console.log("esss: " + query)
-                console.log("**************************************************")
                 res = res || {}
-                //console.log("res" + JSON.stringify(res))
-                ss.push(res);
-                gs.push(res.graph)
+
+                resArr.push(res)
+                graphs.push(res.graph)
             });
         });
-        console.log("@@@@@")
-        */
-        /*
-        ss.forEach(function (s, index){
-            console.log("ss", index)
-            console.log(s.graph['nodes'].length)
 
-        });
-        */
-        /*
-        var s1 = gs[0]['nodes']
-        console.log(JSON.stringify(s1))
-        var s2 = gs[1]['nodes']
-        console.log(JSON.stringify(s2))
-        console.log(s1.length, s2.length)
-        for(var i = 0; i<s2.length ; i++){
-            s1[s1.length++] = s2[i]
-        }
-        console.log(s1.length)
-        console.log(Object.keys(s1))
-        console.log(Object.values(s1))
-        
-        
-        console.log("@@@@@+++++++++++++++++++++++++++++++++++++")
-        var s1l = gs[0]['links']
-        console.log(JSON.stringify(s1l))
-        console.log(Object.keys(s1l))
-        var s2l = gs[1]['links']
-        console.log(JSON.stringify(s2l))
-        console.log(s1l.length, s2l.length)
-        for(var i = 0; i<s2l.length ; i++){
-            s1l[s1l.length++] = s2l[i]
+        var graphNode = graphs[0]['nodes']
+        for(var j = 1; j< graphs.length; j++){
+            for(var i = 0; i<graphs[j]['nodes'].length ; i++){
+                graphNode[graphNode.length++] = graphs[j]['nodes'][i]
+            }
         }
 
-        console.log(s1l.length)
-        console.log(Object.keys(s1l))
-        console.log(Object.values(s1l))
+        var graphLink = graphs[0]['links']
+        for(var j = 1; j< graphs.length; j++){
+            for(var i = 0; i<graphs[j]['links'].length ; i++){
+                graphLink[graphLink.length++] = graphs[j]['links'][i]
+            }
+        }
 
-        var newgraph = {
-            'nodes' : s1,
-            'links' : s1l
+        //console.log(Object.keys(graphLink))
+        //console.log(Object.values(graphLink))
+        
+        var graphResult = {
+            'nodes' : graphNode,
+            'links' : graphLink
         };
 
-        console.log(Object.keys(newgraph))
-        console.log(Object.values(newgraph))
-        console.log('========================================================')
         if (renderGraph) {
-            if (newgraph) {
+            if (graphResult) {
                 var c = $("#" + graphId);
                 var t = $("#" + tableId);
                 t.empty();
                 c.empty();
-                neod3.render(graphId, c, newgraph);
+                neod3.render(graphId, c, graphResult);
                 // renderResult(tableId, res.table);
-                console.log(newgraph)
-                console.log(Object.keys(newgraph))
-                console.log(Object.values(newgraph))
             } else {
                 if (err) {
                     console.log(err);
@@ -90,10 +61,11 @@ function Cy2NeoD3(config, graphId, tableId, sourceId, execId, urlSource, renderG
                 }
             }
         }
-        */
+        
+        
         //console.log(JSON.stringify(ss[0].graph))
 
-       
+        /* 쿼리 하나 실행하는 기존 코드
         neo.executeQuery(queries , {}, function (err, res) {
             //  console.log("res" + JSON.stringify(res))
             res = res || {}
@@ -126,7 +98,7 @@ function Cy2NeoD3(config, graphId, tableId, sourceId, execId, urlSource, renderG
                 cbResult(res);
             }
         });
-
+        */
         
     } catch (e) {
         console.log(e);
