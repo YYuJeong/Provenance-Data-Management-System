@@ -2,22 +2,22 @@ function Neod3Renderer() {
 
     var styleContents =
         "node {\
-          diameter: 40px;\
+          diameter: 53px;\
           color: #DFE1E3;\
           border-color: #D4D6D7;\
-          border-width: 2px;\
+          border-width: 1px;\
           text-color-internal: #000000;\
           text-color-external: #000000;\
           caption: '{name}';\
-          font-size: 12px;\
+          font-size: 13px;\
         }\
         relationship {\
           color: #4356C0;\
-          shaft-width: 3px;\
-          font-size: 9px;\
-          padding: 3px;\
+          shaft-width: 2px;\
+          font-size: 12px;\
+          padding: 1px;\
           text-color-external: #000000;\
-          text-color-internal: #FFFFFF;\
+          text-color-internal: #000000;\
         }\n";
 
     var skip = ["id", "start", "end", "source", "target", "labels", "type", "selected","properties"];
@@ -32,7 +32,7 @@ function Neod3Renderer() {
     var blobSupport = 'Blob' in window;
     var URLSupport = 'URL' in window && 'createObjectURL' in window.URL;
     var msBlobSupport = typeof window.navigator.msSaveOrOpenBlob !== 'undefined';
-    var svgStyling = '<style>\ntext{font-family:sans-serif}\n</style>';
+    var svgStyling = '<style>\ntext{font-family:RIDIBatang}\n</style>';
     var stylingUrl = window.location.hostname === 'www.neo4j.org' ? 'http://gist.neo4j.org/css/neod3' : 'styles/neod3';
     if (window.isInternetExplorer) {
         stylingUrl += '-ie.css';
@@ -101,11 +101,11 @@ function Neod3Renderer() {
             var colors = neo.style.defaults.colors;
             for (var selector in styleCaptions) {
                 if (!(selector in styles)) {
-                    var color = colors[currentColor];
+                    var color = colors[currentColor + 4];
                     currentColor = (currentColor + 1) % colors.length;
                     var textColor = window.isInternetExplorer ? '#000000' : color['text-color-internal'];
                     var style = {selector:selector, caption:styleCaptions[selector], color:color.color, 
-                         "border-color":color['border-color'], "text-color-internal":textColor,"text-color-external": textColor }
+                         "border-color":color['border-color'],"text-color-internal": '#f4f4f4',"text-color-external": textColor }
                     styles[selector] = style;
                 }
             }
