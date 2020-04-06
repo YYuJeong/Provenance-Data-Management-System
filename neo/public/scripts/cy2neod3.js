@@ -9,7 +9,8 @@ function Cy2NeoD3(config, graphId, tableId, sourceId, execId, urlSource, renderG
         var queries = editor;
         var resArr = [] 
         var graphs = []
-        
+        var tables = []
+
         queries.forEach(function (query, index){
             console.log(index, query);
             neo.executeQuery(query , {}, function (err, res) {
@@ -17,30 +18,38 @@ function Cy2NeoD3(config, graphId, tableId, sourceId, execId, urlSource, renderG
 
                 resArr.push(res)
                 graphs.push(res.graph)
+                tables.push(res.table)
             });
         });
-
         var graphNode = graphs[0]['nodes']
         for(var j = 1; j< graphs.length; j++){
             for(var i = 0; i<graphs[j]['nodes'].length ; i++){
                 graphNode[graphNode.length++] = graphs[j]['nodes'][i]
             }
         }
-
         var graphLink = graphs[0]['links']
         for(var j = 1; j< graphs.length; j++){
             for(var i = 0; i<graphs[j]['links'].length ; i++){
                 graphLink[graphLink.length++] = graphs[j]['links'][i]
             }
         }
-
-        //console.log(Object.keys(graphLink))
-        //console.log(Object.values(graphLink))
-        
         var graphResult = {
             'nodes' : graphNode,
             'links' : graphLink
         };
+
+        //console.log(Object.keys(graphLink))
+        //console.log(Object.values(graphLink))
+
+        var tableResult = tables[0]
+        for (var i = 1; i<tables.length; i++){
+            for(var j = 0; j<tables[i].length; j++){
+                tableResult[tableResult.length++] = tables[i][j]
+            }
+        }
+
+        //console.log(Object.keys(tableResult))
+        //console.log(Object.values(tableResult))
 
         if (renderGraph) {
             if (graphResult) {
@@ -49,7 +58,7 @@ function Cy2NeoD3(config, graphId, tableId, sourceId, execId, urlSource, renderG
                 t.empty();
                 c.empty();
                 neod3.render(graphId, c, graphResult);
-                // renderResult(tableId, res.table);
+                renderResult(tableId, tableResult);
             } else {
                 if (err) {
                     console.log(err);
@@ -60,6 +69,9 @@ function Cy2NeoD3(config, graphId, tableId, sourceId, execId, urlSource, renderG
                     }
                 }
             }
+        }
+        if (cbResult) {
+            cbResult(res);
         }
         
         
