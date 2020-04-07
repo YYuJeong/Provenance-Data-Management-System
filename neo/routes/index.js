@@ -17,6 +17,7 @@ const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic(db_info.DB
 const session = driver.session();
 const iconv = require('iconv-lite');
 var keyResult = require('./keyResult');
+var Cy2NeoD3 = require('../public/scripts/cy2neod3');
 
 let nameArr5 = [];
 let affiliationArr5 = [];
@@ -256,7 +257,7 @@ router.post('/data/uploadData', function (req, res, next) {
 
         // E.g : http://localhost:3000/name?firstname=Mike&lastname=Will 
         // so, first name = Mike and last name = Will 
-        var process = spawn('python', [c,
+        var process = spawn('python', [cmd,
             "DD",
             "SSS"]);
 
