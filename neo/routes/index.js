@@ -79,6 +79,7 @@ function promiseFromChildProcess(child) {
     });
 }
 
+/*
 router.get('/search/searchkey', function (req, res, next) {
     var process = spawn('python', [__dirname + '/search/search.py']);
     var wrote = 0;
@@ -99,7 +100,7 @@ router.get('/search/searchkey', function (req, res, next) {
             console.log('promise rejected: ', err);
         });
 });
-
+*/
 router.get('/contact', function (req, res, next) {
     con.query("SELECT * FROM iitp.users;", function (err, result, fields) {
         console.log("err : " + err);
@@ -1706,181 +1707,147 @@ function getCheckNode(keyword) {
 }
 
 router.post('/keyword', function (req, res) {
+    var keyStr = req.body.keyword;
+    console.log(keyStr);
+    var keyword = keyStr.split(' ');
+    console.log(keyword)
+    var cyphers = [
+        "MATCH (personA:Person { name: '양유정', affiliation: '한국인터넷진흥원'}), (personB:Person { name: '서민지', affiliation: '한국보건산업진흥원' }), (personC:Person { name: '송가인', affiliation: '건강보험심사평가원' }) WITH personA, personB, personC MATCH p = shortestPath((personA)-[*]-(personB)) MATCH p2 = shortestPath((personB)-[*]-(personC)) RETURN p, p2",
+        "MATCH (personA:Person { name: '양유정', affiliation: 'SK텔레콤'}), (personB:Person { name: '서민지', affiliation: '숙명여자대학교' }), (personC:Person { name: '송가인', affiliation: '한국과학기술정보연구원' }) WITH personA, personB, personC MATCH p = shortestPath((personA)-[*]-(personB)) MATCH p2 = shortestPath((personB)-[*]-(personC)) RETURN p, p2",
+        "MATCH (personA:Person { name: '양유정', affiliation: '상명대학교'}), (personB:Person { name: '송가인', affiliation: '국립중앙의료원' }), (personC:Person { name: '서민지', affiliation: 'AWS' }) WITH personA, personB, personC MATCH p = shortestPath((personA)-[*]-(personB)) MATCH p2 = shortestPath((personB)-[*]-(personC)) RETURN p, p2"
+    ];
+    var cypher = "MATCH (k1:Person{name:'" + keyword[0] + "'}),(k2: Person{name:'" + keyword[1] + "'}), p =(k1)-[*3..5]-(k2) RETURN p;"
+    var wrote = 0;
+    var process = spawn('python', [__dirname + '\\search\\search.py']);
 
-    var result4Arr = []
-    var result3Arr = []
-    var arrLength;
-    var startTime = new Date().getTime();
-    
-    var keye = req.body.keywords;
-    console.log("ss")
-    getKeyword(req.body.keywords)
-        .then(
-            function (keywords) {
-                return new Promise(function (resolve, reject) {
-                    Promise.all([getCheckNode(keywords[0]), getCheckNode(keywords[1])]).then(function (results) {
-                        results.push(keywords);
-                        resolve(results);
-                        console.log(startTime)
-                        console.log(keye)
-                        console.log("Ddd")
-                    });
-                });
-            }
-        )
-        .then(function (keys) {
+    let keyword_result = "";
+    promiseFromChildProcess(process)
+        .then(function (result) {
+            console.log('promise complete: ', result);
+            process.stdout.on('data', function (data) {
+                if (wrote == 0) {
+                    console.log(data)
+                    keyword_result = iconv.decode(data, 'EUC-KR').toString();
+                    keyResult.setKeywordResult(keyword_result);
+                }
+                wrote += 1;
 
-            var group = [keys[0], keys[1]];
-            var keyword = keys[2]
-            var resultArr = []
-            console.log(group, keyword);
-
-            var user_gubun = session_value.getSession().gubun;
-            var user_name = session_value.getSession().user;
-            var query = "MATCH (a1:" + group[0] + " {name:'" + keyword[0] + "'}), (a2:" + group[1] + " {name:'" + keyword[1] + "'}), path=((a1)-[*3..4]-(a2)) RETURN path ORDER BY LENGTH(path)";
-
-            var naiveQuery = "MATCH (s_agent:Agent)<-[:wasAttributedTo]-(entity:Entity)-[:wasGeneratedBy]-(activity:Activity)-[]-(r_agent: Agent) WHERE a1.name:'" + keyword[1] + "' RETURN path";
-
-// "MATCH (s_agent:Agent)<-[:wasAttributedTo]-(entity:Entity)-[:wasGeneratedBy]-(activity:Activity)-[]-(r_agent: Agent) 
-//WHERE a1.name:'"+ keyword[1] +"' RETURN path"
-            //var naiveQuery = "MATCH (a1:"+ group[0] +" {name:'"+ keyword[0] +"'}), path=((a1)-[*3..4]-(a2)) RETURN path ORDER BY LENGTH(path)"
-            var naiveQuery = "MATCH path = ((a1:" + group[0] + ") - [*3..4]-(a2)) WHERE a1.name = '" + keyword[0] + "' RETURN path ORDER BY LENGTH(path)"
-            var endArr = []
-            console.log(startTime)
-            console.log(keye)
-            console.log("Ddd")
-            /*
-                session
-                .run(naiveQuery)
-                .then(result => {
-                  var endTime = new Date().getTime();
-                  console.log("키워드 서치 실행 시간 : ", (endTime - startTime));
-                  leng = result.records.length
-                  console.log(result.records.length)
-                  return result.records.map(record => {
-                    path = record.get("path");
-                    start = path["start"]["properties"]["name"]
-                    end = path["end"]["properties"]["name"]
-                    //console.log(record)
-                    for(var p in path["segments"]){
-                      if(path["segments"][p].end.properties.name == keyword[1]){
-                        console.log(path["segments"][p].end.properties.name)
-                      }
-
-                    }
-
-                    if(path.length == 3){
-                     // length3count++;
-                      for(var p in path["segments"]){
-                        result3Arr.push(path["segments"][p].start.properties.name)
-                      }
-                      result3Arr.push(end)
-                    }
-                    else if(path.length == 4){
-                    //  length4count++;
-                      for(var p in path["segments"]){
-                        result4Arr.push(path["segments"][p].start.properties.name)
-                      }
-                      result4Arr.push(end)
-                    }
-
-                    arrLength = result4Arr.length;
-
-
-                    for (var i = 0; i <result3Arr.length ; i++){
-                      console.log("result3Arr[" , i , "] : ", result3Arr[i])
-                    }
-
-                      res.render('search/searchKeywordResult.ejs',{
-                        esession: session_value.getSession(),
-                        //result4s:result4Arr,
-                        //result3s : result3Arr
-                      } );
-                      session.close();
-
-                  });
-                })
-
-                .catch(function (err) {
-                   console.log(err);
-                });*/
-            res.render('search/searchKeyword.ejs', {
-                esession: session_value.getSession(),
-                //result4s:result4Arr,
-                //result3s : result3Arr
             });
+            process.on('close', function (data) {
+                console.log(keyword_result);
+                //res.render("search/searchKeyword", {esession: session_value.getSession(), data:keyResult.getKeywordResult()});
+                res.redirect('search/searchKeyword');
+            });
+        }, function (err) {
+            console.log('promise rejected: ', err);
         });
-});
-
-/* 키우드 서치 부분
-session
-.run(query)
-.then(result => {
-  var endTime = new Date().getTime();
-  console.log("키워드 서치 실행 시간 : ", (endTime - startTime));
-  leng = result.records.length
-  console.log(result.records.length)
-  return result.records.map(record => {
-    path = record.get("path");
-    start = path["start"]["properties"]["name"]
-    end = path["end"]["properties"]["name"]
-
-
-    res.render('search/searchKeywordResult.ejs',{
-      esession: session_value.getSession(),
-      result4s:result4Arr,
-      result3s : result3Arr} );
-    session.close();
-    //console.log(record)
-    /*
-    for(var p in path["segments"]){
-      //console.log(path["segments"][p]);
-    }
-    if(path.length == 3){
-     // length3count++;
-      for(var p in path["segments"]){
-        result3Arr.push(path["segments"][p].start.properties.name)
-      }
-      result3Arr.push(end)
-    }
-    else if(path.length == 4){
-    //  length4count++;
-      for(var p in path["segments"]){
-        result4Arr.push(path["segments"][p].start.properties.name)
-      }
-      result4Arr.push(end)
-    }
-
-    arrLength = result4Arr.length;
-    */
-/*
-for (var i = 0; i <result3Arr.length ; i++){
-  console.log("result3Arr[" , i , "] : ", result3Arr[i])
-}
-
-if( arrLength == leng){
-  res.render('search/searchKeywordResult.ejs',{
-    esession: session_value.getSession(),
-    result4s:result4Arr,
-    result3s : result3Arr} );
-  session.close();
-}
-else if( arrLength == 300){
-  res.render('search/searchKeywordResult.ejs',{
-    esession: session_value.getSession(),
-    result4s:result4Arr,
-    result3s : result3Arr} );
-  session.close();
-}
 
 });
-})
-.catch(function (err) {
-console.log(err);
+
+router.get('search/searchKeyword', function(req, res){
+    res.render("search/searchKeyword", {esession: session_value.getSession(), data:keyResult.getKeywordResult()});
 });
-});
-});
-*/
+
+// router.post('/keyword', function (req, res) {
+//
+//     var result4Arr = []
+//     var result3Arr = []
+//     var arrLength;
+//     var startTime = new Date().getTime();
+//     var keye = req.body.keyword;
+//     getKeyword(req.body.keyword)
+//         .then(
+//             function (keywords) {
+//                 return new Promise(function (resolve, reject) {
+//                     Promise.all([getCheckNode(keywords[0]), getCheckNode(keywords[1])]).then(function (results) {
+//                         results.push(keywords);
+//                         resolve(results);
+//                     });
+//                 });
+//             }
+//         )
+//         .then(function (keys) {
+//
+//             var group = [keys[0], keys[1]];
+//             var keyword = keys[2]
+//             var resultArr = []
+//             console.log(group, keyword);
+//
+//             var user_gubun = session_value.getSession().gubun;
+//             var user_name = session_value.getSession().user;
+//             var query = "MATCH (a1:" + group[0] + " {name:'" + keyword[0] + "'}), (a2:" + group[1] + " {name:'" + keyword[1] + "'}), path=((a1)-[*3..4]-(a2)) RETURN path ORDER BY LENGTH(path)";
+//
+//             var naiveQuery = "MATCH (s_agent:Agent)<-[:wasAttributedTo]-(entity:Entity)-[:wasGeneratedBy]-(activity:Activity)-[]-(r_agent: Agent) WHERE a1.name:'" + keyword[1] + "' RETURN path";
+//
+// // "MATCH (s_agent:Agent)<-[:wasAttributedTo]-(entity:Entity)-[:wasGeneratedBy]-(activity:Activity)-[]-(r_agent: Agent)
+// //WHERE a1.name:'"+ keyword[1] +"' RETURN path"
+//             //var naiveQuery = "MATCH (a1:"+ group[0] +" {name:'"+ keyword[0] +"'}), path=((a1)-[*3..4]-(a2)) RETURN path ORDER BY LENGTH(path)"
+//             var naiveQuery = "MATCH path = ((a1:" + group[0] + ") - [*3..4]-(a2)) WHERE a1.name = '" + keyword[0] + "' RETURN path ORDER BY LENGTH(path)"
+//             var endArr = []
+//             /*
+//                 session
+//                 .run(naiveQuery)
+//                 .then(result => {
+//                   var endTime = new Date().getTime();
+//                   console.log("키워드 서치 실행 시간 : ", (endTime - startTime));
+//                   leng = result.records.length
+//                   console.log(result.records.length)
+//                   return result.records.map(record => {
+//                     path = record.get("path");
+//                     start = path["start"]["properties"]["name"]
+//                     end = path["end"]["properties"]["name"]
+//                     //console.log(record)
+//                     for(var p in path["segments"]){
+//                       if(path["segments"][p].end.properties.name == keyword[1]){
+//                         console.log(path["segments"][p].end.properties.name)
+//                       }
+//
+//                     }
+//
+//                     if(path.length == 3){
+//                      // length3count++;
+//                       for(var p in path["segments"]){
+//                         result3Arr.push(path["segments"][p].start.properties.name)
+//                       }
+//                       result3Arr.push(end)
+//                     }
+//                     else if(path.length == 4){
+//                     //  length4count++;
+//                       for(var p in path["segments"]){
+//                         result4Arr.push(path["segments"][p].start.properties.name)
+//                       }
+//                       result4Arr.push(end)
+//                     }
+//
+//                     arrLength = result4Arr.length;
+//
+//
+//                     for (var i = 0; i <result3Arr.length ; i++){
+//                       console.log("result3Arr[" , i , "] : ", result3Arr[i])
+//                     }
+//
+//                       res.render('search/searchKeywordResult.ejs',{
+//                         esession: session_value.getSession(),
+//                         //result4s:result4Arr,
+//                         //result3s : result3Arr
+//                       } );
+//                       session.close();
+//
+//                   });
+//                 })
+//
+//                 .catch(function (err) {
+//                    console.log(err);
+//                 });*/
+//             res.render('search/searchKeyword.ejs', {
+//                 esession: session_value.getSession(),
+//                 //result4s:result4Arr,
+//                 //result3s : result3Arr
+//             });
+//         });
+// });
+
+
 router.post('/getDeleteValues', function (req, res) {
     var checkValues5 = req.body.deleteCheck5;
     var checkValues4 = req.body.deleteCheck4;
