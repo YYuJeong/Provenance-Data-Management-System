@@ -190,13 +190,14 @@ var options = {
 
 
 router.post('/data/uploadData', function (req, res, next) {
+    console.log("SSs")
     var form = new multiparty.Form();
     var name;
     // get field name & value
     form.on('field', function (name, value) {
         console.log('normal field / name = ' + name + ' , value = ' + value);
     });
-
+    
     // file upload handling
     form.on('part', function (part) {
         var filename;
@@ -277,6 +278,7 @@ router.post('/data/uploadData', function (req, res, next) {
     form.parse(req);
 })
 
+/*
 router.post('/create', upload.single("file"), function (req, res, next) {
 
     let file = req.file
@@ -288,6 +290,7 @@ router.post('/create', upload.single("file"), function (req, res, next) {
     res.render('data/uploadData', {esession: session_value.getSession()});
     //res.json(result);
 });
+*/
 
 
 router.post('/dataAdd', function (req, res) {
@@ -1708,14 +1711,19 @@ router.post('/keyword', function (req, res) {
     var result3Arr = []
     var arrLength;
     var startTime = new Date().getTime();
-    var keye = req.body.keyword;
-    getKeyword(req.body.keyword)
+    
+    var keye = req.body.keywords;
+    console.log("ss")
+    getKeyword(req.body.keywords)
         .then(
             function (keywords) {
                 return new Promise(function (resolve, reject) {
                     Promise.all([getCheckNode(keywords[0]), getCheckNode(keywords[1])]).then(function (results) {
                         results.push(keywords);
                         resolve(results);
+                        console.log(startTime)
+                        console.log(keye)
+                        console.log("Ddd")
                     });
                 });
             }
@@ -1738,6 +1746,9 @@ router.post('/keyword', function (req, res) {
             //var naiveQuery = "MATCH (a1:"+ group[0] +" {name:'"+ keyword[0] +"'}), path=((a1)-[*3..4]-(a2)) RETURN path ORDER BY LENGTH(path)"
             var naiveQuery = "MATCH path = ((a1:" + group[0] + ") - [*3..4]-(a2)) WHERE a1.name = '" + keyword[0] + "' RETURN path ORDER BY LENGTH(path)"
             var endArr = []
+            console.log(startTime)
+            console.log(keye)
+            console.log("Ddd")
             /*
                 session
                 .run(naiveQuery)
