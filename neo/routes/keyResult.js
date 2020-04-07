@@ -5,7 +5,9 @@ function setKeywordResult(data) {
 }
 
 function getKeywordResult() {
-    return keyword_result;
+    let keyword = keyword_result;
+    keyword_result = '';
+    return keyword;
 }
 
 exports.getKeywordResult = getKeywordResult;

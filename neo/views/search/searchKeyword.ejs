@@ -52,7 +52,7 @@
                 <div style="text-align: center; font-size:2em;">키워드 검색
                 </div>
                 <br>
-                <form class="form-inline" method="post" action="/eyword">
+                <form class="form-inline" method="post" action="/keyword">
                     <table style="margin: auto; border: 0px;">
                         <tr>
 
@@ -65,7 +65,7 @@
                                 <a title="Execute" id="execute">
                                 -->
                                     <!--<input class="btn btn-primary" value="검색" id="keywordBtn" onclick="location.href='searchkey'">-->
-                                    <input class="btn btn-primary" onclick="searchData();" value="검색">
+                                    <input class="btn btn-primary" onclick="searchData();" value="검색" type="submit">
 
                                 </a>
                             </td>
@@ -74,6 +74,9 @@
                 </form>
             </div>
         <% } %>
+    </div>
+    <div style="border: 1px solid red;">
+        <%=data%>
     </div>
 
     <hr class="featurette-divider">
@@ -99,7 +102,6 @@
         </div>
     </div>
 </div><!-- /.container -->
-<div style="display: none;" id="keyResult"><%= data %></div>
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
@@ -142,42 +144,24 @@
     });
     */
 
-
     function searchData() {
-
+        var result = <%=data%>
+        console.log(result)
         console.log(document.getElementById('keyword').value);
-        var keyStr = document.getElementById('keyword').value;
-        var keyword = keyStr.split(" ");
-        var cyphers = []
-        //cyphers[0] = "MATCH (k1:Person{ name: '양유정'}),(k2: Person{ name: '정은비'}), p =(k1)-[*3..5]-(k2) RETURN p;"
-        cyphers[0] = "MATCH (personA:Person { name: '양유정', affiliation: '한국인터넷진흥원'}), (personB:Person { name: '서민지', affiliation: '한국보건산업진흥원' }), (personC:Person { name: '송가인', affiliation: '건강보험심사평가원' }) WITH personA, personB, personC MATCH p = shortestPath((personA)-[*]-(personB)) MATCH p2 = shortestPath((personB)-[*]-(personC)) RETURN p, p2"
-        cyphers[1] = "MATCH (personA:Person { name: '양유정', affiliation: 'SK텔레콤'}), (personB:Person { name: '서민지', affiliation: '숙명여자대학교' }), (personC:Person { name: '송가인', affiliation: '한국과학기술정보연구원' }) WITH personA, personB, personC MATCH p = shortestPath((personA)-[*]-(personB)) MATCH p2 = shortestPath((personB)-[*]-(personC)) RETURN p, p2"
-        cyphers[2] = "MATCH (personA:Person { name: '양유정', affiliation: '상명대학교'}), (personB:Person { name: '송가인', affiliation: '국립중앙의료원' }), (personC:Person { name: '서민지', affiliation: 'AWS' }) WITH personA, personB, personC MATCH p = shortestPath((personA)-[*]-(personB)) MATCH p2 = shortestPath((personB)-[*]-(personC)) RETURN p, p2"
-        //cyphers[2] = "MATCH (k1:Person{ name: '서민지'}),(k2: Person{ name: '정예인'}), p =(k1)-[*3..5]-(k2) RETURN p;"
-        var cypher = "MATCH (k1:Person{name:'" + keyword[0] + "'}),(k2: Person{name:'" + keyword[1] + "'}), p =(k1)-[*3..5]-(k2) RETURN p;"
-        //var cypher = "MATCH (k1:Person{ name: '양유정'}),(k2: Person{ name: '정은비'}), p =(k1)-[*3..5]-(k2) RETURN p;"
-        
-        //pythontp
-        //let {PythonShell} = require('python-shell');
-        /*
-        let options = {
-            mode: 'text',
-            pythonPath: '',
-            pythonOptions: ['-u'], // get print results in real-time
-            scriptPath: 'C:/Users/YuJeong/Desktop/',
-            args: ['value1', 'value2', 'value3']
-            };
-            
-        PythonShell.run('test.py', options, function (err, results) {
-        if (err) throw err;
-        // results is an array consisting of messages collected during execution
-        console.log('results: %j', results);
-        });
-        */
-        var connection = function () {
-            return {url: Neo4j.DB_URL, user: Neo4j.DB_USR, pass: Neo4j.DB_PWD};
-        }
-        new Cy2NeoD3(config, "graph", "datatable", cyphers, "execute", connection, true);
+        // var keyStr = document.getElementById('keyword').value;
+        // var keyword = keyStr.split(" ");
+        // var cyphers = []
+        // //cyphers[0] = "MATCH (k1:Person{ name: '양유정'}),(k2: Person{ name: '정은비'}), p =(k1)-[*3..5]-(k2) RETURN p;"
+        // cyphers[0] = "MATCH (personA:Person { name: '양유정', affiliation: '한국인터넷진흥원'}), (personB:Person { name: '서민지', affiliation: '한국보건산업진흥원' }), (personC:Person { name: '송가인', affiliation: '건강보험심사평가원' }) WITH personA, personB, personC MATCH p = shortestPath((personA)-[*]-(personB)) MATCH p2 = shortestPath((personB)-[*]-(personC)) RETURN p, p2"
+        // cyphers[1] = "MATCH (personA:Person { name: '양유정', affiliation: 'SK텔레콤'}), (personB:Person { name: '서민지', affiliation: '숙명여자대학교' }), (personC:Person { name: '송가인', affiliation: '한국과학기술정보연구원' }) WITH personA, personB, personC MATCH p = shortestPath((personA)-[*]-(personB)) MATCH p2 = shortestPath((personB)-[*]-(personC)) RETURN p, p2"
+        // cyphers[2] = "MATCH (personA:Person { name: '양유정', affiliation: '상명대학교'}), (personB:Person { name: '송가인', affiliation: '국립중앙의료원' }), (personC:Person { name: '서민지', affiliation: 'AWS' }) WITH personA, personB, personC MATCH p = shortestPath((personA)-[*]-(personB)) MATCH p2 = shortestPath((personB)-[*]-(personC)) RETURN p, p2"
+        // //cyphers[2] = "MATCH (k1:Person{ name: '서민지'}),(k2: Person{ name: '정예인'}), p =(k1)-[*3..5]-(k2) RETURN p;"
+        // var cypher = "MATCH (k1:Person{name:'" + keyword[0] + "'}),(k2: Person{name:'" + keyword[1] + "'}), p =(k1)-[*3..5]-(k2) RETURN p;"
+        // //var cypher = "MATCH (k1:Person{ name: '양유정'}),(k2: Person{ name: '정은비'}), p =(k1)-[*3..5]-(k2) RETURN p;"
+        // var connection = function () {
+        //     return {url: Neo4j.DB_URL, user: Neo4j.DB_USR, pass: Neo4j.DB_PWD};
+        // }
+        //new Cy2NeoD3(config, "graph", "datatable", cyphers, "execute", connection, true);
 
     }
 
