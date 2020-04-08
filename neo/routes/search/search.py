@@ -52,9 +52,8 @@ if __name__ == "__main__":
 	driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "wowhi223"))
 
 	with driver.session() as session:
-		#print("파라미터: ", sys.argv[1], sys.argv[2])
-		
-		keywords = [sys.argv[1] , sys.argv[2]]#, '정예인']
+		#keywords = ['가가가', '나나나', '다다다']
+		keywords = ['성현제', '안정원'] #, '김칫국']
 		kLabels = []
 		kNodes = []
 
@@ -145,6 +144,7 @@ if __name__ == "__main__":
 	 
 		#print("proposed start_time", start_time)
 		#print("---%s seconds ---" %(time.time() - start_time))
+		#print("Execution Time in Python: %ss" % (time.time() - start_time))
 
 		count = 0
 		results = []
@@ -153,7 +153,7 @@ if __name__ == "__main__":
 				#print(each)
 				count = count + 1
 				results.append(each) 
-		#print(count)
+		#print('★', count, '★')
 		
 		resultLen = []
 		for each in results:
@@ -163,26 +163,7 @@ if __name__ == "__main__":
 			resultLen.append(sumLen)
 		resultIndex = sorted(range(len(resultLen)), key=lambda k: resultLen[k])         
 		ranking = []
-		for i in resultIndex:
+		for i in resultIndex[:10]:
 			ranking.append(results[i])
-			#print(results[i])
-
-		resultOut = ''
-		for i in range(3):
-			keyLabel = next(iter(ranking[i][0].start_node.labels))
-			proper1 = ranking[i][0].start_node['name']
-			proper2 = ranking[i][0].start_node['affiliation']
-			
-			startOut = str(keyLabel) + ' ' + str(proper1) + ' ' + str(proper2)
-			
-			keyLabel = next(iter(ranking[i][0].end_node.labels))
-			proper1 = ranking[i][0].end_node['name']
-			proper2 = ranking[i][0].end_node['affiliation']
-			
-			endOut =  str(keyLabel) + ' ' + str(proper1) + ' ' + str(proper2)
-			
-			resultOut = resultOut + startOut + '/' + endOut + ','
-
-		print(resultOut, end='')
 	driver.close()
-	#print(ranking)
+	print(ranking)

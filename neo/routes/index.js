@@ -192,7 +192,7 @@ var options = {
 
 
 router.post('/data/uploadData', function (req, res, next) {
-    console.log("SSs")
+    console.log("ONEW")
     var form = new multiparty.Form();
     var name;
     // get field name & value
@@ -1709,9 +1709,10 @@ router.post('/keyword', function (req, res) {
     ];
     var c = "MATCH (k1:Person{name:'" + keyword[0] + "'}),(k2: Person{name:'" + keyword[1] + "'}), p =(k1)-[*3..5]-(k2) RETURN p;"
     var wrote = 0;
-    var process = spawn('python', [__dirname + '\\search\\search.py', keyword[0], keyword[1]]);
-    
 
+    //var process = spawn('python', [__dirname + '\\search\\search.py', keyword[0], keyword[1]]);
+    
+    /*
     Promise.all([getCheckNode(keyword[0]), getCheckNode(keyword[1])])
         .then(function(results){
             console.log("TT: ", results);
@@ -1724,6 +1725,11 @@ router.post('/keyword', function (req, res) {
                 console.log(result.records[0].get('length(p)'))
             })
         )
+            */
+
+    //var startTime = new Date().getTime();
+    console.time("calculatingTime")
+    var process = spawn('python', [__dirname + '\\search\\search.py']);
 
     let keyword_result = "";
     promiseFromChildProcess(process)
@@ -1731,17 +1737,20 @@ router.post('/keyword', function (req, res) {
             //console.log('promise complete: ', result);
             process.stdout.on('data', function (data) {
                 if (wrote == 0) {
-                    keyword_result = iconv.decode(data, 'EUC-KR').toString();
 
-                    //keyResult.setKeywordResult(keyword_result);
-                    keyResult.setKeywordResult(c)
+                    //console.log(data)
+                    //keyword_result = iconv.decode(data, 'EUC-KR').toString();
+                    keyword_result = "MATCH (personA:Person { name: '양유정', affiliation: '한국인터넷진흥원'}), (personB:Person { name: '서민지', affiliation: '한국보건산업진흥원' }) WITH personA, personB MATCH p = shortestPath((personA)-[*]-(personB))  RETURN p"
+                    keyResult.setKeywordResult(keyword_result);
                 }
                 wrote += 1;
-
             });
+            var endTime = new Date().getTime();
+            //console.log("Execution time : ", (endTime - startTime));
+            console.timeEnd('calculatingTime');
             process.on('close', function (data) {
                 console.log( keyword_result)
-
+                /*
                 //키워드 두개인 경우
                 var resultCypher = keyword_result.split(',')
                 var paths = []
@@ -1762,7 +1771,7 @@ router.post('/keyword', function (req, res) {
                         }                   
                     })
                 })
-  
+                */
 
                 //res.render("search/searchKeyword.ejs", {esession: session_value.getSession(), data:keyResult.getKeywordResult()});
                 res.redirect('search/searchKeyword');
