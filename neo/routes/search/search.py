@@ -52,8 +52,11 @@ if __name__ == "__main__":
 	driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "wowhi223"))
 
 	with driver.session() as session:
-		#keywords = ['가가가', '나나나', '다다다']
-		keywords = ['성현제', '안정원'] #, '김칫국']
+		keywords = []
+		for i in range(len(sys.argv)-1):
+			keywords.append(sys.argv[i+1])
+
+		#keywords = ['성현제', '안정원'] #, '김칫국']
 		kLabels = []
 		kNodes = []
 
@@ -141,19 +144,10 @@ if __name__ == "__main__":
 				graphs.append([])
 
 
-	 
-		#print("proposed start_time", start_time)
-		#print("---%s seconds ---" %(time.time() - start_time))
-		#print("Execution Time in Python: %ss" % (time.time() - start_time))
-
-		count = 0
 		results = []
 		for each in graphs:
 			if each:
-				#print(each)
-				count = count + 1
 				results.append(each) 
-		#print('★', count, '★')
 		
 		resultLen = []
 		for each in results:
@@ -163,7 +157,39 @@ if __name__ == "__main__":
 			resultLen.append(sumLen)
 		resultIndex = sorted(range(len(resultLen)), key=lambda k: resultLen[k])         
 		ranking = []
-		for i in resultIndex[:10]:
+		for i in resultIndex[:3]:
 			ranking.append(results[i])
+
+		resultOut = ''
+		startNodeLabel = []
+		endNodeLabel =[]
+		
+		startNodeProper = []
+		endNodeProper = []
+		
+		matchCypher = 'MATCH '
+		withCypher = ' WITH personA, personB'
+		spCypher = ' MATCH p = shortestPath((personA)-[*]-(personB))'
+		returnCypher = ' RETURN p' 
+		if len(keywords) == 3:
+			withCypher = withCypher + " ,personC, personD"
+			spCypher = spCypher + " MATCH p2 = shortestPath((personC)-[*]-(personD))"
+			returnCypher = returnCypher + ", p2"       
+
+		for i in range(len(ranking)):
+			pA = " (personA:" + str(next(iter(ranking[i][0].start_node.labels))) + "{name: " + "'"+ str(ranking[i][0].start_node['name']) +"'"+ ", affiliation: " + "'"+ str(ranking[i][0].start_node['affiliation']) + "'"+ "})"
+			pB = " , (personB:" + str(next(iter(ranking[i][0].end_node.labels))) + "{name: " + "'"+ str(ranking[i][0].end_node['name']) +"'"+ ", affiliation: " +"'"+ str(ranking[i][0].end_node['affiliation']) +"'"+ "})"        
+			if len(keywords) == 3:    
+				pC = " , (personC:" + str(next(iter(ranking[i][1].start_node.labels))) + "{name: " + "'"+ str(ranking[i][1].start_node['name']) +"'"+ ", affiliation: " + "'"+ str(ranking[i][1].start_node['affiliation']) + "'"+ "})"
+				pD = " , (personD:" + str(next(iter(ranking[i][1].end_node.labels))) + "{name: " + "'"+ str(ranking[i][1].end_node['name']) +"'"+ ", affiliation: " +"'"+ str(ranking[i][1].end_node['affiliation']) +"'"+ "})"
+			if len(keywords) == 2:
+				outTemp = matchCypher + pA + pB + withCypher + spCypher + returnCypher
+			elif len(keywords) == 3:    
+				outTemp = matchCypher + pA + pB + pC + pD + withCypher + spCypher + returnCypher
+
+			resultOut = resultOut + "/" + outTemp 
+        
+        
 	driver.close()
-	print(ranking)
+	#print("/MATCH (personA:Person { name: '양유정', affiliation: '한국인터넷진흥원'}), (personB:Person { name: '서민지', affiliation: '한국보건산업진흥원' }) WITH personA, personB MATCH p = shortestPath((personA)-[*]-(personB)) RETURN p/")
+	print(resultOut + "/")

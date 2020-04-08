@@ -1702,15 +1702,16 @@ router.post('/keyword', function (req, res) {
     console.log(keyStr);
     var keyword = keyStr.split(' ');
     console.log(keyword)
-    var cs = [
-        "MATCH (personA:Person { name: '양유정', affiliation: '한국인터넷진흥원'}), (personB:Person { name: '서민지', affiliation: '한국보건산업진흥원' }), (personC:Person { name: '송가인', affiliation: '건강보험심사평가원' }) WITH personA, personB, personC MATCH p = shortestPath((personA)-[*]-(personB)) MATCH p2 = shortestPath((personB)-[*]-(personC)) RETURN p, p2",
-        "MATCH (personA:Person { name: '양유정', affiliation: 'SK텔레콤'}), (personB:Person { name: '서민지', affiliation: '숙명여자대학교' }), (personC:Person { name: '송가인', affiliation: '한국과학기술정보연구원' }) WITH personA, personB, personC MATCH p = shortestPath((personA)-[*]-(personB)) MATCH p2 = shortestPath((personB)-[*]-(personC)) RETURN p, p2",
-        "MATCH (personA:Person { name: '양유정', affiliation: '상명대학교'}), (personB:Person { name: '송가인', affiliation: '국립중앙의료원' }), (personC:Person { name: '서민지', affiliation: 'AWS' }) WITH personA, personB, personC MATCH p = shortestPath((personA)-[*]-(personB)) MATCH p2 = shortestPath((personB)-[*]-(personC)) RETURN p, p2"
-    ];
-    var c = "MATCH (k1:Person{name:'" + keyword[0] + "'}),(k2: Person{name:'" + keyword[1] + "'}), p =(k1)-[*3..5]-(k2) RETURN p;"
-    var wrote = 0;
 
-    //var process = spawn('python', [__dirname + '\\search\\search.py', keyword[0], keyword[1]]);
+    var wrote = 0;
+    if(keyword.length == 2){
+        console.log("두개실행")
+        var process = spawn('python', [__dirname + '\\search\\search.py', keyword[0], keyword[1]]);
+    }
+    else if(keyword.length == 3){
+        console.log("세개실행")
+        var process = spawn('python', [__dirname + '\\search\\search.py', keyword[0], keyword[1], keyword[2]]);   
+    }
     
     /*
     Promise.all([getCheckNode(keyword[0]), getCheckNode(keyword[1])])
@@ -1727,9 +1728,9 @@ router.post('/keyword', function (req, res) {
         )
             */
 
-    //var startTime = new Date().getTime();
+    var startTime = new Date().getTime();
     console.time("calculatingTime")
-    var process = spawn('python', [__dirname + '\\search\\search.py']);
+    //var process = spawn('python', [__dirname + '\\search\\search.py']);
 
     let keyword_result = "";
     promiseFromChildProcess(process)
@@ -1739,39 +1740,17 @@ router.post('/keyword', function (req, res) {
                 if (wrote == 0) {
 
                     //console.log(data)
-                    //keyword_result = iconv.decode(data, 'EUC-KR').toString();
-                    keyword_result = "MATCH (personA:Person { name: '양유정', affiliation: '한국인터넷진흥원'}), (personB:Person { name: '서민지', affiliation: '한국보건산업진흥원' }) WITH personA, personB MATCH p = shortestPath((personA)-[*]-(personB))  RETURN p"
-                    keyResult.setKeywordResult(keyword_result);
+                    kk = iconv.decode(data, 'EUC-KR').toString();
+
+                    keyResult.setKeywordResult(kk);
                 }
                 wrote += 1;
             });
             var endTime = new Date().getTime();
-            //console.log("Execution time : ", (endTime - startTime));
+            console.log("Execution time : ", (endTime - startTime));
             console.timeEnd('calculatingTime');
             process.on('close', function (data) {
-                console.log( keyword_result)
-                /*
-                //키워드 두개인 경우
-                var resultCypher = keyword_result.split(',')
-                var paths = []
-                resultCypher.forEach(function(re, index){
-                    paths.push(re.split('/'))
-                })
-                var start_nodes = []
-                var end_nodes = []
-                paths.forEach(function(path, ind){
-                    path.forEach(function(p, index){
-                        if(index == 0){
-                            start_node = p.split(' ') 
-                            start_nodes.push(start_node)
-                        }
-                        else{
-                            end_node = p.split(' ')
-                            end_nodes.push(end_node)
-                        }                   
-                    })
-                })
-                */
+                console.log(kk)
 
                 //res.render("search/searchKeyword.ejs", {esession: session_value.getSession(), data:keyResult.getKeywordResult()});
                 res.redirect('search/searchKeyword');
