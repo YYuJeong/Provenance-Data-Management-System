@@ -129,6 +129,7 @@
     function searchData() {
         var result = '<%=data %>'
         console.log(typeof(result))
+
         console.log("DDD")
         console.log(result)
         console.log(document.getElementById('keyword').value);
@@ -138,10 +139,6 @@
         cyphers[2] = "MATCH (personA:Person { name: '양유정', affiliation: '상명대학교'}), (personB:Person { name: '송가인', affiliation: '국립중앙의료원' }), (personC:Person { name: '서민지', affiliation: 'AWS' }) WITH personA, personB, personC MATCH p = shortestPath((personA)-[*]-(personB)) MATCH p2 = shortestPath((personB)-[*]-(personC)) RETURN p, p2"
        
 
-        var connection = function () {
-             return {url: Neo4j.DB_URL, user: Neo4j.DB_USR, pass: Neo4j.DB_PWD};
-         }
-        new Cy2NeoD3(config, "graph", "datatable", cyphers, "execute", connection, true);
 
         // var keyStr = document.getElementById('keyword').value;
         // var keyword = keyStr.split(" ");

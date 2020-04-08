@@ -17,7 +17,7 @@ const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic(db_info.DB
 const session = driver.session();
 const iconv = require('iconv-lite');
 var keyResult = require('./keyResult');
-var Cy2NeoD3 = require('../public/scripts/cy2neod3');
+var Cy2NeoD3 = require('../public/scripts/cy2neod3')
 
 let nameArr5 = [];
 let affiliationArr5 = [];
@@ -1638,20 +1638,8 @@ router.post('/periodSearch', function (req, res) {
         }
 });
 
-function getRuntime() {
-    var sum = 0;
 
-    var startTime = new Date().getTime();
-    for (var i = 1; i <= 1000000; i++) {
-        sum += i;
-    }
-    var endTime = new Date().getTime();
-
-    //console.log("실행 시간 : ", (endTime - startTime));
-}
-
-getRuntime();
-
+/*
 function getKeyword(keywords) {
     return new Promise(function (resolve, reject) {
         keyword = keywords.split(',');
@@ -1667,7 +1655,7 @@ function getKeyword(keywords) {
         resolve(keyword);
     });
 }
-
+*/
 function getCheckNode(keyword) {
     var nodeType;
     return new Promise(function (resolve, reject) {
@@ -1675,11 +1663,11 @@ function getCheckNode(keyword) {
             ;
         }
         else {
-            session.run('MATCH (a:Agent{name:"' + keyword + '"}) RETURN count(a)>=1 as check')
+            session.run('MATCH (a:Person{name:"' + keyword + '"}) RETURN count(a)>=1 as check')
                 .then(function (result) {
                     if (result.records[0].get('check')) {
-                        nodeType = "Agent";
-                        resolve('Agent');
+                        nodeType = "Person";
+                        resolve('Person');
                     }
                     else {
                         session.run('MATCH (a:Activity{name:"' + keyword + '"}) RETURN count(a)>=1 as check')
@@ -1689,11 +1677,11 @@ function getCheckNode(keyword) {
                                     resolve('Activity')
                                 }
                                 else {
-                                    session.run('MATCH (a:Entity{name:"' + keyword + '"}) RETURN count(a)>=1 as check')
+                                    session.run('MATCH (a:Data{name:"' + keyword + '"}) RETURN count(a)>=1 as check')
                                         .then(function (result) {
                                             if (result.records[0].get('check')) {
-                                                nodeType = "Entity";
-                                                resolve('Entity');
+                                                nodeType = "Data";
+                                                resolve('Data');
                                             }
                                             else
                                                 resolve('NOT EXIST');
@@ -1701,7 +1689,9 @@ function getCheckNode(keyword) {
                                 }
                             });
                     }
-                    //resolve(result);
+                    resolve(result);
+                    console.log(nodeType);
+                   
                 });
         }
     });
@@ -1712,31 +1702,69 @@ router.post('/keyword', function (req, res) {
     console.log(keyStr);
     var keyword = keyStr.split(' ');
     console.log(keyword)
-    var cyphers = [
+    var cs = [
         "MATCH (personA:Person { name: '양유정', affiliation: '한국인터넷진흥원'}), (personB:Person { name: '서민지', affiliation: '한국보건산업진흥원' }), (personC:Person { name: '송가인', affiliation: '건강보험심사평가원' }) WITH personA, personB, personC MATCH p = shortestPath((personA)-[*]-(personB)) MATCH p2 = shortestPath((personB)-[*]-(personC)) RETURN p, p2",
         "MATCH (personA:Person { name: '양유정', affiliation: 'SK텔레콤'}), (personB:Person { name: '서민지', affiliation: '숙명여자대학교' }), (personC:Person { name: '송가인', affiliation: '한국과학기술정보연구원' }) WITH personA, personB, personC MATCH p = shortestPath((personA)-[*]-(personB)) MATCH p2 = shortestPath((personB)-[*]-(personC)) RETURN p, p2",
         "MATCH (personA:Person { name: '양유정', affiliation: '상명대학교'}), (personB:Person { name: '송가인', affiliation: '국립중앙의료원' }), (personC:Person { name: '서민지', affiliation: 'AWS' }) WITH personA, personB, personC MATCH p = shortestPath((personA)-[*]-(personB)) MATCH p2 = shortestPath((personB)-[*]-(personC)) RETURN p, p2"
     ];
-    var cypher = "MATCH (k1:Person{name:'" + keyword[0] + "'}),(k2: Person{name:'" + keyword[1] + "'}), p =(k1)-[*3..5]-(k2) RETURN p;"
+    var c = "MATCH (k1:Person{name:'" + keyword[0] + "'}),(k2: Person{name:'" + keyword[1] + "'}), p =(k1)-[*3..5]-(k2) RETURN p;"
     var wrote = 0;
-    var process = spawn('python', [__dirname + '\\search\\search.py']);
+    var process = spawn('python', [__dirname + '\\search\\search.py', keyword[0], keyword[1]]);
+    
+
+    Promise.all([getCheckNode(keyword[0]), getCheckNode(keyword[1])])
+        .then(function(results){
+            console.log("TT: ", results);
+            resolve(results);
+        })
+        .then(
+            session.run("MATCH (personA:Person { name: '양유정', affiliation: '한국인터넷진흥원'}), (personB:Person { name: '서민지', affiliation: '한국보건산업진흥원' }) WITH personA, personB MATCH p = shortestPath((personA)-[*]-(personB)) RETURN p, length(p)")
+            .then(function (result) {
+                console.log(result.records[0].get('p'))
+                console.log(result.records[0].get('length(p)'))
+            })
+        )
 
     let keyword_result = "";
     promiseFromChildProcess(process)
         .then(function (result) {
-            console.log('promise complete: ', result);
+            //console.log('promise complete: ', result);
             process.stdout.on('data', function (data) {
                 if (wrote == 0) {
-                    console.log(data)
                     keyword_result = iconv.decode(data, 'EUC-KR').toString();
-                    keyResult.setKeywordResult(keyword_result);
+
+                    //keyResult.setKeywordResult(keyword_result);
+                    keyResult.setKeywordResult(c)
                 }
                 wrote += 1;
 
             });
             process.on('close', function (data) {
-                console.log(keyword_result);
-                //res.render("search/searchKeyword", {esession: session_value.getSession(), data:keyResult.getKeywordResult()});
+                console.log( keyword_result)
+
+                //키워드 두개인 경우
+                var resultCypher = keyword_result.split(',')
+                var paths = []
+                resultCypher.forEach(function(re, index){
+                    paths.push(re.split('/'))
+                })
+                var start_nodes = []
+                var end_nodes = []
+                paths.forEach(function(path, ind){
+                    path.forEach(function(p, index){
+                        if(index == 0){
+                            start_node = p.split(' ') 
+                            start_nodes.push(start_node)
+                        }
+                        else{
+                            end_node = p.split(' ')
+                            end_nodes.push(end_node)
+                        }                   
+                    })
+                })
+  
+
+                //res.render("search/searchKeyword.ejs", {esession: session_value.getSession(), data:keyResult.getKeywordResult()});
                 res.redirect('search/searchKeyword');
             });
         }, function (err) {
