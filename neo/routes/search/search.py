@@ -53,7 +53,7 @@ if __name__ == "__main__":
 
 	with driver.session() as session:
 		#keywords = ['가가가', '나나나', '다다다']
-		keywords = ['양유정' , '서민지']#, '김이진']
+		keywords = ['성현제', '안정원'] #, '김칫국']
 		kLabels = []
 		kNodes = []
 
@@ -144,6 +144,7 @@ if __name__ == "__main__":
 	 
 		#print("proposed start_time", start_time)
 		#print("---%s seconds ---" %(time.time() - start_time))
+		#print("Execution Time in Python: %ss" % (time.time() - start_time))
 
 		count = 0
 		results = []
@@ -152,7 +153,7 @@ if __name__ == "__main__":
 				#print(each)
 				count = count + 1
 				results.append(each) 
-		#print(count)
+		#print('★', count, '★')
 		
 		resultLen = []
 		for each in results:
