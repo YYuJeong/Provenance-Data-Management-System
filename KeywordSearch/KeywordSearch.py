@@ -53,7 +53,7 @@ def shortestPath(tx, n1, n2):
 # proposed
 with driver.session() as session:
     #keywords = ['가가가', '나나나', '다다다']
-    keywords = ['양유정' , '서민지', '김이진' ] 
+    keywords = ['변백현', '유상아' ]#,'이시현'  ] 
     kLabels = []
     kNodes = []
 
@@ -149,7 +149,7 @@ with driver.session() as session:
     results = []
     for each in graphs:
         if each:
-            print(each)
+            #print(each)
             count = count + 1
             results.append(each) 
     print(count)
@@ -162,8 +162,77 @@ with driver.session() as session:
         resultLen.append(sumLen)
     resultIndex = sorted(range(len(resultLen)), key=lambda k: resultLen[k])         
     ranking = []
-    for i in resultIndex:   
+    for i in resultIndex[:3]: 
+        print(i)
         ranking.append(results[i])
+        
+    ''' //검색어 두개       
+    resultOut = ''
+    startNodeLabel = []
+    endNodeLabel =[]
+    startNodeProper = []
+    endNodeProper = []
+    for i in range(3):
+        startNodeLabel.append(str(next(iter(ranking[i][0].start_node.labels))))
+        startNodeProper.append(ranking[i][0].start_node['name'])
+        startNodeProper.append(ranking[i][0].start_node['affiliation'])
+        
+        endNodeLabel.append(next(iter(ranking[i][0].end_node.labels)))
+        endNodeProper.append(ranking[i][0].end_node['name'])
+        endNodeProper.append(ranking[i][0].end_node['affiliation'])
+        
+        resultOut = resultOut + "MATCH (personA:" + str(next(iter(ranking[i][0].start_node.labels))) + "{name: " + "'"+ str(ranking[i][0].start_node['name']) +"'"+ ", affiliation: " + "'"+ str(ranking[i][0].start_node['affiliation']) + "'"+ "}), (personB:" + str(next(iter(ranking[i][0].end_node.labels))) + "{name: " + "'"+ str(ranking[i][0].end_node['name']) +"'"+ ", affiliation: " +"'"+ str(ranking[i][0].end_node['affiliation']) +"'"+ "}) WITH personA, personB MATCH p = shortestPath((personA)-[*]-(personB)) RETURN p" + "/"
+    '''
+    '''    
+    MATCH (personA:Person { name: '양유정', affiliation: '한국인터넷진흥원'}), 
+    (personB:Person { name: '서민지', affiliation: '한국보건산업진흥원' })
+    WITH personA, personB 
+    MATCH p = shortestPath((personA)-[*]-(personB)) 
+    RETURN p"
+    '''
+    
+ 
+    #키워드 세개
+    resultOut = ''
+    startNodeLabel = []
+    endNodeLabel =[]
+    
+    startNodeProper = []
+    endNodeProper = []
+    
+    matchCypher = 'MATCH '
+    withCypher = ' WITH personA, personB'
+    spCypher = ' MATCH p = shortestPath((personA)-[*]-(personB))'
+    returnCypher = ' RETURN p' 
+    if len(keywords) == 3:
+        withCypher = withCypher + " ,personC, personD"
+        spCypher = spCypher + " MATCH p2 = shortestPath((personC)-[*]-(personD))"
+        returnCypher = returnCypher + ", p2"       
+
+    for i in range(len(ranking[i])):
+        pA = " (personA:" + str(next(iter(ranking[i][0].start_node.labels))) + "{name: " + "'"+ str(ranking[i][0].start_node['name']) +"'"+ ", affiliation: " + "'"+ str(ranking[i][0].start_node['affiliation']) + "'"+ "})"
+        pB = " , (personB:" + str(next(iter(ranking[i][0].end_node.labels))) + "{name: " + "'"+ str(ranking[i][0].end_node['name']) +"'"+ ", affiliation: " +"'"+ str(ranking[i][0].end_node['affiliation']) +"'"+ "})"        
+        if len(keywords) == 3:    
+            pC = " , (personC:" + str(next(iter(ranking[i][1].start_node.labels))) + "{name: " + "'"+ str(ranking[i][1].start_node['name']) +"'"+ ", affiliation: " + "'"+ str(ranking[i][1].start_node['affiliation']) + "'"+ "})"
+            pD = " , (personD:" + str(next(iter(ranking[i][1].end_node.labels))) + "{name: " + "'"+ str(ranking[i][1].end_node['name']) +"'"+ ", affiliation: " +"'"+ str(ranking[i][1].end_node['affiliation']) +"'"+ "})"
+        if len(keywords) == 2:
+            outTemp = matchCypher + pA + pB + withCypher + spCypher + returnCypher
+        elif len(keywords) == 3:    
+            outTemp = matchCypher + pA + pB + pC + pD + withCypher + spCypher + returnCypher
+
+        resultOut = resultOut + "/" + outTemp 
+        
+    '''
+    MATCH (personA:Person { name: '변백현', affiliation:"대한법률구조공단"  }),
+          (personB:Person {  name: '이시현', affiliation:"NHN"  }),
+          (personC:Person {  name: '유상아', affiliation:"정보통신산업진흥원"  }),
+          (personD:Person {  name: '이시현', affiliation:"NHN"  })
+    WITH personA, personB, personC, personD
+    MATCH p = shortestPath((personA)-[*]-(personB))
+    MATCH p2 = shortestPath((personD)-[*]-(personC))
+    RETURN p, p2
+    '''
+
 
 '''  
 # naive        
