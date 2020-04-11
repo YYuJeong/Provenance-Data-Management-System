@@ -177,11 +177,11 @@ let upload = multer({
     dest: "upload/"
 });
 
-router.get('/data/uploadData', function (req, res, next) {
-    res.render('data/uploadData', {esession: session_value.getSession()});
+router.get('/data/uploadData', function (req, res, next) {    
+   res.render('data/uploadData', {esession: session_value.getSession()});
 });
 
-var PythonShell = require('python-shell');
+var {PythonShell} = require('python-shell');
 var options = {
     mode: 'text',
     pythonPath: '',
@@ -191,15 +191,14 @@ var options = {
 };
 
 
-router.post('/data/uploadData', function (req, res, next) {
-    console.log("ONEW")
+router.post('/data/uploadData', function (req, res,next) {
     var form = new multiparty.Form();
     var name;
     // get field name & value
     form.on('field', function (name, value) {
-        console.log('normal field / name = ' + name + ' , value = ' + value);
+        console.log('normal field / name = ' + name + ' , value = ' + value);        
     });
-    
+
     // file upload handling
     form.on('part', function (part) {
         var filename;
@@ -228,6 +227,7 @@ router.post('/data/uploadData', function (req, res, next) {
         });
     });
 
+
     // all uploads are completed
     form.on('close', function () {
         var path = __dirname.split("\\");
@@ -240,14 +240,17 @@ router.post('/data/uploadData', function (req, res, next) {
         path1 = path1.join("\\") + "\\"
 
 
-
+        /*
         // var cmd = "python "+ path + "keywordData.py " + path1 + "upload\\"+ name;
         //var c = "python " + path + "s.py "
 
-
-        var cmd = "python "+ path + "KeywordSearch\\keywordData.py " + path1 + "upload\\"+ name;
-
-        //console.log(cmd)
+        //원래 있던 코드
+        // var cmd = "python "+ path + "KeywordSearch\\keywordData.py " + path1 + "upload\\"+ name;
+        //수정한 코드
+        var cmd = "python "+ path + "Version2\\uploadData.py " + path1 + "upload\\"+ name;
+        //추가한 코드
+        var c = path+"Version2\\uploadData.py " + path1 + "upload\\"+ name;
+        console.log(cmd)
         exec(cmd);
 
         var spawn = require("child_process").spawn;
@@ -259,15 +262,76 @@ router.post('/data/uploadData', function (req, res, next) {
 
         // E.g : http://localhost:3000/name?firstname=Mike&lastname=Will 
         // so, first name = Mike and last name = Will 
-        var process = spawn('python', [cmd,
+        
+        //원래코드
+        var process = spawn('python', [c,
             "DD",
             "SSS"]);
+        //고친코드*/
+        // python
+        const iconv = require('iconv-lite');
+        var spawn = require("child_process").spawn;
+        var uploadPython = __dirname+"\\data\\uploadData.py";
+        var uploadPythonArg = path1 + "upload\\"+ name;
+        var process = spawn('python', [uploadPython,uploadPythonArg]);
+        
+        function promiseFromChildProcess(child){
+            return new Promise(function (resolve, reject){
+                child.addListener('error',reject);
+                child.addListener('exit', resolve);
+            });
+        }
+        let uploadFile = '';
+        var wrote = 0;
+        var uploadJS = require('./uploadJS');
+        var debug = require("debug");
+        var server = app.listen(app.get('port'),function(){
+            debug('express server listening on port '+server.address().port);
+        });
+        server.timeout = 1000*60*10;
+
+
+        promiseFromChildProcess(process)
+            .then(function (result){
+                console.log('promise complete: ',result);
+                //req.setTimeout(4 * 60 * 1000);
+                process.stdout.on('data',function(data){
+                    if(wrote == 0){
+                        //console.log(data);
+                        uploadFile = iconv.decode(data, 'EUC-KR').toString();
+                        uploadJS.setUploadResult(uploadFile);
+                        getData().then().catch(function(err) {
+                            console.log(err);
+                          });
+                        //console.log(uploadFile);
+                    }
+                    wrote += 1;
+                });
+                
+                process.on('close', function (data) {
+                    //console.log(uploadFile);
+                    //res.render("search/searchKeyword", {esession: session_value.getSession(), data:keyResult.getKeywordResult()});
+                    //res.redirect('/data/uploadData');
+                    //res.render('data/uploadData', {esession: session_value.getSession()});
+                });
+                
+            }, 
+            function (err) {
+                console.log('promise rejected: ', err);
+                
+            });
+        
+
 
         // Takes stdout data from script which executed 
         // with arguments and send this data to res object 
-        process.stdout.on('data', function (data) {
-            res.send(data.toString());
-        })
+        //process.stdout.on('data', function (data) {
+        //   res.send(data.toString());
+        //})
+        
+        
+        
+
 
         res.render('data/uploadData', {esession: session_value.getSession()});
     });
@@ -279,20 +343,6 @@ router.post('/data/uploadData', function (req, res, next) {
 
     form.parse(req);
 })
-
-/*
-router.post('/create', upload.single("file"), function (req, res, next) {
-
-    let file = req.file
-    let result = {
-        originalName: file.originalname,
-        size: file.size,
-    }
-
-    res.render('data/uploadData', {esession: session_value.getSession()});
-    //res.json(result);
-});
-*/
 
 
 router.post('/dataAdd', function (req, res) {
