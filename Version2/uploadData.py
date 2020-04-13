@@ -7,11 +7,10 @@ Created on Tue Feb 18 13:10:29 2020
 
 import csv, sys
 
-from neo4j import GraphDatabase
-
-with open(sys.argv[1],'r') as f:
+with open("randomData.csv",'r') as f:
     matrix = list(csv.reader(f,delimiter=","))
 
+from neo4j import GraphDatabase
 
 driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "wowhi223"))
 
