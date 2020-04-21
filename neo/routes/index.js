@@ -1728,7 +1728,7 @@ router.post('/keyword', function (req, res) {
         )
             */
 
-    var startTime = new Date().getTime();
+    //var startTime = new Date().getTime();
     console.time("calculatingTime")
     //var process = spawn('python', [__dirname + '\\search\\search.py']);
 
@@ -1747,7 +1747,7 @@ router.post('/keyword', function (req, res) {
                 wrote += 1;
             });
             var endTime = new Date().getTime();
-            console.log("Execution time : ", (endTime - startTime));
+            //console.log("Execution time : ", (endTime - startTime));
             console.timeEnd('calculatingTime');
             process.on('close', function (data) {
                 console.log(kk)
