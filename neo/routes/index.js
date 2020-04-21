@@ -1781,7 +1781,7 @@ router.post('/keyword', function (req, res) {
     var startTime = new Date().getTime();
     console.time("calculatingTime")
     //var process = spawn('python', [__dirname + '\\search\\search.py']);
-
+    console.log(process)
     let keyword_result = "";
     promiseFromChildProcess(process)
         .then(function (result) {
@@ -1789,7 +1789,7 @@ router.post('/keyword', function (req, res) {
             process.stdout.on('data', function (data) {
                 if (wrote == 0) {
 
-                    //console.log(data)
+                    console.log(data)
                     kk = iconv.decode(data, 'EUC-KR').toString();
 
                     keyResult.setKeywordResult(kk);

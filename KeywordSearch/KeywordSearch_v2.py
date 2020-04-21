@@ -12,24 +12,30 @@ from neo4j import GraphDatabase
 
 driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "wowhi223"))
 
-
+'''
+MATCH (n:Data)
+WHERE n.name = 'data_852' or n.device = 'data_852' or n.d_type = 'data_852'
+return count(n)
+'''
 def check_nodeLabel(tx, keyword):
-    checkPerson = (tx.run("MERGE (referee:Person{name: $keyword} )"
-                       "RETURN count(referee)>=1 "
-                       "as check ", keyword = keyword)).value()[0]
-    checkData = (tx.run("MERGE (referee:Data{name: $keyword} )"
-                        "RETURN count(referee)>=1 "
-                       "as check ", keyword = keyword)).value()[0]
-    checkActivity = (tx.run("MERGE (referee:Activity{name: $keyword} )"
-                       "RETURN count(referee)>=1 "
-                       "as check ", keyword = keyword)).value()[0]
+    checkPerson = (tx.run("MATCH (n:Person)"
+                          "WHERE (any(prop in ['name', 'affiliation'] WHERE n[prop] = $keyword))"
+                          "RETURN n", keyword = keyword)).value()
+    checkData = (tx.run("MATCH (n:Data)"
+                      "WHERE (any(prop in ['name', 'd_type', 'device', 'price'] WHERE n[prop] = $keyword))"
+                      "RETURN n", keyword = keyword)).value()
+    checkActivity = (tx.run("MATCH (n:Activity)"
+                  "WHERE (any(prop in ['name', 'date'] WHERE n[prop] = $keyword))"
+                  "RETURN n", keyword = keyword)).value()
+
     if(checkPerson):
-        nodeLabel = "Person"
+        return checkPerson
     elif(checkData):
-        nodeLabel = "Data"
+        return checkData
     elif(checkActivity):
-        nodeLabel = "Activity"
-    return nodeLabel
+        return checkActivity
+
+    
 
 # next (iter (k1nodes[0].labels)) : frozenset 값 얻는법
 def get_nodes(tx, keyword, nodeLabel):
@@ -41,7 +47,7 @@ def get_nodes(tx, keyword, nodeLabel):
 
 def shortestPath(tx, n1, n2):
 
-    length = (tx.run("MATCH (k1:"+next(iter(n1[0].labels))+"{ name: $k1_name, affiliation: $k1_aff }),(k2: " + next(iter(n2[0].labels))+ " { name: $k2_name, affiliation : $k2_aff }), "
+    length = (tx.run("MATCH (k1:" +next(iter(n1[0].labels))+ "{ name: $k1_name, affiliation: $k1_aff }),(k2: " + next(iter(n2[0].labels))+ " { name: $k2_name, affiliation : $k2_aff }), "
                     "p = shortestPath((k1)-[*]-(k2)) "
                     "RETURN p, length(p)" 
                     , k1_name = n1[0]["name"], k1_aff = n1[0]["affiliation"]
@@ -100,10 +106,14 @@ def generate_outputQuery(ranking):
         resultOut = resultOut + "/" + outTemp 
     return resultOut
 
+노드 없으면
+candidN 형태 다름
+
+
 # proposed
 with driver.session() as session:
     #keywords = ['가가가', '나나나', '다다다']
-    keywords = ['변백현', '유상아' ]#,'이시현'  ] 
+    keywords = ['이현성', '한수영']#,'이시현'  ] 
     kLabels = []
     kNodes = []
 
@@ -111,14 +121,14 @@ with driver.session() as session:
     
     for i in range(len(keywords)):
         kLabels.append(session.read_transaction(check_nodeLabel,  keyword= keywords[i]))
-
+    '''
     for i in range(len(keywords)):
         kNodes.append(session.read_transaction(get_nodes, keyword= keywords[i], nodeLabel = kLabels[i]))    
-
-    candidN = list(product(*kNodes))
-
+    '''
+    candidN = list(product(*kLabels))
+ 
     #initialize subgraph g and N
-
+    
     g = []
     N = []
     graphs = [] # pair 저장
@@ -192,7 +202,7 @@ with driver.session() as session:
             graphs.append([])
 
 
-    ''' 
+    '''
     print("proposed start_time", start_time)
     print("---%s seconds ---" %(time.time() - start_time))
 
