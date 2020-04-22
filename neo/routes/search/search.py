@@ -10,186 +10,223 @@ from itertools import product
 
 from neo4j import GraphDatabase
 
+
 def check_nodeLabel(tx, keyword):
-	checkPerson = (tx.run("MERGE (referee:Person{name: $keyword} )"
-					   "RETURN count(referee)>=1 "
-					   "as check ", keyword = keyword)).value()[0]
-	checkData = (tx.run("MERGE (referee:Data{name: $keyword} )"
-						"RETURN count(referee)>=1 "
-					   "as check ", keyword = keyword)).value()[0]
-	checkActivity = (tx.run("MERGE (referee:Activity{name: $keyword} )"
-					   "RETURN count(referee)>=1 "
-					   "as check ", keyword = keyword)).value()[0]
-	if(checkPerson):
-		nodeLabel = "Person"
-	elif(checkData):
-		nodeLabel = "Data"
-	elif(checkActivity):
-		nodeLabel = "Activity"
-	return nodeLabel
+    checkPerson = (tx.run("MATCH (n:Person)"
+                          "WHERE (any(prop in ['name', 'affiliation'] WHERE n[prop] = $keyword))"
+                          "RETURN n", keyword = keyword)).value()
+    checkData = (tx.run("MATCH (n:Data)"
+                      "WHERE (any(prop in ['name', 'd_type', 'device', 'price'] WHERE n[prop] = $keyword))"
+                      "RETURN n", keyword = keyword)).value()
+    checkActivity = (tx.run("MATCH (n:Activity)"
+                  "WHERE (any(prop in ['name', 'date'] WHERE n[prop] = $keyword))"
+                  "RETURN n", keyword = keyword)).value()
+
+    if(checkPerson):
+        return checkPerson
+    elif(checkData):
+        return checkData
+    elif(checkActivity):
+        return checkActivity
+
+    
 
 # next (iter (k1nodes[0].labels)) : frozenset 값 얻는법
 def get_nodes(tx, keyword, nodeLabel):
-	nodes = (tx.run("MERGE (referee: " + nodeLabel + " {name:$keyword}) "
-					"RETURN referee"
-					, nodeLabel = nodeLabel, keyword = keyword)).values()
-	return nodes
+    nodes = (tx.run("MERGE (referee: " + nodeLabel + " {name:$keyword}) "
+                    "RETURN referee"
+                    , nodeLabel = nodeLabel, keyword = keyword)).values()
+    return nodes
+
+def generate_shortestPathQuery(n, m):
+    prop1 = [*n.keys()]
+    prop2 = [*m.keys()]
+    val1 = [*n.values()]
+    val2 = [*m.values()]
+    spMatch = "MATCH (n: "+next(iter(n.labels))+"), (m: "+next(iter(m.labels))+") "
+    spWhere = "WHERE "
+    whereN1 = ""
+    whereN2 = ""
+    
+    for i in range(len(prop1)):
+         whereN1 = whereN1 + "n."+prop1[i]+" = '" + val1[i] + "' AND "    
+    for i in range(len(prop2)):
+         whereN2 = whereN2 + "m."+prop2[i]+" = '" + val2[i] + "' "
+         if i+1 != len(prop2):
+             whereN2 = whereN2 + 'AND ' 
+    spWhere = spWhere + whereN1 + whereN2
+    spQuery = spMatch + spWhere + " MATCH p = shortestPath((n)-[*]-(m)) RETURN p, length(p)"
+ 
+    return spQuery
+    
+    
+
+def shortestPath(tx, spQuery):
+ 
+    length = (tx.run(spQuery)).values()
+
+    if length:
+        return length
+    
+    
+
+def sort_result(graphs):
+    count = 0
+    results = []
+    for each in graphs:
+        if each:
+            count = count + 1
+            results.append(each) 
+
+    resultLen = []
+    for each in results:
+        sumLen = 0
+        for i in range(len(keywords)-1):
+            sumLen = sumLen + len(each[i])
+        resultLen.append(sumLen)
+    resultIndex = sorted(range(len(resultLen)), key=lambda k: resultLen[k])         
+    ranking = []
+    for i in resultIndex[:3]: 
+      
+        ranking.append(results[i])
+    return ranking
 
 
-def shortestPath(tx, n1, n2):
+def generate_outputQuery(ranking):
+    
+    '''
+    MATCH (personA:Person { name: '변백현', affiliation:"대한법률구조공단"  }),
+          (personB:Person {  name: '이시현', affiliation:"NHN"  }),
+          (personC:Person {  name: '유상아', affiliation:"정보통신산업진흥원"  }),
+          (personD:Person {  name: '이시현', affiliation:"NHN"  })
+    WITH personA, personB, personC, personD
+    MATCH p = shortestPath((personA)-[*]-(personB))
+    MATCH p2 = shortestPath((personD)-[*]-(personC))
+    RETURN p, p2
+    '''
+    
+    j = 0
+    out = ""
+    for r in range(len(ranking)):
+        resultLabel = ""
+        resultWhere = ""
+        resultSp = ""
+        resultRt = ""
+        for i in range(len(keywords)-1):
+           
+            psLabel = next(iter(ranking[r][i].start_node.labels))
+            peLabel = next(iter(ranking[r][i].end_node.labels))
+            labelTemp = "(s"+str(j) +":" + psLabel +"), (e"+str(j) +":"+peLabel +")"
+            
+            psProp = [*ranking[r][i].start_node.keys()]
+            peProp = [*ranking[r][i].end_node.keys()]
+            psVal = [*ranking[r][i].start_node.values()]
+            peVal = [*ranking[r][i].end_node.values()]
+            psWhere = ""
+            peWhere = ""
+            for p in range(len(psProp)):
+                psWhere = psWhere + "s" + str(j) + "." + psProp[p]+" = '" + psVal[p] + "' AND "
+            for p in range(len(peProp)):
+                peWhere = peWhere + "e" + str(j) + "." + peProp[p]+" = '" + peVal[p] + "' "
+                if p+1 != len(peProp):
+                    peWhere = peWhere + 'AND ' 
 
-	length = (tx.run("MATCH (k1:"+next(iter(n1[0].labels))+"{ name: $k1_name, affiliation: $k1_aff }),(k2: " + next(iter(n2[0].labels))+ " { name: $k2_name, affiliation : $k2_aff }), "
-					"p = shortestPath((k1)-[*]-(k2)) "
-					"RETURN p, length(p)" 
-					, k1_name = n1[0]["name"], k1_aff = n1[0]["affiliation"]
-					, k2_name = n2[0]["name"], k2_aff = n2[0]["affiliation"])).values()
+    
+    
+            resultLabel = resultLabel + labelTemp 
+            resultWhere = resultWhere + psWhere + peWhere
+            spTemp = " MATCH p" + str(i) +" = shortestPath((s" + str(j) +")-[*]-(e" +str(j)+")) " 
+            resultSp =  resultSp + spTemp       
+            resultRt = resultRt + "p" + str(i) 
+            if i+1 != len(keywords)-1:
+                resultLabel = resultLabel + ", "
+                resultWhere = resultWhere + "AND "
+                resultRt = resultRt + ", "
+            j += 1
+    
+        resultLabel = "MATCH " + resultLabel
+        resultWhere = " WHERE " + resultWhere
+        resultRt = " RETURN " + resultRt
+        
+        resultOut = resultLabel + resultWhere + resultSp + resultRt
 
-	if length:
-		return length
+        out = out + "/" + resultOut
+    return out
+
 
 # proposed
 if __name__ == "__main__":
 	driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "wowhi223"))
-
 	with driver.session() as session:
-		keywords = []
-		for i in range(len(sys.argv)-1):
-			keywords.append(sys.argv[i+1])
 
-		#keywords = ['성현제', '안정원'] #, '김칫국']
-		kLabels = []
-		kNodes = []
-
+	
+		keywords = sys.argv[1].split(' ')
+		
 		start_time = time.time()
 		
+		#search for all nodes with keywords
+		kNodes = []
 		for i in range(len(keywords)):
-			kLabels.append(session.read_transaction(check_nodeLabel,  keyword= keywords[i]))
+			kNodes.append(session.read_transaction(check_nodeLabel,  keyword= keywords[i]))
 
-		for i in range(len(keywords)):
-			kNodes.append(session.read_transaction(get_nodes, keyword= keywords[i], nodeLabel = kLabels[i]))    
-
-		candidN = list(product(*kNodes))
-
-		#initialize subgraph g and N
-
+		candidN = list(product(*kNodes)) #generate all combinations for keyword nodes
 		g = []
 		N = []
 		graphs = [] # pair 저장
-
+		
+		#search all shortestpaths for all combinations   
 		for k in range(len(candidN)):
-
+				
 			N = list(candidN[k])
 			nodeSum = len(candidN[k])
-
 			path = []
 			pathLen = []
-			#print("k : ", k)
+
 			flag = True
+
 			for i in range(len(N)):
 
 				pathTmp = []
 				pathLenTmp = []
-				#print("i 한다 : " , i)
 				if not flag:
 					break
 				for j in range(i+1, len(N)):
-					#print(i, N[i])
-					#print(j, N[j])
-					shortP = session.read_transaction(shortestPath, n1 = N[i], n2 = N[j])
-					
+
+					spQuery = generate_shortestPathQuery(N[i], N[j])
+					shortP = session.read_transaction(shortestPath, spQuery)
+		
 					if shortP is not None:
-						#print(shortP[0])
 						pathTmp.append(shortP[0][0])
 						pathLenTmp.append(shortP[0][1])
-					else:
-						#print(N[i], N[j] , "경로 없음")
+					else: #No shortestPath
 						flag = False  
 						break
 				path.append(pathTmp)
 				pathLen.append(pathLenTmp)  
-			'''
-				print("j 반복 끝")
-			print("i 반복 끝")
-			print("pathLen: ", pathLen)
-			print("path: " , path)
-			print(" ")
-			'''
+
 			#algorithm
 			if pathLen and flag:
-				#print("N : ", N)
 				g.append(N[0])
 				del N[0]
 				graphs.append([])
-
 				for i in range(nodeSum-1):
-					'''
-					print("  i : ", i)
-					print("pathLen: ", pathLen)
-					print("path: " , path)
-					'''
 					shortestLenIndex = pathLen[i].index(min(pathLen[i]))
 
 					graphs[k].append(path[i][shortestLenIndex])
 					g.append(N[shortestLenIndex])
 					del N[shortestLenIndex]
-					#print("g: ",g)
-		
-				#print("="*100)
-				#'''
-				
 				N = []
 				g = []
 			else:
-
-				graphs.append([])
-
-
-		results = []
-		for each in graphs:
-			if each:
-				results.append(each) 
+				graphs.append([]) 
 		
-		resultLen = []
-		for each in results:
-			sumLen = 0
-			for i in range(len(keywords)-1):
-				sumLen = sumLen + len(each[i])
-			resultLen.append(sumLen)
-		resultIndex = sorted(range(len(resultLen)), key=lambda k: resultLen[k])         
-		ranking = []
-		for i in resultIndex[:3]:
-			ranking.append(results[i])
 
-		resultOut = ''
-		startNodeLabel = []
-		endNodeLabel =[]
+		ranking = sort_result(graphs)
+		out = generate_outputQuery(ranking)
+		driver.close()
+		print(out + "/")
 		
-		startNodeProper = []
-		endNodeProper = []
 		
-		matchCypher = 'MATCH '
-		withCypher = ' WITH personA, personB'
-		spCypher = ' MATCH p = shortestPath((personA)-[*]-(personB))'
-		returnCypher = ' RETURN p' 
-		if len(keywords) == 3:
-			withCypher = withCypher + " ,personC, personD"
-			spCypher = spCypher + " MATCH p2 = shortestPath((personC)-[*]-(personD))"
-			returnCypher = returnCypher + ", p2"       
-
-		for i in range(len(ranking)):
-			pA = " (personA:" + str(next(iter(ranking[i][0].start_node.labels))) + "{name: " + "'"+ str(ranking[i][0].start_node['name']) +"'"+ ", affiliation: " + "'"+ str(ranking[i][0].start_node['affiliation']) + "'"+ "})"
-			pB = " , (personB:" + str(next(iter(ranking[i][0].end_node.labels))) + "{name: " + "'"+ str(ranking[i][0].end_node['name']) +"'"+ ", affiliation: " +"'"+ str(ranking[i][0].end_node['affiliation']) +"'"+ "})"        
-			if len(keywords) == 3:    
-				pC = " , (personC:" + str(next(iter(ranking[i][1].start_node.labels))) + "{name: " + "'"+ str(ranking[i][1].start_node['name']) +"'"+ ", affiliation: " + "'"+ str(ranking[i][1].start_node['affiliation']) + "'"+ "})"
-				pD = " , (personD:" + str(next(iter(ranking[i][1].end_node.labels))) + "{name: " + "'"+ str(ranking[i][1].end_node['name']) +"'"+ ", affiliation: " +"'"+ str(ranking[i][1].end_node['affiliation']) +"'"+ "})"
-			if len(keywords) == 2:
-				outTemp = matchCypher + pA + pB + withCypher + spCypher + returnCypher
-			elif len(keywords) == 3:    
-				outTemp = matchCypher + pA + pB + pC + pD + withCypher + spCypher + returnCypher
-
-			resultOut = resultOut + "/" + outTemp 
-        
-        
-	driver.close()
-	#print("/MATCH (personA:Person { name: '양유정', affiliation: '한국인터넷진흥원'}), (personB:Person { name: '서민지', affiliation: '한국보건산업진흥원' }) WITH personA, personB MATCH p = shortestPath((personA)-[*]-(personB)) RETURN p/")
-	print(resultOut + "/")
+		
+		
+		
