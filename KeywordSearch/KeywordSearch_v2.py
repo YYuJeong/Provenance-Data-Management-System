@@ -211,7 +211,7 @@ with driver.session() as session:
     
     
 
-        
+        dd
     '''
     '''
     MATCH (personA:Person { name: '변백현', affiliation:"대한법률구조공단"  }),
