@@ -12,11 +12,7 @@ from neo4j import GraphDatabase
 
 driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "wowhi223"))
 
-'''
-MATCH (n:Data)
-WHERE n.name = 'data_852' or n.device = 'data_852' or n.d_type = 'data_852'
-return count(n)
-'''
+
 def check_nodeLabel(tx, keyword):
     checkPerson = (tx.run("MATCH (n:Person)"
                           "WHERE (any(prop in ['name', 'affiliation'] WHERE n[prop] = $keyword))"
@@ -81,7 +77,6 @@ def sort_result(graphs):
     results = []
     for each in graphs:
         if each:
-            #print(each)
             count = count + 1
             results.append(each) 
     print(count)
@@ -101,37 +96,71 @@ def sort_result(graphs):
 
 
 def generate_outputQuery(ranking):
-    #키워드 세개
-    resultOut = ''
+    
+    '''
+    MATCH (personA:Person { name: '변백현', affiliation:"대한법률구조공단"  }),
+          (personB:Person {  name: '이시현', affiliation:"NHN"  }),
+          (personC:Person {  name: '유상아', affiliation:"정보통신산업진흥원"  }),
+          (personD:Person {  name: '이시현', affiliation:"NHN"  })
+    WITH personA, personB, personC, personD
+    MATCH p = shortestPath((personA)-[*]-(personB))
+    MATCH p2 = shortestPath((personD)-[*]-(personC))
+    RETURN p, p2
+    '''
+    
+    j = 0
+    out = ""
+    for r in range(len(ranking)):
+        resultLabel = ""
+        resultWhere = ""
+        resultSp = ""
+        resultRt = ""
+        for i in range(len(keywords)-1):
+            print(i)
+            psLabel = next(iter(ranking[r][i].start_node.labels))
+            peLabel = next(iter(ranking[r][i].end_node.labels))
+            labelTemp = "(s"+str(j) +":" + psLabel +"), (e"+str(j) +":"+peLabel +")"
+            
+            psProp = [*ranking[r][i].start_node.keys()]
+            peProp = [*ranking[r][i].end_node.keys()]
+            psVal = [*ranking[r][i].start_node.values()]
+            peVal = [*ranking[r][i].end_node.values()]
+            psWhere = ""
+            peWhere = ""
+            for p in range(len(psProp)):
+                psWhere = psWhere + "s" + str(j) + "." + psProp[p]+" = '" + psVal[p] + "' AND "
+            for p in range(len(peProp)):
+                peWhere = peWhere + "e" + str(j) + "." + peProp[p]+" = '" + peVal[p] + "' "
+                if p+1 != len(peProp):
+                    peWhere = peWhere + 'AND ' 
 
-    matchCypher = 'MATCH '
-    withCypher = ' WITH personA, personB'
-    spCypher = ' MATCH p = shortestPath((personA)-[*]-(personB))'
-    returnCypher = ' RETURN p' 
-    if len(keywords) == 3:
-        withCypher = withCypher + " ,personC, personD"
-        spCypher = spCypher + " MATCH p2 = shortestPath((personC)-[*]-(personD))"
-        returnCypher = returnCypher + ", p2"       
+    
+    
+            resultLabel = resultLabel + labelTemp 
+            resultWhere = resultWhere + psWhere + peWhere
+            spTemp = " MATCH p" + str(i) +" = shortestPath((s" + str(j) +")-[*]-(e" +str(j)+")) " 
+            resultSp =  resultSp + spTemp       
+            resultRt = resultRt + "p" + str(i) 
+            if i+1 != len(keywords)-1:
+                resultLabel = resultLabel + ", "
+                resultWhere = resultWhere + "AND "
+                resultRt = resultRt + ", "
+            j += 1
+    
+        resultLabel = "MATCH " + resultLabel
+        resultWhere = " WHERE " + resultWhere
+        resultRt = " RETURN " + resultRt
+        
+        resultOut = resultLabel + resultWhere + resultSp + resultRt
 
-    for i in range(len(ranking)):
-        pA = " (personA:" + str(next(iter(ranking[i][0].start_node.labels))) + "{name: " + "'"+ str(ranking[i][0].start_node['name']) +"'"+ ", affiliation: " + "'"+ str(ranking[i][0].start_node['affiliation']) + "'"+ "})"
-        pB = " , (personB:" + str(next(iter(ranking[i][0].end_node.labels))) + "{name: " + "'"+ str(ranking[i][0].end_node['name']) +"'"+ ", affiliation: " +"'"+ str(ranking[i][0].end_node['affiliation']) +"'"+ "})"        
-        if len(keywords) == 3:    
-            pC = " , (personC:" + str(next(iter(ranking[i][1].start_node.labels))) + "{name: " + "'"+ str(ranking[i][1].start_node['name']) +"'"+ ", affiliation: " + "'"+ str(ranking[i][1].start_node['affiliation']) + "'"+ "})"
-            pD = " , (personD:" + str(next(iter(ranking[i][1].end_node.labels))) + "{name: " + "'"+ str(ranking[i][1].end_node['name']) +"'"+ ", affiliation: " +"'"+ str(ranking[i][1].end_node['affiliation']) +"'"+ "})"
-        if len(keywords) == 2:
-            outTemp = matchCypher + pA + pB + withCypher + spCypher + returnCypher
-        elif len(keywords) == 3:    
-            outTemp = matchCypher + pA + pB + pC + pD + withCypher + spCypher + returnCypher
-
-        resultOut = resultOut + "/" + outTemp 
-    return resultOut
+        out = out + "/" + resultOut
+    return out
 
 
 # proposed
 with driver.session() as session:
-    keywords = ['가가가', '나나나', '다다다' ]#,'이시현'  ] 
-
+    keywords = ['가가가', '나나나', '다다다', '라라라']
+    
     start_time = time.time()
     
     #search for all nodes with keywords
@@ -146,7 +175,7 @@ with driver.session() as session:
     
     #search all shortestpaths for all combinations   
     for k in range(len(candidN)):
-        
+            
         N = list(candidN[k])
         nodeSum = len(candidN[k])
         path = []
@@ -173,12 +202,7 @@ with driver.session() as session:
                     break
             path.append(pathTmp)
             pathLen.append(pathLenTmp)  
-        '''   
-        if flag:    
-            print("pathLen: ", pathLen)
-            print("path: " , path)
-            print(" ")
-        '''
+
         #algorithm
         if pathLen and flag:
             g.append(N[0])
@@ -193,32 +217,15 @@ with driver.session() as session:
             N = []
             g = []
         else:
-
             graphs.append([]) 
     
         
-     
-
     print("proposed start_time", start_time)
     print("---%s seconds ---" %(time.time() - start_time))
 
     ranking = sort_result(graphs)
-    outputResult = generate_outputQuery(ranking)        
+    out = generate_outputQuery(ranking)
     
-        
-    '''
-    MATCH (personA:Person { name: '변백현', affiliation:"대한법률구조공단"  }),
-          (personB:Person {  name: '이시현', affiliation:"NHN"  }),
-          (personC:Person {  name: '유상아', affiliation:"정보통신산업진흥원"  }),
-          (personD:Person {  name: '이시현', affiliation:"NHN"  })
-    WITH personA, personB, personC, personD
-    MATCH p = shortestPath((personA)-[*]-(personB))
-    MATCH p2 = shortestPath((personD)-[*]-(personC))
-    RETURN p, p2
-    '''
-
-
-
     
     
     
