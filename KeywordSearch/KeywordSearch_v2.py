@@ -105,10 +105,10 @@ def generate_outputQuery(ranking):
 
         resultOut = resultOut + "/" + outTemp 
     return resultOut
-
+'''
 노드 없으면
 candidN 형태 다름
-
+'''
 
 # proposed
 with driver.session() as session:
@@ -133,7 +133,7 @@ with driver.session() as session:
     N = []
     graphs = [] # pair 저장
     
-    '''
+    
     for k in range(len(candidN)):
 
         N = list(candidN[k])
@@ -151,8 +151,8 @@ with driver.session() as session:
             if not flag:
                 break
             for j in range(i+1, len(N)):
-                #print(i, N[i])
-                #print(j, N[j])
+                print(i, N[i])
+                print(j, N[j])
                 shortP = session.read_transaction(shortestPath, n1 = N[i], n2 = N[j])
                 
                 if shortP is not None:
@@ -212,6 +212,7 @@ with driver.session() as session:
     
 
         
+    '''
     '''
     MATCH (personA:Person { name: '변백현', affiliation:"대한법률구조공단"  }),
           (personB:Person {  name: '이시현', affiliation:"NHN"  }),
