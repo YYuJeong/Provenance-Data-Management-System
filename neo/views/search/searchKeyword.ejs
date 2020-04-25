@@ -136,18 +136,33 @@
         
         var keyDatas = document.getElementById("keyData").innerHTML;
         console.log("kk: ", keyDatas);
-        var rr = keyDatas.split('/')
 
+        var result = keyDatas.split('|')
+
+        var queries = result[0].split('/')
+        var tables = result[1].split(',')
+
+        queries.forEach(element => {
+            console.log(typeof(element))
+            console.log(element)
+        });
+
+        tables.forEach(element => {
+            console.log(element)
+        });
+        /*
+        var rr = keyDatas.split('/')
+        
         var cyphers = []
         for(var i = 1; i < rr.length-1 ; i++){
             cyphers.push(rr[i])
         }
-        
+        */
          var connection = function () {
              return {url: Neo4j.DB_URL, user: Neo4j.DB_USR, pass: Neo4j.DB_PWD};
          }
-        new Cy2NeoD3(config, "graph", "datatable", cyphers, "execute", connection, true);
-
+        new Cy2NeoD3(config, "graph", "datatable", queries[0], "execute", connection, true);
+        
     });
 
 </script>
