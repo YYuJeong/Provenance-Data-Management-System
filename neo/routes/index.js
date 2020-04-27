@@ -1771,6 +1771,7 @@ router.post('/keyword', function (req, res) {
             */
 
     var startTime = new Date().getTime();
+    kk = ""
 
     promiseFromChildProcess(process)
         .then(function (result) {

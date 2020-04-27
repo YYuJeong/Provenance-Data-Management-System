@@ -8,11 +8,14 @@ Created on Tue Feb 18 13:10:29 2020
 import csv, sys, time
 start_time = time.time()
 
-with open("exampleData.csv",'r', encoding='UTF-8') as f:
+#with open("exampleData.csv",'r', encoding='UTF-8') as f:
+#with open("randomDataDemo.csv",'r') as f:
+with open("randomDataDemo.csv",'r') as f:
     matrix = list(csv.reader(f,delimiter=","))
 
 from neo4j import GraphDatabase
 
+#52.79.241.1
 driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "wowhi223"))
 
 

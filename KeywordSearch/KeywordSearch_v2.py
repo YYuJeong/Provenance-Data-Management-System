@@ -159,7 +159,7 @@ def generate_outputQuery(ranking):
 
 # proposed
 with driver.session() as session:
-    keywords = ['가가가', '나나나', '다다다', '라라라']
+    keywords = ['양유정', '서민지']
     
     start_time = time.time()
     
