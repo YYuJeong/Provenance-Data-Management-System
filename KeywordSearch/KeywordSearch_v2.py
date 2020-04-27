@@ -108,17 +108,27 @@ def generate_outputQuery(ranking):
     '''
     
     j = 0
-    out = ""
+    outQuery = ""
+    outTable = ""
     for r in range(len(ranking)):
         resultLabel = ""
         resultWhere = ""
         resultSp = ""
         resultRt = ""
+        pathTmp = ""
         for i in range(len(keywords)-1):
-            print(i)
+            
             psLabel = next(iter(ranking[r][i].start_node.labels))
             peLabel = next(iter(ranking[r][i].end_node.labels))
             labelTemp = "(s"+str(j) +":" + psLabel +"), (e"+str(j) +":"+peLabel +")"
+            '''
+            psLabel1 Name.Affiliation 이름.소속;
+                        
+            2qeury1/outputQuery2|path1;path2,path1
+            
+            path1 = psLabel peLabel psprop peprop psVal peVal
+            '''
+            pathTmp = pathTmp + psLabel + " " + peLabel + " "
             
             psProp = [*ranking[r][i].start_node.keys()]
             peProp = [*ranking[r][i].end_node.keys()]
@@ -126,6 +136,13 @@ def generate_outputQuery(ranking):
             peVal = [*ranking[r][i].end_node.values()]
             psWhere = ""
             peWhere = ""
+            
+            pathTmp = pathTmp + '.'.join(map(str, psProp)) + " "
+            pathTmp = pathTmp + '.'.join(map(str, peProp)) + " "
+            pathTmp = pathTmp + '.'.join(map(str, psVal)) + " "
+            pathTmp = pathTmp + '.'.join(map(str, peVal)) + ";"
+            
+        
             for p in range(len(psProp)):
                 psWhere = psWhere + "s" + str(j) + "." + psProp[p]+" = '" + psVal[p] + "' AND "
             for p in range(len(peProp)):
@@ -133,8 +150,7 @@ def generate_outputQuery(ranking):
                 if p+1 != len(peProp):
                     peWhere = peWhere + 'AND ' 
 
-    
-    
+
             resultLabel = resultLabel + labelTemp 
             resultWhere = resultWhere + psWhere + peWhere
             spTemp = " MATCH p" + str(i) +" = shortestPath((s" + str(j) +")-[*]-(e" +str(j)+")) " 
@@ -145,6 +161,8 @@ def generate_outputQuery(ranking):
                 resultWhere = resultWhere + "AND "
                 resultRt = resultRt + ", "
             j += 1
+
+        outTable = outTable + pathTmp +","
     
         resultLabel = "MATCH " + resultLabel
         resultWhere = " WHERE " + resultWhere
@@ -152,13 +170,19 @@ def generate_outputQuery(ranking):
         
         resultOut = resultLabel + resultWhere + resultSp + resultRt
 
-        out = out + "/" + resultOut
-    return out
+        outQuery = outQuery + "/" + resultOut
+    outQuery = outQuery + outTable
+ 
+    return outQuery
 
 
 # proposed
 with driver.session() as session:
+<<<<<<< HEAD
     keywords = ['이진기', '양유정', '서민지']
+=======
+    keywords = ['양유정', '서민지', '가가가']
+>>>>>>> d3cfe637ee7ce7f4287fe3b96c3e66cae93236ec
     
     start_time = time.time()
     
@@ -221,9 +245,12 @@ with driver.session() as session:
         
     print("proposed start_time", start_time)
     print("---%s seconds ---" %(time.time() - start_time))
-
+    
     ranking = sort_result(graphs)
-    out = generate_outputQuery(ranking)
+    outQuery, outTable = generate_outputQuery(ranking)
+    outQuery = outQuery + "|" + outTable
+    
+
     
     
     
