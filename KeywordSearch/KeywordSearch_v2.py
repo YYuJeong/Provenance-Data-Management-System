@@ -12,7 +12,6 @@ from neo4j import GraphDatabase
 
 driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "wowhi223"))
 
-
 def check_nodeLabel(tx, keyword):
     checkPerson = (tx.run("MATCH (n:Person)"
                           "WHERE (any(prop in ['name', 'affiliation'] WHERE n[prop] = $keyword))"
@@ -159,7 +158,7 @@ def generate_outputQuery(ranking):
 
 # proposed
 with driver.session() as session:
-    keywords = ['가가가', '나나나', '다다다', '라라라']
+    keywords = ['이진기', '양유정', '서민지']
     
     start_time = time.time()
     
