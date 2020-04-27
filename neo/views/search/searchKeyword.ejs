@@ -127,37 +127,39 @@
     var cypher;
           
     $(document).ready(function () {
-
         $("#ksb").click(function() {
             $("#key").submit();
         });
     
-
-        
         var keyDatas = document.getElementById("keyData").innerHTML;
-        console.log("kk: ", keyDatas);
 
         var result = keyDatas.split('|')
 
         var queries = result[0].split('/')
+        queries.splice(0, 1)
+
         var tables = result[1].split(',')
+        tables.splice(tables.length-1, 1)
+        var rankings = []
+        tables.forEach(function(element, index){
+            var tmp = element.split(';')
+            rankings[index] = tmp.splice(0, tmp.length-1)
+        })
 
-        queries.forEach(element => {
-            console.log(typeof(element))
-            console.log(element)
-        });
 
-        tables.forEach(element => {
-            console.log(element)
-        });
-        /*
-        var rr = keyDatas.split('/')
-        
-        var cyphers = []
-        for(var i = 1; i < rr.length-1 ; i++){
-            cyphers.push(rr[i])
-        }
-        */
+        rankings.forEach(function(r, index){
+            console.log("ranking: ", index)
+            var ranking = []
+            r.forEach(function(p, ind){
+                console.log(ind)
+                
+                var tmp = p.split(" ")
+                console.log("tmp")
+                console.log(tmp)
+                ranking[index] = tmp
+            })
+        })
+
          var connection = function () {
              return {url: Neo4j.DB_URL, user: Neo4j.DB_USR, pass: Neo4j.DB_PWD};
          }
