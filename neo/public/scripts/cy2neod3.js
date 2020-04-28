@@ -13,7 +13,7 @@ function Cy2NeoD3(config, graphId, tableId, sourceId, execId, urlSource, renderG
         /*
         console.log("qq: " , typeof(queries))
         console.log(Object.keys(queries))
-        console.log(Object.values(queries))
+        //console.log(Object.values(queries))
         console.log(Object.keys(queries).length)
      
         if(Object.keys(queries).length > 1){
