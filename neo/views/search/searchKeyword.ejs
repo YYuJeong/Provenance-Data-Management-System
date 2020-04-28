@@ -249,11 +249,12 @@
             }
             if(i == 0){
                 tdObj=document.createElement("td");
+                tdObj.style.backgroundColor = "#f8f8f8" 
                 trObj.appendChild(tdObj); 
             }
             else {
                 tdObj=document.createElement("td");
-                tdObj.innerHTML='<button type="button" class="btn btn-primary" onclick="Show(' + i + ')">그래프 보기</button>';
+                tdObj.innerHTML='<button type="button" class="btn btn-primary" onclick="Show(' + (i-1) + ')">그래프 보기</button>';
                 trObj.appendChild(tdObj); 
             }
         dataTable.appendChild(trObj); 
