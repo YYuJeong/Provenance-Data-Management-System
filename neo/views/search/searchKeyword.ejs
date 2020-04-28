@@ -75,7 +75,7 @@
             </div>
         <% } %>
     </div>
-    <div style="display:none;" id="keyData" name="keyData">
+    <div style="display: none;" id="keyData" name="keyData">
         <%=data%>
     </div>
     <hr class="featurette-divider">
@@ -127,27 +127,74 @@
     var cypher;
           
     $(document).ready(function () {
-
         $("#ksb").click(function() {
             $("#key").submit();
         });
     
-
-        
         var keyDatas = document.getElementById("keyData").innerHTML;
-        console.log("kk: ", keyDatas);
-        var rr = keyDatas.split('/')
 
-        var cyphers = []
-        for(var i = 1; i < rr.length-1 ; i++){
-            cyphers.push(rr[i])
-        }
+        var result = keyDatas.split('|')
+
+        var queries = result[0].split('/')
+        queries.splice(0, 1)
+        
+        var tables = result[1].split(';')
+        tables.splice(tables.length-1, 1)
+
+        var rankings = []
+        tables.forEach(function(element, index){
+            var tmp = element.split('/')
+            rankings[index] = tmp.splice(0, tmp.length-1)
+        })
+  
+        var ranking = []
+        rankings.forEach(function(rank, index){
+            rnk = []
+            rank.forEach(function(r, ind){
+                var tmp = r.split(' ')
+                rnk[ind] = tmp
+            })
+            ranking[index] = rnk
+        })
+        var resultLabel = []
+        var resultProp = []
+        var resultVal = []
+        ranking.forEach(function(rank, index){
+            var labels = []
+            var props = []
+            var vals = []
+            rank.forEach(function(rr, indx){
+                var label = []
+                var prop = []
+                var val = []
+                rr.forEach(function(r, ind){
+                    if(ind == 0){
+                        label.push(r)
+                    }
+                    else if(ind == 1){
+                        var tmp = r.split('.')
+                        prop.push(tmp)
+                    }
+                    else{
+                        var tmp = r.split('.')
+                        val.push(tmp)
+                    }
+                })
+                labels.push(label)
+                props.push(prop)
+                vals.push(val)
+            })
+            resultLabel.push(labels)
+            resultProp.push(props)
+            resultVal.push(vals)
+        })
+        
         
          var connection = function () {
              return {url: Neo4j.DB_URL, user: Neo4j.DB_USR, pass: Neo4j.DB_PWD};
          }
-        new Cy2NeoD3(config, "graph", "datatable", cyphers, "execute", connection, true);
-
+        new Cy2NeoD3(config, "graph", "datatable", queries[0], "execute", connection, true);
+        
     });
 
 </script>

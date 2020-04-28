@@ -10,11 +10,12 @@ function Cy2NeoD3(config, graphId, tableId, sourceId, execId, urlSource, renderG
         var resArr = [] 
         var graphs = []
         var tables = []
+        /*
         console.log("qq: " , typeof(queries))
         console.log(Object.keys(queries))
         //console.log(Object.values(queries))
         console.log(Object.keys(queries).length)
-
+     
         if(Object.keys(queries).length > 1){
             console.log("여러쿼리")
             queries.forEach(function (query, index){
@@ -81,14 +82,11 @@ function Cy2NeoD3(config, graphId, tableId, sourceId, execId, urlSource, renderG
             }
         }
         else{
-            console.log("쿼리하나", typeof(queries))
-            var q1 = "MATCH (personA:Person { name: '양유정', affiliation: '한국인터넷진흥원'}), (personB:Person { name: '서민지', affiliation: '한국보건산업진흥원' }) WITH personA, personB MATCH p = shortestPath((personA)-[*]-(personB)) RETURN p"
-            console.log("dd", typeof(q1))
-            console.log(Object.keys(queries))
-            console.log(queries['0'])
-            console.log(q1)
-            
-            neo.executeQuery(queries['0'] , {}, function (err, res) {
+            */
+            //var q1 = "MATCH (personA:Person { name: '양유정', affiliation: '한국인터넷진흥원'}), (personB:Person { name: '서민지', affiliation: '한국보건산업진흥원' }) WITH personA, personB MATCH p = shortestPath((personA)-[*]-(personB)) RETURN p"
+
+            //console.log(queries)
+            neo.executeQuery(queries , {}, function (err, res) {
                 //  console.log("res" + JSON.stringify(res))
                 res = res || {}
                 //  console.log("**************************************************")
@@ -120,7 +118,7 @@ function Cy2NeoD3(config, graphId, tableId, sourceId, execId, urlSource, renderG
                     cbResult(res);
                 }
             });
-        }    
+        //}    
         
         //console.log(JSON.stringify(ss[0].graph))
 

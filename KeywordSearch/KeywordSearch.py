@@ -14,13 +14,13 @@ driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "wowhi223"
 
 
 def check_nodeLabel(tx, keyword):
-    checkPerson = (tx.run("MERGE (referee:Person{name: $keyword} )"
+    checkPerson = (tx.run("MATCH (referee:Person{name: $keyword} )"
                        "RETURN count(referee)>=1 "
                        "as check ", keyword = keyword)).value()[0]
-    checkData = (tx.run("MERGE (referee:Data{name: $keyword} )"
+    checkData = (tx.run("MATCH (referee:Data{name: $keyword} )"
                         "RETURN count(referee)>=1 "
                        "as check ", keyword = keyword)).value()[0]
-    checkActivity = (tx.run("MERGE (referee:Activity{name: $keyword} )"
+    checkActivity = (tx.run("MATCH (referee:Activity{name: $keyword} )"
                        "RETURN count(referee)>=1 "
                        "as check ", keyword = keyword)).value()[0]
     if(checkPerson):
@@ -53,7 +53,7 @@ def shortestPath(tx, n1, n2):
 # proposed
 with driver.session() as session:
     #keywords = ['가가가', '나나나', '다다다']
-    keywords = ['변백현', '유상아' ]#,'이시현'  ] 
+    keywords = ['이현성','한수영', '홍길동' ]#,'이시현'  ] 
     kLabels = []
     kNodes = []
 
@@ -66,21 +66,21 @@ with driver.session() as session:
         kNodes.append(session.read_transaction(get_nodes, keyword= keywords[i], nodeLabel = kLabels[i]))    
 
     candidN = list(product(*kNodes))
-
+    print(candidN)
     #initialize subgraph g and N
 
     g = []
     N = []
     graphs = [] # pair 저장
-
+    
     for k in range(len(candidN)):
-
+        
         N = list(candidN[k])
         nodeSum = len(candidN[k])
-
+        #print(nodeSum)
         path = []
         pathLen = []
-        #print("k : ", k)
+        print("k : ", k)
         flag = True
         for i in range(len(N)):
 
@@ -104,16 +104,15 @@ with driver.session() as session:
                     break
             path.append(pathTmp)
             pathLen.append(pathLenTmp)  
-        '''
-            print("j 반복 끝")
-        print("i 반복 끝")
-        print("pathLen: ", pathLen)
-        print("path: " , path)
-        print(" ")
-        '''
+           
+        if flag:    
+            print("pathLen: ", pathLen)
+            print("path: " , path)
+            print(" ")
+        
         #algorithm
         if pathLen and flag:
-            #print("N : ", N)
+            print("N : ", N)
             g.append(N[0])
             del N[0]
             graphs.append([])
@@ -152,7 +151,7 @@ with driver.session() as session:
             #print(each)
             count = count + 1
             results.append(each) 
-    print(count)
+    #print(count)
     
     resultLen = []
     for each in results:
@@ -163,7 +162,7 @@ with driver.session() as session:
     resultIndex = sorted(range(len(resultLen)), key=lambda k: resultLen[k])         
     ranking = []
     for i in resultIndex[:3]: 
-        print(i)
+       
         ranking.append(results[i])
         
     ''' //검색어 두개       
@@ -209,7 +208,7 @@ with driver.session() as session:
         spCypher = spCypher + " MATCH p2 = shortestPath((personC)-[*]-(personD))"
         returnCypher = returnCypher + ", p2"       
 
-    for i in range(len(ranking[i])):
+    for i in range(len(ranking)):
         pA = " (personA:" + str(next(iter(ranking[i][0].start_node.labels))) + "{name: " + "'"+ str(ranking[i][0].start_node['name']) +"'"+ ", affiliation: " + "'"+ str(ranking[i][0].start_node['affiliation']) + "'"+ "})"
         pB = " , (personB:" + str(next(iter(ranking[i][0].end_node.labels))) + "{name: " + "'"+ str(ranking[i][0].end_node['name']) +"'"+ ", affiliation: " +"'"+ str(ranking[i][0].end_node['affiliation']) +"'"+ "})"        
         if len(keywords) == 3:    
