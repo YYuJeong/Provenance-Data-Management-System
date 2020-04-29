@@ -73,9 +73,10 @@ def delete_duplRelation(tx):
            "foreach(x in coll | delete x) ")
 
 with driver.session() as session:
+    '''
     for i in range(len(matrix)):
         session.write_transaction(add_node,matrix[i][0],matrix[i][1],matrix[i][2],matrix[i][3],matrix[i][4],matrix[i][5],matrix[i][6],matrix[i][7], matrix[i][8],matrix[i][9],matrix[i][10],matrix[i][11], matrix[i][12],matrix[i][13])
-
+    '''    
     session.read_transaction(merge_data)
     session.read_transaction(merge_person)
     session.read_transaction(delete_duplRelation)
