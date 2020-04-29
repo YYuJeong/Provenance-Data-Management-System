@@ -8,7 +8,7 @@ Created on Tue Feb 18 13:10:29 2020
 import csv, sys, time
 start_time = time.time()
 
-with open("randomDataDemo.csv",'r') as f:
+with open("provData_c.csv",'r') as f:
     matrix = list(csv.reader(f, delimiter=","))
 
 from neo4j import GraphDatabase

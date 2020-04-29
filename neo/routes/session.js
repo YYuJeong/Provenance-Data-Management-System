@@ -1,9 +1,9 @@
 let session_info ={
-    email: 'onew@gmail.com',
-    user: '이진기',
-    gubun: '관리자',
-    password: '1234',
-    authenticated:true,
+    email: '',
+    user: '',
+    gubun: '',
+    password: '',
+    authenticated:false,
     message: ''
 };
 
