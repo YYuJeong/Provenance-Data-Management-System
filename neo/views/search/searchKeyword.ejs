@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="/styles/vendor.css"> <!-- bootstrap-->
     <link rel="stylesheet" href="/styles/sweet-alert.css">
     <link rel="stylesheet" href="/styles/gh-fork-ribbon.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/hgyoseo/ridibatang@master/font.css">
 
     <style type="text/css">
 
@@ -108,7 +109,7 @@
         </table>
     </div> 
     <hr class="featurette-divider">   
-    <div class="tab-content" style="overflow: hidden;">
+    <div class="tab-content" style="overflow: hidden; font-family: RIDIBatang;">
         <div role="tabpanel" class="tab-pane active" id="graph" style="height: 800px;">
             <div class="tab-pane active" id="graph">&nbsp;</div>
         </div>
@@ -326,11 +327,13 @@
             return {url: Neo4j.DB_URL, user: Neo4j.DB_USR, pass: Neo4j.DB_PWD};
         }
         new Cy2NeoD3(config, "graph", "datatable", queries[num], "execute", connection, true);
-
     }
     
-
-
+    /*
+    function showAtr() {
+        document.write('test');
+    }
+    */
 
 </script>
 
