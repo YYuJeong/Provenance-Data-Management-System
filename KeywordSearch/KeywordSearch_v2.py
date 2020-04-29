@@ -7,31 +7,57 @@ Created on Mon Nov 25 14:50:29 2019
 import sys, time
 import numpy as np
 from itertools import product
+from itertools import combinations
+from itertools import groupby
+
+import math
 
 from neo4j import GraphDatabase
 
 driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "wowhi223"))
 
-
 def check_nodeLabel(tx, keyword):
-    checkPerson = (tx.run("MATCH (n:Person)"
+    personNodes = (tx.run("MATCH (n:Person)"
                           "WHERE (any(prop in ['name', 'affiliation'] WHERE n[prop] = $keyword))"
                           "RETURN n", keyword = keyword)).value()
-    checkData = (tx.run("MATCH (n:Data)"
+    dataNodes = (tx.run("MATCH (n:Data)"
                       "WHERE (any(prop in ['name', 'd_type', 'device', 'price'] WHERE n[prop] = $keyword))"
                       "RETURN n", keyword = keyword)).value()
-    checkActivity = (tx.run("MATCH (n:Activity)"
+    activityNodes = (tx.run("MATCH (n:Activity)"
                   "WHERE (any(prop in ['name', 'date'] WHERE n[prop] = $keyword))"
                   "RETURN n", keyword = keyword)).value()
 
-    if(checkPerson):
-        return checkPerson
-    elif(checkData):
-        return checkData
-    elif(checkActivity):
-        return checkActivity
+    if(personNodes):
+        return personNodes
+    elif(dataNodes):
+        return dataNodes
+    elif(activityNodes):
+        return activityNodes
+
+def delete_duplicateNode(kNodes):
+    combi = list(range(len(kNodes)))
+    candidN = list(product(*kNodes)) #generate all combinations for keyword nodes
+
+
+    combi = list(combinations(combi, 2))
+    
+    delInd = []
+    for i in range(len(candidN)):
+        for j in range(len(combi)):
+            if candidN[i][combi[j][0]].id == candidN[i][combi[j][1]].id:
+
+                delInd.append(i)
+                break
 
     
+    ind = 0     
+    for i in range(len(delInd)):
+
+        #print(candidN[delInd[i]-ind])
+        del candidN[delInd[i]-ind]
+        ind = ind + 1
+        
+    return candidN
 
 # next (iter (k1nodes[0].labels)) : frozenset 값 얻는법
 def get_nodes(tx, keyword, nodeLabel):
@@ -79,8 +105,7 @@ def sort_result(graphs):
         if each:
             count = count + 1
             results.append(each) 
-    print(count)
-    
+
     resultLen = []
     for each in results:
         sumLen = 0
@@ -89,14 +114,12 @@ def sort_result(graphs):
         resultLen.append(sumLen)
     resultIndex = sorted(range(len(resultLen)), key=lambda k: resultLen[k])         
     ranking = []
-    for i in resultIndex[:3]: 
-        print(i)
+    for i in resultIndex: 
         ranking.append(results[i])
     return ranking
 
 
 def generate_outputQuery(ranking):
-    
     '''
     MATCH (personA:Person { name: '변백현', affiliation:"대한법률구조공단"  }),
           (personB:Person {  name: '이시현', affiliation:"NHN"  }),
@@ -107,50 +130,31 @@ def generate_outputQuery(ranking):
     MATCH p2 = shortestPath((personD)-[*]-(personC))
     RETURN p, p2
     '''
-    
     j = 0
     outQuery = ""
-    outTable = ""
     for r in range(len(ranking)):
         resultLabel = ""
         resultWhere = ""
         resultSp = ""
         resultRt = ""
-        pathTmp = ""
-        for i in range(len(keywords)-1):
-            
+        for i in range(len(keywords)-1):    
             psLabel = next(iter(ranking[r][i].start_node.labels))
             peLabel = next(iter(ranking[r][i].end_node.labels))
             labelTemp = "(s"+str(j) +":" + psLabel +"), (e"+str(j) +":"+peLabel +")"
-            '''
-            psLabel1 Name.Affiliation 이름.소속;
-                        
-            2qeury1/outputQuery2|path1;path2,path1
-            
-            path1 = psLabel peLabel psprop peprop psVal peVal
-            '''
-            pathTmp = pathTmp + psLabel + " " + peLabel + " "
-            
+
             psProp = [*ranking[r][i].start_node.keys()]
             peProp = [*ranking[r][i].end_node.keys()]
             psVal = [*ranking[r][i].start_node.values()]
             peVal = [*ranking[r][i].end_node.values()]
             psWhere = ""
             peWhere = ""
-            
-            pathTmp = pathTmp + '.'.join(map(str, psProp)) + " "
-            pathTmp = pathTmp + '.'.join(map(str, peProp)) + " "
-            pathTmp = pathTmp + '.'.join(map(str, psVal)) + " "
-            pathTmp = pathTmp + '.'.join(map(str, peVal)) + ";"
-            
-        
+
             for p in range(len(psProp)):
                 psWhere = psWhere + "s" + str(j) + "." + psProp[p]+" = '" + psVal[p] + "' AND "
             for p in range(len(peProp)):
                 peWhere = peWhere + "e" + str(j) + "." + peProp[p]+" = '" + peVal[p] + "' "
                 if p+1 != len(peProp):
                     peWhere = peWhere + 'AND ' 
-
 
             resultLabel = resultLabel + labelTemp 
             resultWhere = resultWhere + psWhere + peWhere
@@ -163,32 +167,84 @@ def generate_outputQuery(ranking):
                 resultRt = resultRt + ", "
             j += 1
 
-        outTable = outTable + pathTmp +","
-    
         resultLabel = "MATCH " + resultLabel
         resultWhere = " WHERE " + resultWhere
-        resultRt = " RETURN " + resultRt
-        
+        resultRt = " RETURN " + resultRt  
         resultOut = resultLabel + resultWhere + resultSp + resultRt
-
         outQuery = outQuery + "/" + resultOut
-    outQuery = outQuery + outTable
- 
     return outQuery
 
+def generate_outputTable(ranking):
+    outTable = ""
+    for r in range(len(ranking)):
+        pTmp = []
+        for i in range(len(keywords)-1):
+            psTmp = []
+            peTmp = []
+          
+            psLabel = next(iter(ranking[r][i].start_node.labels))
+            peLabel = next(iter(ranking[r][i].end_node.labels))
 
+            psTmp.append(psLabel)
+            peTmp.append(peLabel)            
+            
+            '''
+            psLabel1 Name.Affiliation 이름.소속;
+                        
+            2qeury1/outputQuery2|path1;path2,path1
+            
+            path1 = psLabel peLabel psprop peprop psVal peVal
+            '''
+            psProp = [*ranking[r][i].start_node.keys()]
+            peProp = [*ranking[r][i].end_node.keys()]
+            psVal = [*ranking[r][i].start_node.values()]
+            peVal = [*ranking[r][i].end_node.values()]
+
+            psTmp = psTmp + psProp + psVal
+            peTmp = peTmp + peProp + peVal
+            pTmp.append(psTmp)
+            pTmp.append(peTmp)
+            
+            pTmp.sort()
+            
+            pTmp = list(pTmp for pTmp,_ in groupby(pTmp))
+        
+        out = ""
+        for p in pTmp:
+            outTmp = ""
+            for j in range(len(p)):
+                if j == 0:
+                    outTmp = outTmp + p[j] + " "
+                else:
+                    if j == math.floor(len(p)/2):            
+                        outTmp = outTmp + p[j] + " "
+                    else:
+                        if j == len(p)-1:
+                            outTmp = outTmp + p[j] + "/"
+                        else:
+                            outTmp = outTmp + p[j] + "."
+            
+            out = out + outTmp
+
+        outTable = outTable + out +";"    
+
+    return outTable
+
+    
 # proposed
 with driver.session() as session:
-    keywords = ['양유정', '서민지', '가가가']
-    
+
+    #keywords = ['성별데이터','나나나','이미지데이터','중소기업진흥공단','data_912']
+    keywords = ['양유정','서민지','data_762']
     start_time = time.time()
     
     #search for all nodes with keywords
-    kNodes = []
+    kNodes = []  
     for i in range(len(keywords)):
         kNodes.append(session.read_transaction(check_nodeLabel,  keyword= keywords[i]))
-
-    candidN = list(product(*kNodes)) #generate all combinations for keyword nodes
+    
+    candidN = delete_duplicateNode(kNodes)    
+    print(len(candidN))
     g = []
     N = []
     graphs = [] # pair 저장
@@ -202,7 +258,7 @@ with driver.session() as session:
         pathLen = []
 
         flag = True
-
+        print(k)
         for i in range(len(N)):
 
             pathTmp = []
@@ -213,7 +269,7 @@ with driver.session() as session:
 
                 spQuery = generate_shortestPathQuery(N[i], N[j])
                 shortP = session.read_transaction(shortestPath, spQuery)
-    
+
                 if shortP is not None:
                     pathTmp.append(shortP[0][0])
                     pathLenTmp.append(shortP[0][1])
@@ -222,7 +278,7 @@ with driver.session() as session:
                     break
             path.append(pathTmp)
             pathLen.append(pathLenTmp)  
-
+   
         #algorithm
         if pathLen and flag:
             g.append(N[0])
@@ -244,12 +300,14 @@ with driver.session() as session:
     print("---%s seconds ---" %(time.time() - start_time))
     
     ranking = sort_result(graphs)
-    outQuery, outTable = generate_outputQuery(ranking)
-    outQuery = outQuery + "|" + outTable
-    
+    if len(ranking) <= 10:
+        outQuery = generate_outputQuery(ranking)
+        outTable = generate_outputTable(ranking)
+    else:
+        outQuery = generate_outputQuery(ranking[:10])
+        outTable = generate_outputTable(ranking[:10])
+    print(outQuery + "|" + outTable)
 
-    
-    
     
     
     

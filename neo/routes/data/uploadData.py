@@ -9,9 +9,8 @@ import csv, sys
 
 from neo4j import GraphDatabase
 
-with open(sys.argv[1],'r') as f:
+with open(sys.argv[1],'r', encoding='UTF-8') as f:
     matrix = list(csv.reader(f,delimiter=","))
-
 
 driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "wowhi223"))
 
