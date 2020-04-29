@@ -186,7 +186,7 @@ with driver.session() as session:
     kNodes = []
     for i in range(len(keywords)):
         kNodes.append(session.read_transaction(check_nodeLabel,  keyword= keywords[i]))
-
+    
     candidN = list(product(*kNodes)) #generate all combinations for keyword nodes
     g = []
     N = []

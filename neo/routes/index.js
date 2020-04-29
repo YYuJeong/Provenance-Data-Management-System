@@ -1752,7 +1752,8 @@ router.post('/keyword', function (req, res) {
     console.log(keyStr);
 
     var wrote = 0;
-    var process = spawn('python', [__dirname + '\\search\\search.py', keyStr]);
+    console.log(__dirname + '/search/search.py');
+    var process = spawn('python3', [__dirname + '/search/search.py', keyStr]);
 
     
     /*
@@ -1775,11 +1776,11 @@ router.post('/keyword', function (req, res) {
 
     promiseFromChildProcess(process)
         .then(function (result) {
-            //console.log('promise complete: ', result);
+            console.log('promise complete: ', result);
             process.stdout.on('data', function (data) {
                 if (wrote == 0) {
 
-                    kk = iconv.decode(data, 'EUC-KR').toString();
+                    kk = iconv.decode(data, 'utf-8').toString();
 
                     keyResult.setKeywordResult(kk);
                 }

@@ -10,7 +10,7 @@ start_time = time.time()
 
 #with open("exampleData.csv",'r', encoding='UTF-8') as f:
 #with open("randomDataDemo.csv",'r') as f:
-with open("randomDataDemo.csv",'r') as f:
+with open("../KeywordSearch/attributeSearchData.csv",'r') as f:
     matrix = list(csv.reader(f,delimiter=","))
 
 from neo4j import GraphDatabase
