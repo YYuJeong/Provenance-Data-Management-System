@@ -8,36 +8,49 @@ import sys, time
 
 from itertools import product
 from itertools import groupby
+from itertools import combinations
 from math import floor
 from neo4j import GraphDatabase
 
 
 def check_nodeLabel(tx, keyword):
-    checkPerson = (tx.run("MATCH (n:Person)"
+    personNodes = (tx.run("MATCH (n:Person)"
                           "WHERE (any(prop in ['name', 'affiliation'] WHERE n[prop] = $keyword))"
                           "RETURN n", keyword = keyword)).value()
-    checkData = (tx.run("MATCH (n:Data)"
+    dataNodes = (tx.run("MATCH (n:Data)"
                       "WHERE (any(prop in ['name', 'd_type', 'device', 'price'] WHERE n[prop] = $keyword))"
                       "RETURN n", keyword = keyword)).value()
-    checkActivity = (tx.run("MATCH (n:Activity)"
+    activityNodes = (tx.run("MATCH (n:Activity)"
                   "WHERE (any(prop in ['name', 'date'] WHERE n[prop] = $keyword))"
                   "RETURN n", keyword = keyword)).value()
 
-    if(checkPerson):
-        return checkPerson
-    elif(checkData):
-        return checkData
-    elif(checkActivity):
-        return checkActivity
+    if(personNodes):
+        return personNodes
+    elif(dataNodes):
+        return dataNodes
+    elif(activityNodes):
+        return activityNodes
 
+def delete_duplicateNode(kNodes):
+    combi = list(range(len(kNodes)))
+    candidN = list(product(*kNodes)) #generate all combinations for keyword nodes
+    print(len(candidN))
+
+    combi = list(combinations(combi, 2))
     
+    delInd = []
+    for i in range(len(candidN)):
+        for j in range(len(combi)):
+            if candidN[i][combi[j][0]].id == candidN[i][combi[j][1]].id:
+                print(candidN[i][combi[j][0]],  candidN[i][combi[j][1]])
+                delInd.append(i)
+                break
+            
+    for i in delInd:
+        del candidN[i]
 
-# next (iter (k1nodes[0].labels)) : frozenset 값 얻는법
-def get_nodes(tx, keyword, nodeLabel):
-    nodes = (tx.run("MERGE (referee: " + nodeLabel + " {name:$keyword}) "
-                    "RETURN referee"
-                    , nodeLabel = nodeLabel, keyword = keyword)).values()
-    return nodes
+    return candidN
+
 
 def generate_shortestPathQuery(n, m):
     prop1 = [*n.keys()]
@@ -87,7 +100,7 @@ def sort_result(graphs):
         resultLen.append(sumLen)
     resultIndex = sorted(range(len(resultLen)), key=lambda k: resultLen[k])         
     ranking = []
-    for i in resultIndex[:3]: 
+    for i in resultIndex: 
       
         ranking.append(results[i])
     return ranking
@@ -218,7 +231,8 @@ if __name__ == "__main__":
         for i in range(len(keywords)):
             kNodes.append(session.read_transaction(check_nodeLabel,  keyword= keywords[i]))
 
-        candidN = list(product(*kNodes)) #generate all combinations for keyword nodes
+        candidN = delete_duplicateNode(kNodes)   
+
         g = []
         N = []
         graphs = [] # pair 저장

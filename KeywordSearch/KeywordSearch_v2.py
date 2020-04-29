@@ -7,7 +7,9 @@ Created on Mon Nov 25 14:50:29 2019
 import sys, time
 import numpy as np
 from itertools import product
-import itertools
+from itertools import combinations
+from itertools import groupby
+
 import math
 
 from neo4j import GraphDatabase
@@ -15,24 +17,42 @@ from neo4j import GraphDatabase
 driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "wowhi223"))
 
 def check_nodeLabel(tx, keyword):
-    checkPerson = (tx.run("MATCH (n:Person)"
+    personNodes = (tx.run("MATCH (n:Person)"
                           "WHERE (any(prop in ['name', 'affiliation'] WHERE n[prop] = $keyword))"
                           "RETURN n", keyword = keyword)).value()
-    checkData = (tx.run("MATCH (n:Data)"
+    dataNodes = (tx.run("MATCH (n:Data)"
                       "WHERE (any(prop in ['name', 'd_type', 'device', 'price'] WHERE n[prop] = $keyword))"
                       "RETURN n", keyword = keyword)).value()
-    checkActivity = (tx.run("MATCH (n:Activity)"
+    activityNodes = (tx.run("MATCH (n:Activity)"
                   "WHERE (any(prop in ['name', 'date'] WHERE n[prop] = $keyword))"
                   "RETURN n", keyword = keyword)).value()
 
-    if(checkPerson):
-        return checkPerson
-    elif(checkData):
-        return checkData
-    elif(checkActivity):
-        return checkActivity
+    if(personNodes):
+        return personNodes
+    elif(dataNodes):
+        return dataNodes
+    elif(activityNodes):
+        return activityNodes
 
+def delete_duplicateNode(kNodes):
+    combi = list(range(len(kNodes)))
+    candidN = list(product(*kNodes)) #generate all combinations for keyword nodes
+    print(len(candidN))
+
+    combi = list(combinations(combi, 2))
     
+    delInd = []
+    for i in range(len(candidN)):
+        for j in range(len(combi)):
+            if candidN[i][combi[j][0]].id == candidN[i][combi[j][1]].id:
+                print(candidN[i][combi[j][0]],  candidN[i][combi[j][1]])
+                delInd.append(i)
+                break
+            
+    for i in delInd:
+        del candidN[i]
+
+    return candidN
 
 # next (iter (k1nodes[0].labels)) : frozenset 값 얻는법
 def get_nodes(tx, keyword, nodeLabel):
@@ -90,7 +110,7 @@ def sort_result(graphs):
         resultLen.append(sumLen)
     resultIndex = sorted(range(len(resultLen)), key=lambda k: resultLen[k])         
     ranking = []
-    for i in resultIndex[:3]: 
+    for i in resultIndex: 
         print(i)
         ranking.append(results[i])
     return ranking
@@ -183,7 +203,8 @@ def generate_outputTable(ranking):
             pTmp.append(peTmp)
             
             pTmp.sort()
-            pTmp = list(pTmp for pTmp,_ in itertools.groupby(pTmp))
+            
+            pTmp = list(pTmp for pTmp,_ in groupby(pTmp))
         
         out = ""
         for p in pTmp:
@@ -210,17 +231,17 @@ def generate_outputTable(ranking):
 # proposed
 with driver.session() as session:
 
-    keywords = ['가가가','나나나','다다다']
+    keywords = ['성별데이터','나나나','이미지데이터','중소기업진흥공단','data_912']
 
-    
     start_time = time.time()
     
     #search for all nodes with keywords
-    kNodes = []
+    kNodes = []  
     for i in range(len(keywords)):
         kNodes.append(session.read_transaction(check_nodeLabel,  keyword= keywords[i]))
+    
+    candidN = delete_duplicateNode(kNodes)    
 
-    candidN = list(product(*kNodes)) #generate all combinations for keyword nodes
     g = []
     N = []
     graphs = [] # pair 저장
@@ -254,7 +275,7 @@ with driver.session() as session:
                     break
             path.append(pathTmp)
             pathLen.append(pathLenTmp)  
-
+   
         #algorithm
         if pathLen and flag:
             g.append(N[0])
@@ -279,7 +300,7 @@ with driver.session() as session:
     outQuery = generate_outputQuery(ranking)
     outTable = generate_outputTable(ranking)
     print(outQuery + "|" + outTable)
-
+    
     
     
     
