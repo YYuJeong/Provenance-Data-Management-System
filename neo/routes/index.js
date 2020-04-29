@@ -1179,9 +1179,10 @@ router.post('/nameSearch', function (req, res) {
     session.run(newQuery5)
     .then(function (result) {
         query5resultNum = result.records.length;
+        //console.log("query5: ", query5resultNum)
         if (query5resultNum != 0) {
             result.records.forEach(function (record) {
-
+              
                 nameArr5.push(record._fields[0].properties.name)
                 affiliationArr5.push(record._fields[0].properties.affiliation)
 
@@ -1193,10 +1194,10 @@ router.post('/nameSearch', function (req, res) {
                 activityTypeArr5.push(record._fields[2].properties.name)
                 dateArr5.push(record._fields[2].properties.date)
 
-                dataNameArr6.push(record._fields[4].properties.name)
-                dataTypeArr6.push(record._fields[4].properties.d_type)
-                deviceArr6.push(record._fields[4].properties.device)
-                priceArr6.push(record._fields[4].properties.price)
+                dataNameArr6.push(record._fields[3].properties.name)
+                dataTypeArr6.push(record._fields[3].properties.d_type)
+                deviceArr6.push(record._fields[3].properties.device)
+                priceArr6.push(record._fields[3].properties.price)
             });
         }
         else {

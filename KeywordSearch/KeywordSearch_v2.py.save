@@ -178,10 +178,15 @@ def generate_outputQuery(ranking):
 
 # proposed
 with driver.session() as session:
-
-    keywords = ['가가가', '나나나', '다다다']
-
-    
+<<<<<<< HEAD
+    keywords = ['양유정', '서민지']
+=======
+<<<<<<< HEAD
+    keywords = ['이진기', '양유정', '서민지']
+=======
+    keywords = ['양유정', '서민지', '가가가']
+>>>>>>> d3cfe637ee7ce7f4287fe3b96c3e66cae93236ec
+>>>>>>> a5f2df5fc55b0b37794fa518c0c0d5d3c3716cf8    
     start_time = time.time()
     
     #search for all nodes with keywords
@@ -245,8 +250,8 @@ with driver.session() as session:
     print("---%s seconds ---" %(time.time() - start_time))
     
     ranking = sort_result(graphs)
-    outQuery = generate_outputQuery(ranking)
-
+    outQuery, outTable = generate_outputQuery(ranking)
+    outQuery = outQuery + "|" + outTable
     
 
     
@@ -254,4 +259,3 @@ with driver.session() as session:
     
     
     
-
