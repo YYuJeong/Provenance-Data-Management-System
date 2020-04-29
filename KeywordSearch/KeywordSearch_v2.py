@@ -37,7 +37,7 @@ def check_nodeLabel(tx, keyword):
 def delete_duplicateNode(kNodes):
     combi = list(range(len(kNodes)))
     candidN = list(product(*kNodes)) #generate all combinations for keyword nodes
-    print(len(candidN))
+
 
     combi = list(combinations(combi, 2))
     
@@ -45,13 +45,18 @@ def delete_duplicateNode(kNodes):
     for i in range(len(candidN)):
         for j in range(len(combi)):
             if candidN[i][combi[j][0]].id == candidN[i][combi[j][1]].id:
-                print(candidN[i][combi[j][0]],  candidN[i][combi[j][1]])
+
                 delInd.append(i)
                 break
-            
-    for i in delInd:
-        del candidN[i]
 
+    
+    ind = 0     
+    for i in range(len(delInd)):
+
+        #print(candidN[delInd[i]-ind])
+        del candidN[delInd[i]-ind]
+        ind = ind + 1
+        
     return candidN
 
 # next (iter (k1nodes[0].labels)) : frozenset 값 얻는법
@@ -100,8 +105,7 @@ def sort_result(graphs):
         if each:
             count = count + 1
             results.append(each) 
-    print(count)
-    
+
     resultLen = []
     for each in results:
         sumLen = 0
@@ -111,7 +115,6 @@ def sort_result(graphs):
     resultIndex = sorted(range(len(resultLen)), key=lambda k: resultLen[k])         
     ranking = []
     for i in resultIndex: 
-        print(i)
         ranking.append(results[i])
     return ranking
 
@@ -231,8 +234,8 @@ def generate_outputTable(ranking):
 # proposed
 with driver.session() as session:
 
-    keywords = ['성별데이터','나나나','이미지데이터','중소기업진흥공단','data_912']
-
+    #keywords = ['성별데이터','나나나','이미지데이터','중소기업진흥공단','data_912']
+    keywords = ['양유정','서민지','data_762']
     start_time = time.time()
     
     #search for all nodes with keywords
@@ -241,7 +244,7 @@ with driver.session() as session:
         kNodes.append(session.read_transaction(check_nodeLabel,  keyword= keywords[i]))
     
     candidN = delete_duplicateNode(kNodes)    
-
+    print(len(candidN))
     g = []
     N = []
     graphs = [] # pair 저장
@@ -255,7 +258,7 @@ with driver.session() as session:
         pathLen = []
 
         flag = True
-
+        print(k)
         for i in range(len(N)):
 
             pathTmp = []
@@ -266,7 +269,7 @@ with driver.session() as session:
 
                 spQuery = generate_shortestPathQuery(N[i], N[j])
                 shortP = session.read_transaction(shortestPath, spQuery)
-    
+
                 if shortP is not None:
                     pathTmp.append(shortP[0][0])
                     pathLenTmp.append(shortP[0][1])
@@ -297,12 +300,14 @@ with driver.session() as session:
     print("---%s seconds ---" %(time.time() - start_time))
     
     ranking = sort_result(graphs)
-    outQuery = generate_outputQuery(ranking)
-    outTable = generate_outputTable(ranking)
+    if len(ranking) <= 10:
+        outQuery = generate_outputQuery(ranking)
+        outTable = generate_outputTable(ranking)
+    else:
+        outQuery = generate_outputQuery(ranking[:10])
+        outTable = generate_outputTable(ranking[:10])
     print(outQuery + "|" + outTable)
-    
-    
-    
+
     
     
     

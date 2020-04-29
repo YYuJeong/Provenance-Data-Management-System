@@ -34,7 +34,6 @@ def check_nodeLabel(tx, keyword):
 def delete_duplicateNode(kNodes):
     combi = list(range(len(kNodes)))
     candidN = list(product(*kNodes)) #generate all combinations for keyword nodes
-    print(len(candidN))
 
     combi = list(combinations(combi, 2))
     
@@ -42,12 +41,13 @@ def delete_duplicateNode(kNodes):
     for i in range(len(candidN)):
         for j in range(len(combi)):
             if candidN[i][combi[j][0]].id == candidN[i][combi[j][1]].id:
-                print(candidN[i][combi[j][0]],  candidN[i][combi[j][1]])
                 delInd.append(i)
                 break
             
-    for i in delInd:
-        del candidN[i]
+    ind = 0     
+    for i in range(len(delInd)):
+        del candidN[delInd[i]-ind]
+        ind = ind + 1
 
     return candidN
 
@@ -284,8 +284,12 @@ if __name__ == "__main__":
 		
 
         ranking = sort_result(graphs)
-        outQuery = generate_outputQuery(ranking)
-        outTable = generate_outputTable(ranking)
+        if len(ranking) <= 10:
+            outQuery = generate_outputQuery(ranking)
+            outTable = generate_outputTable(ranking)
+        else:
+            outQuery = generate_outputQuery(ranking[:10])
+            outTable = generate_outputTable(ranking[:10])
         print(outQuery + "|" + outTable)
 
         driver.close()
