@@ -267,7 +267,7 @@
             console.log(element)
         })
 
-    
+
 
         var trNum = resultVal.length
         var thNum = resultVal.length
@@ -328,12 +328,14 @@
         }
         new Cy2NeoD3(config, "graph", "datatable", queries[num], "execute", connection, true);
     }
+
     
-    /*
-    function showAtr() {
-        document.write('test');
+    function showAtr(query) {
+        var attrs = [];
+        attrs = query.split(',');
+        console.log(attrs);
     }
-    */
+    
 
 </script>
 
