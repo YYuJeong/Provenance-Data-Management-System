@@ -480,7 +480,7 @@ router.get('/viewPage', function (req, res) {
               dateArr4.push(record._fields[2].properties.date)
             });
             
-            session.run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[s:Send]-(p1:Person), (ac:Activity)-[r:Receive]-(p2:Person) WHERE ac.name IN ['배포', '판매'] AND ( p1.name = '" + user_name + "' OR p2.name = '" + user_name + "' ) RETURN p1, d, ac, p2 LIMIT 10")
+            session.run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[s:Send]-(p1:Person), (ac:Activity)-[r:Receive]-(p2:Person) WHERE ac.name IN ['배포', '판매'] AND ( p1.name = '" + user_name + "' ) RETURN p1, d, ac, p2 LIMIT 10")
           .then(function (result) {
             result.records.forEach(function (record) {
 
@@ -1756,7 +1756,7 @@ router.post('/keyword', function (req, res) {
     console.log(__dirname + '/search/search.py');
     var process = spawn('python3', [__dirname + '/search/search.py', keyStr]);
 
-    
+
     /*
     Promise.all([getCheckNode(keyword[0]), getCheckNode(keyword[1])])
         .then(function(results){
@@ -1773,32 +1773,35 @@ router.post('/keyword', function (req, res) {
             */
 
     var startTime = new Date().getTime();
-    kk = ""
+    if(keyStr == '' || keyStr == null) {
+        res.send('<script type="text/javascript">alert("검색어를 입력해주세요."); window.history.go(-1);</script>');
+    }
+    else{
+        promiseFromChildProcess(process)
+            .then(function (result) {
+                //console.log('promise complete: ', result);
+                process.stdout.on('data', function (data) {
+                    if (wrote == 0) {
 
-    promiseFromChildProcess(process)
-        .then(function (result) {
-            console.log('promise complete: ', result);
-            process.stdout.on('data', function (data) {
-                if (wrote == 0) {
+                        kk = iconv.decode(data, 'EUC-KR').toString();
 
-                    kk = iconv.decode(data, 'utf-8').toString();
+                        keyResult.setKeywordResult(kk);
+                    }
+                    wrote += 1;
+                });
+                var endTime = new Date().getTime();
+                console.log("Execution time : ", (endTime - startTime));
+                //console.timeEnd('calculatingTime');
+                process.on('close', function (data) {
+                    console.log(kk)
 
-                    keyResult.setKeywordResult(kk);
-                }
-                wrote += 1;
-            });
-            var endTime = new Date().getTime();
-            console.log("Execution time : ", (endTime - startTime));
-            //console.timeEnd('calculatingTime');
-            process.on('close', function (data) {
-                console.log(kk)
-
-                //res.render("search/searchKeyword.ejs", {esession: session_value.getSession(), data:keyResult.getKeywordResult()});
-                res.redirect('search/searchKeyword');
-            });
-        }, function (err) {
-            console.log('promise rejected: ', err);
+                    //res.render("search/searchKeyword.ejs", {esession: session_value.getSession(), data:keyResult.getKeywordResult()});
+                    res.redirect('search/searchKeyword');
+                });
+            }, function (err) {
+                console.log('promise rejected: ', err);
         });
+    }
 
 });
 

@@ -200,7 +200,7 @@ def generate_outputQuery(ranking):
 with driver.session() as session:
 
     #keywords = ['성별데이터','나나나','이미지데이터','중소기업진흥공단','data_912']
-    keywords = ['양유정','서민지','data_762']
+    keywords = ['황유면','한현호']
     start_time = time.time()
     
     #search for all nodes with keywords
@@ -267,13 +267,17 @@ with driver.session() as session:
     
     ranking = sort_result(graphs)
 
-    if len(ranking) <= 10:
-        outQuery = generate_outputQuery(ranking)
-        outTable = generate_outputTable(ranking)
-    else:
-        outQuery = generate_outputQuery(ranking[:10])
-        outTable = generate_outputTable(ranking[:10])
-    print(outQuery + "|" + outTable)
+    if len(ranking) == 0:
+        print(len(keywords))
+    else:     
+        if len(ranking) <= 10:
+            outQuery = generate_outputQuery(ranking)
+            outTable = generate_outputTable(ranking)
+        else:
+            outQuery = generate_outputQuery(ranking[:10])
+            outTable = generate_outputTable(ranking[:10])
+        print(outQuery + "|" + outTable)
+
     
     
     
