@@ -47,7 +47,7 @@
             text-align: center;
             border-right: 2px dashed white;
             padding: 5px;
-            height: 50px;
+            height: 80px;
         }
 
         th {
@@ -265,51 +265,46 @@
     }
 
     if(!resultFlag){
-        var trNum = 1
-        var thNum = 1
-        var tdNum = 1
+        var trNum = 1;
+        var thNum = 1;
+        var tdNum = 1;
     }
-    else{
-        var trNum = resultVal.length
-        var thNum = resultVal.length
-        var tdNum = resultLabel.length
+    else {
+        var trNum = resultVal.length;
+        var thNum = resultVal.length;
+        var tdNum = resultLabel.length;
     }
-
     var kNum = 0;
-    var trObj
-    var thObj
-    var tdObj
-    for(var i=0;i<trNum+1;i++){
-        if(i==0){
+    var trObj;
+    var thObj;
+    var tdObj;
+
+    for(var i = 0; i < trNum + 1; i++){
+        if(i == 0){
             trObj=document.createElement("tr")
             thObj=document.createElement("th");
             trObj.appendChild(thObj); 
             thObj.innerHTML='순위';
-            thObj.style.height = '60px';
-
+            thObj.style.height = '50px';
+            len = resultVal[i].length;
             if(!resultFlag){
                 len = keylen
             }
-            else{
-                len = resultVal[i].length;
-            }
         }
-        else {
+         else {
             trObj=document.createElement("tr")
             thObj=document.createElement("th");
             trObj.appendChild(thObj); 
-            thObj.innerHTML=i;
+            thObj.innerHTML = i;
             len = resultVal[i-1].length;
-
         }   
-        for(var k=0;k<len;k++){
-
-            if(i==0){
+        for(var k = 0; k < len; k++){
+            if(i == 0){
                 tdObj=document.createElement("td");
                 tdObj.innerHTML='키워드 '+(kNum+1);
-                tdObj.style.backgroundColor = "#f8f8f8" 
+                tdObj.style.backgroundColor = "#f8f8f8";
                 trObj.appendChild(tdObj);
-                kNum = kNum + 1
+                kNum = kNum + 1;
             }
             else{
                 tdObj=document.createElement("td");
@@ -327,7 +322,7 @@
             tdObj.innerHTML='<button type="button" class="btn btn-primary" onclick="Show(' + (i-1) + ')">그래프 보기</button>';
             trObj.appendChild(tdObj); 
         }
-        dataTable.appendChild(trObj); 
+    dataTable.appendChild(trObj); 
     } 
     
     }); 
