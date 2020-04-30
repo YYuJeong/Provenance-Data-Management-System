@@ -152,14 +152,22 @@
         $("#ksb").click(function() {
             $("#key").submit();
 
-        });
+    });
        
-    
-        var keyDatas = document.getElementById("keyData").innerHTML;
+    var keyDatas = document.getElementById("keyData").innerHTML;
+    var resultFlag
+    if(!isNaN(Number(keyDatas))){
+        resultFlag = false
+        var keylen = Number(keyDatas)
+    }
+    else{
+        resultFlag = true
         var result = keyDatas.split('|');
+
         queries = result[0].split('/');
         queries.splice(0, 1);
-        
+
+
         var tables = result[1].split(';');
         tables.splice(tables.length-1, 1);
 
@@ -168,7 +176,7 @@
             var tmp = element.split('/')
             rankings[index] = tmp.splice(0, tmp.length-1)
         });
-  
+
         var ranking = [];
         rankings.forEach(function(rank, index){
             rnk = []
@@ -210,29 +218,17 @@
             resultProp.push(props)
             resultVal.push(vals)
         })
-
-        /*
-        console.log(resultLabel[0][0][0])
-        console.log(resultVal[1])
-        console.log(resultVal[1][0])
-        console.log(resultVal[1][0][0])
-        console.log(resultVal[0][0][1])
-        console.log("")
-        */
- 
         var keywordNames = []
         var keywordVals = []
-     
+        
         for(var k = 0; k < resultLabel.length; k++){
             console.log("랭킹: " , k)
             var nt = [];
             var vt = [];
-            
             for(var i = 0; i<resultLabel[k].length ; i++){
                 console.log("   키워드: ", i)
                 var nameTmp = [];
                 var valTmp = [];
-            
                 if(resultLabel[k][i][0] == 'Person'){
                     console.log("person")
                     nameTmp.push(resultVal[k][i][0][0])
@@ -266,59 +262,73 @@
             console.log(index)
             console.log(element)
         })
+    }
 
-
-
+    if(!resultFlag){
+        var trNum = 1
+        var thNum = 1
+        var tdNum = 1
+    }
+    else{
         var trNum = resultVal.length
         var thNum = resultVal.length
         var tdNum = resultLabel.length
-        var kNum = 0;
-        var trObj
-        var thObj
-        var tdObj
-        for(var i=0;i<trNum+1;i++){
-            if(i==0){
-                trObj=document.createElement("tr")
-                thObj=document.createElement("th");
-                trObj.appendChild(thObj); 
-                thObj.innerHTML='순위';
-                thObj.style.height = '60px';
+    }
+
+    var kNum = 0;
+    var trObj
+    var thObj
+    var tdObj
+    for(var i=0;i<trNum+1;i++){
+        if(i==0){
+            trObj=document.createElement("tr")
+            thObj=document.createElement("th");
+            trObj.appendChild(thObj); 
+            thObj.innerHTML='순위';
+            thObj.style.height = '60px';
+
+            if(!resultFlag){
+                len = keylen
+            }
+            else{
                 len = resultVal[i].length;
             }
-            else {
-                trObj=document.createElement("tr")
-                thObj=document.createElement("th");
-                trObj.appendChild(thObj); 
-                thObj.innerHTML=i;
-                len = resultVal[i-1].length;
-            }   
-            for(var k=0;k<len;k++){
+        }
+        else {
+            trObj=document.createElement("tr")
+            thObj=document.createElement("th");
+            trObj.appendChild(thObj); 
+            thObj.innerHTML=i;
+            len = resultVal[i-1].length;
 
-                if(i==0){
-                    tdObj=document.createElement("td");
-                    tdObj.innerHTML='키워드 '+(kNum+1);
-                    tdObj.style.backgroundColor = "#f8f8f8" 
-                    trObj.appendChild(tdObj);
-                    kNum = kNum + 1
-                }
-                else{
-                    tdObj=document.createElement("td");
-                    tdObj.innerHTML = keywordNames[i-1][k] + "<br>(" + keywordVals[i-1][k] + ")"; 
-                    trObj.appendChild(tdObj); 
-                }             
-            }
-            if(i == 0){
+        }   
+        for(var k=0;k<len;k++){
+
+            if(i==0){
                 tdObj=document.createElement("td");
+                tdObj.innerHTML='키워드 '+(kNum+1);
                 tdObj.style.backgroundColor = "#f8f8f8" 
-                trObj.appendChild(tdObj); 
+                trObj.appendChild(tdObj);
+                kNum = kNum + 1
             }
-            else {
+            else{
                 tdObj=document.createElement("td");
-                tdObj.innerHTML='<button type="button" class="btn btn-primary" onclick="Show(' + (i-1) + ')">그래프 보기</button>';
+                tdObj.innerHTML = keywordNames[i-1][k] + "<br>(" + keywordVals[i-1][k] + ")"; 
                 trObj.appendChild(tdObj); 
-            }
+            }             
+        }
+        if(i == 0){
+            tdObj=document.createElement("td");
+            tdObj.style.backgroundColor = "#f8f8f8" 
+            trObj.appendChild(tdObj); 
+        }
+        else {
+            tdObj=document.createElement("td");
+            tdObj.innerHTML='<button type="button" class="btn btn-primary" onclick="Show(' + (i-1) + ')">그래프 보기</button>';
+            trObj.appendChild(tdObj); 
+        }
         dataTable.appendChild(trObj); 
-        } 
+    } 
     
     }); 
 
@@ -329,7 +339,7 @@
         new Cy2NeoD3(config, "graph", "datatable", queries[num], "execute", connection, true);
     }
 
-    
+
     function showAtr(query) {
         var attrs = [];
         attrs = query.split(',');

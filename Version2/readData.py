@@ -8,8 +8,9 @@ Created on Tue Feb 18 13:10:29 2020
 import csv, sys, time
 start_time = time.time()
 
-#with open("exampleData.csv",'r', encoding='UTF-8') as f:
-with open("randomDataDemo.csv",'r') as f:
+
+with open("provData_c.csv", 'r') as f:
+
     matrix = list(csv.reader(f, delimiter=","))
 
 from neo4j import GraphDatabase
@@ -73,10 +74,10 @@ def delete_duplRelation(tx):
            "foreach(x in coll | delete x) ")
 
 with driver.session() as session:
-    '''
+    
     for i in range(len(matrix)):
         session.write_transaction(add_node,matrix[i][0],matrix[i][1],matrix[i][2],matrix[i][3],matrix[i][4],matrix[i][5],matrix[i][6],matrix[i][7], matrix[i][8],matrix[i][9],matrix[i][10],matrix[i][11], matrix[i][12],matrix[i][13])
-    '''    
+        
     session.read_transaction(merge_data)
     session.read_transaction(merge_person)
     session.read_transaction(delete_duplRelation)

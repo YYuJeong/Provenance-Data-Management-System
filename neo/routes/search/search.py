@@ -284,13 +284,16 @@ if __name__ == "__main__":
 		
 
         ranking = sort_result(graphs)
-        if len(ranking) <= 10:
-            outQuery = generate_outputQuery(ranking)
-            outTable = generate_outputTable(ranking)
-        else:
-            outQuery = generate_outputQuery(ranking[:10])
-            outTable = generate_outputTable(ranking[:10])
-        print(outQuery + "|" + outTable)
+        if len(ranking) == 0:
+            print(len(keywords))
+        else:     
+            if len(ranking) <= 10:
+                outQuery = generate_outputQuery(ranking)
+                outTable = generate_outputTable(ranking)
+            else:
+                outQuery = generate_outputQuery(ranking[:10])
+                outTable = generate_outputTable(ranking[:10])
+            print(outQuery + "|" + outTable)
 
         driver.close()
 
