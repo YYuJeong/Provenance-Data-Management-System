@@ -102,7 +102,7 @@ function Cy2NeoD3(config, graphId, tableId, sourceId, execId, urlSource, renderG
                         renderResult(tableId, res.table);
                         console.log(graph)
                         console.log(Object.keys(graph))
-                        console.log(Object.values(graph))
+                        //console.log(Object.valuesOf(graph))
                     } else {
                         if (err) {
                             console.log(err);
@@ -161,10 +161,6 @@ function Cy2NeoD3(config, graphId, tableId, sourceId, execId, urlSource, renderG
         console.log(e);
         sweetAlert("Catched error", e, "error");
     }
-    return false;
-
-
-
 }
 
 exports.Cy2NeoD3 = Cy2NeoD3;

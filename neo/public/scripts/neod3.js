@@ -751,7 +751,7 @@ neo.style = (function() {
         'border-width': '2px',
         'text-color-internal': '#000000',
         'caption': '{id}',
-        'font-size': '10px'
+        'font-size': '10px',
       },
       'relationship': {
         'color': '#D4D6D7',
@@ -1388,8 +1388,6 @@ neo.utils.clickHandler = function() {
   return d3.rebind(cc, event, "on");
 };
 
-
-
 neo.utils.measureText = (function() {
   var cache, measureUsingCanvas;
   measureUsingCanvas = function(text, font) {
@@ -1431,17 +1429,96 @@ neo.utils.measureText = (function() {
 })();
 
 (function() {
-  var arrowPath, nodeCaption, nodeOutline, nodeOverlay, noop, relationshipOverlay, relationshipType;
+  var arrowPath, nodeCaption, nodeOutline, nodeOverlay, noop, relationshipOverlay, relationshipType, string, stringCircle, circleID, nodeText, nodeIndex;
   noop = function() {};
+/*
+  nodeText = new neo.Renderer({
+    onGraphChange: function(selection, viz) {
+      var text;
+      nodeIndex = 0;
+      text = selection.selectAll('meta').data(function(node) {
+        return node.caption;
+      });
+      text.enter().append('meta').attr({
+      });
+      text.text(function(line) {
+        console.log(text);
+        var textKey = [];
+        var textValue = [];
+        var nodeIndexContent = [];
+        string = '';
+        circleID = '';
+        //console.log(text[0][0]["__data__"]["node"]["propertyList"].length);
+        for(var i = 0; i < text.length ; i++) {
+          for(var j = 0; j < text[0][0]["__data__"]["node"]["propertyList"].length; j++) {
+            textKey.push(text[i][0]["__data__"]["node"]["propertyList"][j]["key"])
+          }
+        }
+        for(var i = 0; i < text.length; i++) {
+          for(var j = 0; j < text[0][0]["__data__"]["node"]["propertyList"].length; j++) {
+            textValue.push(text[i][0]["__data__"]["node"]["propertyList"][j]["value"])
+          }
+        }
+        for(var i = 0; i < textValue.length; i++)
+          if(i != textValue.length - 1)
+            string = string + textValue[i] + ',';
+          else
+            string = string + textValue[i];
+        //console.log(string);
+        //console.log(Object.keys(text)); "0", "1", "2", enter, exit
+        //console.log(Object.keys(text[0])); ["0", "parentNode"]
+        //console.log(Object.keys(text[0][0])); ["__data__"]
+        //console.log(Object.keys(text[0][0]["__data__"])); ["node", "text", "baseline"]
+        //console.log(Object.keys(text[0][0]["__data__"]["node"]["propertyList"][0])); ["key", "value"]
+        //console.log(text[0][0]["__data__"]["node"]["propertyList"][0]["value"]);
+        //console.log(onKey);
+        //console.log(onVal);
+        //console.log(IDString);
+        //console.log(line.text + nodeIndex);
+        //circleID = text.line;
+  
+        for(var i = 0; i < text[nodeIndex][0]["__data__"]["node"]["propertyList"].length ; i++) {
+          nodeIndexContent.push(text[nodeIndex][0]["__data__"]["node"]["propertyList"][i]["value"]);
+        }
+        console.log(nodeIndexContent);
+        for(var i = 0; i < nodeIndexContent.length; i++)
+          if(i != nodeIndexContent.length - 1)
+            stringCircle = stringCircle + nodeIndexContent[i] + ',';
+          else
+            stringCircle = stringCircle + nodeIndexContent[i];
+
+        nodeIndex = nodeIndex + 1;
+        return text.line;
+      });
+      return text.exit().remove();
+    },
+    onTick: noop
+  });
+*/
   nodeOutline = new neo.Renderer({
     onGraphChange: function(selection, viz) {
-      var circles;
+      var circles, text;
+      nodeIndex = 0;
+
       circles = selection.selectAll('circle.outline').data(function(node) {
         return [node];
       });
+      text = selection.selectAll('meta').data(function(node) {
+        return node.caption;
+      });
+      text.enter().append('meta').attr({
+      });
+      //
+      text.text(function(line) {   
+      });
+      //
+      //console.log(nodeContentCopy);
+      //console.log(typeof(string));
+      //console.log("KKK" + stringCircle);
       circles.enter().append('circle').classed('outline', true).attr({
         cx: 0,
-        cy: 0
+        cy: 0,
+        //'onclick': "showAtr('" + stringCircle + "')",
       });
       circles.attr({
         r: function(node) {
@@ -1455,12 +1532,58 @@ neo.utils.measureText = (function() {
         },
         'stroke-width': function(node) {
           return viz.style.forNode(node).get('border-width');
-        }
+        },
+        'onclick' : function(node) {
+          //console.log(text);
+          var textKey = [];
+          var textValue = [];
+          var nodeIndexContent = [];
+          string = '';
+          stringCircle = '';
+          circleID = '';
+          //console.log(text[0][0]["__data__"]["node"]["propertyList"].length);
+          for(var i = 0; i < text.length ; i++) {
+            for(var j = 0; j < text[0][0]["__data__"]["node"]["propertyList"].length; j++) {
+              textKey.push(text[i][0]["__data__"]["node"]["propertyList"][j]["key"])
+            }
+          }
+          for(var i = 0; i < text.length; i++) {
+            for(var j = 0; j < text[0][0]["__data__"]["node"]["propertyList"].length; j++) {
+              textValue.push(text[i][0]["__data__"]["node"]["propertyList"][j]["value"])
+            }
+          }
+          for(var i = 0; i < textValue.length; i++)
+            if(i != textValue.length - 1)
+              string = string + textValue[i] + ',';
+            else
+              string = string + textValue[i];
+        
+          //console.log("ONEW");
+          //console.log(nodeIndex);
+          //console.log(text[nodeIndex][0]["__data__"]["node"]["propertyList"][0]["value"]);
+          for(var i = 0; i < text[nodeIndex][0]["__data__"]["node"]["propertyList"].length ; i++) {
+            nodeIndexContent.push(text[nodeIndex][0]["__data__"]["node"]["propertyList"][i]["value"]);
+          }
+          circleID = text[nodeIndex][0]["__data__"]["node"]["labels"][0];
+          stringCircle = circleID + ',';
+          //console.log(circleID);
+          //console.log(nodeIndexContent);
+          //console.log("nodeIndex : " + nodeIndex)
+          for(var i = 0; i < nodeIndexContent.length; i++)
+            if(i != nodeIndexContent.length - 1)
+              stringCircle = stringCircle + nodeIndexContent[i] + ',';
+            else
+              stringCircle = stringCircle + nodeIndexContent[i];
+          //console.log(stringCircle);
+          nodeIndex = nodeIndex + 1;    
+          return "showAtrr('" + stringCircle + "')";
+        },
       });
       return circles.exit().remove();
     },
     onTick: noop
   });
+
   nodeCaption = new neo.Renderer({
     onGraphChange: function(selection, viz) {
       var text;
@@ -1471,7 +1594,8 @@ neo.utils.measureText = (function() {
         'text-anchor': 'middle',
         'font-weight': 'bold',
         'stroke': '#FFFFFF',
-        'stroke-width' : '0'
+        'stroke-width' : '0',
+        //'onclick': "showAtr('" + string + "')",
       });
       text.text(function(line) {
         return line.text;
@@ -1482,12 +1606,15 @@ neo.utils.measureText = (function() {
       }).attr('stroke', function(line) {
         return viz.style.forNode(line.node).get('color');
       }).attr('fill', function(line) {
-          return viz.style.forNode(line.node).get('text-color-internal');
+        return viz.style.forNode(line.node).get('text-color-internal');
       });
       return text.exit().remove();
     },
     onTick: noop
   });
+
+  
+
   nodeOverlay = new neo.Renderer({
     onGraphChange: function(selection) {
       var circles;
@@ -1591,6 +1718,7 @@ neo.utils.measureText = (function() {
       });
     }
   });
+  //neo.renderers.node.push(nodeText);
   neo.renderers.node.push(nodeOutline);
   neo.renderers.node.push(nodeCaption);
   neo.renderers.node.push(nodeOverlay);
