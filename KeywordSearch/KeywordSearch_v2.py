@@ -235,7 +235,7 @@ def generate_outputTable(ranking):
 with driver.session() as session:
 
     #keywords = ['성별데이터','나나나','이미지데이터','중소기업진흥공단','data_912']
-    keywords = ['양유정','서민지','data_762']
+    keywords = ['이연희','박강래', 'data_132', 'data_900']
     start_time = time.time()
     
     #search for all nodes with keywords
