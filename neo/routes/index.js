@@ -298,7 +298,7 @@ router.post('/data/uploadData', function (req, res,next) {
                 process.stdout.on('data',function(data){
                     if(wrote == 0){
                         //console.log(data);
-                        uploadFile = iconv.decode(data, 'EUC-KR').toString();
+                        uploadFile = iconv.decode(data, 'UTF-8').toString();
                         uploadJS.setUploadResult(uploadFile);
                         getData().then().catch(function(err) {
                             console.log(err);
@@ -1783,7 +1783,7 @@ router.post('/keyword', function (req, res) {
                 process.stdout.on('data', function (data) {
                     if (wrote == 0) {
 
-                        kk = iconv.decode(data, 'EUC-KR').toString();
+                        kk = iconv.decode(data, 'UTF-8').toString();
 
                         keyResult.setKeywordResult(kk);
                     }

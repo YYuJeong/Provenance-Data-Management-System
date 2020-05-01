@@ -6,3 +6,179 @@
 [32m[nodemon] restarting child process[39m
 [32m[nodemon] starting `node app.js`[39m
 [31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[33m[nodemon] 2.0.3[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,json[39m
+[32m[nodemon] starting `node app.js`[39m
+[33m[nodemon] 2.0.3[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,json[39m
+[32m[nodemon] starting `node ./bin/www`[39m
+[0mGET / [32m200 [0m8.585 ms - 7442[0m
+[0mGET /images/favicon.ico [33m404 [0m2.104 ms - 1203[0m
+[0mGET / [36m304 [0m2.843 ms - -[0m
+[0mGET /users [32m200 [0m1.798 ms - 4941[0m
+[0mPOST /users [32m200 [0m4.736 ms - 7422[0m
+[0mGET / [32m200 [0m2.409 ms - 7422[0m
+[0mGET / [32m200 [0m1.345 ms - 7422[0m
+[0mGET /logout [36m302 [0m3.651 ms - 46[0m
+[0mGET / [32m200 [0m1.204 ms - 7442[0m
+[0mGET / [36m304 [0m1.359 ms - -[0m
+[0mGET /users [32m200 [0m1.793 ms - 4941[0m
+[0mPOST /users [32m200 [0m2.200 ms - 7422[0m
+관리자
+[0mGET /viewPage [32m200 [0m48.388 ms - 54452[0m
+[0mGET / [32m200 [0m1.307 ms - 7422[0m
+[0mGET /logout [36m302 [0m0.451 ms - 46[0m
+[0mGET / [32m200 [0m1.205 ms - 7442[0m
+[0mGET / [36m304 [0m1.373 ms - -[0m
+[0mGET /users [32m200 [0m1.235 ms - 4941[0m
+[0mPOST /users [32m200 [0m2.041 ms - 7422[0m
+사용자
+[0mGET /viewPage [32m200 [0m113.289 ms - 20133[0m
+[0mGET /search/searchPage [32m200 [0m2.834 ms - 5901[0m
+[0mGET /search/searchKeyword [32m200 [0m2.748 ms - 14998[0m
+[0mGET / [32m200 [0m1.314 ms - 7422[0m
+[0mGET /logout [36m302 [0m0.304 ms - 46[0m
+[0mGET / [32m200 [0m1.190 ms - 7442[0m
+[0mGET /viewPage [32m200 [0m3.267 ms - 6164[0m
+[0mGET / [36m304 [0m1.385 ms - -[0m
+[0mGET /users [32m200 [0m2.708 ms - 4941[0m
+[0mPOST /users [32m200 [0m2.084 ms - 7422[0m
+[0mGET /search/searchPage [32m200 [0m1.971 ms - 5901[0m
+관리자
+[0mGET /viewPage [32m200 [0m11.282 ms - 54452[0m
+[0mGET /search/searchPage [36m304 [0m1.465 ms - -[0m
+[0mGET /logout [36m302 [0m0.284 ms - 46[0m
+[0mGET / [36m304 [0m1.224 ms - -[0m
+[0mGET /viewPage [32m200 [0m2.425 ms - 6164[0m
+[0mGET /users [32m200 [0m1.149 ms - 4941[0m
+[0mGET / [36m304 [0m1.774 ms - -[0m
+[0mGET /users [36m304 [0m1.194 ms - -[0m
+[0mPOST /users [32m200 [0m2.050 ms - 7422[0m
+[0mGET /addPage [32m200 [0m3.263 ms - 20816[0m
+[0mGET /search/searchPage [32m200 [0m1.426 ms - 5901[0m
+[0mGET /search/searchConditionPage [32m200 [0m2.137 ms - 5875[0m
+사용자
+[0mGET /viewPage [32m200 [0m41.295 ms - 20133[0m
+[0mGET /search/searchPage [36m304 [0m1.408 ms - -[0m
+사용자
+[0mGET /viewPage [36m304 [0m39.559 ms - -[0m
+[0mGET /search/searchPage [36m304 [0m1.904 ms - -[0m
+[0mGET /logout [36m302 [0m0.277 ms - 46[0m
+[0mGET / [36m304 [0m1.157 ms - -[0m
+[0mGET /users [32m200 [0m1.141 ms - 4941[0m
+[0mPOST /users [32m200 [0m2.538 ms - 7422[0m
+사용자
+[0mGET /viewPage [36m304 [0m49.511 ms - -[0m
+[0mGET /addPage [36m304 [0m3.183 ms - -[0m
+[0mGET /search/searchPage [36m304 [0m2.015 ms - -[0m
+[0mGET /logout [36m302 [0m0.269 ms - 46[0m
+[0mGET / [36m304 [0m1.168 ms - -[0m
+[0mGET /users [32m200 [0m1.792 ms - 4941[0m
+[0mPOST /users [32m200 [0m1.984 ms - 7422[0m
+[0mGET /addPage [32m200 [0m2.189 ms - 20816[0m
+[0mGET /search/searchPage [32m200 [0m1.355 ms - 5901[0m
+관리자
+[0mGET /viewPage [32m200 [0m10.101 ms - 54452[0m
+[0mGET /logout [36m302 [0m0.276 ms - 46[0m
+[0mGET / [36m304 [0m1.166 ms - -[0m
+[0mGET /users [32m200 [0m1.194 ms - 4941[0m
+[0mPOST /users [32m200 [0m1.942 ms - 7422[0m
+[0mGET /search/searchPage [32m200 [0m1.947 ms - 5901[0m
+[0mGET /search/searchKeyword [36m304 [0m2.581 ms - -[0m
+[0mGET /search/searchPage [36m304 [0m1.428 ms - -[0m
+[0mGET /search/searchConditionPage [36m304 [0m2.007 ms - -[0m
+[0mGET /search/searchPage [36m304 [0m2.311 ms - -[0m
+[0mGET /search/searchKeyword [36m304 [0m1.789 ms - -[0m
+김한슬 조근호
+/home/ubuntu/Provenance-Data-Management-System/neo/routes/search/search.py
+Execution time :  1159
+/MATCH (s0:Person), (e0:Person) WHERE s0.name = '김한슬' AND s0.affiliation = '삼성SDS' AND e0.name = '조근호' AND e0.affiliation = '신한금융'  MATCH p0 = shortestPath((s0)-[*]-(e0))  RETURN p0/MATCH (s1:Person), (e1:Person) WHERE s1.name = '김한슬' AND s1.affiliation = '한국시설안전공단' AND e1.name = '조근호' AND e1.affiliation = '상명대학교'  MATCH p0 = shortestPath((s1)-[*]-(e1))  RETURN p0/MATCH (s2:Person), (e2:Person) WHERE s2.name = '김한슬' AND s2.affiliation = 'TSMC' AND e2.name = '조근호' AND e2.affiliation = '정보통신산업진흥원'  MATCH p0 = shortestPath((s2)-[*]-(e2))  RETURN p0|Person name.affiliation 김한슬.삼성SDS/Person name.affiliation 조근호.신한금융/;Person name.affiliation 김한슬.한국시설안전공단/Person name.affiliation 조근호.상명대학교/;Person name.affiliation 김한슬.TSMC/Person name.affiliation 조근호.정보통신산업진흥원/;
+
+[0mPOST /keyword [36m302 [0m1172.669 ms - 84[0m
+[0mGET /search/searchKeyword [32m200 [0m1.681 ms - 16043[0m
+[0mGET /search/styles/neod3.css [33m404 [0m1.065 ms - 1203[0m
+[0mGET /search/styles/neod3.css [33m404 [0m0.692 ms - 1203[0m
+[0mGET / [36m304 [0m1.251 ms - -[0m
+[0mGET /images/favicon.ico [33m404 [0m0.722 ms - 1203[0m
+[0mGET / [36m304 [0m1.324 ms - -[0m
+[0mGET /search/searchPage [32m200 [0m1.336 ms - 5901[0m
+[0mGET /search/images/favicon.ico [33m404 [0m0.718 ms - 1203[0m
+[0mGET /search/searchKeyword [32m200 [0m1.719 ms - 14998[0m
+조근호
+/home/ubuntu/Provenance-Data-Management-System/neo/routes/search/search.py
+Execution time :  286
+1
+
+[0mPOST /keyword [36m302 [0m290.396 ms - 84[0m
+[0mGET /search/searchKeyword [32m200 [0m1.729 ms - 15000[0m
+양유정 서민지
+/home/ubuntu/Provenance-Data-Management-System/neo/routes/search/search.py
+Execution time :  12616
+2
+
+[0mPOST /keyword [36m302 [0m12619.663 ms - 84[0m
+[0mGET /search/searchKeyword [32m200 [0m1.709 ms - 15000[0m
+[33m[nodemon] 2.0.3[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,json[39m
+[32m[nodemon] starting `node ./bin/www`[39m
+events.js:183
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: Connection lost: The server closed the connection.
+    at Protocol.end (/home/ubuntu/Provenance-Data-Management-System/neo/node_modules/mysql/lib/protocol/Protocol.js:112:13)
+    at Socket.<anonymous> (/home/ubuntu/Provenance-Data-Management-System/neo/node_modules/mysql/lib/Connection.js:94:28)
+    at Socket.<anonymous> (/home/ubuntu/Provenance-Data-Management-System/neo/node_modules/mysql/lib/Connection.js:526:10)
+    at emitNone (events.js:111:20)
+    at Socket.emit (events.js:208:7)
+    at endReadableNT (_stream_readable.js:1064:12)
+    at _combinedTickCallback (internal/process/next_tick.js:138:11)
+    at process._tickCallback (internal/process/next_tick.js:180:9)
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[33m[nodemon] 2.0.3[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,json[39m
+[32m[nodemon] starting `node ./bin/www`[39m
+[0mGET / [36m304 [0m8.602 ms - -[0m
+[0mGET /users [32m200 [0m2.414 ms - 4941[0m
+[0mPOST /users [32m200 [0m12.118 ms - 7422[0m
+[0mGET /search/searchPage [36m304 [0m2.892 ms - -[0m
+[0mGET /search/searchKeyword [32m200 [0m3.027 ms - 14998[0m
+김한슬 조근호
+/home/ubuntu/Provenance-Data-Management-System/neo/routes/search/search.py
+Execution time :  1206
+/MATCH (s0:Person), (e0:Person) WHERE s0.name = '김한슬' AND s0.affiliation = '삼성SDS' AND e0.name = '조근호' AND e0.affiliation = '신한금융'  MATCH p0 = shortestPath((s0)-[*]-(e0))  RETURN p0/MATCH (s1:Person), (e1:Person) WHERE s1.name = '김한슬' AND s1.affiliation = '한국시설안전공단' AND e1.name = '조근호' AND e1.affiliation = '상명대학교'  MATCH p0 = shortestPath((s1)-[*]-(e1))  RETURN p0/MATCH (s2:Person), (e2:Person) WHERE s2.name = '김한슬' AND s2.affiliation = 'TSMC' AND e2.name = '조근호' AND e2.affiliation = '정보통신산업진흥원'  MATCH p0 = shortestPath((s2)-[*]-(e2))  RETURN p0|Person name.affiliation 김한슬.삼성SDS/Person name.affiliation 조근호.신한금융/;Person name.affiliation 김한슬.한국시설안전공단/Person name.affiliation 조근호.상명대학교/;Person name.affiliation 김한슬.TSMC/Person name.affiliation 조근호.정보통신산업진흥원/;
+
+[0mPOST /keyword [36m302 [0m1224.023 ms - 84[0m
+[0mGET /search/searchKeyword [32m200 [0m2.542 ms - 16043[0m
+[0mGET /search/styles/neod3.css [33m404 [0m1.690 ms - 1203[0m
+[0mGET /search/styles/neod3.css [33m404 [0m0.970 ms - 1203[0m
+[0mGET /search/styles/neod3.css [33m404 [0m1.674 ms - 1203[0m
+사용자
+[0mGET /viewPage [32m200 [0m75.256 ms - 20133[0m
+[0mGET / [32m200 [0m1.414 ms - 7422[0m
+[0mGET / [32m200 [0m1.424 ms - 7422[0m
+[0mGET /logout [36m302 [0m0.559 ms - 46[0m
+[0mGET / [32m200 [0m1.301 ms - 7442[0m
+[0mGET / [36m304 [0m1.400 ms - -[0m
+[0mGET /users [32m200 [0m1.818 ms - 4941[0m
+[0mPOST /users [32m200 [0m2.756 ms - 7422[0m
+[0mGET / [32m200 [0m2.111 ms - 7422[0m
+[0mGET /search/searchPage [36m304 [0m2.040 ms - -[0m
+[0mGET /search/searchKeyword [32m200 [0m2.602 ms - 14998[0m
+김한슬 조근호
+/home/ubuntu/Provenance-Data-Management-System/neo/routes/search/search.py
+Execution time :  1159
+/MATCH (s0:Person), (e0:Person) WHERE s0.name = '김한슬' AND s0.affiliation = '삼성SDS' AND e0.name = '조근호' AND e0.affiliation = '신한금융'  MATCH p0 = shortestPath((s0)-[*]-(e0))  RETURN p0/MATCH (s1:Person), (e1:Person) WHERE s1.name = '김한슬' AND s1.affiliation = '한국시설안전공단' AND e1.name = '조근호' AND e1.affiliation = '상명대학교'  MATCH p0 = shortestPath((s1)-[*]-(e1))  RETURN p0/MATCH (s2:Person), (e2:Person) WHERE s2.name = '김한슬' AND s2.affiliation = 'TSMC' AND e2.name = '조근호' AND e2.affiliation = '정보통신산업진흥원'  MATCH p0 = shortestPath((s2)-[*]-(e2))  RETURN p0|Person name.affiliation 김한슬.삼성SDS/Person name.affiliation 조근호.신한금융/;Person name.affiliation 김한슬.한국시설안전공단/Person name.affiliation 조근호.상명대학교/;Person name.affiliation 김한슬.TSMC/Person name.affiliation 조근호.정보통신산업진흥원/;
+
+[0mPOST /keyword [36m302 [0m1162.932 ms - 84[0m
+[0mGET /search/searchKeyword [32m200 [0m1.959 ms - 16043[0m
+[0mGET /search/styles/neod3.css [33m404 [0m0.786 ms - 1203[0m
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
