@@ -122,12 +122,12 @@ router.post('/contact', function (req, res, next) {
     var body = req.body;
 
     con.query("INSERT INTO iitp.users (name, email, password, gubun) VALUES (?, ?, ?, ?);", [
-        body.name, body.email, body.password, body.gubun
+        body.name, body.email, body.password, '사용자'
     ], function (err, rows, fields) {
 
         console.log("err : " + err);
         console.log("rows : " + rows);
-        console.log("insertId : " + rows.insertId);
+        //console.log("insertId : " + rows.insertId);
 
         res.redirect("/contact");
     });
