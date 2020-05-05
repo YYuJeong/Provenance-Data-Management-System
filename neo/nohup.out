@@ -182,3 +182,210 @@ Execution time :  1159
 [0mGET /search/searchKeyword [32m200 [0m1.959 ms - 16043[0m
 [0mGET /search/styles/neod3.css [33m404 [0m0.786 ms - 1203[0m
 [31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node ./bin/www`[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node ./bin/www`[39m
+Terminated
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[33m[nodemon] 2.0.3[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,json[39m
+[32m[nodemon] starting `node ./bin/www`[39m
+[0mGET /viewPage [32m200 [0m10.454 ms - 6156[0m
+[0mGET /users [32m200 [0m2.480 ms - 4941[0m
+[0mPOST /users [32m200 [0m5.316 ms - 7414[0m
+관리자
+[0mGET /viewPage [32m200 [0m46.218 ms - 54494[0m
+[0mGET /search/searchPage [32m200 [0m2.938 ms - 5893[0m
+[0mGET /search/searchKeyword [32m200 [0m3.148 ms - 16118[0m
+김한슬 조근호
+/home/ubuntu/Provenance-Data-Management-System/neo/routes/search/search.py
+Execution time :  1161
+/MATCH (s0:Person), (e0:Person) WHERE s0.name = '김한슬' AND s0.affiliation = '한국시설안전공단' AND e0.name = '조근호' AND e0.affiliation = '상명대학교'  MATCH p0 = shortestPath((s0)-[*]-(e0))  RETURN p0/MATCH (s1:Person), (e1:Person) WHERE s1.name = '김한슬' AND s1.affiliation = 'TSMC' AND e1.name = '조근호' AND e1.affiliation = '정보통신산업진흥원'  MATCH p0 = shortestPath((s1)-[*]-(e1))  RETURN p0/MATCH (s2:Person), (e2:Person) WHERE s2.name = '김한슬' AND s2.affiliation = '삼성SDS' AND e2.name = '조근호' AND e2.affiliation = '신한금융'  MATCH p0 = shortestPath((s2)-[*]-(e2))  RETURN p0|Person name.affiliation 김한슬.한국시설안전공단/Person name.affiliation 조근호.상명대학교/;Person name.affiliation 김한슬.TSMC/Person name.affiliation 조근호.정보통신산업진흥원/;Person name.affiliation 김한슬.삼성SDS/Person name.affiliation 조근호.신한금융/;
+
+[0mPOST /keyword [36m302 [0m1177.699 ms - 84[0m
+[0mGET /search/searchKeyword [32m200 [0m2.597 ms - 17163[0m
+[0mGET /search/styles/neod3.css [33m404 [0m1.718 ms - 1203[0m
+[0mGET / [32m200 [0m2.921 ms - 7414[0m
+[0mGET /search/searchPage [32m200 [0m2.158 ms - 5893[0m
+[0mGET /search/searchKeyword [32m200 [0m2.718 ms - 16118[0m
+김한슬 조근호
+/home/ubuntu/Provenance-Data-Management-System/neo/routes/search/search.py
+Execution time :  1201
+/MATCH (s0:Person), (e0:Person) WHERE s0.name = '김한슬' AND s0.affiliation = '한국시설안전공단' AND e0.name = '조근호' AND e0.affiliation = '상명대학교'  MATCH p0 = shortestPath((s0)-[*]-(e0))  RETURN p0/MATCH (s1:Person), (e1:Person) WHERE s1.name = '김한슬' AND s1.affiliation = 'TSMC' AND e1.name = '조근호' AND e1.affiliation = '정보통신산업진흥원'  MATCH p0 = shortestPath((s1)-[*]-(e1))  RETURN p0/MATCH (s2:Person), (e2:Person) WHERE s2.name = '김한슬' AND s2.affiliation = '삼성SDS' AND e2.name = '조근호' AND e2.affiliation = '신한금융'  MATCH p0 = shortestPath((s2)-[*]-(e2))  RETURN p0|Person name.affiliation 김한슬.한국시설안전공단/Person name.affiliation 조근호.상명대학교/;Person name.affiliation 김한슬.TSMC/Person name.affiliation 조근호.정보통신산업진흥원/;Person name.affiliation 김한슬.삼성SDS/Person name.affiliation 조근호.신한금융/;
+
+[0mPOST /keyword [36m302 [0m1204.726 ms - 84[0m
+[0mGET /search/searchKeyword [32m200 [0m2.045 ms - 17163[0m
+[0mGET /search/styles/neod3.css [33m404 [0m1.067 ms - 1203[0m
+data_900 장다은
+/home/ubuntu/Provenance-Data-Management-System/neo/routes/search/search.py
+Execution time :  2477
+/MATCH (s0:Data), (e0:Person) WHERE s0.d_type = '건강데이터' AND s0.name = 'data_900' AND s0.device = 'AI스피커' AND s0.price = '1709000' AND e0.name = '장다은' AND e0.affiliation = '한국투자공사'  MATCH p0 = shortestPath((s0)-[*]-(e0))  RETURN p0|Data d_type.name.device.price 건강데이터.data_900.AI스피커.1709000/Person name.affiliation 장다은.한국투자공사/;
+
+[0mPOST /keyword [36m302 [0m2480.793 ms - 84[0m
+[0mGET /search/searchKeyword [32m200 [0m2.001 ms - 16561[0m
+[0mGET /search/styles/neod3.css [33m404 [0m0.785 ms - 1203[0m
+[0mGET /search/styles/neod3.css [33m404 [0m0.760 ms - 1203[0m
+[0mGET /search/styles/neod3.css [33m404 [0m0.754 ms - 1203[0m
+김한슬 조근호
+/home/ubuntu/Provenance-Data-Management-System/neo/routes/search/search.py
+Execution time :  1154
+/MATCH (s0:Person), (e0:Person) WHERE s0.name = '김한슬' AND s0.affiliation = '한국시설안전공단' AND e0.name = '조근호' AND e0.affiliation = '상명대학교'  MATCH p0 = shortestPath((s0)-[*]-(e0))  RETURN p0/MATCH (s1:Person), (e1:Person) WHERE s1.name = '김한슬' AND s1.affiliation = 'TSMC' AND e1.name = '조근호' AND e1.affiliation = '정보통신산업진흥원'  MATCH p0 = shortestPath((s1)-[*]-(e1))  RETURN p0/MATCH (s2:Person), (e2:Person) WHERE s2.name = '김한슬' AND s2.affiliation = '삼성SDS' AND e2.name = '조근호' AND e2.affiliation = '신한금융'  MATCH p0 = shortestPath((s2)-[*]-(e2))  RETURN p0|Person name.affiliation 김한슬.한국시설안전공단/Person name.affiliation 조근호.상명대학교/;Person name.affiliation 김한슬.TSMC/Person name.affiliation 조근호.정보통신산업진흥원/;Person name.affiliation 김한슬.삼성SDS/Person name.affiliation 조근호.신한금융/;
+
+[0mPOST /keyword [36m302 [0m1157.663 ms - 84[0m
+[0mGET /search/searchKeyword [32m200 [0m2.775 ms - 17163[0m
+[0mGET /search/styles/neod3.css [33m404 [0m1.383 ms - 1203[0m
+송가인 data_241
+/home/ubuntu/Provenance-Data-Management-System/neo/routes/search/search.py
+Execution time :  15275
+/MATCH (s0:Person), (e0:Data) WHERE s0.name = '송가인' AND s0.affiliation = '국립중앙의료원' AND e0.d_type = '의료데이터' AND e0.name = 'data_241' AND e0.device = '페이션트모니터' AND e0.price = '1856816'  MATCH p0 = shortestPath((s0)-[*]-(e0))  RETURN p0/MATCH (s1:Person), (e1:Data) WHERE s1.name = '송가인' AND s1.affiliation = 'SK하이닉스' AND e1.d_type = '건강데이터' AND e1.name = 'data_241' AND e1.device = '스마트워치' AND e1.price = '1090838'  MATCH p0 = shortestPath((s1)-[*]-(e1))  RETURN p0|Data d_type.name.device.price 의료데이터.data_241.페이션트모니터.1856816/Person name.affiliation 송가인.국립중앙의료원/;Data d_type.name.device.price 건강데이터.data_241.스마트워치.1090838/Person name.affiliation 송가인.SK하이닉스/;
+
+[0mPOST /keyword [36m302 [0m15278.659 ms - 84[0m
+[0mGET /search/searchKeyword [32m200 [0m1.971 ms - 17028[0m
+[0mGET /search/styles/neod3.css [33m404 [0m0.797 ms - 1203[0m
+[0mGET / [36m304 [0m1.511 ms - -[0m
+[0mGET /logout [36m302 [0m0.507 ms - 46[0m
+[0mGET / [32m200 [0m1.957 ms - 7434[0m
+[0mGET / [36m304 [0m1.365 ms - -[0m
+[0mGET / [36m304 [0m2.046 ms - -[0m
+[0mGET /users [32m200 [0m1.764 ms - 4941[0m
+[0mPOST /users [32m200 [0m2.719 ms - 7414[0m
+[0mGET /search/searchPage [36m304 [0m1.575 ms - -[0m
+[0mGET /search/searchKeyword [32m200 [0m1.839 ms - 16118[0m
+김한슬 조근호
+/home/ubuntu/Provenance-Data-Management-System/neo/routes/search/search.py
+Execution time :  1192
+/MATCH (s0:Person), (e0:Person) WHERE s0.name = '김한슬' AND s0.affiliation = '한국시설안전공단' AND e0.name = '조근호' AND e0.affiliation = '상명대학교'  MATCH p0 = shortestPath((s0)-[*]-(e0))  RETURN p0/MATCH (s1:Person), (e1:Person) WHERE s1.name = '김한슬' AND s1.affiliation = 'TSMC' AND e1.name = '조근호' AND e1.affiliation = '정보통신산업진흥원'  MATCH p0 = shortestPath((s1)-[*]-(e1))  RETURN p0/MATCH (s2:Person), (e2:Person) WHERE s2.name = '김한슬' AND s2.affiliation = '삼성SDS' AND e2.name = '조근호' AND e2.affiliation = '신한금융'  MATCH p0 = shortestPath((s2)-[*]-(e2))  RETURN p0|Person name.affiliation 김한슬.한국시설안전공단/Person name.affiliation 조근호.상명대학교/;Person name.affiliation 김한슬.TSMC/Person name.affiliation 조근호.정보통신산업진흥원/;Person name.affiliation 김한슬.삼성SDS/Person name.affiliation 조근호.신한금융/;
+
+[0mPOST /keyword [36m302 [0m1194.763 ms - 84[0m
+[0mGET /search/searchKeyword [32m200 [0m1.996 ms - 17163[0m
+[0mGET /search/styles/neod3.css [33m404 [0m0.767 ms - 1203[0m
+[0mGET /addPage [32m200 [0m3.936 ms - 20808[0m
+[0mGET /logout [36m302 [0m0.303 ms - 46[0m
+[0mGET / [36m304 [0m1.268 ms - -[0m
+[0mGET /search/searchPage [32m200 [0m2.045 ms - 5667[0m
+[0mGET /users [32m200 [0m1.280 ms - 4941[0m
+[0mPOST /users [32m200 [0m2.115 ms - 4897[0m
+[0mPOST /users [32m200 [0m2.588 ms - 7414[0m
+[0mGET /data/uploadData [32m200 [0m2.693 ms - 6205[0m
+[0mGET /search/searchPage [32m200 [0m1.499 ms - 5893[0m
+[0mGET /search/searchKeyword [32m200 [0m1.857 ms - 16118[0m
+[0mGET /addPage [36m304 [0m3.216 ms - -[0m
+[0mGET /search/searchPage [36m304 [0m1.431 ms - -[0m
+[0mGET /search/searchKeyword [36m304 [0m3.002 ms - -[0m
+[0mGET / [32m200 [0m1.296 ms - 7414[0m
+[0mGET /logout [36m302 [0m0.296 ms - 46[0m
+[0mGET / [32m200 [0m1.236 ms - 7434[0m
+[0mGET / [36m304 [0m1.374 ms - -[0m
+[0mGET / [32m200 [0m1.305 ms - 7434[0m
+[0mGET /images/favicon.ico [33m404 [0m0.766 ms - 1203[0m
+[0mGET / [32m200 [0m1.376 ms - 7434[0m
+[0mGET / [32m200 [0m1.332 ms - 7434[0m
+[0mGET / [32m200 [0m1.359 ms - 7434[0m
+events.js:183
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: Connection lost: The server closed the connection.
+    at Protocol.end (/home/ubuntu/Provenance-Data-Management-System/neo/node_modules/mysql/lib/protocol/Protocol.js:112:13)
+    at Socket.<anonymous> (/home/ubuntu/Provenance-Data-Management-System/neo/node_modules/mysql/lib/Connection.js:94:28)
+    at Socket.<anonymous> (/home/ubuntu/Provenance-Data-Management-System/neo/node_modules/mysql/lib/Connection.js:526:10)
+    at emitNone (events.js:111:20)
+    at Socket.emit (events.js:208:7)
+    at endReadableNT (_stream_readable.js:1064:12)
+    at _combinedTickCallback (internal/process/next_tick.js:138:11)
+    at process._tickCallback (internal/process/next_tick.js:180:9)
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[33m[nodemon] 2.0.3[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,json[39m
+[32m[nodemon] starting `node ./bin/www`[39m
+[0mGET / [36m304 [0m8.196 ms - -[0m
+[0mGET /users [32m200 [0m2.523 ms - 4941[0m
+[0mPOST /users [32m200 [0m5.814 ms - 7414[0m
+[0mGET /search/searchPage [36m304 [0m2.567 ms - -[0m
+[0mGET /search/searchKeyword [32m200 [0m4.179 ms - 16118[0m
+김한슬 조근호
+/home/ubuntu/Provenance-Data-Management-System/neo/routes/search/search.py
+Execution time :  1144
+/MATCH (s0:Person), (e0:Person) WHERE s0.name = '김한슬' AND s0.affiliation = '한국시설안전공단' AND e0.name = '조근호' AND e0.affiliation = '상명대학교'  MATCH p0 = shortestPath((s0)-[*]-(e0))  RETURN p0/MATCH (s1:Person), (e1:Person) WHERE s1.name = '김한슬' AND s1.affiliation = 'TSMC' AND e1.name = '조근호' AND e1.affiliation = '정보통신산업진흥원'  MATCH p0 = shortestPath((s1)-[*]-(e1))  RETURN p0/MATCH (s2:Person), (e2:Person) WHERE s2.name = '김한슬' AND s2.affiliation = '삼성SDS' AND e2.name = '조근호' AND e2.affiliation = '신한금융'  MATCH p0 = shortestPath((s2)-[*]-(e2))  RETURN p0|Person name.affiliation 김한슬.한국시설안전공단/Person name.affiliation 조근호.상명대학교/;Person name.affiliation 김한슬.TSMC/Person name.affiliation 조근호.정보통신산업진흥원/;Person name.affiliation 김한슬.삼성SDS/Person name.affiliation 조근호.신한금융/;
+
+[0mPOST /keyword [36m302 [0m1160.147 ms - 84[0m
+[0mGET /search/searchKeyword [32m200 [0m3.725 ms - 17163[0m
+[0mGET /search/styles/neod3.css [33m404 [0m1.675 ms - 1203[0m
+[0mGET /search/searchKeyword [32m200 [0m1.917 ms - 16118[0m
+김한슬 조근호
+/home/ubuntu/Provenance-Data-Management-System/neo/routes/search/search.py
+Execution time :  1124
+/MATCH (s0:Person), (e0:Person) WHERE s0.name = '김한슬' AND s0.affiliation = '한국시설안전공단' AND e0.name = '조근호' AND e0.affiliation = '상명대학교'  MATCH p0 = shortestPath((s0)-[*]-(e0))  RETURN p0/MATCH (s1:Person), (e1:Person) WHERE s1.name = '김한슬' AND s1.affiliation = 'TSMC' AND e1.name = '조근호' AND e1.affiliation = '정보통신산업진흥원'  MATCH p0 = shortestPath((s1)-[*]-(e1))  RETURN p0/MATCH (s2:Person), (e2:Person) WHERE s2.name = '김한슬' AND s2.affiliation = '삼성SDS' AND e2.name = '조근호' AND e2.affiliation = '신한금융'  MATCH p0 = shortestPath((s2)-[*]-(e2))  RETURN p0|Person name.affiliation 김한슬.한국시설안전공단/Person name.affiliation 조근호.상명대학교/;Person name.affiliation 김한슬.TSMC/Person name.affiliation 조근호.정보통신산업진흥원/;Person name.affiliation 김한슬.삼성SDS/Person name.affiliation 조근호.신한금융/;
+
+[0mPOST /keyword [36m302 [0m1128.306 ms - 84[0m
+[0mGET /search/searchKeyword [32m200 [0m1.840 ms - 17163[0m
+[0mGET /search/styles/neod3.css [33m404 [0m1.070 ms - 1203[0m
+[0mGET /search/styles/neod3.css [33m404 [0m0.736 ms - 1203[0m
+[0mGET /search/styles/neod3.css [33m404 [0m0.840 ms - 1203[0m
+[0mGET /search/styles/neod3.css [33m404 [0m0.739 ms - 1203[0m
+[0mGET / [32m200 [0m1.403 ms - 7414[0m
+[0mGET /logout [36m302 [0m0.515 ms - 46[0m
+[0mGET / [32m200 [0m1.268 ms - 7434[0m
+[0mGET / [36m304 [0m1.436 ms - -[0m
+[0mGET /users [32m200 [0m1.730 ms - 4941[0m
+[0mPOST /users [32m200 [0m2.456 ms - 7414[0m
+[0mGET /search/searchPage [36m304 [0m2.112 ms - -[0m
+[0mGET /search/searchKeyword [32m200 [0m1.778 ms - 16118[0m
+김한슬 조근호
+/home/ubuntu/Provenance-Data-Management-System/neo/routes/search/search.py
+Execution time :  1127
+/MATCH (s0:Person), (e0:Person) WHERE s0.name = '김한슬' AND s0.affiliation = '한국시설안전공단' AND e0.name = '조근호' AND e0.affiliation = '상명대학교'  MATCH p0 = shortestPath((s0)-[*]-(e0))  RETURN p0/MATCH (s1:Person), (e1:Person) WHERE s1.name = '김한슬' AND s1.affiliation = 'TSMC' AND e1.name = '조근호' AND e1.affiliation = '정보통신산업진흥원'  MATCH p0 = shortestPath((s1)-[*]-(e1))  RETURN p0/MATCH (s2:Person), (e2:Person) WHERE s2.name = '김한슬' AND s2.affiliation = '삼성SDS' AND e2.name = '조근호' AND e2.affiliation = '신한금융'  MATCH p0 = shortestPath((s2)-[*]-(e2))  RETURN p0|Person name.affiliation 김한슬.한국시설안전공단/Person name.affiliation 조근호.상명대학교/;Person name.affiliation 김한슬.TSMC/Person name.affiliation 조근호.정보통신산업진흥원/;Person name.affiliation 김한슬.삼성SDS/Person name.affiliation 조근호.신한금융/;
+
+[0mPOST /keyword [36m302 [0m1130.211 ms - 84[0m
+[0mGET /search/searchKeyword [32m200 [0m1.803 ms - 17163[0m
+[0mGET /search/styles/neod3.css [33m404 [0m0.793 ms - 1203[0m
+[0mGET / [32m200 [0m1.322 ms - 7414[0m
+관리자
+[0mGET /viewPage [32m200 [0m47.715 ms - 54494[0m
+events.js:183
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: Connection lost: The server closed the connection.
+    at Protocol.end (/home/ubuntu/Provenance-Data-Management-System/neo/node_modules/mysql/lib/protocol/Protocol.js:112:13)
+    at Socket.<anonymous> (/home/ubuntu/Provenance-Data-Management-System/neo/node_modules/mysql/lib/Connection.js:94:28)
+    at Socket.<anonymous> (/home/ubuntu/Provenance-Data-Management-System/neo/node_modules/mysql/lib/Connection.js:526:10)
+    at emitNone (events.js:111:20)
+    at Socket.emit (events.js:208:7)
+    at endReadableNT (_stream_readable.js:1064:12)
+    at _combinedTickCallback (internal/process/next_tick.js:138:11)
+    at process._tickCallback (internal/process/next_tick.js:180:9)
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[33m[nodemon] 2.0.3[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,json[39m
+[32m[nodemon] starting `node ./bin/www`[39m
+Port 3000 is already in use
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[33m[nodemon] 2.0.3[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,json[39m
+[32m[nodemon] starting `node ./bin/www`[39m
+[0mGET / [36m304 [0m8.362 ms - -[0m
+[0mGET /users [32m200 [0m2.214 ms - 4941[0m
+[0mPOST /users [32m200 [0m6.024 ms - 7414[0m
+[0mGET /search/searchPage [36m304 [0m2.576 ms - -[0m
+[0mGET /search/searchKeyword [32m200 [0m4.215 ms - 16118[0m
+김한슬 조근호
+/home/ubuntu/Provenance-Data-Management-System/neo/routes/search/search.py
+Execution time :  1152
+/MATCH (s0:Person), (e0:Person) WHERE s0.name = '김한슬' AND s0.affiliation = '한국시설안전공단' AND e0.name = '조근호' AND e0.affiliation = '상명대학교'  MATCH p0 = shortestPath((s0)-[*]-(e0))  RETURN p0/MATCH (s1:Person), (e1:Person) WHERE s1.name = '김한슬' AND s1.affiliation = 'TSMC' AND e1.name = '조근호' AND e1.affiliation = '정보통신산업진흥원'  MATCH p0 = shortestPath((s1)-[*]-(e1))  RETURN p0/MATCH (s2:Person), (e2:Person) WHERE s2.name = '김한슬' AND s2.affiliation = '삼성SDS' AND e2.name = '조근호' AND e2.affiliation = '신한금융'  MATCH p0 = shortestPath((s2)-[*]-(e2))  RETURN p0|Person name.affiliation 김한슬.한국시설안전공단/Person name.affiliation 조근호.상명대학교/;Person name.affiliation 김한슬.TSMC/Person name.affiliation 조근호.정보통신산업진흥원/;Person name.affiliation 김한슬.삼성SDS/Person name.affiliation 조근호.신한금융/;
+
+[0mPOST /keyword [36m302 [0m1168.674 ms - 84[0m
+[0mGET /search/searchKeyword [32m200 [0m3.757 ms - 17163[0m
+[0mGET /search/styles/neod3.css [33m404 [0m1.665 ms - 1203[0m
+Terminated
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
