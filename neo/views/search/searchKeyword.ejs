@@ -9,7 +9,7 @@
     <link rel="shortcut icon" href="/images/favicon.ico">
     <link rel="icon" href="/images/favicon.ico">
 
-    <title>이력 정보 관리시스템</title>
+    <title>개인정보 이력관리시스템</title>
 
     <link href="http://bootstrapk.com/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="http://bootstrapk.com/assets/js/ie-emulation-modes-warning.js"></script>
@@ -185,7 +185,7 @@
         rankings.forEach(function(rank, index){
             rnk = []
             rank.forEach(function(r, ind){
-                var tmp = r.split(' ')
+                var tmp = r.split('=')
                 rnk[ind] = tmp
             })
             ranking[index] = rnk

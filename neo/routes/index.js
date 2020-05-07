@@ -80,28 +80,7 @@ function promiseFromChildProcess(child) {
     });
 }
 
-/*
-router.get('/search/searchkey', function (req, res, next) {
-    var process = spawn('python', [__dirname + '/search/search.py']);
-    var wrote = 0;
-    promiseFromChildProcess(process)
-        .then(function (result) {
-            console.log('promise complete: ', result);
-            process.stdout.on('data', function (data) {
-                if (wrote == 0) {
-                    keyword_result = iconv.decode(data, 'EUC-KR').toString();
-                    keyResult.setKeywordResult(keyword_result);
-                }
-                wrote += 1;
-            });
-            process.on('close', function (data) {
-                res.redirect('/search/searchKeyword');
-            });
-        }, function (err) {
-            console.log('promise rejected: ', err);
-        });
-});
-*/
+
 router.get('/contact', function (req, res, next) {
     con.query("SELECT * FROM iitp.users;", function (err, result, fields) {
         console.log("err : " + err);
@@ -181,14 +160,6 @@ router.get('/data/uploadData', function (req, res, next) {
    res.render('data/uploadData', {esession: session_value.getSession()});
 });
 
-var {PythonShell} = require('python-shell');
-var options = {
-    mode: 'text',
-    pythonPath: '',
-    pythonOptions: ['-u'],
-    scriptPath: '',
-    args: ['value1', 'value2', 'value3']
-};
 
 
 router.post('/data/uploadData', function (req, res,next) {
@@ -239,35 +210,6 @@ router.post('/data/uploadData', function (req, res,next) {
         path1 = path1.splice(0, len - 1)
         path1 = path1.join("\\") + "\\"
 
-
-        /*
-        // var cmd = "python "+ path + "keywordData.py " + path1 + "upload\\"+ name;
-        //var c = "python " + path + "s.py "
-
-        //원래 있던 코드
-        // var cmd = "python "+ path + "KeywordSearch\\keywordData.py " + path1 + "upload\\"+ name;
-        //수정한 코드
-        var cmd = "python "+ path + "Version2\\uploadData.py " + path1 + "upload\\"+ name;
-        //추가한 코드
-        var c = path+"Version2\\uploadData.py " + path1 + "upload\\"+ name;
-        console.log(cmd)
-        exec(cmd);
-
-        var spawn = require("child_process").spawn;
-
-        // Parameters passed in spawn - 
-        // 1. type_of_script 
-        // 2. list containing Path of the script 
-        //    and arguments for the script  
-
-        // E.g : http://localhost:3000/name?firstname=Mike&lastname=Will 
-        // so, first name = Mike and last name = Will 
-        
-        //원래코드
-        var process = spawn('python', [c,
-            "DD",
-            "SSS"]);
-        //고친코드*/
         // python
         const iconv = require('iconv-lite');
         var spawn = require("child_process").spawn;
@@ -320,18 +262,6 @@ router.post('/data/uploadData', function (req, res,next) {
                 console.log('promise rejected: ', err);
                 
             });
-        
-
-
-        // Takes stdout data from script which executed 
-        // with arguments and send this data to res object 
-        //process.stdout.on('data', function (data) {
-        //   res.send(data.toString());
-        //})
-        
-        
-        
-
 
         res.render('data/uploadData', {esession: session_value.getSession()});
     });
@@ -344,58 +274,79 @@ router.post('/data/uploadData', function (req, res,next) {
     form.parse(req);
 })
 
+let add = multer({
+    dest: "add/"
+});
 
 router.post('/dataAdd', function (req, res) {
-    var name = req.body.name;
-    var affiliation = req.body.affiliation;
-
-    var activityType = req.body.activityType;
-    var date = req.body.date;
-
     var dataName = req.body.dataName;
-    var dataType = req.body.dataType;
-    var price = req.body.price;
-    var device = req.body.device;
+    var value = req.body.value;
+    var origin = req.body.origin;
+    var file_path = "";
 
-    var r_name = req.body.r_name;
-    var r_affiliation = req.body.r_affiliation;
-
-    var dataName2 = req.body.dataName2;
-    var price2 = req.body.price2;
-    var dataType2 = req.body.dataType2;
-    var device2 = req.body.device2;
-
-
-    if (r_name == '' && dataName2 == '') {
-        session
-            .run("CREATE (d:Data {name: '" + dataName + "' , price: '" + price + "' , d_type: '" + dataType + "', device: '" + device + "'})-[:Generate]->(ac:Activity {name: '" + activityType + "', date: '" + date + "'})-[:Act]->(p:Person {name: '" + name + "' , affiliation: '" + affiliation + "' })")
-            .then(function (result) {
-                session.close();
-            })
-            .catch(function (err) {
-                console.log(err);
-            });
+    let today = new Date();
+    let year = today.getFullYear(); // 년도
+    let month = (today.getMonth() + 1).toString();  // 월
+    let day = today.getDate().toString();  // 날짜
+    if(month.length == 1){
+        month = "0" + month
     }
-    else if (r_name != '' && dataName2 == '') {
-        session
-            .run("CREATE (d:Data {name: '" + dataName + "' , price: '" + price + "' , d_type: '" + dataType + "', device: '" + device + "'})-[:Generate]->(ac:Activity {name: '" + activityType + "', date: '" + date + "'})-[s:Send]->(p1:Person {name: '" + name + "' , affiliation: '" + affiliation + "' }), (ac)-[r:Receive]->(p2:Person {name: '" + r_name + "' , affiliation: '" + r_affiliation + "' })")
-            .then(function (result) {
-                session.close();
-            })
-            .catch(function (err) {
-                console.log(err);
-            });
+    if(day.length == 1){
+        day = "0" + day
     }
-    else if (r_name == '' && dataName2 != '') {
-        session
-            .run("CREATE (d2:Data {name: '" + dataName + "' , price: '" + price + "' , d_type: '" + dataType + "', device: '" + device + "'})<-[:Generate]-(ac:Activity {name: '" + activityType + "', date: '" + date + "'})<-[:Generate]-(d1:Data {name: '" + dataName2 + "' , price: '" + price2 + "' , d_type: '" + dataType2 + "', device: '" + device2 + "'}), (ac)-[:Act]->(p:Person {name: '" + name + "' , affiliation: '" + affiliation + "' })")
-            .then(function (result) {
-                session.close();
-            })
-            .catch(function (err) {
-                console.log(err);
-            });
+    var date = year.toString() + month + day
+
+    var user_name = session_value.getSession().user; 
+    var user_pid = session_value.getSession().email; //주민번호로 바꾸기
+    var user_type;
+    if(session_value.getSession().gubun == '사용자'){
+        user_type = '개인'
     }
+
+    var form = new multiparty.Form();
+    console.log(form)
+    var name;
+    // get field name & value
+    form.on('field', function (name, value) {
+        console.log('normal field / name = ' + name + ' , value = ' + value);        
+    });
+
+    // file upload handling
+    form.on('part', function (part) {
+        var filename;
+        var size;
+        if (part.filename) {
+            filename = part.filename;
+            name = filename;
+            size = part.byteCount;
+        } else {
+            part.resume();
+        }
+
+        console.log("Write Streaming file :" + filename);
+        var writeStream = fs.createWriteStream('add/' + filename);
+        writeStream.filename = filename;
+        part.pipe(writeStream);
+
+        part.on('data', function (chunk) {
+            console.log(filename + ' read ' + chunk.length + 'bytes');
+        });
+
+        part.on('end', function () {
+            console.log(filename + ' Part read complete');
+            writeStream.end();
+
+        });
+    });
+ 
+    session
+        .run("CREATE (d:Data {name: '" + dataName + "' , value: '" + value + "' , origin: '" + origin + "', file_path: '" + file_path + "'})-[:Generate]->(ac:Activity {name: '생성', date: '" + date + "', detail: '' })-[:Act]->(p:Person {name: '" + user_name + "' , pid: '" + user_pid + "', type: '" + user_type + "'})")
+        .then(function (result) {
+            session.close();
+        })
+        .catch(function (err) {
+            console.log(err);
+        });
     res.render('addPage', {esession: session_value.getSession()});
 });
 
