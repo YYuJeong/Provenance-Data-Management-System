@@ -15,13 +15,13 @@ from neo4j import GraphDatabase
 
 def check_nodeLabel(tx, keyword):
     personNodes = (tx.run("MATCH (n:Person)"
-                          "WHERE (any(prop in ['name', 'affiliation'] WHERE n[prop] = $keyword))"
+                          "WHERE (any(prop in ['name', 'pid', 'p_type'] WHERE n[prop] = $keyword))"
                           "RETURN n", keyword = keyword)).value()
     dataNodes = (tx.run("MATCH (n:Data)"
-                      "WHERE (any(prop in ['name', 'd_type', 'device', 'price'] WHERE n[prop] = $keyword))"
+                      "WHERE (any(prop in ['name', 'value', 'file_path', 'origin'] WHERE n[prop] = $keyword))"
                       "RETURN n", keyword = keyword)).value()
     activityNodes = (tx.run("MATCH (n:Activity)"
-                  "WHERE (any(prop in ['name', 'date'] WHERE n[prop] = $keyword))"
+                  "WHERE (any(prop in ['name', 'date','detail'] WHERE n[prop] = $keyword))"
                   "RETURN n", keyword = keyword)).value()
 
     if(personNodes):
@@ -200,10 +200,10 @@ def generate_outputTable(ranking):
             outTmp = ""
             for j in range(len(p)):
                 if j == 0:
-                    outTmp = outTmp + p[j] + " "
+                    outTmp = outTmp + p[j] + "="
                 else:
                     if j == floor(len(p)/2):            
-                        outTmp = outTmp + p[j] + " "
+                        outTmp = outTmp + p[j] + "="
                     else:
                         if j == len(p)-1:
                             outTmp = outTmp + p[j] + "/"

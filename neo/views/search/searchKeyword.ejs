@@ -45,7 +45,6 @@
 
         th,td {
             text-align: center;
-            border-right: 2px dashed white;
             padding: 5px;
             height: 80px;
         }
@@ -160,6 +159,7 @@
        
     var keyDatas = document.getElementById("keyData").innerHTML;
     var resultFlag
+
     if(!isNaN(Number(keyDatas))){
         resultFlag = false
         var keylen = Number(keyDatas)
@@ -170,7 +170,6 @@
 
         queries = result[0].split('/');
         queries.splice(0, 1);
-
 
         var tables = result[1].split(';');
         tables.splice(tables.length-1, 1);
@@ -190,6 +189,7 @@
             })
             ranking[index] = rnk
         })
+
         var resultLabel = []
         var resultProp = []
         var resultVal = []
@@ -224,7 +224,7 @@
         })
         var keywordNames = []
         var keywordVals = []
-        
+
         for(var k = 0; k < resultLabel.length; k++){
             console.log("랭킹: " , k)
             var nt = [];
@@ -236,20 +236,24 @@
                 if(resultLabel[k][i][0] == 'Person'){
                     console.log("person")
                     nameTmp.push(resultVal[k][i][0][0])
-                    valTmp.push(resultVal[k][i][0][1]) 
+                    valTmp.push(resultVal[k][i][0][1]) //p_type
+                    //valTmp.push(resultVal[k][i][0][2]) //pid
                 }
                 else if(resultLabel[k][i][0] == "Data"){
                     console.log("Data")
-                    nameTmp.push(resultVal[k][i][0][1])
-                    valTmp.push(resultVal[k][i][0][0]) 
-                    valTmp.push(resultVal[k][i][0][2]) 
-                    valTmp.push(resultVal[k][i][0][3]+"원") 
+                    nameTmp.push(resultVal[k][i][0][0])
+                    if(resultVal[k][i][0][1] != ""){
+                        valTmp.push(resultVal[k][i][0][1]) //value
+                    }
+                    else if(resultVal[k][i][0][2] != ""){
+                        valTmp.push(resultVal[k][i][0][2]) //file_path
+                    } 
+                    valTmp.push(resultVal[k][i][0][3]) //origin
                 }
                 else{
                     console.log("Activity")
-                    console.log(resultVal[k][i][0][1])
                     nameTmp.push(resultVal[k][i][0][1])
-                    valTmp.push(resultVal[k][i][0][0]) 
+                    valTmp.push(resultVal[k][i][0][0]) //날짜 
                 }
                 nt.push(nameTmp)
                 vt.push(valTmp)
@@ -257,7 +261,7 @@
             keywordNames.push(nt)
             keywordVals.push(vt)
         }
-
+        /*
         keywordNames.forEach(function(element, index){
             console.log(index)
             console.log(element)
@@ -266,6 +270,7 @@
             console.log(index)
             console.log(element)
         })
+        */
     }
 
     if(!resultFlag){
@@ -345,18 +350,37 @@
     function showAtrr(query) {
         var attrs = [];
         attrs = query.split(',');
+        console.log(attrs)
         if(attrs[0] == 'Person') {
-            document.getElementById("nodeContent").innerHTML = "이름: " + attrs[2] + "<br>" + "소속: " + attrs[1];
+            var pid;
+            if(attrs[2] == "개인"){
+                pid = Array.from(attrs[3])
+                for(var i = 8; i<pid.length; i++ ){
+                    pid[i] = "*";
+                }
+                pid = pid.join('')
+            }
+            document.getElementById("nodeContent").innerHTML = "이름: " + attrs[1] + "<br>" + "타입: " + attrs[2] + "<br>" + "ID: " + pid;
         }
         else if(attrs[0] == 'Activity') {
-            document.getElementById("nodeContent").innerHTML = "행동: " + attrs[2] + "<br>" + "날짜: " + attrs[1];
+            if(attrs[2] == "가공"){
+                document.getElementById("nodeContent").innerHTML = "행동: " + attrs[2] + "<br>" + "날짜: " + attrs[1] + "<br>" + "가공방법: " + attrs[3];
+            }
+            else{
+                document.getElementById("nodeContent").innerHTML = "행동: " + attrs[2] + "<br>" + "날짜: " + attrs[1];
+            }
+
         }
         else if(attrs[0] == 'Data') {
-            document.getElementById("nodeContent").innerHTML = "데이터ID: " + attrs[3] + "<br>" + "데이터 종류: " + attrs[1] + "<br>" + "수집장치: " + attrs[4] + "<br>" + "가격: " + attrs[2] + "원";
+            if(attrs[1] != ""){
+                document.getElementById("nodeContent").innerHTML = "데이터명: " + attrs[3] + "<br>" + "파일: " + attrs[1] + "<br>" + "생성기관: " + attrs[2];
+            }
+            else if(attrs[3] != ""){
+                document.getElementById("nodeContent").innerHTML = "데이터명: " + attrs[3] + "<br>" + "값: " + attrs[4] + "<br>" + "생성기관: " + attrs[2];
+            }
         }
         //document.getElementById("nodeContent").innerHTML = attrs;
         //document.getElementById("nodeContent").innerHTML = query;
-        console.log(attrs);
     }
     
 

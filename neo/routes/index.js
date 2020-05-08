@@ -304,7 +304,6 @@ router.post('/dataAdd', function (req, res) {
     }
 
     var form = new multiparty.Form();
-    console.log(form)
     var name;
     // get field name & value
     form.on('field', function (name, value) {
@@ -338,7 +337,28 @@ router.post('/dataAdd', function (req, res) {
 
         });
     });
- 
+       // all uploads are completed
+
+       form.on('close',function(){
+
+        res.status(200).send('Upload complete');
+
+   });
+
+  
+
+   // track progress
+
+   form.on('progress',function(byteRead,byteExpected){
+
+        console.log(' Reading total  '+byteRead+'/'+byteExpected);
+
+   });
+
+  
+
+   form.parse(req);
+
     session
         .run("CREATE (d:Data {name: '" + dataName + "' , value: '" + value + "' , origin: '" + origin + "', file_path: '" + file_path + "'})-[:Generate]->(ac:Activity {name: '생성', date: '" + date + "', detail: '' })-[:Act]->(p:Person {name: '" + user_name + "' , pid: '" + user_pid + "', type: '" + user_type + "'})")
         .then(function (result) {
