@@ -1179,39 +1179,50 @@ router.post('/periodSearch', function (req, res) {
     var start_date = req.body.end_date;
     var activityType = req.body.activityType;
 
-
+    //생성
     var nameArr = [];
-    var affiliationArr = [];
+    var pidArr = [];
+    var p_typeArr = [];
     var activityTypeArr3 = [];
     var dateArr3 = [];
     var dataNameArr3 = [];
-    var dataTypeArr3 = [];
-    var priceArr3 = [];
-    var deviceArr3 = [];
+    var valueArr3 = [];
+    var file_pathArr3 = [];
+    var originArr3 = [];
 
+    //제공
     var s_nameArr = [];
-    var s_affiliationArr = [];
+    var s_pidArr = [];
+    var s_pTypeArr = [];
     var activityTypeArr4 = [];
     var dateArr4 = [];
     var dataNameArr4 = [];
-    var dataTypeArr4 = [];
+    var valueArr4 = [];
+    var file_pathArr4 = [];
+    var originArr4 = [];
+    var APFromArr4 = [];
+    var APToArr4 = [];
     var priceArr4 = [];
-    var deviceArr4 = [];
+    var isAgreeArr4 = [];
     var r_nameArr = [];
-    var r_affiliationArr = [];
+    var r_pidArr = [];
+    var r_pTypeArr = [];
 
+    //가공
     var nameArr5 = [];
-    var affiliationArr5 = [];
+    var pidArr5 = [];
+    var p_typeArr5 = [];
     var activityTypeArr5 = [];
     var dateArr5 = [];
+    var detailArr5 = [];
     var dataNameArr5 = [];
-    var dataTypeArr5 = [];
-    var priceArr5 = [];
-    var deviceArr5 = [];
+    var valueArr5 = [];
+    var file_pathArr5 = [];
+    var originArr5 = [];
     var dataNameArr6 = [];
-    var dataTypeArr6 = [];
-    var priceArr6 = [];
-    var deviceArr6 = [];
+    var valueArr6 = [];
+    var file_pathArr6 = [];
+    var originArr6 = [];
 
     var end_dateFlag = true;
     var start_dateFlag = true;
@@ -1228,13 +1239,14 @@ router.post('/periodSearch', function (req, res) {
 
     var user_gubun = session_value.getSession().gubun;
     var user_name = session_value.getSession().user;
+    var user_pid = session_value.getSession().pid;
 
     var matchCyper5;
     var matchCyper4;
     var matchCyper3;
 
     var returnCyper5 = "RETURN p, d2, ac, d1 LIMIT 10"
-    var returnCyper4 = "RETURN p1, d, ac, p2 LIMIT 10"
+    var returnCyper4 = "RETURN p1, d, ac, r, p2 LIMIT 10"
     var returnCyper3 = "RETURN p, d, ac LIMIT 10"
 
     var newQuery5;
@@ -1250,10 +1262,10 @@ router.post('/periodSearch', function (req, res) {
         newQuery3 = matchCyper3 + " WHERE "
     }
     else {
-        matchCyper3 = "MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person{name: '" + user_name + "' })"
-        newQuery5 = matchCyper5 + " WHERE (p.name = '" + user_name + "') AND";
-        newQuery4 = matchCyper4 + " WHERE (p1.name = '" + user_name + "' OR p2.name = '" + user_name + "') AND";;
-        newQuery3 = matchCyper3 + " WHERE (p.name = '" + user_name + "') AND";
+        matchCyper3 = "MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person{name: '" + user_name + "', pid: '" + user_pid + "' })"
+        newQuery5 = matchCyper5 + " WHERE (p.name = '" + user_name + "' AND p.pid = '" + user_pid + "') AND";
+        newQuery4 = matchCyper4 + " WHERE (p1.name = '" + user_name + "' AND p1.pid = '" + user_pid + "') AND";;
+        newQuery3 = matchCyper3 + " WHERE (p.name = '" + user_name + "' AND p.pid = '" + user_pid + "') AND";
     }
     var startDateCyper = " (ac.date >= ";
     var endDateCyper = " ac.date < ";
@@ -1273,15 +1285,17 @@ router.post('/periodSearch', function (req, res) {
         activityTypeFlag = false;
         nullcount++;
     }
-    if(activityTypeFlag == false || end_dateFlag == false && start_dateFlag == false && activityTypeFlag == false) {
+    if(nullcount == 2) {
         res.send('<script type="text/javascript">alert("검색어를 입력해주세요."); window.history.go(-1);</script>');
     }
-
+    var query3 = false;
+    var query4 = false;
+    var query5 = false;
     if (nullcount == 0) {
         if (activityType == '생성') {
             newQuery3 = newQuery3 + startDateCyper + "'" + start_date + "'" + " AND" + endDateCyper + "'" + end_date + "') AND (ac.name = '생성') "
         }
-        else if (activityType == '배포' || activityType == '판매'){
+        else if (activityType == '제공'){
             newQuery4 = newQuery4 + startDateCyper + "'" + start_date + "'" + " AND" + endDateCyper + "'" + end_date + "') AND (ac.name = " + "'" + activityType + "') "
         } 
         else {
@@ -1291,23 +1305,29 @@ router.post('/periodSearch', function (req, res) {
     else {
         for (var i = 0; i < (2 - nullcount); i++) {
             if (end_dateFlag && start_date) {
-                newQuery5 = newQuery5 + startDateCyper + "'" + start_date + "'" + " AND" + endDateCyper + "'" + end_date + "') ";
-                newQuery4 = newQuery4 + startDateCyper + "'" + start_date + "'" + " AND" + endDateCyper + "'" + end_date + "') ";
-                newQuery3 = newQuery3 + startDateCyper + "'" + start_date + "'" + " AND" + endDateCyper + "'" + end_date + "') ";
+                newQuery5 = newQuery5 + startDateCyper + "'" + start_date + "'" + " AND" + endDateCyper + "'" + end_date + "') and ac.name = '가공' " ;
+                newQuery4 = newQuery4 + startDateCyper + "'" + start_date + "'" + " AND" + endDateCyper + "'" + end_date + "') and ac.name = '제공' ";
+                newQuery3 = newQuery3 + startDateCyper + "'" + start_date + "'" + " AND" + endDateCyper + "'" + end_date + "') and ac.name = '생성' ";
 
                 end_dateFlag = false;
                 start_dateFlag = false;
+                query3 = true;
+                query4 = true;
+                query5 = true;
             }
             else if (activityTypeFlag) {
                 activityTypeFlag = false;
                 if (activityType == '생성') {
                     newQuery3 = newQuery3 + " (ac.name = '생성') "
+                    query3 = true;
                 }
-                if (activityType == '배포' || activityType == '판매'){
-                    newQuery4 = newQuery4 + " (ac.name = " + "'" + activityType + "') "
+                if (activityType == '제공'){
+                    newQuery4 = newQuery4 + " (ac.name = '" + activityType + "') "
+                    query4 = true;
                 }
                 else {
-                    newQuery5 = newQuery5 + " (ac.name = " + "'" + activityType + "') "
+                    newQuery5 = newQuery5 + " (ac.name = '" + activityType + "') "
+                    query5 = true;
                 }
             }
         }
@@ -1319,30 +1339,25 @@ router.post('/periodSearch', function (req, res) {
     console.log(newQuery3)
     console.log(newQuery4)
     console.log(newQuery5)
-    var query3 = false;
-    var query4 = false;
-    var query5 = false;
+
 
     if (activityType == '생성') {
-        query3 = true;
-        query4 = false;
-        query5 = false;
+
         session.run(newQuery3)
             .then(function (result) {
-                query3 = true;
-                query4 = false;
-                query5 = false;
+
                 query3resultNum = result.records.length;
                 if (query3resultNum != 0) {
                     result.records.forEach(function (record) {
 
                         nameArr.push(record._fields[0].properties.name)
-                        affiliationArr.push(record._fields[0].properties.affiliation)
+                        pidArr.push(record._fields[0].properties.pid)
+                        p_typeArr.push(record._fields[0].properties.p_type)
 
                         dataNameArr3.push(record._fields[1].properties.name)
-                        dataTypeArr3.push(record._fields[1].properties.d_type)
-                        deviceArr3.push(record._fields[1].properties.device)
-                        priceArr3.push(record._fields[1].properties.price)
+                        valueArr3.push(record._fields[1].properties.value)
+                        file_pathArr3.push(record._fields[1].properties.file_path)
+                        originArr3.push(record._fields[1].properties.origin)
 
                         activityTypeArr3.push(record._fields[2].properties.name)
                         dateArr3.push(record._fields[2].properties.date)
@@ -1350,12 +1365,13 @@ router.post('/periodSearch', function (req, res) {
                 }
                 else {
                     nameArr.push(' ')
-                    affiliationArr.push(' ')
+                    pidArr.push(' ')
+                    p_type.push(' ')
 
                     dataNameArr3.push(' ')
-                    dataTypeArr3.push(' ')
-                    deviceArr3.push(' ')
-                    priceArr3.push(' ')
+                    valueArr3.push(' ')
+                    file_pathArr3.push(' ')
+                    originArr3.push(' ')
 
                     activityTypeArr3.push(' ')
                     dateArr3.push(' ')
@@ -1365,12 +1381,14 @@ router.post('/periodSearch', function (req, res) {
                     query3: query3,
                     query4: query4,
                     query5: query5,
+                    
                     names: nameArr,
-                    affiliations: affiliationArr,
-                    dataTypes3: dataTypeArr3,
+                    pids: pidArr,
+                    p_types: p_typeArr,
                     dataNames3: dataNameArr3,
-                    devices3: deviceArr3,
-                    prices3: priceArr3,
+                    values3: valueArr3,
+                    file_paths3: file_pathArr3,
+                    origins3: originArr3,
                     activityTypes3: activityTypeArr3,
                     dates3: dateArr3,
 
@@ -1383,10 +1401,8 @@ router.post('/periodSearch', function (req, res) {
                 console.log(err);
             });
     }
-    else if (activityType == '배포' || activityType == '판매') {
-        query5 = false;
-        query4 = true;
-        query3 = false;
+    else if (activityType == '제공') {
+
         session.run(newQuery4)
             .then(function (result) {
                 query3 = false;
@@ -1397,34 +1413,48 @@ router.post('/periodSearch', function (req, res) {
                     result.records.forEach(function (record) {
 
                         s_nameArr.push(record._fields[0].properties.name)
-                        s_affiliationArr.push(record._fields[0].properties.affiliation)
+                        s_pidArr.push(record._fields[0].properties.pid)
+                        s_pTypeArr.push(record._fields[0].properties.p_type)
 
                         dataNameArr4.push(record._fields[1].properties.name)
-                        dataTypeArr4.push(record._fields[1].properties.d_type)
-                        deviceArr4.push(record._fields[1].properties.device)
-                        priceArr4.push(record._fields[1].properties.price)
+                        valueArr4.push(record._fields[1].properties.value)
+                        file_pathArr4.push(record._fields[1].properties.file_path)
+                        originArr4.push(record._fields[1].properties.origin)
 
                         activityTypeArr4.push(record._fields[2].properties.name)
                         dateArr4.push(record._fields[2].properties.date)
 
-                        r_nameArr.push(record._fields[3].properties.name)
-                        r_affiliationArr.push(record._fields[3].properties.affiliation)
+                        APFromArr4.push(record._fields[3].properties.allowed_period_from)
+                        APToArr4.push(record._fields[3].properties.allowed_period_to)
+                        priceArr4.push(record._fields[3].properties.price)
+                        isAgreeArr4.push(record._fields[3].properties.is_agreed)
+
+                        r_nameArr.push(record._fields[4].properties.name)
+                        r_pidArr.push(record._fields[4].properties.pid)
+                        r_pTypeArr.push(record._fields[4].properties.p_type)
                     });
                 }
                 else {
                     s_nameArr.push(' ')
-                    s_affiliationArr.push(' ')
+                    s_pidArr.push(' ')
+                    s_pTypeArr.push(' ')
 
                     dataNameArr4.push(' ')
-                    dataTypeArr4.push(' ')
-                    deviceArr4.push(' ')
-                    priceArr4.push(' ')
+                    valueArr4.push(' ')
+                    file_pathArr4.push(' ')
+                    originArr4.push(' ')
 
                     activityTypeArr4.push(' ')
                     dateArr4.push(' ')
 
+                    APFromArr4.push(' ')
+                    APToArr4.push(' ')
+                    priceArr4.push(' ')
+                    isAgreeArr4.push(' ')
+
                     r_nameArr.push(' ')
-                    r_affiliationArr.push(' ')
+                    r_pidArr.push(' ')
+                    r_pTypeArr.push(' ')
                 }
                 res.render('search/searchPeriodResult.ejs', {
                     esession: session_value.getSession(),
@@ -1432,16 +1462,23 @@ router.post('/periodSearch', function (req, res) {
                     query3: query3,
                     query4: query4,
                     query5: query5, 
+
                     s_names: s_nameArr,
-                    s_affiliations: s_affiliationArr,
-                    dataTypes4: dataTypeArr4,
+                    s_pids: s_pidArr,
+                    s_ptypes: s_pTypeArr,
                     dataNames4: dataNameArr4,
-                    devices4: deviceArr4,
+                    values4: valueArr4,
+                    file_paths4: file_pathArr4,
+                    origins4: originArr4,
+                    APFroms4: APFromArr4,
+                    APTos4: APToArr4,
                     prices4: priceArr4,
+                    isAgrees: isAgreeArr4,
                     activityTypes4: activityTypeArr4,
                     dates4: dateArr4,
                     r_names: r_nameArr,
-                    r_affiliations: r_affiliationArr,
+                    r_pids: r_pidArr,
+                    r_pTypes: r_pTypeArr,
 
                     authenticated: true
                 });
@@ -1452,10 +1489,8 @@ router.post('/periodSearch', function (req, res) {
                 console.log(err);
             });
         }
-        else {
-            query5 = true;
-            query4 = false;
-            query3 = false;
+        else { //가공
+
             session.run(newQuery5)
                 .then(function (result) {
                     query3 = false;
@@ -1466,38 +1501,42 @@ router.post('/periodSearch', function (req, res) {
                         result.records.forEach(function (record) {
     
                             nameArr5.push(record._fields[0].properties.name)
-                            affiliationArr5.push(record._fields[0].properties.affiliation)
+                            pidArr5.push(record._fields[0].properties.pid)
+                            p_typeArr5.push(record._fields[0].properties.p_type)
         
                             dataNameArr5.push(record._fields[1].properties.name)
-                            dataTypeArr5.push(record._fields[1].properties.d_type)
-                            deviceArr5.push(record._fields[1].properties.device)
-                            priceArr5.push(record._fields[1].properties.price)
+                            valueArr5.push(record._fields[1].properties.value)
+                            file_pathArr5.push(record._fields[1].properties.file_path)
+                            originArr5.push(record._fields[1].properties.origin)
         
                             activityTypeArr5.push(record._fields[2].properties.name)
                             dateArr5.push(record._fields[2].properties.date)
+                            detailArr5.push(record._fields[2].properties.detail)
         
                             dataNameArr6.push(record._fields[3].properties.name)
-                            dataTypeArr6.push(record._fields[3].properties.d_type)
-                            deviceArr6.push(record._fields[3].properties.device)
-                            priceArr6.push(record._fields[3].properties.price)
+                            valueArr6.push(record._fields[3].properties.value)
+                            file_pathArr6.push(record._fields[3].properties.file_path)
+                            originArr6.push(record._fields[3].properties.origin)
                         });
                     }
                     else {
                         nameArr5.push(' ')
-                        affiliationArr5.push(' ')
+                        pidArr5.push(' ')
+                        p_typeArr5.push(' ')
         
                         dataNameArr5.push(' ')
-                        dataTypeArr5.push(' ')
-                        deviceArr5.push(' ')
-                        priceArr5.push(' ')
+                        valueArr5.push(' ')
+                        file_pathArr5.push(' ')
+                        originArr5.push(' ')
         
                         activityTypeArr5.push(' ')
                         dateArr5.push(' ')
+                        detailArr5.push(' ')
         
                         dataNameArr6.push(' ')
-                        dataTypeArr6.push(' ')
-                        deviceArr6.push(' ')
-                        priceArr6.push(' ')
+                        valueArr6.push(' ')
+                        file_pathArr6.push(' ')
+                        originArr6.push(' ')
                     }
                     res.render('search/searchPeriodResult.ejs', {
                         esession: session_value.getSession(),
@@ -1506,18 +1545,19 @@ router.post('/periodSearch', function (req, res) {
                         query5: query5, 
     
                         names5 : nameArr5,
-                        affiliations5 : affiliationArr5,
-                        dataTypes5: dataTypeArr5,
+                        pids5: pidArr5,
+                        p_types5: p_typeArr5,
                         dataNames5: dataNameArr5,
-                        devices5: deviceArr5,
-                        prices5: priceArr5,
+                        values5: valueArr5,
+                        file_paths5: file_pathArr5,
+                        origins5: originArr5,
                         activityTypes5: activityTypeArr5,
                         dates5: dateArr5,
-
-                        dataTypes6: dataTypeArr6,
+                        details5: detailArr5,
                         dataNames6: dataNameArr6,
-                        devices6: deviceArr6,
-                        prices6: priceArr6,
+                        values6: valueArr6,
+                        file_paths6: file_pathArr6,
+                        origins6: originArr6,
     
                         authenticated: true
                     });
