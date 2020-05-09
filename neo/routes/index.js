@@ -760,7 +760,7 @@ router.post('/DataSearch', function (req, res) {
     var query5resultNum;
 
     console.log("dataName: " + dataName);
-    console.log("device: " + origin);
+    console.log("origin: " + origin);
 
     var nullcount = 0;
     var user_gubun = session_value.getSession().gubun;
@@ -891,118 +891,146 @@ router.post('/DataSearch', function (req, res) {
                 originArr6.push(' ')
             }
 
-    session.run(newQuery4)
-        .then(function (result) {
-            query4resultNum = result.records.length;
-            if (query4resultNum != 0) {
-                result.records.forEach(function (record) {
+        session.run(newQuery4)
+            .then(function (result) {
+                query4resultNum = result.records.length;
+                if (query4resultNum != 0) {
+                    result.records.forEach(function (record) {
 
-                    s_nameArr.push(record._fields[0].properties.name)
-                    s_affiliationArr.push(record._fields[0].properties.affiliation)
+                        s_nameArr.push(record._fields[0].properties.name)
+                        s_pidArr.push(record._fields[0].properties.pid)
+                        s_pTypeArr.push(record._fields[0].properties.p_type)
 
-                    dataNameArr4.push(record._fields[1].properties.name)
-                    dataTypeArr4.push(record._fields[1].properties.d_type)
-                    deviceArr4.push(record._fields[1].properties.device)
-                    priceArr4.push(record._fields[1].properties.price)
+                        dataNameArr4.push(record._fields[1].properties.name)
+                        valueArr4.push(record._fields[1].properties.value)
+                        file_pathArr4.push(record._fields[1].properties.file_path)
+                        originArr4.push(record._fields[1].properties.origin)
 
-                    activityTypeArr4.push(record._fields[2].properties.name)
-                    dateArr4.push(record._fields[2].properties.date)
+                        activityTypeArr4.push(record._fields[2].properties.name)
+                        dateArr4.push(record._fields[2].properties.date)
 
-                    r_nameArr.push(record._fields[3].properties.name)
-                    r_affiliationArr.push(record._fields[3].properties.affiliation)
-                });
-            }
-            else {
-                s_nameArr.push(' ')
-                s_affiliationArr.push(' ')
+                        console.log(record._fields[3].properties.is_agreed)
+                        console.log(record._fields[3].properties.price)
+                        console.log(record._fields[3].properties.allowed_period_from)
+                        console.log(record._fields[3].properties.allowed_period_to)
+                        APFromArr4.push(record._fields[3].properties.allowed_period_from)
+                        APToArr4.push(record._fields[3].properties.allowed_period_to)
+                        priceArr4.push(record._fields[3].properties.price)
+                        isAgreeArr4.push(record._fields[3].properties.is_agreed)
 
-                dataNameArr4.push(' ')
-                dataTypeArr4.push(' ')
-                deviceArr4.push(' ')
-                priceArr4.push(' ')
+                        r_nameArr.push(record._fields[4].properties.name)
+                        r_pidArr.push(record._fields[4].properties.pid)
+                        r_pTypeArr.push(record._fields[4].properties.p_type)
+                    });
+                }   
+                else {
+                        s_nameArr.push(' ')
+                        s_pidArr.push(' ')
+                        s_pTypeArr.push(' ')
 
-                activityTypeArr4.push(' ')
-                dateArr4.push(' ')
+                        dataNameArr4.push(' ')
+                        valueArr4.push(' ')
+                        file_pathArr4.push(' ')
+                        originArr4.push(' ')
 
-                r_nameArr.push(' ')
-                r_affiliationArr.push(' ')
-            }
+                        activityTypeArr4.push(' ')
+                        dateArr4.push(' ')
 
-    session.run(newQuery3)
-        .then(function (result) {
-            query3resultNum = result.records.length;
-            if (query3resultNum != 0) {
-                result.records.forEach(function (record) {
+                        APFromArr4.push(' ')
+                        APToArr4.push(' ')
+                        priceArr4.push(' ')
+                        isAgreeArr4.push(' ')
 
-                    nameArr.push(record._fields[0].properties.name)
-                    affiliationArr.push(record._fields[0].properties.affiliation)
+                        r_nameArr.push(' ')
+                        r_pidArr.push(' ')
+                        r_pTypeArr.push(' ')
+                    }
 
-                    dataNameArr3.push(record._fields[1].properties.name)
-                    dataTypeArr3.push(record._fields[1].properties.d_type)
-                    deviceArr3.push(record._fields[1].properties.device)
-                    priceArr3.push(record._fields[1].properties.price)
+            session.run(newQuery3)
+                .then(function (result) {
+                    query3resultNum = result.records.length;
+                    if (query3resultNum != 0) {
+                        result.records.forEach(function (record) {
+                            console.log(record)
+                            nameArr.push(record._fields[0].properties.name)
+                            pidArr.push(record._fields[0].properties.pid)
+                            p_typeArr.push(record._fields[0].properties.p_type)
 
-                    activityTypeArr3.push(record._fields[2].properties.name)
-                    dateArr3.push(record._fields[2].properties.date)
-                 });
-            }
-            else {
-                nameArr.push(' ')
-                affiliationArr.push(' ')
+                            dataNameArr3.push(record._fields[1].properties.name)
+                            valueArr3.push(record._fields[1].properties.value)
+                            file_pathArr3.push(record._fields[1].properties.file_path)
+                            originArr3.push(record._fields[1].properties.origin)
 
-                dataNameArr3.push(' ')
-                dataTypeArr3.push(' ')
-                deviceArr3.push(' ')
-                priceArr3.push(' ')
+                            activityTypeArr3.push(record._fields[2].properties.name)
+                            dateArr3.push(record._fields[2].properties.date)
+                        });
+                    }
+                    else {
+                        nameArr.push(' ')
+                        pidArr.push(' ')
+                        p_type.push(' ')
 
-                activityTypeArr3.push(' ')
-                dateArr3.push(' ')
-            }
+                        dataNameArr3.push(' ')
+                        valueArr3.push(' ')
+                        file_pathArr3.push(' ')
+                        originArr3.push(' ')
+
+                        activityTypeArr3.push(' ')
+                        dateArr3.push(' ')
+                    }
 
 
-                    res.render('search/searchDataResult.ejs', {
-                        esession: session_value.getSession(),
+                        res.render('search/searchDataResult.ejs', {
+                            esession: session_value.getSession(),
 
-                        names: nameArr,
-                        affiliations: affiliationArr,
-                        dataTypes3: dataTypeArr3,
-                        dataNames3: dataNameArr3,
-                        devices3: deviceArr3,
-                        prices3: priceArr3,
-                        activityTypes3: activityTypeArr3,
-                        dates3: dateArr3,
+                            names: nameArr,
+                            pids: pidArr,
+                            p_types: p_typeArr,
+                            dataNames3: dataNameArr3,
+                            values3: valueArr3,
+                            file_paths3: file_pathArr3,
+                            origins3: originArr3,
+                            activityTypes3: activityTypeArr3,
+                            dates3: dateArr3,
 
-                        s_names: s_nameArr,
-                        s_affiliations: s_affiliationArr,
-                        dataTypes4: dataTypeArr4,
-                        dataNames4: dataNameArr4,
-                        devices4: deviceArr4,
-                        prices4: priceArr4,
-                        activityTypes4: activityTypeArr4,
-                        dates4: dateArr4,
-                        r_names: r_nameArr,
-                        r_affiliations: r_affiliationArr,
+                            s_names: s_nameArr,
+                            s_pids: s_pidArr,
+                            s_ptypes: s_pTypeArr,
+                            dataNames4: dataNameArr4,
+                            values4: valueArr4,
+                            file_paths4: file_pathArr4,
+                            origins4: originArr4,
+                            APFroms4: APFromArr4,
+                            APTos4: APToArr4,
+                            prices4: priceArr4,
+                            isAgrees: isAgreeArr4,
+                            activityTypes4: activityTypeArr4,
+                            dates4: dateArr4,
+                            r_names: r_nameArr,
+                            r_pids: r_pidArr,
+                            r_pTypes: r_pTypeArr,
 
-                        names5 : nameArr5,
-                        affiliations5 : affiliationArr5,
-                        dataTypes5: dataTypeArr5,
-                        dataNames5: dataNameArr5,
-                        devices5: deviceArr5,
-                        prices5: priceArr5,
-                        activityTypes5: activityTypeArr5,
-                        dates5: dateArr5,
+                            names5 : nameArr5,
+                            pids5: pidArr5,
+                            p_types5: p_typeArr5,
+                            dataNames5: dataNameArr5,
+                            values5: valueArr5,
+                            file_paths5: file_pathArr5,
+                            origins5: originArr5,
+                            activityTypes5: activityTypeArr5,
+                            dates5: dateArr5,
+                            details5: detailArr5,
+                            dataNames6: dataNameArr6,
+                            values6: valueArr6,
+                            file_paths6: file_pathArr6,
+                            origins6: originArr6,
 
-                        dataTypes6: dataTypeArr6,
-                        dataNames6: dataNameArr6,
-                        devices6: deviceArr6,
-                        prices6: priceArr6,
-
-                        authenticated: true
+                            authenticated: true
+                        });
                     });
                 });
-            });
-            session.close();
-        })
+                session.close();
+            })
         .catch(function (err) {
             console.log(err);
         });
