@@ -283,7 +283,10 @@ router.post('/dataAdd', function (req, res) {
     var dataName = req.body.dataName;
     var value = req.body.value;
     var origin = req.body.origin;
-    var file_path = "";
+    var file_path = req.body.file_path;
+
+    if(file_path == undefined)
+        file_path = '';
 
     let today = new Date();
     let year = today.getFullYear(); // 년도
@@ -304,61 +307,7 @@ router.post('/dataAdd', function (req, res) {
         user_type = '개인'
     }
 
-    var form = new multiparty.Form();
-    var name;
-    // get field name & value
-    form.on('field', function (name, value) {
-        console.log('normal field / name = ' + name + ' , value = ' + value);        
-    });
-
-    // file upload handling
-    form.on('part', function (part) {
-        var filename;
-        var size;
-        if (part.filename) {
-            filename = part.filename;
-            name = filename;
-            size = part.byteCount;
-        } else {
-            part.resume();
-        }
-
-        console.log("Write Streaming file :" + filename);
-        var writeStream = fs.createWriteStream('add/' + filename);
-        writeStream.filename = filename;
-        part.pipe(writeStream);
-
-        part.on('data', function (chunk) {
-            console.log(filename + ' read ' + chunk.length + 'bytes');
-        });
-
-        part.on('end', function () {
-            console.log(filename + ' Part read complete');
-            writeStream.end();
-
-        });
-    });
-       // all uploads are completed
-
-       form.on('close',function(){
-
-        res.status(200).send('Upload complete');
-
-   });
-
-  
-
    // track progress
-
-   form.on('progress',function(byteRead,byteExpected){
-
-        console.log(' Reading total  '+byteRead+'/'+byteExpected);
-
-   });
-
-  
-
-   form.parse(req);
 
     session
         .run("CREATE (d:Data {name: '" + dataName + "' , value: '" + value + "' , origin: '" + origin + "', file_path: '" + file_path + "'})-[:Generate]->(ac:Activity {name: '생성', date: '" + date + "', detail: '' })-[:Act]->(p:Person {name: '" + user_name + "' , pid: '" + user_pid + "', p_type: '" + user_type + "'})")
@@ -383,45 +332,77 @@ router.get('/', function (req, res, next) {
 router.get('/viewPage', function (req, res) {
     var nameArr = [];
     var affiliationArr = [];
+    var pidArr = [];
+    var pTypeArr = [];
     var nameArr2 = [];
     var affiliationArr2 = [];
 
     var s_nameArr = [];
-    var s_affiliationArr = [];
+    var s_pidArr = [];
+    var s_pTypeArr = [];
     var r_nameArr = [];
     var r_affiliationArr = [];
 
     var activityTypeArr4 = [];
     var dateArr4 = [];
+    var detailArr4 = [];
     var dataNameArr4 = [];
-    var dataTypeArr4 = [];
-    var priceArr4 = [];
-    var deviceArr4 = [];
+    //var dataTypeArr4 = [];
+    //var priceArr4 = [];
+    //var deviceArr4 = [];
+    var valueArr4 = [];
+    var file_pathArr4 = [];
+    var originArr4 = [];
+    var dataNameArr215 = [];
+    var valueArr215 = [];
+    var file_pathArr215 = [];
+    var originArr215 = [];
 
     var activityTypeArr3 = [];
     var dateArr3 = [];
+    var detailArr3 = [];
     var dataNameArr3 = [];
     var dataTypeArr3 = [];
     var priceArr3 = [];
     var deviceArr3 = [];
+    var valueArr3 = [];
+    var file_pathArr3 = [];
+    var originArr3 = [];
 
     var nameArr10 = [];
+    var pidArr10 = [];
+    var pTypeArr10 = [];
     var affiliationArr10 = [];
 
     var activityTypeArr10 = [];
     var dateArr10 = [];
-    var dataNameArr10 = [];
-    var dataTypeArr10 = [];
+    var detailArr10 = [];
+
+    var APFromArr10 = [];
+    var APToArr10 = [];
     var priceArr10 = [];
-    var deviceArr10 = [];
+    var isAgreeArr10 = [];
+
+    var dataNameArr10 = [];
+    var valueArr10 = [];
+    var file_pathArr10 = [];
+    var originArr10 = [];
+    //var dataTypeArr10 = [];
+    //var deviceArr10 = [];
 
     var nameArr11 = [];
-    var affiliationArr11 = [];
+    var pidArr11 = [];
+    var pTypeArr11 = [];
 
     var dataNameArr11 = [];
     var dataTypeArr11 = [];
     var priceArr11 = [];
     var deviceArr11 = [];
+
+    var dataNamesTotal = [];
+    var dataValuesTotal =[];
+    var dataFilesTotal =[];
+    var dataOriginTotal =[];
 
 
     //var dataOwner = [];
@@ -439,100 +420,171 @@ router.get('/viewPage', function (req, res) {
             result.records.forEach(function (record) {
 
               s_nameArr.push(record._fields[0].properties.name)
-              s_affiliationArr.push(record._fields[0].properties.affiliation)
+              s_pidArr.push(record._fields[0].properties.pid)
+              s_pTypeArr.push(record._fields[0].properties.p_type)
 
               dataNameArr4.push(record._fields[1].properties.name)
-              dataTypeArr4.push(record._fields[1].properties.d_type)
-              deviceArr4.push(record._fields[1].properties.device)
-              priceArr4.push(record._fields[1].properties.price)
+              valueArr4.push(record._fields[1].properties.value)
+              file_pathArr4.push(record._fields[1].properties.file_path)
+              originArr4.push(record._fields[1].properties.origin)
               //dataOwner.push(record._fields[1].properties.owner)
               //dataOwnerAff.push(record._fields[1].properties.owner_aff)
 
               activityTypeArr4.push(record._fields[2].properties.name)
               dateArr4.push(record._fields[2].properties.date)
+              detailArr4.push(record._fields[2].properties.detail)
+
+              dataNamesTotal.push(record._fields[1].properties.name)
+              dataValuesTotal.push(record._fields[1].properties.value)
+              dataFilesTotal.push(record._fields[1].properties.file_path)
+              dataOriginTotal.push(record._fields[1].properties.origin)
             });
             
-            session.run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[s:Send]-(p1:Person), (ac:Activity)-[r:Receive]-(p2:Person) WHERE ac.name IN ['배포', '판매'] AND ( p1.name = '" + user_name + "' ) RETURN p1, d, ac, p2 LIMIT 10")
+            session.run("MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '가공' AND ( p.name = '" + user_name + "' ) RETURN p, d2, ac, d1 LIMIT 10")
           .then(function (result) {
             result.records.forEach(function (record) {
 
               nameArr.push(record._fields[0].properties.name)
-              affiliationArr.push(record._fields[0].properties.affiliation)
+              pidArr.push(record._fields[0].properties.pid)
+              pTypeArr.push(record._fields[0].properties.p_type)
+              //affiliationArr.push(record._fields[0].properties.affiliation)
 
               dataNameArr3.push(record._fields[1].properties.name)
-              dataTypeArr3.push(record._fields[1].properties.d_type)
-              deviceArr3.push(record._fields[1].properties.device)
-              priceArr3.push(record._fields[1].properties.price)
+              valueArr3.push(record._fields[1].properties.value)
+              file_pathArr3.push(record._fields[1].properties.file_path)
+              originArr3.push(record._fields[1].properties.origin)
+              //deviceArr3.push(record._fields[1].properties.device)
+              //priceArr3.push(record._fields[1].properties.price)
               //dataOwner.push(record._fields[1].properties.owner)
               //dataOwnerAff.push(record._fields[1].properties.owner_aff)
 
               activityTypeArr3.push(record._fields[2].properties.name)
               dateArr3.push(record._fields[2].properties.date)
+              detailArr3.push(record._fields[2].properties.detail)
 
-              nameArr2.push(record._fields[3].properties.name)
-              affiliationArr2.push(record._fields[3].properties.affiliation)
+              dataNameArr215.push(record._fields[3].properties.name)
+              valueArr215.push(record._fields[3].properties.value)
+              file_pathArr215.push(record._fields[3].properties.file_path)
+              originArr215.push(record._fields[3].properties.origin)
+
+              //nameArr2.push(record._fields[3].properties.name)
+              //pidArr2.push(record._fields[3].properties.pid)
+              //pTypeArr2.push(record._fields[3].properties.p_type)
+              //affiliationArr2.push(record._fields[3].properties.affiliation)
+
+              dataNamesTotal.push(record._fields[1].properties.name)
+              dataValuesTotal.push(record._fields[1].properties.value)
+              dataFilesTotal.push(record._fields[1].properties.file_path)
+              dataOriginTotal.push(record._fields[1].properties.origin)
             });
 
-              session.run("MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person) WHERE ac.name IN ['가공', '변환'] AND p.name = '" + user_name + "' RETURN p, d1, ac, d2 LIMIT 10")
+              session.run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[s:Send]-(p1:Person), (ac:Activity)-[r:Receive]-(p2:Person) WHERE ac.name = '제공' AND p1.name = '" + user_name + "' RETURN p1, d, ac, r, p2 LIMIT 10")
               .then(function (result) {
                 result.records.forEach(function (record) {
     
                   nameArr10.push(record._fields[0].properties.name)
-                  affiliationArr10.push(record._fields[0].properties.affiliation)
+                  pidArr10.push(record._fields[0].properties.pid)
+                  pTypeArr10.push(record._fields[0].properties.p_type)
+                  //affiliationArr10.push(record._fields[0].properties.affiliation)
     
                   dataNameArr10.push(record._fields[1].properties.name)
-                  dataTypeArr10.push(record._fields[1].properties.d_type)
-                  deviceArr10.push(record._fields[1].properties.device)
-                  priceArr10.push(record._fields[1].properties.price)
+                  valueArr10.push(record._fields[1].properties.value)
+                  file_pathArr10.push(record._fields[1].properties.file_path)
+                  originArr10.push(record._fields[1].properties.origin)
+                  //dataTypeArr10.push(record._fields[1].properties.d_type)
+                  //deviceArr10.push(record._fields[1].properties.device)
+                  //priceArr10.push(record._fields[1].properties.price)
                   //dataOwner.push(record._fields[1].properties.owner)
                   //dataOwnerAff.push(record._fields[1].properties.owner_aff)
     
                   activityTypeArr10.push(record._fields[2].properties.name)
                   dateArr10.push(record._fields[2].properties.date)
+                  detailArr10.push(record._fields[2].properties.detail)
+
+                  APFromArr10.push(record._fields[3].properties.allowed_period_from)
+                  APToArr10.push(record._fields[3].properties.allowed_period_to)
+                  priceArr10.push(record._fields[3].properties.price)
+                  isAgreeArr10.push(record._fields[3].properties.is_agreed)
+
+                  nameArr11.push(record._fields[4].properties.name)
+                  pidArr11.push(record._fields[4].properties.pid)
+                  pTypeArr11.push(record._fields[4].properties.p_type)
+
+                  dataNamesTotal.push(record._fields[1].properties.name)
+                  dataValuesTotal.push(record._fields[1].properties.value)
+                  dataFilesTotal.push(record._fields[1].properties.file_path)
+                  dataOriginTotal.push(record._fields[1].properties.origin)
     
-                  dataNameArr11.push(record._fields[3].properties.name)
-                  dataTypeArr11.push(record._fields[3].properties.d_type)
-                  deviceArr11.push(record._fields[3].properties.device)
-                  priceArr11.push(record._fields[3].properties.price)
+
                 });
                 res.render('viewPage', {
                     esession: session_value.getSession(),
 
                     names: nameArr,
-                    affiliations: affiliationArr,
-                    dataTypes3: dataTypeArr3,
+                    pids: pidArr,
+                    pTypes: pTypeArr,
+                    //affiliations: affiliationArr,
+                    //dataTypes3: dataTypeArr3,
                     dataNames3: dataNameArr3,
-                    devices3: deviceArr3,
-                    prices3: priceArr3,
+                    values3: valueArr3,
+                    filePaths3: file_pathArr3,
+                    origins3: originArr3,
+                    //devices3: deviceArr3,
+                    //prices3: priceArr3,
                     activityTypes3: activityTypeArr3,
                     dates3: dateArr3,
+                    details3: detailArr3,
+                    dataNames215: dataNameArr215,
+                    values215: valueArr215,
+                    filePaths215: file_pathArr215,
+                    origins215: originArr215,
+                    //names2 : nameArr2,
+                    //pids2: pidArr2,
+                    //pTypes2: pTypeArr2,
+                    //affiliations2 : affiliationArr2,
 
                     s_names: s_nameArr,
-                    s_affiliations: s_affiliationArr,
-                    dataTypes4: dataTypeArr4,
+                    s_pids: s_pidArr,
+                    s_pTypes: s_pTypeArr,
+                    //s_affiliations: s_affiliationArr,
                     dataNames4: dataNameArr4,
-                    devices4: deviceArr4,
-                    prices4: priceArr4,
+                    values4: valueArr4,
+                    filePaths4: file_pathArr4,
+                    origins4: originArr4,
                     activityTypes4: activityTypeArr4,
                     dates4: dateArr4,
-                    r_names: r_nameArr,
-                    r_affiliations: r_affiliationArr,
+                    details4: detailArr4,
 
-                    names2 : nameArr2,
-                    affiliations2 : affiliationArr2,
                     names10 : nameArr10,
-                    affiliations10 : affiliationArr10,
+                    pids10: pidArr10,
+                    pTypes10: pTypeArr10,
+                    //affiliations10 : affiliationArr10,
+                    dateNames10 : dataNameArr10,
+                    //dateTypes10 : dataTypeArr10,
+                    values10: valueArr10,
+                    filePaths10: file_pathArr10,
+                    origins10: originArr10,
                     activityTypes10 : activityTypeArr10,
                     dates10 : dateArr10,
-                    dateNames10 : dataNameArr10,
-                    dateTypes10 : dataTypeArr10,
+                    details10: detailArr10,
+                    APFroms10: APFromArr10,
+                    APTos10: APToArr10,
                     prices10: priceArr10,
-                    devices10: deviceArr10,
-                    dateNames11 : dataNameArr11,
-                    dateTypes11 : dataTypeArr11,
-                    prices11: priceArr11,
-                    devices11: deviceArr11,
+                    isAgrees10: isAgreeArr10,
+                    names11 : nameArr11,
+                    pids11: pidArr11,
+                    pTypes11: pTypeArr11,
+                    //devices10: deviceArr10,
+                    //dateNames11 : dataNameArr11,
+                    //dateTypes11 : dataTypeArr11,
+                    //prices11: priceArr11,
+                    //devices11: deviceArr11,
 
+                    dataNamesTotal: dataNamesTotal,
+                    dataValuesTotal: dataValuesTotal,
+                    dataFilesTotal: dataFilesTotal,
+                    dataOriginTotal: dataOriginTotal,
+                    
                     authenticated: true
                 });
             });
@@ -612,7 +664,6 @@ router.get('/viewPage', function (req, res) {
 
           res.render('viewPage', {
             esession: session_value.getSession(),
-
             names: nameArr,
             affiliations: affiliationArr,
             dataTypes3: dataTypeArr3,
