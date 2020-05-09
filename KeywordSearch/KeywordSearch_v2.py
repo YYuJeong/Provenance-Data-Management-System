@@ -18,13 +18,13 @@ driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "wowhi223"
 
 def check_nodeLabel(tx, keyword):
     personNodes = (tx.run("MATCH (n:Person)"
-                          "WHERE (any(prop in ['name', 'affiliation'] WHERE n[prop] = $keyword))"
+                          "WHERE (any(prop in ['name', 'pid', 'p_type'] WHERE n[prop] = $keyword))"
                           "RETURN n", keyword = keyword)).value()
     dataNodes = (tx.run("MATCH (n:Data)"
-                      "WHERE (any(prop in ['name', 'd_type', 'device', 'price'] WHERE n[prop] = $keyword))"
+                      "WHERE (any(prop in ['name', 'value', 'file_path', 'origin'] WHERE n[prop] = $keyword))"
                       "RETURN n", keyword = keyword)).value()
     activityNodes = (tx.run("MATCH (n:Activity)"
-                  "WHERE (any(prop in ['name', 'date'] WHERE n[prop] = $keyword))"
+                  "WHERE (any(prop in ['name', 'date','detail'] WHERE n[prop] = $keyword))"
                   "RETURN n", keyword = keyword)).value()
 
     if(personNodes):
@@ -214,10 +214,10 @@ def generate_outputTable(ranking):
             outTmp = ""
             for j in range(len(p)):
                 if j == 0:
-                    outTmp = outTmp + p[j] + " "
+                    outTmp = outTmp + p[j] + "="
                 else:
                     if j == math.floor(len(p)/2):            
-                        outTmp = outTmp + p[j] + " "
+                        outTmp = outTmp + p[j] + "="
                     else:
                         if j == len(p)-1:
                             outTmp = outTmp + p[j] + "/"
@@ -236,7 +236,7 @@ with driver.session() as session:
 
     #keywords = ['성별데이터','나나나','이미지데이터','중소기업진흥공단','data_912']
 
-    keywords = ['황유면','한현호']
+    keywords = ['이상우','차번호']
 
     start_time = time.time()
     
