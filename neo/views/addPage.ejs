@@ -14,14 +14,20 @@
     <title>개인정보 이력관리 시스템</title>
 
     <style type="text/css">
+        @font-face { font-family: 'Binggrae-Bold'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Binggrae-Bold.woff') format('woff'); font-weight: normal; font-style: normal; }
+        @font-face { font-family: 'RIDIBatang'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/RIDIBatang.woff') format('woff'); font-weight: normal; font-style: normal; }
         body {
-            font-family: 'Do Hyeon';
-            color: #303030;
+            font-family: 'RIDIBatang';
+            color: #333333;
             letter-spacing: 1px;
         }
 
         .fontSize {
             font-size: 1.2em;
+        }
+
+        span{
+            
         }
     </style>
 
@@ -83,12 +89,13 @@
         <% if(esession.authenticated == false){ %>
             <% include ./notAuthenticated.ejs %>
         <% } else { %>
-            <div class="jumbotron">
+            <div class="jumbotron" style="background-color: #f8f8f8;">
                 <div style="font-size:2em;">개인정보 등록</div>
                 <br><br>
                 <div class="fontSize">
                     <form method="post" action="/dataAdd">
-                        <div style="text-align: center; font-size:1.5em;">등록 정보<br></div>
+                        <div style="text-align: center; font-size:1.5em;">등록 정보</div>
+                        <br>
                         <div class="row">
                             <div style="margin:0 auto;">
                                 <div class="input-group" style="width:30%; margin:0 auto;">
@@ -102,8 +109,7 @@
                                 </div>
                                 <br>
                                 <div class="input-group" style="width:30%; margin:0 auto;">
-                                    <form method="post" enctype="multipart/form-data" action="/dataAdd" id="file_path">
-                                        <input type="file" name="addFile"/>
+                                    <input type="file" name="file_path" id="file_path"/>
                                 </div>
                                 <br>
                                 <div class="input-group" style="width:30%; margin:0 auto;">
@@ -113,8 +119,8 @@
                             </div>
                         </div>
                         <br><br>
-                        <input class="btn btn-primary" type="submit" value="등록" style="width:100px;" onClick="onAdd()">
-                        <input class="btn btn-light" type="reset" value="취소" style="width:100px;">
+                        <input class="btn btn-primary" type="submit" value="등록" style="width:100px; background-color: #4a9dea;" onClick="onAdd()">
+                        <input class="btn btn-light" type="reset" value="취소" style="width:100px;  background-color: #dddddd;">
                         <br><br>
                     </form>
                 </div>
