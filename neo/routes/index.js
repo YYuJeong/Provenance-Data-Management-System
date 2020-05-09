@@ -100,8 +100,8 @@ router.get('/contact', function (req, res, next) {
 router.post('/contact', function (req, res, next) {
     var body = req.body;
 
-    con.query("INSERT INTO iitp.users (name, email, password, gubun) VALUES (?, ?, ?, ?);", [
-        body.name, body.email, body.password, '사용자'
+    con.query("INSERT INTO iitp.users (name, email, password, pid, gubun) VALUES (?, ?, ?, ?, ?);", [
+        body.name, body.email, body.password, body.pid, '사용자'
     ], function (err, rows, fields) {
 
         console.log("err : " + err);
@@ -113,7 +113,7 @@ router.post('/contact', function (req, res, next) {
 });
 
 router.get('/logout', function (req, res, next) {
-    session_value.setSession('', '', '', '', false);
+    session_value.setSession('', '', '', '', '', false);
     res.redirect('/');
     //res.render('index', {esession: session_value.getSession() });
 });
@@ -129,7 +129,7 @@ router.route('/users').post(
         var body = req.body;
         var email = body.email;
         var password = body.password;
-        var gubun = body.gubun;
+        //var gubun = body.gubun;
 
         var sql = 'SELECT * FROM users WHERE email=?';
         con.query(sql, [email], function (err, results) {
@@ -141,7 +141,8 @@ router.route('/users').post(
             }
             else {
                 if (results[0].password === password) {
-                    session_value.setSession(body.email, results[0]["name"], results[0]["gubun"], body.password, true);
+                    session_value.setSession(body.email, results[0]["name"], body.password, results[0]["pid"], results[0]["gubun"], true);
+                    console.log(session_value.getSession());
                     res.render('index', {message: '로그인 되었습니다', esession: session_value.getSession()});
                 }
                 else {
