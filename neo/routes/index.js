@@ -1743,7 +1743,7 @@ router.post('/keyword', function (req, res) {
                 console.log("Execution time : ", (endTime - startTime));
                 //console.timeEnd('calculatingTime');
                 process.on('close', function (data) {
-                    console.log(kk)
+                    //console.log(kk)
 
                     //res.render("search/searchKeyword.ejs", {esession: session_value.getSession(), data:keyResult.getKeywordResult()});
                     res.redirect('search/searchKeyword');

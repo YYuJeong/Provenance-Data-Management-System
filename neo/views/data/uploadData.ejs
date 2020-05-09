@@ -5,8 +5,10 @@
     <% include ../before_loading.ejs %>
     <title>이력 정보 관리시스템</title>
     <style type="text/css">
+        @font-face { font-family: 'Binggrae-Bold'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Binggrae-Bold.woff') format('woff'); font-weight: normal; font-style: normal; }
+        @font-face { font-family: 'RIDIBatang'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/RIDIBatang.woff') format('woff'); font-weight: normal; font-style: normal; }
         body {
-            font-family: 'Do Hyeon';
+            font-family: 'RIDIBatang';
             color: #303030;
             letter-spacing: 1px;
         }
@@ -38,7 +40,7 @@
         <% if(esession.authenticated == false){ %>
             <% include ../notAuthenticated.ejs %>
         <% }else{ %>
-            <div class="jumbotron">
+            <div class="jumbotron" style="background-color: #f8f8f8;">
                 <div style="text-align: center; font-size:2em;">개인정보 이력 일괄입력(파일)<br><br>
                 </div>
 
@@ -48,8 +50,8 @@
                         <input type="file" name="uploadFile"/><br><br>
                 </div>
                 <div>
-                    <input class="btn btn-primary" type="submit" value="확인" style="width:100px;">
-                    <input class="btn btn-light" type="reset" value="취소" style="width:100px">
+                    <input class="btn btn-primary" type="submit" value="확인" style="width:100px; background-color: #4a9dea; border-color:  #4a9dea;">
+                    <input class="btn btn-light" type="reset" value="취소" style="width:100px; background-color: #dddddd;">
                     </form>
                 </div>
 

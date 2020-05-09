@@ -5,8 +5,10 @@
     <% include ../before_loading.ejs %>
     <title>이력 정보 관리시스템</title>
     <style type="text/css">
+        @font-face { font-family: 'Binggrae-Bold'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Binggrae-Bold.woff') format('woff'); font-weight: normal; font-style: normal; }
+        @font-face { font-family: 'RIDIBatang'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/RIDIBatang.woff') format('woff'); font-weight: normal; font-style: normal; }
         body {
-            font-family: 'Do Hyeon';
+            font-family: 'RIDIBatang';
             color: #303030;
             letter-spacing: 1px;
         }
@@ -30,45 +32,6 @@
     <!-- Three columns of text below the carousel -->
     <% include ../menu %>
 
-    <hr class="featurette-divider">
-    <div class="container" style="display: inline-block;text-align: center;">
-        <% if(esession.authenticated == false){ %>
-            <% include ../notAuthenticated.ejs %>
-        <% }else{ %>
-            <div class="jumbotron">
-                <div style="text-align: center; font-size:2em;">개인정보 이력 삭제<br><br>
-                </div>
-
-                <!-- START THE FEATURETTES -->
-                <form method="post" action="/delete">
-                    <div class="row">
-                        <!--Start Here:)-->
-                        <div style="margin:0 auto;">
-                            <div class="input-group" style="width:30%; margin:0 auto;">
-                                <span class="input-group-addon">데이터ID</span>
-                                <input type="text" id="dataName" name="dataName" class="form-control"/>
-                            </div>
-                            <br>
-                            <% if (esession.gubun == '관리자'){ %>
-                                <div class="input-group" style="width:30%; margin:0 auto;">
-                                    <span class="input-group-addon">이  름</span>
-                                    <input type="text" id="name" name="name" class="form-control"/>
-                                </div>
-                            <% } %>
-                        </div>
-
-                        <!--</form>-->  <!--디비연결전송오류로잠시위치이동-->
-                        <div style="text-align: center;"><br><br>
-                            <a href="/data/deleteDataResult"><input class="btn btn-primary" type="submit" value="확인"
-                                                                    style="width:100px"></a>
-                            <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px"></a>
-                        </div>
-                    </div>
-                </form><!--원래폼위치-->
-            </div>
-        <% } %>
-    </div>
-</div><!-- /.container -->
 <hr class="featurette-divider">
 </div>
 
