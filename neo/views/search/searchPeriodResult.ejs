@@ -3,7 +3,7 @@
 
 <head>
     <% include ../before_loading.ejs %>
-    <title>이력 정보 관리시스템</title>
+    <title>개인정보 이력관리 시스템</title>
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.min.css"/>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker3.min.css"/>
@@ -96,10 +96,8 @@
                             <select id="activityType" name="activityType" class="form-control">
                                 <option value=''>타입 (필수)</option>
                                 <option value="생성">생성</option>
-                                <option value="배포">배포</option>
-                                <option value="판매">판매</option>
                                 <option value="가공">가공</option>
-                                <option value="변환">변환</option>
+                                <option value="제공">제공</option>
                             </select>
                         </div>
                         <br>
@@ -148,21 +146,16 @@
                 <% } else { %>
                     <% if(query3 == true) { %>
                         <div class="panel panel-default">
-                            <div class="panel-heading" style="font-size:1.4em;">활동 검색 결과</div>
+                            <div class="panel-heading" style="font-size:1.4em;">활동 검색 결과(생성)</div>
                             <!-- Table -->
-
-
                             <table class="table table-striped">
                                 <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>소유자</th>
-                                    <th>소 속</th>
-                                    <th>데이터ID</th>
-                                    <th>가 격</th>
-                                    <th>데이터종류</th>
-                                    <th>수집장치</th>
-                                    <th>행 동</th>
+                                    <th>데이터명</th>
+                                    <th>값</th>
+                                    <th>파일</th>
+                                    <th>생성처</th>
                                     <th>날 짜</th>
                                 </tr>
                                 </thead>
@@ -173,176 +166,152 @@
                                             <%= (i + 1) %>
                                         </th>
                                         <td>
-                                            <%= names[i] %>
-                                        </td>
-                                        <td align=center>
-                                            <%= affiliations[i] %>
-                                        </td>
-                                        <td align=center>
                                             <%= dataNames3[i] %>
                                         </td>
                                         <td align=center>
-                                            <%= prices3[i] %>
+                                            <%= values3[i] %>
                                         </td>
                                         <td align=center>
-                                            <%= dataTypes3[i] %>
+                                            <%= file_paths3[i] %>
                                         </td>
                                         <td align=center>
-                                            <%= devices3[i] %>
-                                        </td>
-                                        <td align=center>
-                                            <%= activityTypes3[i] %>
+                                            <%= origins3[i] %>
                                         </td>
                                         <td align=center>
                                             <%= dates3[i] %>
                                         </td>
-
+    
                                     </tr>
                                 <% } %>
                                 </tbody>
                             </table>
+    
                         </div>
-                    <% }else if(query4 == true) { %>
+                    <% }else if(query5 == true) { %>
 
                         <br><br>
                         <div class="panel panel-default">
 
-                            <div class="panel-heading" style="font-size:1.4em;">활동 검색 결과</div>
-
-                            <!-- Table -->
-
-
+                            <div class="panel-heading" style="font-size:1.4em;">활동 검색 결과(가공)</div>
                             <table class="table table-striped">
                                 <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>소유자</th>
-                                    <th>소 속</th>
-                                    <th>데이터ID</th>
-                                    <th>가 격</th>
-                                    <th>데이터종류</th>
-                                    <th>수집장치</th>
-                                    <th>활 동</th>
+                                    <th>데이터명(전)</th>
+                                    <th>값</th>
+                                    <th>파일</th>
+                                    <th>생성처</th>
                                     <th>날 짜</th>
-                                    <th>행위자</th>
-                                    <th>소 속</th>
+                                    <th>가공방법</th>
+                                    <th>데이터명(후)</th>
+                                    <th>값</th>
+                                    <th>파일</th>
+                                    <th>생성처</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <% for(var i = 0; i < s_names.length; i++ ) { %>
+                                <% for(var i = 0; i < names5.length; i++ ) { %>
                                     <tr>
                                         <th scope="row">
                                             <%= (i + 1) %>
                                         </th>
                                         <td>
-                                            <%= s_names[i] %>
+                                            <%= dataNames5[i] %>
                                         </td>
                                         <td align=center>
-                                            <%= s_affiliations[i] %>
+                                            <%= values5[i] %>
                                         </td>
                                         <td align=center>
-                                            <%= dataNames4[i] %>
+                                            <%= file_paths5[i] %>
                                         </td>
                                         <td align=center>
-                                            <%= prices4[i] %>
+                                            <%= origins5[i] %>
                                         </td>
                                         <td align=center>
-                                            <%= dataTypes4[i] %>
+                                            <%= dates5[i] %>
                                         </td>
                                         <td align=center>
-                                            <%= devices4[i] %>
+                                            <%= details5[i] %>
                                         </td>
                                         <td align=center>
-                                            <%= activityTypes4[i] %>
+                                            <%= dataNames6[i] %>
                                         </td>
                                         <td align=center>
-                                            <%= dates4[i] %>
+                                            <%= values6[i] %>
                                         </td>
                                         <td align=center>
-                                            <%= r_names[i] %>
+                                            <%= file_paths6[i] %>
                                         </td>
                                         <td align=center>
-                                            <%= r_affiliations[i] %>
+                                            <%= origins6[i] %>
                                         </td>
                                     </tr>
                                 <% } %>
                                 </tbody>
-                            </table>
+                            </table>    
                         </div>
-                        <% }else if(query5 == true) { %>
+                        <% }else if(query4 == true) { %>
 
                             <br><br>
                             <div class="panel panel-default">
     
-                                <div class="panel-heading" style="font-size:1.4em;">활동 검색 결과</div>
-    
-                                <!-- Table -->
-    
-    
+                                <div class="panel-heading" style="font-size:1.4em;">활동 검색 결과(제공)</div>
                                 <table class="table table-striped">
                                     <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>소유자</th>
-                                        <th>소 속</th>
-                                        <th>데이터ID</th>
-                                        <th>가 격</th>
-                                        <th>데이터종류</th>
-                                        <th>수집장치</th>
-                                        <th>활 동</th>
+                                        <th>데이터명</th>
+                                        <th>값</th>
+                                        <th>파일</th>
+                                        <th>생성처</th>
                                         <th>날 짜</th>
-                                        <th>데이터ID</th>
-                                        <th>가 격</th>
-                                        <th>데이터종류</th>
-                                        <th>수집장치</th>
+                                        <th>제공기관</th>
+                                        <th>허용기간(시작)</th>
+                                        <th>허용기간(끝)</th>
+                                        <th>가격</th>
+                                        <th>정보제공 동의여부</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <% for(var i = 0; i < names5.length; i++ ) { %>
+                                    <% for(var i = 0; i < s_names.length; i++ ) { %>
                                         <tr>
                                             <th scope="row">
                                                 <%= (i + 1) %>
                                             </th>
                                             <td>
-                                                <%= names5[i] %>
+                                                <%= dataNames4[i] %>
                                             </td>
                                             <td align=center>
-                                                <%= affiliations5[i] %>
+                                                <%= values4[i] %>
                                             </td>
                                             <td align=center>
-                                                <%= dataNames5[i] %>
+                                                <%= file_paths4[i] %>
                                             </td>
                                             <td align=center>
-                                                <%= prices5[i] %>
+                                                <%= origins4[i] %>
                                             </td>
                                             <td align=center>
-                                                <%= dataTypes5[i] %>
+                                                <%= dates4[i] %>
                                             </td>
                                             <td align=center>
-                                                <%= devices5[i] %>
+                                                <%= r_names[i] %>
                                             </td>
                                             <td align=center>
-                                                <%= activityTypes5[i] %>
+                                                <%= APFroms4[i] %>
                                             </td>
                                             <td align=center>
-                                                <%= dates5[i] %>
+                                                <%= APTos4[i] %>
                                             </td>
                                             <td align=center>
-                                                <%= dataNames6[i] %>
+                                                <%= prices4[i] %>
                                             </td>
                                             <td align=center>
-                                                <%= prices6[i] %>
-                                            </td>
-                                            <td align=center>
-                                                <%= dataTypes6[i] %>
-                                            </td>
-                                            <td align=center>
-                                                <%= devices6[i] %>
+                                                <%= isAgrees[i] %>
                                             </td>
                                         </tr>
                                     <% } %>
                                     </tbody>
-                                </table>
+                                </table>      
                             </div>
                     <% } %>
                 <% } %>
