@@ -768,6 +768,7 @@ router.post('/DataSearch', function (req, res) {
     var p_typeArr = [];
     var activityTypeArr3 = [];
     var dateArr3 = [];
+    var detailArr3 = [];
     var dataNameArr3 = [];
     var valueArr3 = [];
     var file_pathArr3 = [];
@@ -779,6 +780,7 @@ router.post('/DataSearch', function (req, res) {
     var s_pTypeArr = [];
     var activityTypeArr4 = [];
     var dateArr4 = [];
+    var detailArr4 = [];
     var dataNameArr4 = [];
     var valueArr4 = [];
     var file_pathArr4 = [];
@@ -960,6 +962,7 @@ router.post('/DataSearch', function (req, res) {
 
                         activityTypeArr4.push(record._fields[2].properties.name)
                         dateArr4.push(record._fields[2].properties.date)
+                        detailArr4.push(record._fields[2].properties.detail)
 
                         APFromArr4.push(record._fields[3].properties.allowed_period_from)
                         APToArr4.push(record._fields[3].properties.allowed_period_to)
@@ -1011,6 +1014,7 @@ router.post('/DataSearch', function (req, res) {
 
                             activityTypeArr3.push(record._fields[2].properties.name)
                             dateArr3.push(record._fields[2].properties.date)
+                            detailArr3.push(record._fields[2].properties.detail)
                         });
                     }
                     else {
@@ -1040,6 +1044,7 @@ router.post('/DataSearch', function (req, res) {
                             origins3: originArr3,
                             activityTypes3: activityTypeArr3,
                             dates3: dateArr3,
+                            details3: detailArr3,
 
                             s_names: s_nameArr,
                             s_pids: s_pidArr,
@@ -1054,6 +1059,7 @@ router.post('/DataSearch', function (req, res) {
                             isAgrees: isAgreeArr4,
                             activityTypes4: activityTypeArr4,
                             dates4: dateArr4,
+                            details4: detailArr4,
                             r_names: r_nameArr,
                             r_pids: r_pidArr,
                             r_pTypes: r_pTypeArr,

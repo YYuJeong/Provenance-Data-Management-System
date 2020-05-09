@@ -6,8 +6,10 @@
     <title>개인정보 이력관리 시스템</title>
 
     <style type="text/css">
+         @font-face { font-family: 'Binggrae-Bold'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Binggrae-Bold.woff') format('woff'); font-weight: normal; font-style: normal; }
+        @font-face { font-family: 'RIDIBatang'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/RIDIBatang.woff') format('woff'); font-weight: normal; font-style: normal; }
         body {
-            font-family: 'Do Hyeon';
+            font-family: 'RIDIBatang';
             color: #303030;
             letter-spacing: 1px;
         }
@@ -39,7 +41,7 @@
             <% include ../notAuthenticated.ejs %>
         <% }else{ %>
         <a href="/search/searchData">
-            <button type="button" class="btn btn-primary btn-lg btn-block" style="width:300px;">데이터로 검색</button>
+            <button type="button" class="btn btn-primary btn-lg btn-block" style="width:300px; background-color: #4a9dea; border-color:  #4a9dea;">데이터로 검색</button>
         </a>
         <br><br>
         <% if(esession.gubun == '사용자'){ %>
@@ -49,7 +51,7 @@
             <br><br>
         <% } %>
         <a href="/search/searchPeriod">
-            <button type="button" class="btn btn-dark btn-lg btn-block" style="width:300px;">활동으로 검색</button>
+            <button type="button" class="btn btn-dark btn-lg btn-block" style="width:300px; ">활동으로 검색</button>
         </a>
         <br><br>
         <% } %>
