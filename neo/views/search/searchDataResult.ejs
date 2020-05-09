@@ -6,6 +6,8 @@
     <title>개인정보 이력관리 시스템</title>
 
     <style type="text/css">
+        @font-face { font-family: 'Binggrae-Bold'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Binggrae-Bold.woff') format('woff'); font-weight: normal; font-style: normal; }
+        @font-face { font-family: 'RIDIBatang'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/RIDIBatang.woff') format('woff'); font-weight: normal; font-style: normal; }
         .input-group-addon.primary {
             color: rgb(255, 255, 255);
             background-color: rgb(50, 118, 177);
@@ -13,8 +15,8 @@
         }
 
         body {
-            font-family: 'Do Hyeon';
-            color: #303030;
+            font-family: 'RIDIBatang';
+            color: #333333;
             letter-spacing: 1px;
         }
 
@@ -35,7 +37,7 @@
         <% include ../menu %>
 
         <hr class="featurette-divider">
-        <div class="jumbotron">
+        <div class="jumbotron" style="background-color: #f8f8f8;">
             <div class="container">
                 <div style="text-align: center; font-size:2em;">데이터로 검색<br><br>
                 </div>
@@ -63,23 +65,23 @@
 
                     <div style="text-align: center;"><br><br>
                         <a href="/search/searchDataResult"><input class="btn btn-primary" type="submit" value="검색"
-                                                                  style="width:100px"></a>
-                        <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px"></a>
+                                                                  style="width:100px; background-color: #4a9dea; border-color:  #4a9dea;"></a>
+                        <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px; background-color: #dddddd;"></a>
                     </div>
                 </form>
             </div>
         </div>
         <hr class="featurette-divider">
-        <div class="jumbotron">
+        <div class="jumbotron" style="background-color: #f8f8f8;">
             <div class="container" style="display: inline-block;text-align: center;">
                 <!-- Default panel contents -->
                 <% if(authenticated == false){ %>
                     <% include ../notAuthenticated %>
                 <% }
                 else { %>
-                <div class="jumbotron">
-                    <div class="panel panel-default">
-                        <div class="panel-heading" style="font-size:1.5em;">데이터 검색 결과 (생성)</div>
+                <div class="jumbotron" style="background-color: #f8f8f8;">
+                    <div class="panel panel-default" style="background-color: #ffffff">
+                        <div class="panel-heading" style="font-size:1.5em; background-color: #e7ebee;">데이터 검색 결과 (생성)</div>
                         <!-- Table -->
 
                         <table class="table table-striped">
@@ -90,7 +92,8 @@
                                 <th>값</th>
                                 <th>파일</th>
                                 <th>생성처</th>
-                                <th>날 짜</th>
+                                <th>날짜</th>
+                                <th>기타정보</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -102,7 +105,7 @@
                                     <td>
                                         <%= dataNames3[i] %>
                                     </td>
-                                    <td align=center>
+                                    <td align=center width=200;>
                                         <%= values3[i] %>
                                     </td>
                                     <td align=center>
@@ -114,7 +117,9 @@
                                     <td align=center>
                                         <%= dates3[i] %>
                                     </td>
-
+                                    <td align=center>
+                                        <%= details3[i] %>
+                                    </td>
                                 </tr>
                             <% } %>
                             </tbody>
@@ -122,20 +127,20 @@
                     </div>
                     <br><br>
                
-                    <div class="panel panel-default">
-
-                        <div class="panel-heading" style="font-size:1.5em;">데이터 검색 결과 (가공)</div>
+                    <div class="panel panel-default" style="background-color: #ffffff">
+                        <div class="panel-heading" style="font-size:1.5em; background-color: #e7ebee;">데이터 검색 결과 (가공)</div>
                         <table class="table table-striped">
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th>데이터명(전)</th>
+                                <th>데이터명</th>
                                 <th>값</th>
                                 <th>파일</th>
                                 <th>생성처</th>
-                                <th>날 짜</th>
-                                <th>가공방법</th>
-                                <th>데이터명(후)</th>
+                                <th>날짜</th>
+                                <th>기타정보</th>
+                                <th>(가공)</th>
+                                <th>데이터명</th>
                                 <th>값</th>
                                 <th>파일</th>
                                 <th>생성처</th>
@@ -166,6 +171,9 @@
                                         <%= details5[i] %>
                                     </td>
                                     <td align=center>
+                                        <img src="/images/arrow2.png" width="24" height="12">
+                                    </td>
+                                    <td align=center>
                                         <%= dataNames6[i] %>
                                     </td>
                                     <td align=center>
@@ -185,12 +193,9 @@
           
                     <br><br>
            
-                    <div class="panel panel-default">
-
-                        <div class="panel-heading" style="font-size:1.5em;">데이터 검색 결과 (제공)</div>
-
-                   
-                        <table class="table table-striped">
+                    <div class="panel panel-default" style="background-color: #ffffff">
+                        <div class="panel-heading" style="font-size:1.5em; background-color: #e7ebee;">데이터 검색 결과 (제공)</div>
+                        <table class="table table-striped" style="font-size: 0.85em;">
                             <thead>
                             <tr>
                                 <th>#</th>
@@ -198,10 +203,10 @@
                                 <th>값</th>
                                 <th>파일</th>
                                 <th>생성처</th>
-                                <th>날 짜</th>
+                                <th>날짜</th>
+                                <th>기타정보</th>
                                 <th>제공기관</th>
-                                <th>허용기간(시작)</th>
-                                <th>허용기간(끝)</th>
+                                <th>허용기간</th>
                                 <th>가격</th>
                                 <th>정보제공 동의여부</th>
                             </tr>
@@ -228,13 +233,13 @@
                                         <%= dates4[i] %>
                                     </td>
                                     <td align=center>
+                                        <%= details4[i] %>
+                                    </td>
+                                    <td align=center>
                                         <%= r_names[i] %>
                                     </td>
                                     <td align=center>
-                                        <%= APFroms4[i] %>
-                                    </td>
-                                    <td align=center>
-                                        <%= APTos4[i] %>
+                                        <%= APFroms4[i] %> ~ <%= APTos4[i] %>
                                     </td>
                                     <td align=center>
                                         <%= prices4[i] %>
