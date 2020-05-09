@@ -1105,6 +1105,7 @@ router.post('/nameSearch', function (req, res) {
     var s_pTypeArr = [];
     var activityTypeArr4 = [];
     var dateArr4 = [];
+    var detailArr4 = [];
     var dataNameArr4 = [];
     var valueArr4 = [];
     var file_pathArr4 = [];
@@ -1167,6 +1168,7 @@ router.post('/nameSearch', function (req, res) {
 
                 activityTypeArr4.push(record._fields[2].properties.name)
                 dateArr4.push(record._fields[2].properties.date)
+                detailArr4.push(record._fields[2].properties.detail)
 
                 APFromArr4.push(record._fields[3].properties.allowed_period_from)
                 APToArr4.push(record._fields[3].properties.allowed_period_to)
@@ -1190,6 +1192,7 @@ router.post('/nameSearch', function (req, res) {
 
             activityTypeArr4.push(' ')
             dateArr4.push(' ')
+            detailArr4.push(' ')
 
             APFromArr4.push(' ')
             APToArr4.push(' ')
@@ -1216,6 +1219,8 @@ router.post('/nameSearch', function (req, res) {
                 isAgrees: isAgreeArr4,
                 activityTypes4: activityTypeArr4,
                 dates4: dateArr4,
+                details4: detailArr4,
+
                 r_names: r_nameArr,
                 r_pids: r_pidArr,
                 r_pTypes: r_pTypeArr,
@@ -1242,6 +1247,7 @@ router.post('/periodSearch', function (req, res) {
     var p_typeArr = [];
     var activityTypeArr3 = [];
     var dateArr3 = [];
+    var detailArr3 = [];
     var dataNameArr3 = [];
     var valueArr3 = [];
     var file_pathArr3 = [];
@@ -1253,6 +1259,7 @@ router.post('/periodSearch', function (req, res) {
     var s_pTypeArr = [];
     var activityTypeArr4 = [];
     var dateArr4 = [];
+    var detailArr4 = [];
     var dataNameArr4 = [];
     var valueArr4 = [];
     var file_pathArr4 = [];
@@ -1418,12 +1425,13 @@ router.post('/periodSearch', function (req, res) {
 
                         activityTypeArr3.push(record._fields[2].properties.name)
                         dateArr3.push(record._fields[2].properties.date)
+                        detailArr3.push(record._fields[2].properties.detail)
                     });
                 }
                 else {
                     nameArr.push(' ')
                     pidArr.push(' ')
-                    p_type.push(' ')
+                    p_typeArr.push(' ')
 
                     dataNameArr3.push(' ')
                     valueArr3.push(' ')
@@ -1432,6 +1440,7 @@ router.post('/periodSearch', function (req, res) {
 
                     activityTypeArr3.push(' ')
                     dateArr3.push(' ')
+                    detailArr3.push(' ')
                 }
                 res.render('search/searchPeriodResult.ejs', {
                     esession: session_value.getSession(),
@@ -1448,6 +1457,7 @@ router.post('/periodSearch', function (req, res) {
                     origins3: originArr3,
                     activityTypes3: activityTypeArr3,
                     dates3: dateArr3,
+                    datails3: detailArr3,
 
                     authenticated: true
                 });
@@ -1480,6 +1490,7 @@ router.post('/periodSearch', function (req, res) {
 
                         activityTypeArr4.push(record._fields[2].properties.name)
                         dateArr4.push(record._fields[2].properties.date)
+                        detailArr4.push(record._fields[2].properties.detail)
 
                         APFromArr4.push(record._fields[3].properties.allowed_period_from)
                         APToArr4.push(record._fields[3].properties.allowed_period_to)
@@ -1503,6 +1514,7 @@ router.post('/periodSearch', function (req, res) {
 
                     activityTypeArr4.push(' ')
                     dateArr4.push(' ')
+                    detailArr4.push(' ')
 
                     APFromArr4.push(' ')
                     APToArr4.push(' ')
@@ -1533,6 +1545,7 @@ router.post('/periodSearch', function (req, res) {
                     isAgrees: isAgreeArr4,
                     activityTypes4: activityTypeArr4,
                     dates4: dateArr4,
+                    details4: detailArr4,
                     r_names: r_nameArr,
                     r_pids: r_pidArr,
                     r_pTypes: r_pTypeArr,

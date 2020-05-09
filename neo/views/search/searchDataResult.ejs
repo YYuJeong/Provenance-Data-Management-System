@@ -204,11 +204,11 @@
                                 <th>파일</th>
                                 <th>생성처</th>
                                 <th>날짜</th>
-                                <th>기타정보</th>
                                 <th>제공기관</th>
-                                <th>허용기간</th>
                                 <th>가격</th>
+                                <th>허용기간</th>
                                 <th>정보제공 동의여부</th>
+                                <th>기타정보</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -233,19 +233,19 @@
                                         <%= dates4[i] %>
                                     </td>
                                     <td align=center>
-                                        <%= details4[i] %>
-                                    </td>
-                                    <td align=center>
                                         <%= r_names[i] %>
-                                    </td>
-                                    <td align=center>
-                                        <%= APFroms4[i] %> ~ <%= APTos4[i] %>
                                     </td>
                                     <td align=center>
                                         <%= prices4[i] %>
                                     </td>
                                     <td align=center>
+                                        <%= APFroms4[i] %> ~ <%= APTos4[i] %>
+                                    </td>
+                                    <td align=center>
                                         <%= isAgrees[i] %>
+                                    </td>
+                                    <td align=center>
+                                        <%= details4[i] %>
                                     </td>
                                 </tr>
                             <% } %>
