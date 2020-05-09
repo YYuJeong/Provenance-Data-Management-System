@@ -3,7 +3,7 @@
 
 <head>
     <% include ../before_loading.ejs %>
-    <title>이력 정보 관리시스템</title>
+    <title>개인정보 이력관리 시스템</title>
 
     <style type="text/css">
         body {
@@ -29,7 +29,7 @@
                 <% include ../notAuthenticated.ejs %>
             <% }else{ %>
                 <div class="container">
-                    <div style="text-align: center; font-size:2em;">사용자로 검색<br><br>
+                    <div style="text-align: center; font-size:2em;">기관으로 검색<br><br>
                     </div>
                     <form method="post" action="/nameSearch">
 
@@ -37,15 +37,11 @@
                             <!--Start Here:)-->
                             <div style="margin:0 auto;">
                                 <div class="input-group" style="width:30%; margin:0 auto;">
-                                    <span class="input-group-addon">이름</span>
+                                    <span class="input-group-addon">기관명</span>
                                     <input type="text" id="name" name="name" class="form-control"/>
                                     <!--placeholder="이름을 입력해주세요"-->
                                 </div>
                                 <br>
-                                <div class="input-group" style="width:30%; margin:0 auto;">
-                                    <span class="input-group-addon">소속</span>
-                                    <input type="text" id="affiliation" name="affiliation" class="form-control"/>
-                                </div>
                             </div>
                         </div>
                         <!--디비연결전송오류로잠시위치이동-->
