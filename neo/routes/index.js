@@ -62,6 +62,7 @@ let dataN = [];
 let datavalue = [];
 let datafile = [];
 let dataorigin = [];
+let datasname = [];
 
 app.use(esession({
     secret: "asdfasffdas",
@@ -409,6 +410,7 @@ router.get('/viewPage', function (req, res) {
     var dataValuesTotal =[];
     var dataFilesTotal =[];
     var dataOriginTotal =[];
+    var datasname = [];
 
 
     //var dataOwner = [];
@@ -2367,6 +2369,7 @@ router.get('/data/modifyData', function (req, res) {
               datavalue.push(record._fields[1].properties.value)
               datafile.push(record._fields[1].properties.file_path)
               dataorigin.push(record._fields[1].properties.origin)
+              datasname.push(record._fields[0].properties.name)
             });
             
             session.run("MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '가공' AND ( p.name = '" + user_name + "' ) RETURN p, d2, ac, d1 LIMIT 10")
@@ -3017,6 +3020,61 @@ router.post('/getModifyValues', function (req, res) {
 });
 
 router.post('/transfer', function (req, res) {
+    var company = req.body.company;
+    var allowedPeriodFrom = req.body.allowedPeriodFrom;
+    var allowedPeriodTo = req.body.allowedPeriodTo;
+    var price = req.body.price;
+    var permission = req.body.permission;
+    var manuMethod = req.body.manuMethod;
+
+    var user_name = session_value.getSession().user;
+    var user_pid = session_value.getSession().pid;
+    var user_type;
+    if(session_value.getSession().gubun == '사용자'){
+        user_type = '개인'
+    }
+
+    let today = new Date();
+    let year = today.getFullYear(); 
+    let month = (today.getMonth() + 1).toString();  
+    let day = today.getDate().toString();  
+    if(month.length == 1){
+        month = "0" + month
+    }
+    if(day.length == 1){
+        day = "0" + day
+    }
+    var date = year.toString() + month + day
+
+    console.log(company, allowedPeriodFrom, allowedPeriodTo, price, permission, manuMethod);
+
+    if(manuMethod == 'Anonymous') {
+        session
+        .run("CREATE (d2:Data {name: '" + provInfo[0] + "' , value: '" + provInfo[1] + "' , origin: '" + provInfo[3] + "', file_path: '" + provInfo[2] + "'})-[g1:Generate]->(ac:Activity {name: '가공', date: '" + date + "', detail: '암호화' })-[:Act]->(p:Person {name: '" + user_name + "' , pid: '" + user_pid + "', p_type: '" + user_type + "'}), (ac:Activity {name: '가공', date: '" + date + "', detail: '" + manuMethod + "' })-[g2:Generate]->(d1:Data {name: '" + provInfo[0] + "' , value: '" + provInfo[1] + "' , origin: '" + provInfo[3] + "', file_path: '" + provInfo[2] + "'}) ")
+        session
+        .run("CREATE (d:Data {name: '" + provInfo[0] + "' , value: '" + provInfo[1] + "' , origin: '" + provInfo[3] + "', file_path: '" + provInfo[2] + "'})-[:Generate]->(ac:Activity {name: '제공', date: '" + date + "', detail: '' })-[:Receive {allowed_period_from:'" + allowedPeriodFrom + "', allowed_period_to: '" + allowedPeriodTo + "', is_agreed: '" + permission + "', price: '" + price + "' }]->(p2:Person {name: '" + company + "' , pid: '111111', p_type: '기관'}), (ac:Activity {name: '제공', date: '" + date + "', detail: '' })-[:Send]->(p:Person {name: '" + user_name + "' , pid: '" + user_pid + "', p_type: '" + user_type + "'})")
+        .then(function (result) {
+            session.close();
+        })
+        .catch(function (err) {
+            console.log(err);
+        });
+        res.render('data/modifyData.ejs', {
+            esession: session_value.getSession(), 
+            dataNamesTotal: dataN,
+            dataValuesTotal: datavalue,
+            dataFilesTotal: datafile,
+            dataOriginTotal: dataorigin,
+            s_names: datasname,
+            authenticated: true
+        });
+    }
+    else {
+
+    }
+
+
+
 });
 
 
