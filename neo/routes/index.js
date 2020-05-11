@@ -746,12 +746,12 @@ router.post('/getViewValues', function (req, res) {
      var checkValue = req.body.viewCheck;
 
     console.log("view val: ", checkValue)
-
+    /*
     console.log(dataNamesTotal[checkValue])
     console.log(dataValuesTotal[checkValue])
     console.log(dataFilesTotal[checkValue])
     console.log(dataOriginTotal[checkValue])
-
+    */ 
     var dataName = dataNamesTotal[checkValue]
     var dataValue = dataValuesTotal[checkValue]
     var dataFile = dataFilesTotal[checkValue]
@@ -832,9 +832,9 @@ router.post('/getViewValues', function (req, res) {
                     + "AND ( d.name = '" + dataName + "' AND d.value = '" + dataValue + "' AND d.file_path = '" + dataFile + "' AND d.origin = '" + dataOrigin + "') "
                     + "RETURN p1, d, ac, r, p2 LIMIT 10 "
 
-    console.log(geneCypher)
-    console.log(manuCypher)
-    console.log(offCypher)
+    //console.log(geneCypher)
+    //console.log(manuCypher)
+    //console.log(offCypher)
 
     session.run(manuCypher)
     .then(function (result) {
@@ -2176,12 +2176,20 @@ function getCheckNode(keyword) {
 }
 
 router.post('/keyword', function (req, res) {
-    var keyStr = req.body.keyword;
-    console.log(keyStr);
+    var user = [];
+    var user_gubun = session_value.getSession().gubun;
+    var user_name = session_value.getSession().user;
+    var user_pid = session_value.getSession().pid;
 
+    user.push(user_name);
+    user.push(user_pid);
+
+    var keyStr = req.body.keyword;
+    keyStr = user_name + " " + user_pid + " " + keyStr
+    console.log(user_name + " " + user_pid + " " + keyStr);
+    
     var wrote = 0;
     var process = spawn('python', [__dirname + '\\search\\search.py', keyStr]);
-
 
     /*
     Promise.all([getCheckNode(keyword[0]), getCheckNode(keyword[1])])
@@ -2196,7 +2204,7 @@ router.post('/keyword', function (req, res) {
                 console.log(result.records[0].get('length(p)'))
             })
         )
-            */
+    */
 
     var startTime = new Date().getTime();
     if(keyStr == '' || keyStr == null) {

@@ -220,17 +220,22 @@ def generate_outputTable(ranking):
 if __name__ == "__main__":
     driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "wowhi223"))
     with driver.session() as session:
-
-        
         keywords = sys.argv[1].split(' ')
-		
-        start_time = time.time()
-		
+        
+        user_name = keywords[0]
+        user_pid = keywords[1]
+
+        del keywords[0]
+        del keywords[0]
+
+        print(user_name)
+        print(user_pid) 
+        print(keywords)
+
         #search for all nodes with keywords
         kNodes = []
         for i in range(len(keywords)):
             kNodes.append(session.read_transaction(check_nodeLabel,  keyword= keywords[i]))
-
         candidN = delete_duplicateNode(kNodes)   
 
         g = []
