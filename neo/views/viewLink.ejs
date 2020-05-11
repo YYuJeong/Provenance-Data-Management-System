@@ -57,7 +57,7 @@
         <% } 
         else{ %>
         <div class="jumbotron" style="background-color: #f8f8f8;">
-            <form action="/getViewValues" method="post" id="Data"> 
+            <!--<form action="/getModifyValues" method="post" id="Data"> -->
             <div class="panel panel-default" style="background-color: #ffffff">
                 <div class="panel-heading" style="font-size:1.4em; background-color: #e7ebee;"><%= esession.user %>님의 개인정보 이력</div>
                 <table class="table table-striped" id="example-table-1">
@@ -72,36 +72,15 @@
                     </tr>
                     </thead>
                     <tbody>
-                        <% for(var i = 0; i < s_names.length; i++) { %>
-                            <tr>
-                                <th scope="row">
-                                    <%= (i + 1) %>
-                                </th>
-                                <td>
-                                    <%= dataNamesTotal[i] %>
-                                </td>
-                                <td align=center width=200;>
-                                    <%= dataValuesTotal[i] %>
-                                </td>
-                                <td align=center>
-                                    <%= dataFilesTotal[i] %>
-                                </td>
-                                <td align=center>
-                                    <%= dataOriginTotal[i] %>
-                                </td>
-                                <td align=center>
-                                    <a href="/viewLink">
-                                   <button class="btn btn-primary"  name="viewCheck" type="submit" style="width:100px; background-color: #4a9dea; border-color:  #4a9dea;"  value=<%= i %>>이력 보기</button>
-                                    </a>    
-                                </td>
-                            </tr>
-                        <% } %>
+
                     </tbody>
                 </table>
             </div>
-            </form> 
+           <!--  </form> -->
         </div>
         <% }%>
+        <a href="/viewPage"><input class="btn btn-primary" type="submit" value="뒤로가기"
+            style="width:100px; background-color: #4a9dea; border-color:  #4a9dea;"></a>
     </div>
 
     <!-- /END THE FEATURETTES -->

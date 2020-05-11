@@ -64,6 +64,12 @@ let datafile = [];
 let dataorigin = [];
 let datasname = [];
 
+let dataNamesTotal = [];
+let dataValuesTotal =[];
+let dataFilesTotal =[];
+let dataOriginTotal =[];
+
+
 app.use(esession({
     secret: "asdfasffdas",
     resave: false,
@@ -354,9 +360,7 @@ router.get('/viewPage', function (req, res) {
     var dateArr4 = [];
     var detailArr4 = [];
     var dataNameArr4 = [];
-    //var dataTypeArr4 = [];
-    //var priceArr4 = [];
-    //var deviceArr4 = [];
+
     var valueArr4 = [];
     var file_pathArr4 = [];
     var originArr4 = [];
@@ -394,8 +398,6 @@ router.get('/viewPage', function (req, res) {
     var valueArr10 = [];
     var file_pathArr10 = [];
     var originArr10 = [];
-    //var dataTypeArr10 = [];
-    //var deviceArr10 = [];
 
     var nameArr11 = [];
     var pidArr11 = [];
@@ -406,15 +408,11 @@ router.get('/viewPage', function (req, res) {
     var priceArr11 = [];
     var deviceArr11 = [];
 
-    var dataNamesTotal = [];
-    var dataValuesTotal =[];
-    var dataFilesTotal =[];
-    var dataOriginTotal =[];
-    var datasname = [];
-
-
-    //var dataOwner = [];
-    //var dataOwnerAff = [];
+    dataNamesTotal = [];
+    dataValuesTotal =[];
+    dataFilesTotal =[];
+    dataOriginTotal =[];
+    datasname = [];
 
     var i = 0;
     var user_gubun = session_value.getSession().gubun;
@@ -455,16 +453,12 @@ router.get('/viewPage', function (req, res) {
               nameArr.push(record._fields[0].properties.name)
               pidArr.push(record._fields[0].properties.pid)
               pTypeArr.push(record._fields[0].properties.p_type)
-              //affiliationArr.push(record._fields[0].properties.affiliation)
 
               dataNameArr3.push(record._fields[1].properties.name)
               valueArr3.push(record._fields[1].properties.value)
               file_pathArr3.push(record._fields[1].properties.file_path)
               originArr3.push(record._fields[1].properties.origin)
-              //deviceArr3.push(record._fields[1].properties.device)
-              //priceArr3.push(record._fields[1].properties.price)
-              //dataOwner.push(record._fields[1].properties.owner)
-              //dataOwnerAff.push(record._fields[1].properties.owner_aff)
+
 
               activityTypeArr3.push(record._fields[2].properties.name)
               dateArr3.push(record._fields[2].properties.date)
@@ -474,11 +468,6 @@ router.get('/viewPage', function (req, res) {
               valueArr215.push(record._fields[3].properties.value)
               file_pathArr215.push(record._fields[3].properties.file_path)
               originArr215.push(record._fields[3].properties.origin)
-
-              //nameArr2.push(record._fields[3].properties.name)
-              //pidArr2.push(record._fields[3].properties.pid)
-              //pTypeArr2.push(record._fields[3].properties.p_type)
-              //affiliationArr2.push(record._fields[3].properties.affiliation)
 
               dataNamesTotal.push(record._fields[1].properties.name)
               dataValuesTotal.push(record._fields[1].properties.value)
@@ -493,17 +482,12 @@ router.get('/viewPage', function (req, res) {
                   nameArr10.push(record._fields[0].properties.name)
                   pidArr10.push(record._fields[0].properties.pid)
                   pTypeArr10.push(record._fields[0].properties.p_type)
-                  //affiliationArr10.push(record._fields[0].properties.affiliation)
     
                   dataNameArr10.push(record._fields[1].properties.name)
                   valueArr10.push(record._fields[1].properties.value)
                   file_pathArr10.push(record._fields[1].properties.file_path)
                   originArr10.push(record._fields[1].properties.origin)
-                  //dataTypeArr10.push(record._fields[1].properties.d_type)
-                  //deviceArr10.push(record._fields[1].properties.device)
-                  //priceArr10.push(record._fields[1].properties.price)
-                  //dataOwner.push(record._fields[1].properties.owner)
-                  //dataOwnerAff.push(record._fields[1].properties.owner_aff)
+
     
                   activityTypeArr10.push(record._fields[2].properties.name)
                   dateArr10.push(record._fields[2].properties.date)
@@ -582,11 +566,6 @@ router.get('/viewPage', function (req, res) {
                     names11 : nameArr11,
                     pids11: pidArr11,
                     pTypes11: pTypeArr11,
-                    //devices10: deviceArr10,
-                    //dateNames11 : dataNameArr11,
-                    //dateTypes11 : dataTypeArr11,
-                    //prices11: priceArr11,
-                    //devices11: deviceArr11,
 
                     dataNamesTotal: dataNamesTotal,
                     dataValuesTotal: dataValuesTotal,
@@ -762,6 +741,111 @@ router.get('/viewPage', function (req, res) {
         });
     }
 });
+
+router.get('/viewLink', function (req, res) {
+
+
+    res.render('viewLink.ejs', {
+        esession: session_value.getSession(),
+
+
+
+        authenticated: true
+    });
+});
+
+router.post('/getViewValues', function (req, res) {
+
+
+    var checkValue = req.body.viewCheck;
+    var checkLen;
+
+    console.log("view val: ", checkValue)
+
+    console.log(dataNamesTotal[checkValue])
+    console.log(dataValuesTotal[checkValue])
+    console.log(dataFilesTotal[checkValue])
+    console.log(dataOriginTotal[checkValue])
+
+    var dataName = dataNamesTotal[checkValue]
+    var dataValue = dataValuesTotal[checkValue]
+    var dataFile = dataFilesTotal[checkValue]
+    var dataOrigin = dataOriginTotal[checkValue]
+
+    var user_name = session_value.getSession().user;
+    var user_pid = session_value.getSession().pid;
+    var user_type;
+    if(session_value.getSession().gubun == '사용자'){
+        user_type = '개인'
+    }
+
+    var geneCypher = "MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' "
+                    + "AND (p.name = '" + user_name + "' AND p.pid = '" + user_pid + "' AND p.p_type = '" + user_type + "') "
+                    + "AND ( d.name = '" + dataName + "' AND d.value = '" + dataValue + "' AND d.file_path = '" + dataFile + "' AND d.origin = '" + dataOrigin + "') "
+                    + "RETURN p, d, ac LIMIT 10 "
+    console.log(geneCypher)
+    //var manuCypher = 
+
+    //var offCypher =
+
+
+
+    res.render('viewLink.ejs', {
+        esession: session_value.getSession(),
+
+
+
+        authenticated: true
+    });
+
+    /*
+    if (checkLen == 1) {
+        console.log("------------check ------------", checkValues, checkValues.length);
+        modiFlag = true;
+    }
+
+    if (modiFlag4 && modiFlag3 && modiFlag5 && modiFlag) {
+        console.log("all false");
+        modiFlag3 = false;
+        modiFlag4 = false;
+        modiFlag5 = false;
+        modiFlag = false;
+    }
+
+    if ((check3Len + check4Len + check5Len + checkLen) > 1) {
+        modiFlag3 = false;
+        modiFlag4 = false;
+        modiFlag5 = false;
+        modiFlag = false;
+    }
+
+    if (modiFlag) {
+        provInfo.push(dataN[checkValues]);
+        provInfo.push(datavalue[checkValues]);
+        provInfo.push(datafile[checkValues]);
+        provInfo.push(dataorigin[checkValues]);
+
+        console.log("modiFlag : ", modiFlag);
+        console.log("provInfo : ", provInfo);
+
+        res.render('data/modifyDataPage.ejs', {
+            esession: session_value.getSession(),
+
+            modiFlag3: modiFlag3,
+            modiFlag4: modiFlag4,
+            modiFlag5: modiFlag5,
+            modiFlag: modiFlag,
+            provInfo: provInfo,
+
+            activityType: activityType,
+            authenticated: true
+        });  
+    } else {
+        res.send('<script type="text/javascript">alert("하나의 개인정보를 선택해주세요."); window.history.go(-1);</script>');
+    }
+    */
+});
+
 
 router.post('/DataSearch', function (req, res) {
     var dataName = req.body.dataName;
@@ -3081,7 +3165,7 @@ router.post('/getModifyValues', function (req, res) {
         modiFlag5 = true;
     }
     else if (checkLen == 1) {
-        console.log("------------check ------------", checkValues, checkValues.length);
+        console.log("------------ss check ------------", checkValues, checkValues.length);
         modiFlag = true;
     }
 
