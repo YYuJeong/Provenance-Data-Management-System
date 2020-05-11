@@ -742,23 +742,8 @@ router.get('/viewPage', function (req, res) {
     }
 });
 
-router.get('/viewLink', function (req, res) {
-
-
-    res.render('viewLink.ejs', {
-        esession: session_value.getSession(),
-
-
-
-        authenticated: true
-    });
-});
-
 router.post('/getViewValues', function (req, res) {
-
-
-    var checkValue = req.body.viewCheck;
-    var checkLen;
+     var checkValue = req.body.viewCheck;
 
     console.log("view val: ", checkValue)
 
@@ -779,71 +764,267 @@ router.post('/getViewValues', function (req, res) {
         user_type = '개인'
     }
 
+    //생성
+    var nameArr = [];
+    var pidArr = [];
+    var p_typeArr = [];
+    var activityTypeArr3 = [];
+    var dateArr3 = [];
+    var detailArr3 = [];
+    var dataNameArr3 = [];
+    var valueArr3 = [];
+    var file_pathArr3 = [];
+    var originArr3 = [];
+
+    //제공
+    var s_nameArr = [];
+    var s_pidArr = [];
+    var s_pTypeArr = [];
+    var activityTypeArr4 = [];
+    var dateArr4 = [];
+    var detailArr4 = [];
+    var dataNameArr4 = [];
+    var valueArr4 = [];
+    var file_pathArr4 = [];
+    var originArr4 = [];
+    var APFromArr4 = [];
+    var APToArr4 = [];
+    var priceArr4 = [];
+    var isAgreeArr4 = [];
+    var r_nameArr = [];
+    var r_pidArr = [];
+    var r_pTypeArr = [];
+
+    //가공
+    var nameArr5 = [];
+    var pidArr5 = [];
+    var p_typeArr5 = [];
+    var activityTypeArr5 = [];
+    var dateArr5 = [];
+    var detailArr5 = [];
+    var dataNameArr5 = [];
+    var valueArr5 = [];
+    var file_pathArr5 = [];
+    var originArr5 = [];
+    var dataNameArr6 = [];
+    var valueArr6 = [];
+    var file_pathArr6 = [];
+    var originArr6 = [];
+
+    var query4resultNum;
+    var query3resultNum;
+    var query5resultNum;
+
+
     var geneCypher = "MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' "
                     + "AND (p.name = '" + user_name + "' AND p.pid = '" + user_pid + "' AND p.p_type = '" + user_type + "') "
                     + "AND ( d.name = '" + dataName + "' AND d.value = '" + dataValue + "' AND d.file_path = '" + dataFile + "' AND d.origin = '" + dataOrigin + "') "
                     + "RETURN p, d, ac LIMIT 10 "
+
+    var manuCypher = "MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '가공' " 
+                    + "AND (p.name = '" + user_name + "' AND p.pid = '" + user_pid + "' AND p.p_type = '" + user_type + "') "
+                    + "AND (d1.name = '" + dataName + "' AND d1.value = '" + dataValue + "' AND d1.file_path = '" + dataFile + "' AND d1.origin = '" + dataOrigin + "') "
+                    + "OR  (d2.name = '" + dataName + "' AND d2.value = '" + dataValue + "' AND d2.file_path = '" + dataFile + "' AND d2.origin = '" + dataOrigin + "') "
+                    + "RETURN p, d2, ac, d1 LIMIT 10"
+
+    var offCypher = "MATCH (d:Data)-[:Generate]-(ac:Activity)-[s:Send]-(p1:Person), (ac:Activity)-[r:Receive]-(p2:Person) WHERE ac.name = '제공' "
+                    + "AND (p1.name = '" + user_name + "' AND p1.pid = '" + user_pid + "' AND p1.p_type = '" + user_type + "') "
+                    + "AND ( d.name = '" + dataName + "' AND d.value = '" + dataValue + "' AND d.file_path = '" + dataFile + "' AND d.origin = '" + dataOrigin + "') "
+                    + "RETURN p1, d, ac, r, p2 LIMIT 10 "
+
     console.log(geneCypher)
-    //var manuCypher = 
+    console.log(manuCypher)
+    console.log(offCypher)
 
-    //var offCypher =
+    session.run(manuCypher)
+    .then(function (result) {
+        query5resultNum = result.records.length;
+        if (query5resultNum != 0) {
+            result.records.forEach(function (record) {
+                //console.log(record)
+                nameArr5.push(record._fields[0].properties.name)
+                pidArr5.push(record._fields[0].properties.pid)
+                p_typeArr5.push(record._fields[0].properties.p_type)
 
+                dataNameArr5.push(record._fields[1].properties.name)
+                valueArr5.push(record._fields[1].properties.value)
+                file_pathArr5.push(record._fields[1].properties.file_path)
+                originArr5.push(record._fields[1].properties.origin)
 
+                activityTypeArr5.push(record._fields[2].properties.name)
+                dateArr5.push(record._fields[2].properties.date)
+                detailArr5.push(record._fields[2].properties.detail)
 
-    res.render('viewLink.ejs', {
-        esession: session_value.getSession(),
+                dataNameArr6.push(record._fields[3].properties.name)
+                valueArr6.push(record._fields[3].properties.value)
+                file_pathArr6.push(record._fields[3].properties.file_path)
+                originArr6.push(record._fields[3].properties.origin)
+            });
+        }
+        else {
+            nameArr5.push(' ')
+            pidArr5.push(' ')
+            p_typeArr5.push(' ')
 
+            dataNameArr5.push(' ')
+            valueArr5.push(' ')
+            file_pathArr5.push(' ')
+            originArr5.push(' ')
 
+            activityTypeArr5.push(' ')
+            dateArr5.push(' ')
+            detailArr5.push(' ')
 
-        authenticated: true
+            dataNameArr6.push(' ')
+            valueArr6.push(' ')
+            file_pathArr6.push(' ')
+            originArr6.push(' ')
+        }
+
+        session.run(offCypher)
+        .then(function (result) {
+            query4resultNum = result.records.length;
+            if (query4resultNum != 0) {
+                result.records.forEach(function (record) {
+
+                    s_nameArr.push(record._fields[0].properties.name)
+                    s_pidArr.push(record._fields[0].properties.pid)
+                    s_pTypeArr.push(record._fields[0].properties.p_type)
+
+                    dataNameArr4.push(record._fields[1].properties.name)
+                    valueArr4.push(record._fields[1].properties.value)
+                    file_pathArr4.push(record._fields[1].properties.file_path)
+                    originArr4.push(record._fields[1].properties.origin)
+
+                    activityTypeArr4.push(record._fields[2].properties.name)
+                    dateArr4.push(record._fields[2].properties.date)
+                    detailArr4.push(record._fields[2].properties.detail)
+
+                    APFromArr4.push(record._fields[3].properties.allowed_period_from)
+                    APToArr4.push(record._fields[3].properties.allowed_period_to)
+                    priceArr4.push(record._fields[3].properties.price)
+                    isAgreeArr4.push(record._fields[3].properties.is_agreed)
+
+                    r_nameArr.push(record._fields[4].properties.name)
+                    r_pidArr.push(record._fields[4].properties.pid)
+                    r_pTypeArr.push(record._fields[4].properties.p_type)
+                });
+            }   
+            else {
+                    s_nameArr.push(' ')
+                    s_pidArr.push(' ')
+                    s_pTypeArr.push(' ')
+
+                    dataNameArr4.push(' ')
+                    valueArr4.push(' ')
+                    file_pathArr4.push(' ')
+                    originArr4.push(' ')
+
+                    activityTypeArr4.push(' ')
+                    dateArr4.push(' ')
+
+                    APFromArr4.push(' ')
+                    APToArr4.push(' ')
+                    priceArr4.push(' ')
+                    isAgreeArr4.push(' ')
+
+                    r_nameArr.push(' ')
+                    r_pidArr.push(' ')
+                    r_pTypeArr.push(' ')
+                }
+
+            session.run(geneCypher)
+            .then(function (result) {
+                query3resultNum = result.records.length;
+                if (query3resultNum != 0) {
+                    result.records.forEach(function (record) {
+                        //console.log(record)
+                        nameArr.push(record._fields[0].properties.name)
+                        pidArr.push(record._fields[0].properties.pid)
+                        p_typeArr.push(record._fields[0].properties.p_type)
+
+                        dataNameArr3.push(record._fields[1].properties.name)
+                        valueArr3.push(record._fields[1].properties.value)
+                        file_pathArr3.push(record._fields[1].properties.file_path)
+                        originArr3.push(record._fields[1].properties.origin)
+
+                        activityTypeArr3.push(record._fields[2].properties.name)
+                        dateArr3.push(record._fields[2].properties.date)
+                        detailArr3.push(record._fields[2].properties.detail)
+                    });
+                }
+                else {
+                    nameArr.push(' ')
+                    pidArr.push(' ')
+                    p_type.push(' ')
+
+                    dataNameArr3.push(' ')
+                    valueArr3.push(' ')
+                    file_pathArr3.push(' ')
+                    originArr3.push(' ')
+
+                    activityTypeArr3.push(' ')
+                    dateArr3.push(' ')
+                }
+                res.render('viewLink.ejs', {
+                    esession: session_value.getSession(),
+
+                    names: nameArr,
+                    pids: pidArr,
+                    p_types: p_typeArr,
+                    dataNames3: dataNameArr3,
+                    values3: valueArr3,
+                    file_paths3: file_pathArr3,
+                    origins3: originArr3,
+                    activityTypes3: activityTypeArr3,
+                    dates3: dateArr3,
+                    details3: detailArr3,
+
+                    s_names: s_nameArr,
+                    s_pids: s_pidArr,
+                    s_ptypes: s_pTypeArr,
+                    dataNames4: dataNameArr4,
+                    values4: valueArr4,
+                    file_paths4: file_pathArr4,
+                    origins4: originArr4,
+                    APFroms4: APFromArr4,
+                    APTos4: APToArr4,
+                    prices4: priceArr4,
+                    isAgrees: isAgreeArr4,
+                    activityTypes4: activityTypeArr4,
+                    dates4: dateArr4,
+                    details4: detailArr4,
+                    r_names: r_nameArr,
+                    r_pids: r_pidArr,
+                    r_pTypes: r_pTypeArr,
+
+                    names5 : nameArr5,
+                    pids5: pidArr5,
+                    p_types5: p_typeArr5,
+                    dataNames5: dataNameArr5,
+                    values5: valueArr5,
+                    file_paths5: file_pathArr5,
+                    origins5: originArr5,
+                    activityTypes5: activityTypeArr5,
+                    dates5: dateArr5,
+                    details5: detailArr5,
+                    dataNames6: dataNameArr6,
+                    values6: valueArr6,
+                    file_paths6: file_pathArr6,
+                    origins6: originArr6,
+
+                    authenticated: true
+                });
+            
+            });
+            session.close();
+        });
+        
+    })
+    .catch(function (err) {
+        console.log(err);
     });
 
-    /*
-    if (checkLen == 1) {
-        console.log("------------check ------------", checkValues, checkValues.length);
-        modiFlag = true;
-    }
-
-    if (modiFlag4 && modiFlag3 && modiFlag5 && modiFlag) {
-        console.log("all false");
-        modiFlag3 = false;
-        modiFlag4 = false;
-        modiFlag5 = false;
-        modiFlag = false;
-    }
-
-    if ((check3Len + check4Len + check5Len + checkLen) > 1) {
-        modiFlag3 = false;
-        modiFlag4 = false;
-        modiFlag5 = false;
-        modiFlag = false;
-    }
-
-    if (modiFlag) {
-        provInfo.push(dataN[checkValues]);
-        provInfo.push(datavalue[checkValues]);
-        provInfo.push(datafile[checkValues]);
-        provInfo.push(dataorigin[checkValues]);
-
-        console.log("modiFlag : ", modiFlag);
-        console.log("provInfo : ", provInfo);
-
-        res.render('data/modifyDataPage.ejs', {
-            esession: session_value.getSession(),
-
-            modiFlag3: modiFlag3,
-            modiFlag4: modiFlag4,
-            modiFlag5: modiFlag5,
-            modiFlag: modiFlag,
-            provInfo: provInfo,
-
-            activityType: activityType,
-            authenticated: true
-        });  
-    } else {
-        res.send('<script type="text/javascript">alert("하나의 개인정보를 선택해주세요."); window.history.go(-1);</script>');
-    }
-    */
 });
 
 

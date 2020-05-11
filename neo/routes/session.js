@@ -1,11 +1,11 @@
 let session_info ={
 
-    email: '',
-    user: '',
-    password: '',
-    pid: '',
-    gubun: '',
-    authenticated: false,
+    email: 'sw1234',
+    user: '이상우',
+    password: '1234',
+    pid: '980514-1520414',
+    gubun: '사용자',
+    authenticated: true,
     message: ''
 };
 
