@@ -41,7 +41,7 @@ def add_node(tx, s_name, s_pid, s_type, dataName1, value1, file_path1, origin1, 
                dataName1 = dataName1, value1 = value1, file_path1 = file_path1, origin1 = origin1, 
                activityType = activityType, date = date, detail = detail)
         
-    elif activityType == "제공" and is_agreed == "Yes":
+    elif activityType == "제공":
         tx.run("CREATE (p:Person), (d:Data), (p2:Person), (ac:Activity)"
                "SET p = {name: $s_name, pid: $s_pid, p_type: $s_type}, "
                "    d = {name: $dataName1, value: $value1, file_path: $file_path1, origin: $origin1}, "

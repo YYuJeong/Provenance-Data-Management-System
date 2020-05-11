@@ -2358,8 +2358,6 @@ router.get('/data/modifyData', function (req, res) {
               valueArr4.push(record._fields[1].properties.value)
               file_pathArr4.push(record._fields[1].properties.file_path)
               originArr4.push(record._fields[1].properties.origin)
-              //dataOwner.push(record._fields[1].properties.owner)
-              //dataOwnerAff.push(record._fields[1].properties.owner_aff)
 
               activityTypeArr4.push(record._fields[2].properties.name)
               dateArr4.push(record._fields[2].properties.date)
@@ -2371,7 +2369,7 @@ router.get('/data/modifyData', function (req, res) {
               dataorigin.push(record._fields[1].properties.origin)
               datasname.push(record._fields[0].properties.name)
             });
-            
+            /*
             session.run("MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '가공' AND ( p.name = '" + user_name + "' ) RETURN p, d2, ac, d1 LIMIT 10")
           .then(function (result) {
             result.records.forEach(function (record) {
@@ -2379,16 +2377,12 @@ router.get('/data/modifyData', function (req, res) {
               nameArr.push(record._fields[0].properties.name)
               pidArr.push(record._fields[0].properties.pid)
               pTypeArr.push(record._fields[0].properties.p_type)
-              //affiliationArr.push(record._fields[0].properties.affiliation)
 
               dataNameArr3.push(record._fields[1].properties.name)
               valueArr3.push(record._fields[1].properties.value)
               file_pathArr3.push(record._fields[1].properties.file_path)
               originArr3.push(record._fields[1].properties.origin)
-              //deviceArr3.push(record._fields[1].properties.device)
-              //priceArr3.push(record._fields[1].properties.price)
-              //dataOwner.push(record._fields[1].properties.owner)
-              //dataOwnerAff.push(record._fields[1].properties.owner_aff)
+
 
               activityTypeArr3.push(record._fields[2].properties.name)
               dateArr3.push(record._fields[2].properties.date)
@@ -2399,10 +2393,6 @@ router.get('/data/modifyData', function (req, res) {
               file_pathArr215.push(record._fields[3].properties.file_path)
               originArr215.push(record._fields[3].properties.origin)
 
-              //nameArr2.push(record._fields[3].properties.name)
-              //pidArr2.push(record._fields[3].properties.pid)
-              //pTypeArr2.push(record._fields[3].properties.p_type)
-              //affiliationArr2.push(record._fields[3].properties.affiliation)
 
               dataN.push(record._fields[1].properties.name)
               datavalue.push(record._fields[1].properties.value)
@@ -2417,17 +2407,11 @@ router.get('/data/modifyData', function (req, res) {
                   nameArr10.push(record._fields[0].properties.name)
                   pidArr10.push(record._fields[0].properties.pid)
                   pTypeArr10.push(record._fields[0].properties.p_type)
-                  //affiliationArr10.push(record._fields[0].properties.affiliation)
     
                   dataNameArr10.push(record._fields[1].properties.name)
                   valueArr10.push(record._fields[1].properties.value)
                   file_pathArr10.push(record._fields[1].properties.file_path)
                   originArr10.push(record._fields[1].properties.origin)
-                  //dataTypeArr10.push(record._fields[1].properties.d_type)
-                  //deviceArr10.push(record._fields[1].properties.device)
-                  //priceArr10.push(record._fields[1].properties.price)
-                  //dataOwner.push(record._fields[1].properties.owner)
-                  //dataOwnerAff.push(record._fields[1].properties.owner_aff)
     
                   activityTypeArr10.push(record._fields[2].properties.name)
                   dateArr10.push(record._fields[2].properties.date)
@@ -2455,14 +2439,10 @@ router.get('/data/modifyData', function (req, res) {
                     names: nameArr,
                     pids: pidArr,
                     pTypes: pTypeArr,
-                    //affiliations: affiliationArr,
-                    //dataTypes3: dataTypeArr3,
                     dataNames3: dataNameArr3,
                     values3: valueArr3,
                     filePaths3: file_pathArr3,
                     origins3: originArr3,
-                    //devices3: deviceArr3,
-                    //prices3: priceArr3,
                     activityTypes3: activityTypeArr3,
                     dates3: dateArr3,
                     details3: detailArr3,
@@ -2470,15 +2450,10 @@ router.get('/data/modifyData', function (req, res) {
                     values215: valueArr215,
                     filePaths215: file_pathArr215,
                     origins215: originArr215,
-                    //names2 : nameArr2,
-                    //pids2: pidArr2,
-                    //pTypes2: pTypeArr2,
-                    //affiliations2 : affiliationArr2,
 
                     s_names: s_nameArr,
                     s_pids: s_pidArr,
                     s_pTypes: s_pTypeArr,
-                    //s_affiliations: s_affiliationArr,
                     dataNames4: dataNameArr4,
                     values4: valueArr4,
                     filePaths4: file_pathArr4,
@@ -2490,9 +2465,7 @@ router.get('/data/modifyData', function (req, res) {
                     names10 : nameArr10,
                     pids10: pidArr10,
                     pTypes10: pTypeArr10,
-                    //affiliations10 : affiliationArr10,
                     dateNames10 : dataNameArr10,
-                    //dateTypes10 : dataTypeArr10,
                     values10: valueArr10,
                     filePaths10: file_pathArr10,
                     origins10: originArr10,
@@ -2506,11 +2479,6 @@ router.get('/data/modifyData', function (req, res) {
                     names11 : nameArr11,
                     pids11: pidArr11,
                     pTypes11: pTypeArr11,
-                    //devices10: deviceArr10,
-                    //dateNames11 : dataNameArr11,
-                    //dateTypes11 : dataTypeArr11,
-                    //prices11: priceArr11,
-                    //devices11: deviceArr11,
 
                     dataNamesTotal: dataN,
                     dataValuesTotal: datavalue,
@@ -2520,7 +2488,29 @@ router.get('/data/modifyData', function (req, res) {
                     authenticated: true
                 });
             });
-          });
+          }); */
+            res.render('data/modifyData', {
+                esession: session_value.getSession(),
+
+
+                s_names: s_nameArr,
+                s_pids: s_pidArr,
+                s_pTypes: s_pTypeArr,
+                dataNames4: dataNameArr4,
+                values4: valueArr4,
+                filePaths4: file_pathArr4,
+                origins4: originArr4,
+                activityTypes4: activityTypeArr4,
+                dates4: dateArr4,
+                details4: detailArr4,
+
+                dataNamesTotal: dataN,
+                dataValuesTotal: datavalue,
+                dataFilesTotal: datafile,
+                dataOriginTotal: dataorigin,
+                
+                authenticated: true
+            });
                 session.close();
             })
             .catch(function (err) {
@@ -3046,32 +3036,44 @@ router.post('/transfer', function (req, res) {
     }
     var date = year.toString() + month + day
 
+    console.log("DDD",  provInfo)
     console.log(company, allowedPeriodFrom, allowedPeriodTo, price, permission, manuMethod);
-
-    if(manuMethod == 'Anonymous') {
+    
+    if(manuMethod != '미가공') {
+        var manuCypher = "CREATE (p:Person), (d1:Data), (d2:Data), (ac:Activity) SET p = {name: '" + user_name + "', pid: '" + user_pid + "', p_type: '" + user_type + "'}, "
+                        + "d1 = {name: '" + provInfo[0] + "', value: '" + provInfo[1] + "', file_path:'" + provInfo[2] + "', origin:'" + provInfo[3] + "'}, "
+                        + "ac = {name: '가공', date:'" + date + "', detail: '" + manuMethod + "' }, "
+                        + "d2 = {name: '" + provInfo[0] + "', value: '" + provInfo[1] + "', file_path:'" + provInfo[2] + "', origin:'" + provInfo[3] + "'} "
+                        + "CREATE (p) <- [a:Act] -(ac), (ac) <- [g1:Generate] -(d2), (d1) <- [g2:Generate] -(ac)"
+        console.log(manuCypher)
         session
-        .run("CREATE (d2:Data {name: '" + provInfo[0] + "' , value: '" + provInfo[1] + "' , origin: '" + provInfo[3] + "', file_path: '" + provInfo[2] + "'})-[g1:Generate]->(ac:Activity {name: '가공', date: '" + date + "', detail: '암호화' })-[:Act]->(p:Person {name: '" + user_name + "' , pid: '" + user_pid + "', p_type: '" + user_type + "'}), (ac:Activity {name: '가공', date: '" + date + "', detail: '" + manuMethod + "' })-[g2:Generate]->(d1:Data {name: '" + provInfo[0] + "' , value: '" + provInfo[1] + "' , origin: '" + provInfo[3] + "', file_path: '" + provInfo[2] + "'}) ")
-        session
-        .run("CREATE (d:Data {name: '" + provInfo[0] + "' , value: '" + provInfo[1] + "' , origin: '" + provInfo[3] + "', file_path: '" + provInfo[2] + "'})-[:Generate]->(ac:Activity {name: '제공', date: '" + date + "', detail: '' })-[:Receive {allowed_period_from:'" + allowedPeriodFrom + "', allowed_period_to: '" + allowedPeriodTo + "', is_agreed: '" + permission + "', price: '" + price + "' }]->(p2:Person {name: '" + company + "' , pid: '111111', p_type: '기관'}), (ac:Activity {name: '제공', date: '" + date + "', detail: '' })-[:Send]->(p:Person {name: '" + user_name + "' , pid: '" + user_pid + "', p_type: '" + user_type + "'})")
-        .then(function (result) {
-            session.close();
-        })
-        .catch(function (err) {
-            console.log(err);
-        });
-        res.render('data/modifyData.ejs', {
-            esession: session_value.getSession(), 
-            dataNamesTotal: dataN,
-            dataValuesTotal: datavalue,
-            dataFilesTotal: datafile,
-            dataOriginTotal: dataorigin,
-            s_names: datasname,
-            authenticated: true
-        });
+        .run(manuCypher)
     }
-    else {
-
-    }
+    var receiveCypher = "CREATE (p:Person), (d:Data), (p2:Person), (ac:Activity)"
+    + "SET p = {name: '" + user_name + "', pid: '" + user_pid + "', p_type: '" + user_type + "'}, "
+    + "    d = {name: '" + provInfo[0] + "', value: '" + provInfo[1] + "', file_path:'" + provInfo[2] + "', origin:'" + provInfo[3] + "'}, "
+    + "    ac = {name: '제공', date:'" + date + "', detail: ''}, "
+    + "    p2 = {name: '" + company + "' , pid: '111111', p_type: '기관'} "
+    + "CREATE (p) <- [s:Send] -(ac), (p2) <- [r:Receive{allowed_period_from:'" + allowedPeriodFrom + "', allowed_period_to: '" + allowedPeriodTo + "', is_agreed: '" + permission + "', price: '" + price + "'}] -(ac), (ac) <- [g:Generate] -(d)"
+    console.log(receiveCypher)
+    session
+    .run(receiveCypher)
+    .then(function (result) {
+        session.close();
+    })
+    .catch(function (err) {
+        console.log(err);
+    });
+    res.render('data/modifyData.ejs', {
+        esession: session_value.getSession(), 
+        dataNamesTotal: dataN,
+        dataValuesTotal: datavalue,
+        dataFilesTotal: datafile,
+        dataOriginTotal: dataorigin,
+        s_names: datasname,
+        authenticated: true
+    });
+   
 
 
 
