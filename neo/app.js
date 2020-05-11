@@ -12,6 +12,7 @@ var usersRouter = require('./routes/users');
 var contactRouter = require('./routes/contact');
 
 var viewPage = require('./routes/viewPage');
+var viewLink = require('./routes/viewLink');
 var addPage = require('./routes/addPage');
 var searchPage =  require('./routes/search/searchPage');
 
@@ -63,6 +64,7 @@ app.use('/users', usersRouter);
 app.use('/contact', contactRouter);
 
 app.use('/viewPage', viewPage);
+app.use('/viewLink', viewLink);
 app.use('/addPage', addPage);
 app.use('/search/searchPage', searchPage);
 

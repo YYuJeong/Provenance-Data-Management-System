@@ -62,6 +62,13 @@ let dataN = [];
 let datavalue = [];
 let datafile = [];
 let dataorigin = [];
+let datasname = [];
+
+let dataNamesTotal = [];
+let dataValuesTotal =[];
+let dataFilesTotal =[];
+let dataOriginTotal =[];
+
 
 app.use(esession({
     secret: "asdfasffdas",
@@ -312,7 +319,7 @@ router.post('/dataAdd', function (req, res) {
     if(session_value.getSession().gubun == '사용자'){
         user_type = '개인'
     }
-
+    console.log(file_path)
    // track progress
 
     session
@@ -353,9 +360,7 @@ router.get('/viewPage', function (req, res) {
     var dateArr4 = [];
     var detailArr4 = [];
     var dataNameArr4 = [];
-    //var dataTypeArr4 = [];
-    //var priceArr4 = [];
-    //var deviceArr4 = [];
+
     var valueArr4 = [];
     var file_pathArr4 = [];
     var originArr4 = [];
@@ -393,8 +398,6 @@ router.get('/viewPage', function (req, res) {
     var valueArr10 = [];
     var file_pathArr10 = [];
     var originArr10 = [];
-    //var dataTypeArr10 = [];
-    //var deviceArr10 = [];
 
     var nameArr11 = [];
     var pidArr11 = [];
@@ -405,14 +408,11 @@ router.get('/viewPage', function (req, res) {
     var priceArr11 = [];
     var deviceArr11 = [];
 
-    var dataNamesTotal = [];
-    var dataValuesTotal =[];
-    var dataFilesTotal =[];
-    var dataOriginTotal =[];
-
-
-    //var dataOwner = [];
-    //var dataOwnerAff = [];
+    dataNamesTotal = [];
+    dataValuesTotal =[];
+    dataFilesTotal =[];
+    dataOriginTotal =[];
+    datasname = [];
 
     var i = 0;
     var user_gubun = session_value.getSession().gubun;
@@ -453,16 +453,12 @@ router.get('/viewPage', function (req, res) {
               nameArr.push(record._fields[0].properties.name)
               pidArr.push(record._fields[0].properties.pid)
               pTypeArr.push(record._fields[0].properties.p_type)
-              //affiliationArr.push(record._fields[0].properties.affiliation)
 
               dataNameArr3.push(record._fields[1].properties.name)
               valueArr3.push(record._fields[1].properties.value)
               file_pathArr3.push(record._fields[1].properties.file_path)
               originArr3.push(record._fields[1].properties.origin)
-              //deviceArr3.push(record._fields[1].properties.device)
-              //priceArr3.push(record._fields[1].properties.price)
-              //dataOwner.push(record._fields[1].properties.owner)
-              //dataOwnerAff.push(record._fields[1].properties.owner_aff)
+
 
               activityTypeArr3.push(record._fields[2].properties.name)
               dateArr3.push(record._fields[2].properties.date)
@@ -472,11 +468,6 @@ router.get('/viewPage', function (req, res) {
               valueArr215.push(record._fields[3].properties.value)
               file_pathArr215.push(record._fields[3].properties.file_path)
               originArr215.push(record._fields[3].properties.origin)
-
-              //nameArr2.push(record._fields[3].properties.name)
-              //pidArr2.push(record._fields[3].properties.pid)
-              //pTypeArr2.push(record._fields[3].properties.p_type)
-              //affiliationArr2.push(record._fields[3].properties.affiliation)
 
               dataNamesTotal.push(record._fields[1].properties.name)
               dataValuesTotal.push(record._fields[1].properties.value)
@@ -491,17 +482,12 @@ router.get('/viewPage', function (req, res) {
                   nameArr10.push(record._fields[0].properties.name)
                   pidArr10.push(record._fields[0].properties.pid)
                   pTypeArr10.push(record._fields[0].properties.p_type)
-                  //affiliationArr10.push(record._fields[0].properties.affiliation)
     
                   dataNameArr10.push(record._fields[1].properties.name)
                   valueArr10.push(record._fields[1].properties.value)
                   file_pathArr10.push(record._fields[1].properties.file_path)
                   originArr10.push(record._fields[1].properties.origin)
-                  //dataTypeArr10.push(record._fields[1].properties.d_type)
-                  //deviceArr10.push(record._fields[1].properties.device)
-                  //priceArr10.push(record._fields[1].properties.price)
-                  //dataOwner.push(record._fields[1].properties.owner)
-                  //dataOwnerAff.push(record._fields[1].properties.owner_aff)
+
     
                   activityTypeArr10.push(record._fields[2].properties.name)
                   dateArr10.push(record._fields[2].properties.date)
@@ -580,11 +566,6 @@ router.get('/viewPage', function (req, res) {
                     names11 : nameArr11,
                     pids11: pidArr11,
                     pTypes11: pTypeArr11,
-                    //devices10: deviceArr10,
-                    //dateNames11 : dataNameArr11,
-                    //dateTypes11 : dataTypeArr11,
-                    //prices11: priceArr11,
-                    //devices11: deviceArr11,
 
                     dataNamesTotal: dataNamesTotal,
                     dataValuesTotal: dataValuesTotal,
@@ -760,6 +741,111 @@ router.get('/viewPage', function (req, res) {
         });
     }
 });
+
+router.get('/viewLink', function (req, res) {
+
+
+    res.render('viewLink.ejs', {
+        esession: session_value.getSession(),
+
+
+
+        authenticated: true
+    });
+});
+
+router.post('/getViewValues', function (req, res) {
+
+
+    var checkValue = req.body.viewCheck;
+    var checkLen;
+
+    console.log("view val: ", checkValue)
+
+    console.log(dataNamesTotal[checkValue])
+    console.log(dataValuesTotal[checkValue])
+    console.log(dataFilesTotal[checkValue])
+    console.log(dataOriginTotal[checkValue])
+
+    var dataName = dataNamesTotal[checkValue]
+    var dataValue = dataValuesTotal[checkValue]
+    var dataFile = dataFilesTotal[checkValue]
+    var dataOrigin = dataOriginTotal[checkValue]
+
+    var user_name = session_value.getSession().user;
+    var user_pid = session_value.getSession().pid;
+    var user_type;
+    if(session_value.getSession().gubun == '사용자'){
+        user_type = '개인'
+    }
+
+    var geneCypher = "MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' "
+                    + "AND (p.name = '" + user_name + "' AND p.pid = '" + user_pid + "' AND p.p_type = '" + user_type + "') "
+                    + "AND ( d.name = '" + dataName + "' AND d.value = '" + dataValue + "' AND d.file_path = '" + dataFile + "' AND d.origin = '" + dataOrigin + "') "
+                    + "RETURN p, d, ac LIMIT 10 "
+    console.log(geneCypher)
+    //var manuCypher = 
+
+    //var offCypher =
+
+
+
+    res.render('viewLink.ejs', {
+        esession: session_value.getSession(),
+
+
+
+        authenticated: true
+    });
+
+    /*
+    if (checkLen == 1) {
+        console.log("------------check ------------", checkValues, checkValues.length);
+        modiFlag = true;
+    }
+
+    if (modiFlag4 && modiFlag3 && modiFlag5 && modiFlag) {
+        console.log("all false");
+        modiFlag3 = false;
+        modiFlag4 = false;
+        modiFlag5 = false;
+        modiFlag = false;
+    }
+
+    if ((check3Len + check4Len + check5Len + checkLen) > 1) {
+        modiFlag3 = false;
+        modiFlag4 = false;
+        modiFlag5 = false;
+        modiFlag = false;
+    }
+
+    if (modiFlag) {
+        provInfo.push(dataN[checkValues]);
+        provInfo.push(datavalue[checkValues]);
+        provInfo.push(datafile[checkValues]);
+        provInfo.push(dataorigin[checkValues]);
+
+        console.log("modiFlag : ", modiFlag);
+        console.log("provInfo : ", provInfo);
+
+        res.render('data/modifyDataPage.ejs', {
+            esession: session_value.getSession(),
+
+            modiFlag3: modiFlag3,
+            modiFlag4: modiFlag4,
+            modiFlag5: modiFlag5,
+            modiFlag: modiFlag,
+            provInfo: provInfo,
+
+            activityType: activityType,
+            authenticated: true
+        });  
+    } else {
+        res.send('<script type="text/javascript">alert("하나의 개인정보를 선택해주세요."); window.history.go(-1);</script>');
+    }
+    */
+});
+
 
 router.post('/DataSearch', function (req, res) {
     var dataName = req.body.dataName;
@@ -1363,124 +1449,105 @@ router.post('/periodSearch', function (req, res) {
     var query5 = false;
     if (nullcount == 0) {
         if (activityType == '생성') {
-            newQuery3 = newQuery3 + startDateCyper + "'" + start_date + "'" + " AND" + endDateCyper + "'" + end_date + "') AND (ac.name = '생성') "
+            newQuery3 = newQuery3 + startDateCyper + "'" + start_date + "'" + " AND" + endDateCyper + "'" + end_date + "') AND (ac.name = " + "'" + activityType + "') "
+            query3 = true;
         }
         else if (activityType == '제공'){
             newQuery4 = newQuery4 + startDateCyper + "'" + start_date + "'" + " AND" + endDateCyper + "'" + end_date + "') AND (ac.name = " + "'" + activityType + "') "
+            query4 = true;
         } 
         else {
             newQuery5 = newQuery5 + startDateCyper + "'" + start_date + "'" + " AND" + endDateCyper + "'" + end_date + "') AND (ac.name = " + "'" + activityType + "') "
+            query5 = true;
         }
-    }
-    else {
-        for (var i = 0; i < (2 - nullcount); i++) {
-            if (end_dateFlag && start_date) {
-                newQuery5 = newQuery5 + startDateCyper + "'" + start_date + "'" + " AND" + endDateCyper + "'" + end_date + "') and ac.name = '가공' " ;
-                newQuery4 = newQuery4 + startDateCyper + "'" + start_date + "'" + " AND" + endDateCyper + "'" + end_date + "') and ac.name = '제공' ";
-                newQuery3 = newQuery3 + startDateCyper + "'" + start_date + "'" + " AND" + endDateCyper + "'" + end_date + "') and ac.name = '생성' ";
 
-                end_dateFlag = false;
-                start_dateFlag = false;
+    }
+    
+    else {
+        if (end_dateFlag && start_dateFlag && !activityTypeFlag) {
+            newQuery5 = newQuery5 + startDateCyper + "'" + start_date + "'" + " AND" + endDateCyper + "'" + end_date + "') and ac.name = '가공' " ;
+            newQuery4 = newQuery4 + startDateCyper + "'" + start_date + "'" + " AND" + endDateCyper + "'" + end_date + "') and ac.name = '제공' ";
+            newQuery3 = newQuery3 + startDateCyper + "'" + start_date + "'" + " AND" + endDateCyper + "'" + end_date + "') and ac.name = '생성' ";
+
+            end_dateFlag = false;
+            start_dateFlag = false;
+            query3 = true;
+            query4 = true;
+            query5 = true;
+        }
+        else if (activityTypeFlag && !end_dateFlag && !start_dateFlag) {
+            activityTypeFlag = false;
+            if (activityType == '생성') {
+                newQuery3 = newQuery3 + " (ac.name = '생성') "
                 query3 = true;
+            }
+            if (activityType == '제공'){
+                newQuery4 = newQuery4 + " (ac.name = '제공') "
                 query4 = true;
+            }
+            else {
+                newQuery5 = newQuery5 + " (ac.name = '가공') "
                 query5 = true;
             }
-            else if (activityTypeFlag) {
-                activityTypeFlag = false;
-                if (activityType == '생성') {
-                    newQuery3 = newQuery3 + " (ac.name = '생성') "
-                    query3 = true;
-                }
-                if (activityType == '제공'){
-                    newQuery4 = newQuery4 + " (ac.name = '" + activityType + "') "
-                    query4 = true;
-                }
-                else {
-                    newQuery5 = newQuery5 + " (ac.name = '" + activityType + "') "
-                    query5 = true;
-                }
-            }
         }
+        
     }
     newQuery5 = newQuery5 + returnCyper5;
     newQuery4 = newQuery4 + returnCyper4;
     newQuery3 = newQuery3 + returnCyper3;
 
-    console.log(newQuery3)
-    console.log(newQuery4)
-    console.log(newQuery5)
+    console.log(newQuery3, query3)
+    console.log(newQuery4, query4)
+    console.log(newQuery5, query5)
 
+    if(query5 && query4 && query3){
+    session.run(newQuery5)
+        .then(function (result) {
+            query5resultNum = result.records.length;
+            if (query5resultNum != 0) {
+                result.records.forEach(function (record) {
+                    //console.log(record)
+                    nameArr5.push(record._fields[0].properties.name)
+                    pidArr5.push(record._fields[0].properties.pid)
+                    p_typeArr5.push(record._fields[0].properties.p_type)
 
-    if (activityType == '생성') {
+                    dataNameArr5.push(record._fields[1].properties.name)
+                    valueArr5.push(record._fields[1].properties.value)
+                    file_pathArr5.push(record._fields[1].properties.file_path)
+                    originArr5.push(record._fields[1].properties.origin)
 
-        session.run(newQuery3)
-            .then(function (result) {
+                    activityTypeArr5.push(record._fields[2].properties.name)
+                    dateArr5.push(record._fields[2].properties.date)
+                    detailArr5.push(record._fields[2].properties.detail)
 
-                query3resultNum = result.records.length;
-                if (query3resultNum != 0) {
-                    result.records.forEach(function (record) {
-
-                        nameArr.push(record._fields[0].properties.name)
-                        pidArr.push(record._fields[0].properties.pid)
-                        p_typeArr.push(record._fields[0].properties.p_type)
-
-                        dataNameArr3.push(record._fields[1].properties.name)
-                        valueArr3.push(record._fields[1].properties.value)
-                        file_pathArr3.push(record._fields[1].properties.file_path)
-                        originArr3.push(record._fields[1].properties.origin)
-
-                        activityTypeArr3.push(record._fields[2].properties.name)
-                        dateArr3.push(record._fields[2].properties.date)
-                        detailArr3.push(record._fields[2].properties.detail)
-                    });
-                }
-                else {
-                    nameArr.push(' ')
-                    pidArr.push(' ')
-                    p_typeArr.push(' ')
-
-                    dataNameArr3.push(' ')
-                    valueArr3.push(' ')
-                    file_pathArr3.push(' ')
-                    originArr3.push(' ')
-
-                    activityTypeArr3.push(' ')
-                    dateArr3.push(' ')
-                    detailArr3.push(' ')
-                }
-                res.render('search/searchPeriodResult.ejs', {
-                    esession: session_value.getSession(),
-                    query3: query3,
-                    query4: query4,
-                    query5: query5,
-                    
-                    names: nameArr,
-                    pids: pidArr,
-                    p_types: p_typeArr,
-                    dataNames3: dataNameArr3,
-                    values3: valueArr3,
-                    file_paths3: file_pathArr3,
-                    origins3: originArr3,
-                    activityTypes3: activityTypeArr3,
-                    dates3: dateArr3,
-                    datails3: detailArr3,
-
-                    authenticated: true
+                    dataNameArr6.push(record._fields[3].properties.name)
+                    valueArr6.push(record._fields[3].properties.value)
+                    file_pathArr6.push(record._fields[3].properties.file_path)
+                    originArr6.push(record._fields[3].properties.origin)
                 });
+            }
+            else {
+                nameArr5.push(' ')
+                pidArr5.push(' ')
+                p_typeArr5.push(' ')
 
-                session.close();
-            })
-            .catch(function (err) {
-                console.log(err);
-            });
-    }
-    else if (activityType == '제공') {
+                dataNameArr5.push(' ')
+                valueArr5.push(' ')
+                file_pathArr5.push(' ')
+                originArr5.push(' ')
 
+                activityTypeArr5.push(' ')
+                dateArr5.push(' ')
+                detailArr5.push(' ')
+
+                dataNameArr6.push(' ')
+                valueArr6.push(' ')
+                file_pathArr6.push(' ')
+                originArr6.push(' ')
+            }
+        
         session.run(newQuery4)
             .then(function (result) {
-                query3 = false;
-                query4 = true;
-                query5 = false;
                 query4resultNum = result.records.length;
                 if (query4resultNum != 0) {
                     result.records.forEach(function (record) {
@@ -1507,37 +1574,253 @@ router.post('/periodSearch', function (req, res) {
                         r_pidArr.push(record._fields[4].properties.pid)
                         r_pTypeArr.push(record._fields[4].properties.p_type)
                     });
-                }
+                }   
                 else {
-                    s_nameArr.push(' ')
-                    s_pidArr.push(' ')
-                    s_pTypeArr.push(' ')
+                        s_nameArr.push(' ')
+                        s_pidArr.push(' ')
+                        s_pTypeArr.push(' ')
 
-                    dataNameArr4.push(' ')
-                    valueArr4.push(' ')
-                    file_pathArr4.push(' ')
-                    originArr4.push(' ')
+                        dataNameArr4.push(' ')
+                        valueArr4.push(' ')
+                        file_pathArr4.push(' ')
+                        originArr4.push(' ')
 
-                    activityTypeArr4.push(' ')
-                    dateArr4.push(' ')
-                    detailArr4.push(' ')
+                        activityTypeArr4.push(' ')
+                        dateArr4.push(' ')
+                        detailArr4.push(' ')
 
-                    APFromArr4.push(' ')
-                    APToArr4.push(' ')
-                    priceArr4.push(' ')
-                    isAgreeArr4.push(' ')
+                        APFromArr4.push(' ')
+                        APToArr4.push(' ')
+                        priceArr4.push(' ')
+                        isAgreeArr4.push(' ')
 
-                    r_nameArr.push(' ')
-                    r_pidArr.push(' ')
-                    r_pTypeArr.push(' ')
+                        r_nameArr.push(' ')
+                        r_pidArr.push(' ')
+                        r_pTypeArr.push(' ')
+                    }
+
+            session.run(newQuery3)
+                .then(function (result) {
+                    query3resultNum = result.records.length;
+                    if (query3resultNum != 0) {
+                        result.records.forEach(function (record) {
+                            
+                            nameArr.push(record._fields[0].properties.name)
+                            pidArr.push(record._fields[0].properties.pid)
+                            p_typeArr.push(record._fields[0].properties.p_type)
+
+                            dataNameArr3.push(record._fields[1].properties.name)
+                            valueArr3.push(record._fields[1].properties.value)
+                            file_pathArr3.push(record._fields[1].properties.file_path)
+                            originArr3.push(record._fields[1].properties.origin)
+
+                            activityTypeArr3.push(record._fields[2].properties.name)
+                            dateArr3.push(record._fields[2].properties.date)
+                            detailArr3.push(' ')
+                        });
+                    }
+                    else {
+                        nameArr.push(' ')
+                        pidArr.push(' ')
+                        p_type.push(' ')
+
+                        dataNameArr3.push(' ')
+                        valueArr3.push(' ')
+                        file_pathArr3.push(' ')
+                        originArr3.push(' ')
+
+                        activityTypeArr3.push(' ')
+                        dateArr3.push(' ')
+                        detailArr3.push(' ')
+                    }
+                    console.log("t/f:", query3, query4, query5)
+                    console.log(detailArr3)
+                    console.log(nameArr)
+                    console.log(dataNameArr4)
+                    console.log(p_typeArr5)
+                    res.render('search/searchPeriodResult.ejs', {
+                        esession: session_value.getSession(),
+                        query3: query3,
+                        query4: query4,
+                        query5: query5, 
+                
+                        names: nameArr,
+                        pids: pidArr,
+                        p_types: p_typeArr,
+                        dataNames3: dataNameArr3,
+                        values3: valueArr3,
+                        file_paths3: file_pathArr3,
+                        origins3: originArr3,
+                        activityTypes3: activityTypeArr3,
+                        dates3: dateArr3,
+                        details3: detailArr3,
+                
+                        s_names: s_nameArr,
+                        s_pids: s_pidArr,
+                        s_ptypes: s_pTypeArr,
+                        dataNames4: dataNameArr4,
+                        values4: valueArr4,
+                        file_paths4: file_pathArr4,
+                        origins4: originArr4,
+                        APFroms4: APFromArr4,
+                        APTos4: APToArr4,
+                        prices4: priceArr4,
+                        isAgrees: isAgreeArr4,
+                        activityTypes4: activityTypeArr4,
+                        dates4: dateArr4,
+                        details4: detailArr4,
+                        r_names: r_nameArr,
+                        r_pids: r_pidArr,
+                        r_pTypes: r_pTypeArr,
+                
+                        names5 : nameArr5,
+                        pids5: pidArr5,
+                        p_types5: p_typeArr5,
+                        dataNames5: dataNameArr5,
+                        values5: valueArr5,
+                        file_paths5: file_pathArr5,
+                        origins5: originArr5,
+                        activityTypes5: activityTypeArr5,
+                        dates5: dateArr5,
+                        details5: detailArr5,
+                        dataNames6: dataNameArr6,
+                        values6: valueArr6,
+                        file_paths6: file_pathArr6,
+                        origins6: originArr6,
+                
+                        authenticated: true
+                    });
+                    });
+                    session.close();
+                });
+                
+            })
+        .catch(function (err) {
+            console.log(err);
+        });
+    }
+    else{
+        if(query3){
+            console.log(query3)
+            session.run(newQuery3)
+                .then(function (result) {
+                    query3resultNum = result.records.length;
+                    if (query3resultNum != 0) {
+                        result.records.forEach(function (record) {
+                            //console.log(record)
+                            nameArr.push(record._fields[0].properties.name)
+                            pidArr.push(record._fields[0].properties.pid)
+                            p_typeArr.push(record._fields[0].properties.p_type)
+
+                            dataNameArr3.push(record._fields[1].properties.name)
+                            valueArr3.push(record._fields[1].properties.value)
+                            file_pathArr3.push(record._fields[1].properties.file_path)
+                            originArr3.push(record._fields[1].properties.origin)
+
+                            activityTypeArr3.push(record._fields[2].properties.name)
+                            dateArr3.push(record._fields[2].properties.date)
+                            detailArr3.push(record._fields[2].properties.detail)
+                        });
+                    }
+                    else {
+                        nameArr.push(' ')
+                        pidArr.push(' ')
+                        p_type.push(' ')
+
+                        dataNameArr3.push(' ')
+                        valueArr3.push(' ')
+                        file_pathArr3.push(' ')
+                        originArr3.push(' ')
+
+                        activityTypeArr3.push(' ')
+                        dateArr3.push(' ')
+                    }
+                    res.render('search/searchPeriodResult.ejs', {
+                        esession: session_value.getSession(),
+                        query3: query3,
+                        query4: query4,
+                        query5: query5, 
+
+                        names: nameArr,
+                        pids: pidArr,
+                        p_types: p_typeArr,
+                        dataNames3: dataNameArr3,
+                        values3: valueArr3,
+                        file_paths3: file_pathArr3,
+                        origins3: originArr3,
+                        activityTypes3: activityTypeArr3,
+                        dates3: dateArr3,
+                        details3: detailArr3,
+                        
+                        authenticated: true
+                    });
+
+                    session.close();
+                })
+
+                .catch(function (err) {
+                    console.log(err);
+                });
+        }
+        else if(query4){
+            console.log("query4")
+            session.run(newQuery4)
+            .then(function (result) {
+                query4resultNum = result.records.length;
+                if (query4resultNum != 0) {
+                    result.records.forEach(function (record) {
+
+                        s_nameArr.push(record._fields[0].properties.name)
+                        s_pidArr.push(record._fields[0].properties.pid)
+                        s_pTypeArr.push(record._fields[0].properties.p_type)
+
+                        dataNameArr4.push(record._fields[1].properties.name)
+                        valueArr4.push(record._fields[1].properties.value)
+                        file_pathArr4.push(record._fields[1].properties.file_path)
+                        originArr4.push(record._fields[1].properties.origin)
+
+                        activityTypeArr4.push(record._fields[2].properties.name)
+                        dateArr4.push(record._fields[2].properties.date)
+                        detailArr4.push(record._fields[2].properties.detail)
+
+                        APFromArr4.push(record._fields[3].properties.allowed_period_from)
+                        APToArr4.push(record._fields[3].properties.allowed_period_to)
+                        priceArr4.push(record._fields[3].properties.price)
+                        isAgreeArr4.push(record._fields[3].properties.is_agreed)
+
+                        r_nameArr.push(record._fields[4].properties.name)
+                        r_pidArr.push(record._fields[4].properties.pid)
+                        r_pTypeArr.push(record._fields[4].properties.p_type)
+                    });
+                }   
+                else {
+                        s_nameArr.push(' ')
+                        s_pidArr.push(' ')
+                        s_pTypeArr.push(' ')
+
+                        dataNameArr4.push(' ')
+                        valueArr4.push(' ')
+                        file_pathArr4.push(' ')
+                        originArr4.push(' ')
+
+                        activityTypeArr4.push(' ')
+                        dateArr4.push(' ')
+
+                        APFromArr4.push(' ')
+                        APToArr4.push(' ')
+                        priceArr4.push(' ')
+                        isAgreeArr4.push(' ')
+
+                        r_nameArr.push(' ')
+                        r_pidArr.push(' ')
+                        r_pTypeArr.push(' ')
                 }
                 res.render('search/searchPeriodResult.ejs', {
                     esession: session_value.getSession(),
-
                     query3: query3,
                     query4: query4,
                     query5: query5, 
-
+            
                     s_names: s_nameArr,
                     s_pids: s_pidArr,
                     s_ptypes: s_pTypeArr,
@@ -1555,95 +1838,101 @@ router.post('/periodSearch', function (req, res) {
                     r_names: r_nameArr,
                     r_pids: r_pidArr,
                     r_pTypes: r_pTypeArr,
-
+            
                     authenticated: true
                 });
-                
+                session.close();
+            })
+
+            .catch(function (err) {
+                console.log(err);
+            });
+        }
+        else{
+            console.log("Qeury5")
+            session.run(newQuery5)
+            .then(function (result) {
+                query5resultNum = result.records.length;
+                if (query5resultNum != 0) {
+                    result.records.forEach(function (record) {
+                        //console.log(record)
+                        nameArr5.push(record._fields[0].properties.name)
+                        pidArr5.push(record._fields[0].properties.pid)
+                        p_typeArr5.push(record._fields[0].properties.p_type)
+    
+                        dataNameArr5.push(record._fields[1].properties.name)
+                        valueArr5.push(record._fields[1].properties.value)
+                        file_pathArr5.push(record._fields[1].properties.file_path)
+                        originArr5.push(record._fields[1].properties.origin)
+    
+                        activityTypeArr5.push(record._fields[2].properties.name)
+                        dateArr5.push(record._fields[2].properties.date)
+                        detailArr5.push(record._fields[2].properties.detail)
+    
+                        dataNameArr6.push(record._fields[3].properties.name)
+                        valueArr6.push(record._fields[3].properties.value)
+                        file_pathArr6.push(record._fields[3].properties.file_path)
+                        originArr6.push(record._fields[3].properties.origin)
+                    });
+                }
+                else {
+                    nameArr5.push(' ')
+                    pidArr5.push(' ')
+                    p_typeArr5.push(' ')
+    
+                    dataNameArr5.push(' ')
+                    valueArr5.push(' ')
+                    file_pathArr5.push(' ')
+                    originArr5.push(' ')
+    
+                    activityTypeArr5.push(' ')
+                    dateArr5.push(' ')
+                    detailArr5.push(' ')
+    
+                    dataNameArr6.push(' ')
+                    valueArr6.push(' ')
+                    file_pathArr6.push(' ')
+                    originArr6.push(' ')
+                }
+                res.render('search/searchPeriodResult.ejs', {
+                    esession: session_value.getSession(),
+                    query3: query3,
+                    query4: query4,
+                    query5: query5, 
+            
+                    names5 : nameArr5,
+                    pids5: pidArr5,
+                    p_types5: p_typeArr5,
+                    dataNames5: dataNameArr5,
+                    values5: valueArr5,
+                    file_paths5: file_pathArr5,
+                    origins5: originArr5,
+                    activityTypes5: activityTypeArr5,
+                    dates5: dateArr5,
+                    details5: detailArr5,
+                    dataNames6: dataNameArr6,
+                    values6: valueArr6,
+                    file_paths6: file_pathArr6,
+                    origins6: originArr6,
+            
+                    authenticated: true
+                });
                 session.close();
             })
             .catch(function (err) {
                 console.log(err);
             });
         }
-        else { //가공
+        console.log("t/f:", query3, query4, query5)
+        console.log(detailArr3)
+        console.log(nameArr)
+        console.log(dataNameArr4)
+        console.log(p_typeArr5)
 
-            session.run(newQuery5)
-                .then(function (result) {
-                    query3 = false;
-                    query4 = false;
-                    query5 = true;
-                    query5resultNum = result.records.length;
-                    if (query5resultNum != 0) {
-                        result.records.forEach(function (record) {
+    }
+
     
-                            nameArr5.push(record._fields[0].properties.name)
-                            pidArr5.push(record._fields[0].properties.pid)
-                            p_typeArr5.push(record._fields[0].properties.p_type)
-        
-                            dataNameArr5.push(record._fields[1].properties.name)
-                            valueArr5.push(record._fields[1].properties.value)
-                            file_pathArr5.push(record._fields[1].properties.file_path)
-                            originArr5.push(record._fields[1].properties.origin)
-        
-                            activityTypeArr5.push(record._fields[2].properties.name)
-                            dateArr5.push(record._fields[2].properties.date)
-                            detailArr5.push(record._fields[2].properties.detail)
-        
-                            dataNameArr6.push(record._fields[3].properties.name)
-                            valueArr6.push(record._fields[3].properties.value)
-                            file_pathArr6.push(record._fields[3].properties.file_path)
-                            originArr6.push(record._fields[3].properties.origin)
-                        });
-                    }
-                    else {
-                        nameArr5.push(' ')
-                        pidArr5.push(' ')
-                        p_typeArr5.push(' ')
-        
-                        dataNameArr5.push(' ')
-                        valueArr5.push(' ')
-                        file_pathArr5.push(' ')
-                        originArr5.push(' ')
-        
-                        activityTypeArr5.push(' ')
-                        dateArr5.push(' ')
-                        detailArr5.push(' ')
-        
-                        dataNameArr6.push(' ')
-                        valueArr6.push(' ')
-                        file_pathArr6.push(' ')
-                        originArr6.push(' ')
-                    }
-                    res.render('search/searchPeriodResult.ejs', {
-                        esession: session_value.getSession(),
-                        query3: query3,
-                        query4: query4,
-                        query5: query5, 
-    
-                        names5 : nameArr5,
-                        pids5: pidArr5,
-                        p_types5: p_typeArr5,
-                        dataNames5: dataNameArr5,
-                        values5: valueArr5,
-                        file_paths5: file_pathArr5,
-                        origins5: originArr5,
-                        activityTypes5: activityTypeArr5,
-                        dates5: dateArr5,
-                        details5: detailArr5,
-                        dataNames6: dataNameArr6,
-                        values6: valueArr6,
-                        file_paths6: file_pathArr6,
-                        origins6: originArr6,
-    
-                        authenticated: true
-                    });
-                    
-                    session.close();
-                })
-                .catch(function (err) {
-                    console.log(err);
-                });
-        }
+
 });
 
 
@@ -2356,8 +2645,6 @@ router.get('/data/modifyData', function (req, res) {
               valueArr4.push(record._fields[1].properties.value)
               file_pathArr4.push(record._fields[1].properties.file_path)
               originArr4.push(record._fields[1].properties.origin)
-              //dataOwner.push(record._fields[1].properties.owner)
-              //dataOwnerAff.push(record._fields[1].properties.owner_aff)
 
               activityTypeArr4.push(record._fields[2].properties.name)
               dateArr4.push(record._fields[2].properties.date)
@@ -2367,8 +2654,9 @@ router.get('/data/modifyData', function (req, res) {
               datavalue.push(record._fields[1].properties.value)
               datafile.push(record._fields[1].properties.file_path)
               dataorigin.push(record._fields[1].properties.origin)
+              datasname.push(record._fields[0].properties.name)
             });
-            
+            /*
             session.run("MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '가공' AND ( p.name = '" + user_name + "' ) RETURN p, d2, ac, d1 LIMIT 10")
           .then(function (result) {
             result.records.forEach(function (record) {
@@ -2376,16 +2664,12 @@ router.get('/data/modifyData', function (req, res) {
               nameArr.push(record._fields[0].properties.name)
               pidArr.push(record._fields[0].properties.pid)
               pTypeArr.push(record._fields[0].properties.p_type)
-              //affiliationArr.push(record._fields[0].properties.affiliation)
 
               dataNameArr3.push(record._fields[1].properties.name)
               valueArr3.push(record._fields[1].properties.value)
               file_pathArr3.push(record._fields[1].properties.file_path)
               originArr3.push(record._fields[1].properties.origin)
-              //deviceArr3.push(record._fields[1].properties.device)
-              //priceArr3.push(record._fields[1].properties.price)
-              //dataOwner.push(record._fields[1].properties.owner)
-              //dataOwnerAff.push(record._fields[1].properties.owner_aff)
+
 
               activityTypeArr3.push(record._fields[2].properties.name)
               dateArr3.push(record._fields[2].properties.date)
@@ -2396,10 +2680,6 @@ router.get('/data/modifyData', function (req, res) {
               file_pathArr215.push(record._fields[3].properties.file_path)
               originArr215.push(record._fields[3].properties.origin)
 
-              //nameArr2.push(record._fields[3].properties.name)
-              //pidArr2.push(record._fields[3].properties.pid)
-              //pTypeArr2.push(record._fields[3].properties.p_type)
-              //affiliationArr2.push(record._fields[3].properties.affiliation)
 
               dataN.push(record._fields[1].properties.name)
               datavalue.push(record._fields[1].properties.value)
@@ -2414,17 +2694,11 @@ router.get('/data/modifyData', function (req, res) {
                   nameArr10.push(record._fields[0].properties.name)
                   pidArr10.push(record._fields[0].properties.pid)
                   pTypeArr10.push(record._fields[0].properties.p_type)
-                  //affiliationArr10.push(record._fields[0].properties.affiliation)
     
                   dataNameArr10.push(record._fields[1].properties.name)
                   valueArr10.push(record._fields[1].properties.value)
                   file_pathArr10.push(record._fields[1].properties.file_path)
                   originArr10.push(record._fields[1].properties.origin)
-                  //dataTypeArr10.push(record._fields[1].properties.d_type)
-                  //deviceArr10.push(record._fields[1].properties.device)
-                  //priceArr10.push(record._fields[1].properties.price)
-                  //dataOwner.push(record._fields[1].properties.owner)
-                  //dataOwnerAff.push(record._fields[1].properties.owner_aff)
     
                   activityTypeArr10.push(record._fields[2].properties.name)
                   dateArr10.push(record._fields[2].properties.date)
@@ -2452,14 +2726,10 @@ router.get('/data/modifyData', function (req, res) {
                     names: nameArr,
                     pids: pidArr,
                     pTypes: pTypeArr,
-                    //affiliations: affiliationArr,
-                    //dataTypes3: dataTypeArr3,
                     dataNames3: dataNameArr3,
                     values3: valueArr3,
                     filePaths3: file_pathArr3,
                     origins3: originArr3,
-                    //devices3: deviceArr3,
-                    //prices3: priceArr3,
                     activityTypes3: activityTypeArr3,
                     dates3: dateArr3,
                     details3: detailArr3,
@@ -2467,15 +2737,10 @@ router.get('/data/modifyData', function (req, res) {
                     values215: valueArr215,
                     filePaths215: file_pathArr215,
                     origins215: originArr215,
-                    //names2 : nameArr2,
-                    //pids2: pidArr2,
-                    //pTypes2: pTypeArr2,
-                    //affiliations2 : affiliationArr2,
 
                     s_names: s_nameArr,
                     s_pids: s_pidArr,
                     s_pTypes: s_pTypeArr,
-                    //s_affiliations: s_affiliationArr,
                     dataNames4: dataNameArr4,
                     values4: valueArr4,
                     filePaths4: file_pathArr4,
@@ -2487,9 +2752,7 @@ router.get('/data/modifyData', function (req, res) {
                     names10 : nameArr10,
                     pids10: pidArr10,
                     pTypes10: pTypeArr10,
-                    //affiliations10 : affiliationArr10,
                     dateNames10 : dataNameArr10,
-                    //dateTypes10 : dataTypeArr10,
                     values10: valueArr10,
                     filePaths10: file_pathArr10,
                     origins10: originArr10,
@@ -2503,11 +2766,6 @@ router.get('/data/modifyData', function (req, res) {
                     names11 : nameArr11,
                     pids11: pidArr11,
                     pTypes11: pTypeArr11,
-                    //devices10: deviceArr10,
-                    //dateNames11 : dataNameArr11,
-                    //dateTypes11 : dataTypeArr11,
-                    //prices11: priceArr11,
-                    //devices11: deviceArr11,
 
                     dataNamesTotal: dataN,
                     dataValuesTotal: datavalue,
@@ -2517,7 +2775,29 @@ router.get('/data/modifyData', function (req, res) {
                     authenticated: true
                 });
             });
-          });
+          }); */
+            res.render('data/modifyData', {
+                esession: session_value.getSession(),
+
+
+                s_names: s_nameArr,
+                s_pids: s_pidArr,
+                s_pTypes: s_pTypeArr,
+                dataNames4: dataNameArr4,
+                values4: valueArr4,
+                filePaths4: file_pathArr4,
+                origins4: originArr4,
+                activityTypes4: activityTypeArr4,
+                dates4: dateArr4,
+                details4: detailArr4,
+
+                dataNamesTotal: dataN,
+                dataValuesTotal: datavalue,
+                dataFilesTotal: datafile,
+                dataOriginTotal: dataorigin,
+                
+                authenticated: true
+            });
                 session.close();
             })
             .catch(function (err) {
@@ -2885,7 +3165,7 @@ router.post('/getModifyValues', function (req, res) {
         modiFlag5 = true;
     }
     else if (checkLen == 1) {
-        console.log("------------check ------------", checkValues, checkValues.length);
+        console.log("------------ss check ------------", checkValues, checkValues.length);
         modiFlag = true;
     }
 
@@ -3017,6 +3297,73 @@ router.post('/getModifyValues', function (req, res) {
 });
 
 router.post('/transfer', function (req, res) {
+    var company = req.body.company;
+    var allowedPeriodFrom = req.body.allowedPeriodFrom;
+    var allowedPeriodTo = req.body.allowedPeriodTo;
+    var price = req.body.price;
+    var permission = req.body.permission;
+    var manuMethod = req.body.manuMethod;
+
+    var user_name = session_value.getSession().user;
+    var user_pid = session_value.getSession().pid;
+    var user_type;
+    if(session_value.getSession().gubun == '사용자'){
+        user_type = '개인'
+    }
+
+    let today = new Date();
+    let year = today.getFullYear(); 
+    let month = (today.getMonth() + 1).toString();  
+    let day = today.getDate().toString();  
+    if(month.length == 1){
+        month = "0" + month
+    }
+    if(day.length == 1){
+        day = "0" + day
+    }
+    var date = year.toString() + month + day
+
+    console.log("DDD",  provInfo)
+    console.log(company, allowedPeriodFrom, allowedPeriodTo, price, permission, manuMethod);
+    
+    if(manuMethod != '미가공') {
+        var manuCypher = "CREATE (p:Person), (d1:Data), (d2:Data), (ac:Activity) SET p = {name: '" + user_name + "', pid: '" + user_pid + "', p_type: '" + user_type + "'}, "
+                        + "d1 = {name: '" + provInfo[0] + "', value: '" + provInfo[1] + "', file_path:'" + provInfo[2] + "', origin:'" + provInfo[3] + "'}, "
+                        + "ac = {name: '가공', date:'" + date + "', detail: '" + manuMethod + "' }, "
+                        + "d2 = {name: '" + provInfo[0] + "', value: '" + provInfo[1] + "', file_path:'" + provInfo[2] + "', origin:'" + provInfo[3] + "'} "
+                        + "CREATE (p) <- [a:Act] -(ac), (ac) <- [g1:Generate] -(d2), (d1) <- [g2:Generate] -(ac)"
+        console.log(manuCypher)
+        session
+        .run(manuCypher)
+    }
+    var receiveCypher = "CREATE (p:Person), (d:Data), (p2:Person), (ac:Activity)"
+    + "SET p = {name: '" + user_name + "', pid: '" + user_pid + "', p_type: '" + user_type + "'}, "
+    + "    d = {name: '" + provInfo[0] + "', value: '" + provInfo[1] + "', file_path:'" + provInfo[2] + "', origin:'" + provInfo[3] + "'}, "
+    + "    ac = {name: '제공', date:'" + date + "', detail: ''}, "
+    + "    p2 = {name: '" + company + "' , pid: '111111', p_type: '기관'} "
+    + "CREATE (p) <- [s:Send] -(ac), (p2) <- [r:Receive{allowed_period_from:'" + allowedPeriodFrom + "', allowed_period_to: '" + allowedPeriodTo + "', is_agreed: '" + permission + "', price: '" + price + "'}] -(ac), (ac) <- [g:Generate] -(d)"
+    console.log(receiveCypher)
+    session
+    .run(receiveCypher)
+    .then(function (result) {
+        session.close();
+    })
+    .catch(function (err) {
+        console.log(err);
+    });
+    res.render('data/modifyData.ejs', {
+        esession: session_value.getSession(), 
+        dataNamesTotal: dataN,
+        dataValuesTotal: datavalue,
+        dataFilesTotal: datafile,
+        dataOriginTotal: dataorigin,
+        s_names: datasname,
+        authenticated: true
+    });
+   
+
+
+
 });
 
 
