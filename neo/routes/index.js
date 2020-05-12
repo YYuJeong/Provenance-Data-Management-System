@@ -3076,7 +3076,7 @@ router.get('/data/modifyData', function (req, res) {
     if (user_gubun == '사용자') {
         console.log('사용자')
         session
-          .run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' AND p.name = '" + user_name + "' RETURN p, d, ac ")
+          .run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' AND p.name = '" + user_name + "' AND p.pid = '"+ user_pid +"' RETURN p, d, ac")
           .then(function (result) {
             result.records.forEach(function (record) {
 
