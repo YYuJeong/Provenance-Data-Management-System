@@ -12,6 +12,10 @@
             color: #303030;
             letter-spacing: 1px;
         }
+
+        .fontSize {
+            font-size: 1.2em;
+        }
     </style>
 
     <script>
@@ -36,10 +40,16 @@
     <!-- Three columns of text below the carousel -->
     <% include ../menu %>
     <hr class="featurette-divider">
-    <div class="container" style="display: inline-block;text-align: center;">
+    <div class="container fontSize" style="display: inline-block;text-align: center;">
         <% if(esession.authenticated == false){ %>
             <% include ../notAuthenticated.ejs %>
-        <% }else{ %>
+            <% } 
+            else if(esession.gubun == '사용자'){ %>
+                <div style="margin: auto; padding: 10%; font-size: 1.5em;">
+                    사용자는 이용 불가능한 메뉴입니다.
+                </div>
+            <% } 
+            else{ %>
             <div class="jumbotron" style="background-color: #f8f8f8;">
                 <div style="text-align: center; font-size:2em;">개인정보 이력 일괄입력(파일)<br><br>
                 </div>
