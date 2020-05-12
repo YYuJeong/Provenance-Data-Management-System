@@ -469,9 +469,27 @@ router.post('/dataAdd', function (req, res) {
     console.log(file_path)
    // track progress
 
+   var mergeData = "MATCH (d:Data) "
+                + "WITH d.name as name, d.value as value, d.file_path as file_path, d.origin as origin, COLLECT(d) AS ns "
+                + "WHERE size(ns) > 1 "
+                + "CALL apoc.refactor.mergeNodes(ns) YIELD node "
+                + "RETURN node"
+   var mergePerson = "MATCH (p:Person) "
+                   + "WITH toLower(p.name) as name, p.pid as pid, p.p_type as p_type, COLLECT(p) AS ns "
+                   + "WHERE size(ns) > 1 "
+                   + "CALL apoc.refactor.mergeNodes(ns) YIELD node "
+                   + "RETURN node"
+   var deleteRel = "start r=relationship(*) "
+                  + "match (s)-[r]->(e) "
+                  + "with s,e,type(r) as typ, tail(collect(r)) as coll "
+                  + "foreach(x in coll | delete x) "
     session
         .run("CREATE (d:Data {name: '" + dataName + "' , value: '" + value + "' , origin: '" + origin + "', file_path: '" + file_path + "'})-[:Generate]->(ac:Activity {name: '생성', date: '" + date + "', detail: '' })-[:Act]->(p:Person {name: '" + user_name + "' , pid: '" + user_pid + "', p_type: '" + user_type + "'})")
         .then(function (result) {
+            session.run(mergeData)
+            session.run(mergePerson)
+            session.run(deleteRel)
+
             session.close();
         })
         .catch(function (err) {
@@ -564,11 +582,12 @@ router.get('/viewPage', function (req, res) {
     var i = 0;
     var user_gubun = session_value.getSession().gubun;
     var user_name = session_value.getSession().user;
+    var user_pid = session_value.getSession().pid;
     
     if (user_gubun == '사용자') {
         console.log('사용자')
         session
-          .run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' AND p.name = '" + user_name + "' RETURN p, d, ac LIMIT 10")
+          .run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' AND p.name = '" + user_name + "' AND p.pid = '"+ user_pid +"' RETURN p, d, ac LIMIT 10")
           .then(function (result) {
             result.records.forEach(function (record) {
 
@@ -3679,6 +3698,23 @@ router.post('/transfer', function (req, res) {
     console.log("DDD",  provInfo)
     console.log(company, allowedPeriodFrom, allowedPeriodTo, price, permission, manuMethod);
     
+
+    var mergeData = "MATCH (d:Data) "
+                    + "WITH d.name as name, d.value as value, d.file_path as file_path, d.origin as origin, COLLECT(d) AS ns "
+                    + "WHERE size(ns) > 1 "
+                    + "CALL apoc.refactor.mergeNodes(ns) YIELD node "
+                    + "RETURN node"
+    var mergePerson = "MATCH (p:Person) "
+                    + "WITH toLower(p.name) as name, p.pid as pid, p.p_type as p_type, COLLECT(p) AS ns "
+                    + "WHERE size(ns) > 1 "
+                    + "CALL apoc.refactor.mergeNodes(ns) YIELD node "
+                    + "RETURN node"
+    var deleteRel = "start r=relationship(*) "
+                    + "match (s)-[r]->(e) "
+                    + "with s,e,type(r) as typ, tail(collect(r)) as coll "
+                    + "foreach(x in coll | delete x) "
+
+
     if(manuMethod != '미가공') {
         var manuCypher = "CREATE (p:Person), (d1:Data), (d2:Data), (ac:Activity) SET p = {name: '" + user_name + "', pid: '" + user_pid + "', p_type: '" + user_type + "'}, "
                         + "d1 = {name: '" + provInfo[0] + "', value: '" + provInfo[1] + "', file_path:'" + provInfo[2] + "', origin:'" + provInfo[3] + "'}, "
@@ -3690,15 +3726,18 @@ router.post('/transfer', function (req, res) {
         .run(manuCypher)
     }
     var receiveCypher = "CREATE (p:Person), (d:Data), (p2:Person), (ac:Activity)"
-    + "SET p = {name: '" + user_name + "', pid: '" + user_pid + "', p_type: '" + user_type + "'}, "
-    + "    d = {name: '" + provInfo[0] + "', value: '" + provInfo[1] + "', file_path:'" + provInfo[2] + "', origin:'" + provInfo[3] + "'}, "
-    + "    ac = {name: '제공', date:'" + date + "', detail: ''}, "
-    + "    p2 = {name: '" + company + "' , pid: '111111', p_type: '기관'} "
-    + "CREATE (p) <- [s:Send] -(ac), (p2) <- [r:Receive{allowed_period_from:'" + allowedPeriodFrom + "', allowed_period_to: '" + allowedPeriodTo + "', is_agreed: '" + permission + "', price: '" + price + "'}] -(ac), (ac) <- [g:Generate] -(d)"
+                        + "SET p = {name: '" + user_name + "', pid: '" + user_pid + "', p_type: '" + user_type + "'}, "
+                        + "    d = {name: '" + provInfo[0] + "', value: '" + provInfo[1] + "', file_path:'" + provInfo[2] + "', origin:'" + provInfo[3] + "'}, "
+                        + "    ac = {name: '제공', date:'" + date + "', detail: ''}, "
+                        + "    p2 = {name: '" + company + "' , pid: '111111', p_type: '기관'} "
+                        + "CREATE (p) <- [s:Send] -(ac), (p2) <- [r:Receive{allowed_period_from:'" + allowedPeriodFrom + "', allowed_period_to: '" + allowedPeriodTo + "', is_agreed: '" + permission + "', price: '" + price + "'}] -(ac), (ac) <- [g:Generate] -(d)"
     console.log(receiveCypher)
     session
     .run(receiveCypher)
     .then(function (result) {
+        session.run(mergeData)
+        session.run(mergePerson)
+        session.run(deleteRel)
         session.close();
     })
     .catch(function (err) {

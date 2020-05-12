@@ -51,6 +51,11 @@ def delete_duplicateNode(kNodes):
 
     return candidN
 
+def get_nodes(tx, user_name , user_pid):
+    nodes = (tx.run("MERGE (p: Person {name:$user_name, pid: $user_pid, p_type: '개인'}) "
+                    "RETURN p"
+                    , user_name = user_name, user_pid = user_pid)).values()
+    return nodes
 
 def generate_shortestPathQuery(n, m):
     prop1 = [*n.keys()]
@@ -76,9 +81,7 @@ def generate_shortestPathQuery(n, m):
     
 
 def shortestPath(tx, spQuery):
- 
     length = (tx.run(spQuery)).values()
-
     if length:
         return length
     
@@ -95,7 +98,7 @@ def sort_result(graphs):
     resultLen = []
     for each in results:
         sumLen = 0
-        for i in range(len(keywords)-1):
+        for i in range(len(keywords)):
             sumLen = sumLen + len(each[i])
         resultLen.append(sumLen)
     resultIndex = sorted(range(len(resultLen)), key=lambda k: resultLen[k])         
@@ -124,7 +127,7 @@ def generate_outputQuery(ranking):
         resultWhere = ""
         resultSp = ""
         resultRt = ""
-        for i in range(len(keywords)-1):    
+        for i in range(len(keywords)):    
             psLabel = next(iter(ranking[r][i].start_node.labels))
             peLabel = next(iter(ranking[r][i].end_node.labels))
             labelTemp = "(s"+str(j) +":" + psLabel +"), (e"+str(j) +":"+peLabel +")"
@@ -148,7 +151,7 @@ def generate_outputQuery(ranking):
             spTemp = " MATCH p" + str(i) +" = shortestPath((s" + str(j) +")-[*]-(e" +str(j)+")) " 
             resultSp =  resultSp + spTemp       
             resultRt = resultRt + "p" + str(i) 
-            if i+1 != len(keywords)-1:
+            if i+1 != len(keywords):
                 resultLabel = resultLabel + ", "
                 resultWhere = resultWhere + "AND "
                 resultRt = resultRt + ", "
@@ -165,7 +168,7 @@ def generate_outputTable(ranking):
     outTable = ""
     for r in range(len(ranking)):
         pTmp = []
-        for i in range(len(keywords)-1):
+        for i in range(len(keywords)):
             psTmp = []
             peTmp = []
           
@@ -224,16 +227,13 @@ if __name__ == "__main__":
         
         user_name = keywords[0]
         user_pid = keywords[1]
+        userNode = session.read_transaction(get_nodes, user_name = user_name, user_pid = user_pid)
 
         del keywords[0]
         del keywords[0]
-
-        print(user_name)
-        print(user_pid) 
-        print(keywords)
 
         #search for all nodes with keywords
-        kNodes = []
+        kNodes = userNode
         for i in range(len(keywords)):
             kNodes.append(session.read_transaction(check_nodeLabel,  keyword= keywords[i]))
         candidN = delete_duplicateNode(kNodes)   
@@ -290,7 +290,7 @@ if __name__ == "__main__":
 
         ranking = sort_result(graphs)
         if len(ranking) == 0:
-            print(len(keywords))
+            print(len(keywords)+1)
         else:     
             if len(ranking) <= 10:
                 outQuery = generate_outputQuery(ranking)
