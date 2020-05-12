@@ -592,7 +592,7 @@ router.get('/viewPage', function (req, res) {
     if (user_gubun == '사용자') {
         console.log('사용자')
         session
-          .run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' AND p.name = '" + user_name + "' AND p.pid = '"+ user_pid +"' RETURN p, d, ac LIMIT 10")
+          .run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' AND p.name = '" + user_name + "' AND p.pid = '"+ user_pid +"' RETURN p, d, ac")
           .then(function (result) {
             result.records.forEach(function (record) {
 
@@ -617,7 +617,7 @@ router.get('/viewPage', function (req, res) {
               dataOriginTotal.push(record._fields[1].properties.origin)
             });
             
-            session.run("MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '가공' AND ( p.name = '" + user_name + "' ) RETURN p, d2, ac, d1 LIMIT 10")
+            session.run("MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '가공' AND ( p.name = '" + user_name + "' ) RETURN p, d2, ac, d1 ")
           .then(function (result) {
             result.records.forEach(function (record) {
 
@@ -646,7 +646,7 @@ router.get('/viewPage', function (req, res) {
               dataOriginTotal.push(record._fields[1].properties.origin)
             });
 
-              session.run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[s:Send]-(p1:Person), (ac:Activity)-[r:Receive]-(p2:Person) WHERE ac.name = '제공' AND p1.name = '" + user_name + "' RETURN p1, d, ac, r, p2 LIMIT 10")
+              session.run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[s:Send]-(p1:Person), (ac:Activity)-[r:Receive]-(p2:Person) WHERE ac.name = '제공' AND p1.name = '" + user_name + "' RETURN p1, d, ac, r, p2 ")
               .then(function (result) {
                 result.records.forEach(function (record) {
     
@@ -756,7 +756,7 @@ router.get('/viewPage', function (req, res) {
     else if (user_gubun == '관리자') {
         console.log("관리자")
         session
-          .run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' RETURN p, d, ac LIMIT 10")
+          .run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' RETURN p, d, ac ")
           .then(function (result) {
             result.records.forEach(function (record) {
 
@@ -775,7 +775,7 @@ router.get('/viewPage', function (req, res) {
             });
 
 
-          session.run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[s:Send]-(p1:Person), (ac:Activity)-[r:Receive]-(p2:Person) WHERE ac.name IN ['배포', '판매'] RETURN p1, d, ac, p2 LIMIT 10")
+          session.run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[s:Send]-(p1:Person), (ac:Activity)-[r:Receive]-(p2:Person) WHERE ac.name IN ['배포', '판매'] RETURN p1, d, ac, p2 ")
           .then(function (result) {
             result.records.forEach(function (record) {
 
@@ -796,7 +796,7 @@ router.get('/viewPage', function (req, res) {
               affiliationArr2.push(record._fields[3].properties.affiliation)
             });
 
-              session.run("MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person) WHERE ac.name IN ['가공', '변환'] RETURN p, d2, ac, d1 LIMIT 10")
+              session.run("MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person) WHERE ac.name IN ['가공', '변환'] RETURN p, d2, ac, d1 ")
               .then(function (result) {
                 result.records.forEach(function (record) {
     
@@ -990,18 +990,18 @@ router.post('/getViewValues', function (req, res) {
     var geneCypher = "MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' "
                     + "AND (p.name = '" + user_name + "' AND p.pid = '" + user_pid + "' AND p.p_type = '" + user_type + "') "
                     + "AND ( d.name = '" + dataName + "' AND d.value = '" + dataValue + "' AND d.file_path = '" + dataFile + "' AND d.origin = '" + dataOrigin + "') "
-                    + "RETURN p, d, ac LIMIT 10 "
+                    + "RETURN p, d, ac  "
 
     var manuCypher = "MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '가공' " 
                     + "AND (p.name = '" + user_name + "' AND p.pid = '" + user_pid + "' AND p.p_type = '" + user_type + "') "
                     + "AND (d1.name = '" + dataName + "' AND d1.value = '" + dataValue + "' AND d1.file_path = '" + dataFile + "' AND d1.origin = '" + dataOrigin + "') "
                     + "OR  (d2.name = '" + dataName + "' AND d2.value = '" + dataValue + "' AND d2.file_path = '" + dataFile + "' AND d2.origin = '" + dataOrigin + "') "
-                    + "RETURN p, d2, ac, d1 LIMIT 10"
+                    + "RETURN p, d2, ac, d1 "
 
     var offCypher = "MATCH (d:Data)-[:Generate]-(ac:Activity)-[s:Send]-(p1:Person), (ac:Activity)-[r:Receive]-(p2:Person) WHERE ac.name = '제공' "
                     + "AND (p1.name = '" + user_name + "' AND p1.pid = '" + user_pid + "' AND p1.p_type = '" + user_type + "') "
                     + "AND ( d.name = '" + dataName + "' AND d.value = '" + dataValue + "' AND d.file_path = '" + dataFile + "' AND d.origin = '" + dataOrigin + "') "
-                    + "RETURN p1, d, ac, r, p2 LIMIT 10 "
+                    + "RETURN p1, d, ac, r, p2 "
 
     //console.log(geneCypher)
     //console.log(manuCypher)
@@ -1289,9 +1289,9 @@ router.post('/DataSearch', function (req, res) {
     var matchCyper4;
     var matchCyper3;
 
-    var returnCyper5 = ") RETURN p, d2, ac, d1 LIMIT 10"
-    var returnCyper4 = ") RETURN p1, d, ac, r, p2 LIMIT 10"
-    var returnCyper3 = ") RETURN p, d, ac LIMIT 10"
+    var returnCyper5 = ") RETURN p, d2, ac, d1 "
+    var returnCyper4 = ") RETURN p1, d, ac, r, p2 "
+    var returnCyper3 = ") RETURN p, d, ac "
     var whereCyper5 = " WHERE ac.name = '가공' AND ("
     var whereCyper4 = " WHERE ac.name = '제공' AND ("
     var whereCyper3 = " WHERE ac.name = '생성' AND ("
@@ -1464,7 +1464,7 @@ router.post('/DataSearch', function (req, res) {
                     else {
                         nameArr.push(' ')
                         pidArr.push(' ')
-                        p_type.push(' ')
+                        p_typeArr.push(' ')
 
                         dataNameArr3.push(' ')
                         valueArr3.push(' ')
@@ -1543,6 +1543,19 @@ router.post('/nameSearch', function (req, res) {
     var user_name = session_value.getSession().user;
     var user_pid = session_value.getSession().pid;
 
+    //생성
+    var nameArr = [];
+    var pidArr = [];
+    var p_typeArr = [];
+    var activityTypeArr3 = [];
+    var dateArr3 = [];
+    var detailArr3 = [];
+    var dataNameArr3 = [];
+    var valueArr3 = [];
+    var file_pathArr3 = [];
+    var originArr3 = [];
+
+
     //제공
     var s_nameArr = [];
     var s_pidArr = [];
@@ -1563,13 +1576,15 @@ router.post('/nameSearch', function (req, res) {
     var r_pTypeArr = [];
 
     var query4resultNum;
-
+    var query3resultNum; 
     console.log("name: " + name);
 
-
+    var geneCypher = "MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' "
+                    + "AND (p.name = '" + user_name + "' AND p.pid = '" + user_pid + "') AND ( d.origin = '" + name + "') "
+                    + "RETURN p, d, ac  "
     var matchCyper4;
 
-    var returnCyper4 = ") RETURN p1, d, ac, r, p2 LIMIT 10"
+    var returnCyper4 = ") RETURN p1, d, ac, r, p2 "
 
     var whereCyper4 = " WHERE ac.name = '제공' AND ("
     var newQuery4;
@@ -1593,6 +1608,7 @@ router.post('/nameSearch', function (req, res) {
 
     console.log(newQuery4)
     console.log("********************************************")
+    console.log(geneCypher)
 
     session.run(newQuery4)
     .then(function (result) {
@@ -1647,8 +1663,54 @@ router.post('/nameSearch', function (req, res) {
             r_pidArr.push(' ')
             r_pTypeArr.push(' ')
         }
-        res.render('search/searchNameResult.ejs', {
-            esession: session_value.getSession(),
+        session.run(geneCypher)
+        .then(function (result) {
+            query3resultNum = result.records.length;
+            if (query3resultNum != 0) {
+                result.records.forEach(function (record) {
+                    //console.log(record)
+                    nameArr.push(record._fields[0].properties.name)
+                    pidArr.push(record._fields[0].properties.pid)
+                    p_typeArr.push(record._fields[0].properties.p_type)
+
+                    dataNameArr3.push(record._fields[1].properties.name)
+                    valueArr3.push(record._fields[1].properties.value)
+                    file_pathArr3.push(record._fields[1].properties.file_path)
+                    originArr3.push(record._fields[1].properties.origin)
+
+                    activityTypeArr3.push(record._fields[2].properties.name)
+                    dateArr3.push(record._fields[2].properties.date)
+                    detailArr3.push(record._fields[2].properties.detail)
+                });
+            }
+            else {
+                nameArr.push(' ')
+                pidArr.push(' ')
+                p_typeArr.push(' ')
+
+                dataNameArr3.push(' ')
+                valueArr3.push(' ')
+                file_pathArr3.push(' ')
+                originArr3.push(' ')
+
+                activityTypeArr3.push(' ')
+                dateArr3.push(' ')
+            }
+
+
+            res.render('search/searchNameResult.ejs', {
+                esession: session_value.getSession(),
+
+                names: nameArr,
+                pids: pidArr,
+                p_types: p_typeArr,
+                dataNames3: dataNameArr3,
+                values3: valueArr3,
+                file_paths3: file_pathArr3,
+                origins3: originArr3,
+                activityTypes3: activityTypeArr3,
+                dates3: dateArr3,
+                details3: detailArr3,
 
                 s_names: s_nameArr,
                 s_pids: s_pidArr,
@@ -1664,15 +1726,16 @@ router.post('/nameSearch', function (req, res) {
                 activityTypes4: activityTypeArr4,
                 dates4: dateArr4,
                 details4: detailArr4,
-
                 r_names: r_nameArr,
                 r_pids: r_pidArr,
                 r_pTypes: r_pTypeArr,
 
-            authenticated: true
-        });
 
-    session.close();
+                authenticated: true
+            });
+        });
+        
+        session.close();
     })
     .catch(function (err) {
         console.log(err);
@@ -1753,9 +1816,9 @@ router.post('/periodSearch', function (req, res) {
     var matchCyper4;
     var matchCyper3;
 
-    var returnCyper5 = "RETURN p, d2, ac, d1 LIMIT 10"
-    var returnCyper4 = "RETURN p1, d, ac, r, p2 LIMIT 10"
-    var returnCyper3 = "RETURN p, d, ac LIMIT 10"
+    var returnCyper5 = "RETURN p, d2, ac, d1 "
+    var returnCyper4 = "RETURN p1, d, ac, r, p2"
+    var returnCyper3 = "RETURN p, d, ac "
 
     var newQuery5;
     var newQuery4;
@@ -2682,9 +2745,9 @@ router.post('/delete', function (req, res) {
     var matchCyper4;
     var matchCyper3;
 
-    var returnCyper5 = ") RETURN p, d2, ac, d1 LIMIT 10"
-    var returnCyper4 = ") RETURN p1, d, ac, p2 LIMIT 10"
-    var returnCyper3 = ") RETURN p, d, ac LIMIT 10"
+    var returnCyper5 = ") RETURN p, d2, ac, d1 "
+    var returnCyper4 = ") RETURN p1, d, ac, p2 "
+    var returnCyper3 = ") RETURN p, d, ac "
     var whereCyper5 = " WHERE ac.name IN ['가공', '변환'] AND ("
     var whereCyper4 = " WHERE ac.name IN ['배포', '판매'] AND ("
     var whereCyper3 = " WHERE ac.name = '생성' AND ("
@@ -3010,7 +3073,7 @@ router.get('/data/modifyData', function (req, res) {
     if (user_gubun == '사용자') {
         console.log('사용자')
         session
-          .run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' AND p.name = '" + user_name + "' RETURN p, d, ac LIMIT 10")
+          .run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' AND p.name = '" + user_name + "' RETURN p, d, ac ")
           .then(function (result) {
             result.records.forEach(function (record) {
 
@@ -3186,7 +3249,7 @@ router.get('/data/modifyData', function (req, res) {
     else if (user_gubun == '관리자') {
         console.log("관리자")
         session
-          .run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' RETURN p, d, ac LIMIT 10")
+          .run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' RETURN p, d, ac ")
           .then(function (result) {
             result.records.forEach(function (record) {
 
@@ -3205,7 +3268,7 @@ router.get('/data/modifyData', function (req, res) {
             });
 
 
-          session.run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[s:Send]-(p1:Person), (ac:Activity)-[r:Receive]-(p2:Person) WHERE ac.name IN ['배포', '판매'] RETURN p1, d, ac, p2 LIMIT 10")
+          session.run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[s:Send]-(p1:Person), (ac:Activity)-[r:Receive]-(p2:Person) WHERE ac.name IN ['배포', '판매'] RETURN p1, d, ac, p2")
           .then(function (result) {
             result.records.forEach(function (record) {
 
@@ -3226,7 +3289,7 @@ router.get('/data/modifyData', function (req, res) {
               affiliationArr2.push(record._fields[3].properties.affiliation)
             });
 
-              session.run("MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person) WHERE ac.name IN ['가공', '변환'] RETURN p, d2, ac, d1 LIMIT 10")
+              session.run("MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person) WHERE ac.name IN ['가공', '변환'] RETURN p, d2, ac, d1 ")
               .then(function (result) {
                 result.records.forEach(function (record) {
     
@@ -3791,9 +3854,9 @@ router.post('/modify', function (req, res) {
     var matchCyper4;
     var matchCyper3;
 
-    var returnCyper5 = ") RETURN p, d2, ac, d1 LIMIT 10"
-    var returnCyper4 = ") RETURN p1, d, ac, p2 LIMIT 10"
-    var returnCyper3 = ") RETURN p, d, ac LIMIT 10"
+    var returnCyper5 = ") RETURN p, d2, ac, d1 "
+    var returnCyper4 = ") RETURN p1, d, ac, p2 "
+    var returnCyper3 = ") RETURN p, d, ac"
     var whereCyper5 = " WHERE ac.name IN ['가공', '변환'] AND ("
     var whereCyper4 = " WHERE ac.name IN ['배포', '판매'] AND ("
     var whereCyper3 = " WHERE ac.name = '생성' AND ("
