@@ -69,6 +69,9 @@ let dataValuesTotal =[];
 let dataFilesTotal =[];
 let dataOriginTotal =[];
 
+let modiInsInfo = [];
+let modiInsName = [];
+let modiInsValue = [];
 
 app.use(esession({
     secret: "asdfasffdas",
@@ -166,6 +169,152 @@ router.route('/users').post(
     }
 );
 
+router.route('/ins/editIns').post(
+    function (req, res) {
+        res.render('ins/editIns', {esession: session_value.getSession()});
+    }
+)
+
+router.post('/insAdd', function (req, res) {
+        var insName = req.body.insName;
+        var insValue = req.body.insValue;
+
+        console.log(insName, insValue);
+
+        con.query("INSERT INTO iitp.institutions (name, pid) VALUES (?, ?);", [
+            insName, insValue
+        ], function (err, rows, fields) {
+    
+            console.log("err : " + err);
+            console.log("rows : " + rows);
+
+            res.render('ins/addIns', {
+                esession: session_value.getSession()});
+        });
+         
+});
+
+
+router.get('/ins/modifyIns', function (req, res) {
+    var insNames = [];
+    var insValues = [];
+    con.query("SELECT * FROM iitp.institutions;", function (err, rows, fields) {
+        //console.log("err : " + err);
+        if (err) {
+            console.log(err);
+            console.log("QUERY ERROR!");
+        }
+        else {
+            //console.log(rows[1]["name"]);
+            for (var index = 0; index < rows.length; index++) {
+                insNames.push(rows[index]["name"]);
+                insValues.push(rows[index]["pid"]);
+
+                modiInsName.push(rows[index]["name"]);
+                modiInsValue.push(rows[index]["pid"]);
+
+            }
+            console.log(insNames);
+            console.log(insValues);
+            res.render('ins/modifyIns', {
+                esession: session_value.getSession(),
+                insNames: insNames,
+                insValues: insValues
+            });
+        }
+    });
+});
+
+router.post('/insGetModifyData', function (req, res) {
+
+    var checkValues = req.body.modifyInsCheck;
+    var checkLen;
+
+    console.log(checkValues);
+
+    var modiFlag = false;
+
+    if (checkValues == undefined) {
+        checkLen = 0;
+    } else {
+        checkLen = checkValues.length;
+    }
+
+    if (checkLen == 1) {
+        console.log("------------check ------------", checkValues, checkValues.length);
+        modiFlag = true;
+    }
+
+    if (!modiFlag) {
+        console.log("false");
+        modiFlag = false;
+    }
+
+    if (checkLen > 1) 
+        modiFlag = false;
+
+    if (modiFlag) {
+        modiInsInfo.push(modiInsName[checkValues]);
+        modiInsInfo.push(modiInsValue[checkValues]);
+
+        console.log("modiFlag : ", modiFlag);
+        console.log("modiInsInfo : ", modiInsInfo);
+
+        res.render('ins/modifyInsResult.ejs', {
+            esession: session_value.getSession(),
+
+            modiFlag: modiFlag,
+            insNames: modiInsName,
+            insValues: modiInsValue,
+            modiInsInfo: modiInsInfo,
+
+            authenticated: true
+        });  
+    } else {
+        res.send('<script type="text/javascript">alert("하나의 기관을 선택해주세요."); window.history.go(-1);</script>');
+    }
+});
+
+router.post('/insModify', function (req, res) {
+    var insNames = [];
+    var insValues = [];
+    var insName = req.body.insName;
+    var insValue = req.body.insValue;
+    var originName = modiInsInfo[0];
+    var sql= 'UPDATE iitp.institutions SET name=?, pid=? WHERE name=?';
+
+    console.log(insName, insValue, originName);
+
+    con.query(sql, [insName, insValue, originName], function (err, rows) {
+        console.log("err : " + err);
+    });
+
+    con.query("SELECT * FROM iitp.institutions;", function (err, rows) {
+        //console.log("err : " + err);
+        if (err) {
+            console.log(err);
+            console.log("QUERY ERROR!");
+        }
+        else {
+            for (var index = 0; index < rows.length; index++) {
+                insNames.push(rows[index]["name"]);
+                insValues.push(rows[index]["pid"]);
+
+                modiInsName.push(rows[index]["name"]);
+                modiInsValue.push(rows[index]["pid"]);
+
+            }
+            console.log(insNames);
+            console.log(insValues);
+            res.render('ins/modifyIns', {
+                esession: session_value.getSession(),
+                insNames: insNames,
+                insValues: insValues
+            });
+        }
+    });
+});
+
 let upload = multer({
     dest: "upload/"
 });
@@ -173,8 +322,6 @@ let upload = multer({
 router.get('/data/uploadData', function (req, res, next) {    
    res.render('data/uploadData', {esession: session_value.getSession()});
 });
-
-
 
 router.post('/data/uploadData', function (req, res,next) {
     var form = new multiparty.Form();
@@ -2481,6 +2628,11 @@ function setArray() {
     datavalue = [];
     datafile = [];
     dataorigin = [];
+
+    modiInsInfo = [];
+    modiInsName = [];
+    modiInsValue = [];
+    
 }
 
 router.post('/delete', function (req, res) {
@@ -2806,18 +2958,26 @@ router.get('/data/modifyData', function (req, res) {
     var priceArr11 = [];
     var deviceArr11 = [];
 
-    var dataNamesTotal = [];
-    var dataValuesTotal =[];
-    var dataFilesTotal =[];
-    var dataOriginTotal =[];
-
-
     //var dataOwner = [];
     //var dataOwnerAff = [];
 
     var i = 0;
     var user_gubun = session_value.getSession().gubun;
     var user_name = session_value.getSession().user;
+
+    modiInsName = [];
+        
+     con.query("SELECT * FROM iitp.institutions;", function (err, rows, fields) {
+        if (err) {
+            console.log(err);
+            console.log("QUERY ERROR!");
+        }
+        else {
+            for (var index = 0; index < rows.length; index++) {
+                modiInsName.push(rows[index]["name"]);
+            }
+        }
+    });
     
     if (user_gubun == '사용자') {
         console.log('사용자')
@@ -2984,6 +3144,8 @@ router.get('/data/modifyData', function (req, res) {
                 dataValuesTotal: datavalue,
                 dataFilesTotal: datafile,
                 dataOriginTotal: dataorigin,
+
+                indNames: modiInsName,
                 
                 authenticated: true
             });
@@ -3294,6 +3456,7 @@ router.get('/data/modifyData', function (req, res) {
     }*/
 });
 
+
 router.post('/getModifyValues', function (req, res) {
     var checkValues5 = req.body.modifyCheck5;
     var checkValues4 = req.body.modifyCheck4;
@@ -3476,7 +3639,8 @@ router.post('/getModifyValues', function (req, res) {
             modiFlag5: modiFlag5,
             modiFlag: modiFlag,
             provInfo: provInfo,
-
+            insNames: modiInsName,
+ 
             activityType: activityType,
             authenticated: true
         });  
