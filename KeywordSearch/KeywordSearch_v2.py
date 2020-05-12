@@ -24,8 +24,8 @@ def check_nodeLabel(tx, keyword):
                       "WHERE (any(prop in ['name', 'value', 'file_path', 'origin'] WHERE n[prop] = $keyword))"
                       "RETURN n", keyword = keyword)).value()
     activityNodes = (tx.run("MATCH (n:Activity)"
-                  "WHERE (any(prop in ['name', 'date','detail'] WHERE n[prop] = $keyword))"
-                  "RETURN n", keyword = keyword)).value()
+                          "WHERE (any(prop in ['name', 'date','detail'] WHERE n[prop] = $keyword))"
+                          "RETURN n", keyword = keyword)).value()
 
     if(personNodes):
         return personNodes
@@ -36,27 +36,22 @@ def check_nodeLabel(tx, keyword):
 
 def delete_duplicateNode(kNodes):
     combi = list(range(len(kNodes)))
-    candidN = list(product(*kNodes)) #generate all combinations for keyword nodes
-
-
+    candidN = list(product(*kNodes)) 
+    
+    #generate all combinations for keyword nodes
     combi = list(combinations(combi, 2))
     
     delInd = []
     for i in range(len(candidN)):
         for j in range(len(combi)):
             if candidN[i][combi[j][0]].id == candidN[i][combi[j][1]].id:
-
                 delInd.append(i)
                 break
-
     
     ind = 0     
     for i in range(len(delInd)):
-
-        #print(candidN[delInd[i]-ind])
         del candidN[delInd[i]-ind]
         ind = ind + 1
-        
     return candidN
 
 # next (iter (k1nodes[0].labels)) : frozenset 값 얻는법
@@ -71,7 +66,7 @@ def generate_shortestPathQuery(n, m):
     prop2 = [*m.keys()]
     val1 = [*n.values()]
     val2 = [*m.values()]
-    spMatch = "MATCH (n: "+next(iter(n.labels))+"), (m: "+next(iter(m.labels))+") "
+    spMatch = "MATCH (n: " + next(iter(n.labels)) + "), (m: " + next(iter(m.labels)) + ") "
     spWhere = "WHERE "
     whereN1 = ""
     whereN2 = ""
@@ -84,7 +79,6 @@ def generate_shortestPathQuery(n, m):
              whereN2 = whereN2 + 'AND ' 
     spWhere = spWhere + whereN1 + whereN2
     spQuery = spMatch + spWhere + " MATCH p = shortestPath((n)-[*]-(m)) RETURN p, length(p)"
- 
     return spQuery
     
     
@@ -92,7 +86,6 @@ def generate_shortestPathQuery(n, m):
 def shortestPath(tx, spQuery):
  
     length = (tx.run(spQuery)).values()
-
     if length:
         return length
     
@@ -247,6 +240,7 @@ with driver.session() as session:
     
     candidN = delete_duplicateNode(kNodes)    
     print(len(candidN))
+    
     g = []
     N = []
     graphs = [] # pair 저장

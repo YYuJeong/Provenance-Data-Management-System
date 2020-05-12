@@ -54,30 +54,184 @@
         <% } 
         else if(esession.gubun == '관리자'){ %>
             <% include ./adminres %>
-        <% } 
-        else{ %>
-        <div class="jumbotron" style="background-color: #f8f8f8;">
-            <!--<form action="/getModifyValues" method="post" id="Data"> -->
-            <div class="panel panel-default" style="background-color: #ffffff">
-                <div class="panel-heading" style="font-size:1.4em; background-color: #e7ebee;"><%= esession.user %>님의 개인정보 이력</div>
-                <table class="table table-striped" id="example-table-1">
-                    <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>데이터명</th>
-                        <th>값</th>
-                        <th>파일</th>
-                        <th>생성처</th>
-                        <th>유통이력</th>
-                    </tr>
-                    </thead>
-                    <tbody>
+        <% } else{ %>
+            <div class="jumbotron" style="background-color: #f8f8f8;">
+                <div class="panel panel-default" style="background-color: #ffffff">
+                    <div class="panel-heading" style="font-size:1.5em; background-color: #e7ebee;">유통이력 검색 결과 (생성)</div>
+                    <!-- Table -->
 
-                    </tbody>
-                </table>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>데이터명</th>
+                            <th>값</th>
+                            <th>파일</th>
+                            <th>생성처</th>
+                            <th>날짜</th>
+                            <th>기타정보</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <% for(var i = 0; i < names.length; i++ ) { %>
+                            <tr>
+                                <th scope="row">
+                                    <%= (i + 1) %>
+                                </th>
+                                <td>
+                                    <%= dataNames3[i] %>
+                                </td>
+                                <td align=center width=200;>
+                                    <%= values3[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= file_paths3[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= origins3[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= dates3[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= details3[i] %>
+                                </td>
+                            </tr>
+                        <% } %>
+                        </tbody>
+                    </table>
+                </div>
+                <br><br>
+                <hr class="featurette-divider">
+                <br><br>
+                <div class="panel panel-default" style="background-color: #ffffff">
+                    <div class="panel-heading" style="font-size:1.5em; background-color: #e7ebee;">유통이력 검색 결과 (가공)</div>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>데이터명</th>
+                            <th>값</th>
+                            <th>파일</th>
+                            <th>생성처</th>
+                            <th>날짜</th>
+                            <th>기타정보</th>
+                            <th>(가공)</th>
+                            <th>데이터명</th>
+                            <th>값</th>
+                            <th>파일</th>
+                            <th>생성처</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <% for(var i = 0; i < names5.length; i++ ) { %>
+                            <tr>
+                                <th scope="row">
+                                    <%= (i + 1) %>
+                                </th>
+                                <td>
+                                    <%= dataNames5[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= values5[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= file_paths5[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= origins5[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= dates5[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= details5[i] %>
+                                </td>
+                                <td align=center>
+                                    <img src="/images/arrow2.png" width="24" height="12">
+                                </td>
+                                <td align=center>
+                                    <%= dataNames6[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= values6[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= file_paths6[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= origins6[i] %>
+                                </td>
+                            </tr>
+                        <% } %>
+                        </tbody>
+                    </table>
+                </div>
+
+                <br><br>
+                <hr class="featurette-divider">   
+                <br><br>    
+                <div class="panel panel-default" style="background-color: #ffffff">
+                    <div class="panel-heading" style="font-size:1.5em; background-color: #e7ebee;">유통이력 검색 결과 (제공)</div>
+                    <table class="table table-striped" style="font-size: 0.85em;">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>데이터명</th>
+                            <th>값</th>
+                            <th>파일</th>
+                            <th>생성처</th>
+                            <th>날짜</th>
+                            <th>제공기관</th>
+                            <th>가격</th>
+                            <th>허용기간</th>
+                            <th>정보제공 동의여부</th>
+                            <th>기타정보</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <% for(var i = 0; i < s_names.length; i++ ) { %>
+                            <tr>
+                                <th scope="row">
+                                    <%= (i + 1) %>
+                                </th>
+                                <td>
+                                    <%= dataNames4[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= values4[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= file_paths4[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= origins4[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= dates4[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= r_names[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= prices4[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= APFroms4[i] %> ~ <%= APTos4[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= isAgrees[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= details4[i] %>
+                                </td>
+                            </tr>
+                        <% } %>
+                        </tbody>
+                    </table>             
+                </div>
+
             </div>
-           <!--  </form> -->
-        </div>
         <% }%>
         <a href="/viewPage"><input class="btn btn-primary" type="submit" value="뒤로가기"
             style="width:100px; background-color: #4a9dea; border-color:  #4a9dea;"></a>

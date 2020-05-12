@@ -6,7 +6,7 @@ let session_info ={
     gubun: '',
     authenticated: false,
     message: ''
-    
+
     /*
     email: 'sw1234',
     user: '이상우',
