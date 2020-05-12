@@ -39,7 +39,11 @@
     <div align=center>
         <% if(esession.authenticated == false){ %>
             <% include ../notAuthenticated.ejs %>
-        <% }else{ %>
+            <% } 
+            else if(esession.gubun == '관리자'){ %>
+                <% include ../adminres %>
+            <% } 
+            else{ %>
             <div class="jumbotron" style="background-color: #ffffff;">
                 <!--<div style="font-size:2em;">기관 관리</div>-->
                 <div class="fontSize">
