@@ -1974,7 +1974,7 @@ router.post('/periodSearch', function (req, res) {
                     else {
                         nameArr.push(' ')
                         pidArr.push(' ')
-                        p_type.push(' ')
+                        p_typeArr.push(' ')
 
                         dataNameArr3.push(' ')
                         valueArr3.push(' ')
@@ -2077,7 +2077,7 @@ router.post('/periodSearch', function (req, res) {
                     else {
                         nameArr.push(' ')
                         pidArr.push(' ')
-                        p_type.push(' ')
+                        p_typeArr.push(' ')
 
                         dataNameArr3.push(' ')
                         valueArr3.push(' ')
