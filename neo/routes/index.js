@@ -564,6 +564,11 @@ router.get('/viewPage', function (req, res) {
     var file_pathArr10 = [];
     var originArr10 = [];
 
+    var dataNameArr10 = [];
+    var dataTypeArr10 = [];
+    var priceArr10 = [];
+    var deviceArr10 = [];
+
     var nameArr11 = [];
     var pidArr11 = [];
     var pTypeArr11 = [];
@@ -2960,6 +2965,10 @@ router.get('/data/modifyData', function (req, res) {
     var APToArr10 = [];
     var priceArr10 = [];
     var isAgreeArr10 = [];
+
+    var dataNameArr10 = [];
+    var dataTypeArr10 = [];
+    var deviceArr10 = [];
 
     var dataNameArr10 = [];
     var valueArr10 = [];
