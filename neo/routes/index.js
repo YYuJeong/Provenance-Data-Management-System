@@ -2418,7 +2418,10 @@ router.post('/keyword', function (req, res) {
     user.push(user_name);
     user.push(user_pid);
 
+    //console.log("ON",req.body.keyword.length);
     var keyStr = req.body.keyword;
+    var len = keyStr.length;
+
     keyStr = user_name + " " + user_pid + " " + keyStr
     console.log(user_name + " " + user_pid + " " + keyStr);
     
@@ -2441,7 +2444,7 @@ router.post('/keyword', function (req, res) {
     */
 
     var startTime = new Date().getTime();
-    if(keyStr == '' || keyStr == null) {
+    if(len == 0) {
         res.send('<script type="text/javascript">alert("검색어를 입력해주세요."); window.history.go(-1);</script>');
     }
     else{

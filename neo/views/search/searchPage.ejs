@@ -13,6 +13,10 @@
             color: #303030;
             letter-spacing: 1px;
         }
+
+        .fontSize {
+            font-size: 1.2em;
+        }
     </style>
 
 </head>
@@ -34,9 +38,7 @@
     <% include ../menu %>
 
     <hr class="featurette-divider">
-    <br><br>
-    <!-- START THE FEATURETTES -->
-    <div align=center>
+    <div class="container fontSize" style="display: inline-block; text-align: center;">
         <% if(esession.authenticated == false){ %>
             <% include ../notAuthenticated.ejs %>
             <% } 
