@@ -3058,6 +3058,7 @@ router.get('/data/modifyData', function (req, res) {
     var i = 0;
     var user_gubun = session_value.getSession().gubun;
     var user_name = session_value.getSession().user;
+    var user_pid = session_value.getSession().pid;
 
     modiInsName = [];
         
