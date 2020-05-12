@@ -219,7 +219,7 @@ def generate_outputTable(ranking):
                         if j == len(p)-1:
                             outTmp = outTmp + p[j] + "/"
                         else:
-                            outTmp = outTmp + p[j] + "."
+                            outTmp = outTmp + p[j] + "^"
             
             out = out + outTmp
 
