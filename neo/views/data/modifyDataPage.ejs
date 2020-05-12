@@ -98,9 +98,19 @@
               <br>
               <div class="row">
                   <div style="margin:0 auto;">
-                      <div class="input-group" style="width:30%; margin:0 auto;">
+                      <!--<div class="input-group" style="width:30%; margin:0 auto;">
                           <span class="input-group-addon">기관</span>
                           <input type="text" id="company" name="company" class="form-control"/>
+                      </div>
+                      <br>-->
+                      <div class="input-group" style="width:30%; margin:0 auto;">
+                        <span class="input-group-addon">기관</span>
+                        <select id="company" name="company" class="form-control">
+                          <option value=''>선택 (필수)</option>
+                          <% for(var i = 0; i < insNames.length; i++) { %>
+                            <option value='<%= insNames[i] %>' %>><%= insNames[i] %></option>
+                          <% } %>
+                        </select>
                       </div>
                       <br>
                       <div class="row">
