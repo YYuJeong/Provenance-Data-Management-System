@@ -45,6 +45,12 @@ var neo4j = require('neo4j-driver').v1;
 var driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', 'wowhi223'));
 var session = driver.session();
 
+app.use(esession({                                             
+  secret:"asdfasffdas",
+  resave:false,
+  saveUninitialized:true,
+}));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(__dirname + '/public'));
@@ -117,11 +123,11 @@ app.use(function(err, req, res, next) {
   }
 }));*/
 
-app.use(esession({                                             
+/*app.use(esession({                                             
   secret:"asdfasffdas",
   resave:false,
   saveUninitialized:true,
-}));
+}));*/
 
 
 

@@ -162,22 +162,23 @@ router.post('/users', function (req, res){
             else {
                 if (results[0].password === password) {
                     session_value.setSession(body.email, results[0]["name"], results[0]["gubun"], body.password, true);
+
                     req.session.email = body.email;
                     req.session.name = results[0]["name"];
                     req.session.gubun = results[0]["gubun"];
                     req.session.password = body.password;
                     req.session.authenticated = true;
 
-                    /*let session_info ={
+                    let session_info ={
                         email: body.email,
                         user: results[0]["name"],
                         gubun: results[0]["gubun"],
                         password: body.password,
                         authenticated: true,
                         message: ''
-                    };*/
+           
 
-                    res.render('index', {message: '로그인 되었습니다', esession: req.session});
+                    res.render('index', {message: '로그인 되었습니다', esession: session_info});
                 }
                 else {
                     res.render('users', {message: '비밀번호를 확인해주십시오', esession: undefined});
@@ -418,7 +419,7 @@ router.get('/addPage', function (req, res, next) {
 })
 
 router.get('/', function (req, res, next) {
-    res.render('index', {esession: req.session });
+    res.render('index', {esession: session_value.getSession()});
 });
 
 

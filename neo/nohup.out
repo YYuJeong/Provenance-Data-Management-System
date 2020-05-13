@@ -389,3 +389,274 @@ Execution time :  1152
 [0mGET /search/styles/neod3.css [33m404 [0m1.665 ms - 1203[0m
 Terminated
 [31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[33m[nodemon] 2.0.3[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,json[39m
+[32m[nodemon] starting `node ./bin/www`[39m
+[0mGET /search/searchKeyword [32m200 [0m9.406 ms - 14957[0m
+[0mGET / [36m304 [0m2.327 ms - -[0m
+[0mGET /users [32m200 [0m1.870 ms - 4941[0m
+[0mPOST /users [32m200 [0m5.730 ms - 7414[0m
+[0mGET /search/searchPage [36m304 [0m2.349 ms - -[0m
+[0mGET /search/searchKeyword [32m200 [0m3.996 ms - 16118[0m
+김한슬 조근호
+/home/ubuntu/Provenance-Data-Management-System/neo/routes/search/search.py
+Execution time :  1183
+/MATCH (s0:Person), (e0:Person) WHERE s0.name = '김한슬' AND s0.affiliation = '한국시설안전공단' AND e0.name = '조근호' AND e0.affiliation = '상명대학교'  MATCH p0 = shortestPath((s0)-[*]-(e0))  RETURN p0/MATCH (s1:Person), (e1:Person) WHERE s1.name = '김한슬' AND s1.affiliation = 'TSMC' AND e1.name = '조근호' AND e1.affiliation = '정보통신산업진흥원'  MATCH p0 = shortestPath((s1)-[*]-(e1))  RETURN p0/MATCH (s2:Person), (e2:Person) WHERE s2.name = '김한슬' AND s2.affiliation = '삼성SDS' AND e2.name = '조근호' AND e2.affiliation = '신한금융'  MATCH p0 = shortestPath((s2)-[*]-(e2))  RETURN p0|Person name.affiliation 김한슬.한국시설안전공단/Person name.affiliation 조근호.상명대학교/;Person name.affiliation 김한슬.TSMC/Person name.affiliation 조근호.정보통신산업진흥원/;Person name.affiliation 김한슬.삼성SDS/Person name.affiliation 조근호.신한금융/;
+
+[0mPOST /keyword [36m302 [0m1199.189 ms - 84[0m
+[0mGET /search/searchKeyword [32m200 [0m3.056 ms - 17163[0m
+[0mGET /search/styles/neod3.css [33m404 [0m1.646 ms - 1203[0m
+[0mGET /search/styles/neod3.css [33m404 [0m1.071 ms - 1203[0m
+[0mGET /search/styles/neod3.css [33m404 [0m0.744 ms - 1203[0m
+[0mGET / [32m200 [0m1.370 ms - 7414[0m
+[0mGET /logout [36m302 [0m0.564 ms - 46[0m
+[0mGET / [32m200 [0m1.181 ms - 7434[0m
+[0mGET /users [32m200 [0m1.728 ms - 4941[0m
+[0mPOST /users [32m200 [0m2.083 ms - 4897[0m
+[0mPOST /users [32m200 [0m2.421 ms - 4897[0m
+[0mGET / [36m304 [0m1.355 ms - -[0m
+[0mGET /users [32m200 [0m1.193 ms - 4941[0m
+[0mPOST /users [32m200 [0m2.696 ms - 7414[0m
+[0mPOST /users [32m200 [0m1.999 ms - 7414[0m
+[0mGET /logout [36m302 [0m0.790 ms - 46[0m
+[0mGET / [36m304 [0m1.189 ms - -[0m
+[0mGET /users [32m200 [0m1.285 ms - 4941[0m
+[0mPOST /users [32m200 [0m2.019 ms - 7414[0m
+[32m[nodemon] restarting child process[39m
+[32m[nodemon] starting `node ./bin/www`[39m
+[0mGET / [32m200 [0m8.320 ms - 7434[0m
+[0mGET /viewPage [32m200 [0m4.523 ms - 6156[0m
+[0mGET /users [32m200 [0m2.181 ms - 4941[0m
+[0mPOST /users [32m200 [0m5.197 ms - 7414[0m
+[0mGET /search/searchPage [36m304 [0m3.485 ms - -[0m
+[0mGET /search/searchKeyword [32m200 [0m2.880 ms - 16118[0m
+김한슬 조근호
+/home/ubuntu/Provenance-Data-Management-System/neo/routes/search/search.py
+Execution time :  1145
+/MATCH (s0:Person), (e0:Person) WHERE s0.name = '김한슬' AND s0.affiliation = '한국시설안전공단' AND e0.name = '조근호' AND e0.affiliation = '상명대학교'  MATCH p0 = shortestPath((s0)-[*]-(e0))  RETURN p0/MATCH (s1:Person), (e1:Person) WHERE s1.name = '김한슬' AND s1.affiliation = 'TSMC' AND e1.name = '조근호' AND e1.affiliation = '정보통신산업진흥원'  MATCH p0 = shortestPath((s1)-[*]-(e1))  RETURN p0/MATCH (s2:Person), (e2:Person) WHERE s2.name = '김한슬' AND s2.affiliation = '삼성SDS' AND e2.name = '조근호' AND e2.affiliation = '신한금융'  MATCH p0 = shortestPath((s2)-[*]-(e2))  RETURN p0|Person name.affiliation 김한슬.한국시설안전공단/Person name.affiliation 조근호.상명대학교/;Person name.affiliation 김한슬.TSMC/Person name.affiliation 조근호.정보통신산업진흥원/;Person name.affiliation 김한슬.삼성SDS/Person name.affiliation 조근호.신한금융/;
+
+[0mPOST /keyword [36m302 [0m1161.990 ms - 84[0m
+[0mGET /search/searchKeyword [32m200 [0m2.552 ms - 17163[0m
+[0mGET /search/styles/neod3.css [33m404 [0m1.729 ms - 1203[0m
+관리자
+[0mGET /viewPage [32m200 [0m47.486 ms - 54494[0m
+[0mGET / [32m200 [0m1.439 ms - 7414[0m
+[0mGET /images/favicon.ico [33m404 [0m1.030 ms - 1203[0m
+Terminated
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[33m[nodemon] 2.0.3[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,json[39m
+[32m[nodemon] starting `node ./bin/www`[39m
+create localStorage complete
+===setSession sessioninfo log print===
+
+
+
+
+false
++++setSession sessioninfo log print+++
+[0mGET /logout [36m302 [0m26.045 ms - 46[0m
+===getSession sessioninfo log print===
+
+
+
+
+false
+===getSession sessioninfo log print end===
+[0mGET / [36m304 [0m7.411 ms - -[0m
+===getSession sessioninfo log print===
+
+
+
+
+false
+===getSession sessioninfo log print end===
+[0mGET /users [32m200 [0m3.510 ms - 5203[0m
+===setSession sessioninfo log print===
+admin
+관리자
+관리자
+1234
+true
++++setSession sessioninfo log print+++
+===getSession sessioninfo log print===
+admin
+관리자
+관리자
+1234
+true
+===getSession sessioninfo log print end===
+[0mPOST /users [32m200 [0m49.956 ms - 7414[0m
+===setSession sessioninfo log print===
+admin
+관리자
+관리자
+1234
+true
++++setSession sessioninfo log print+++
+===getSession sessioninfo log print===
+admin
+관리자
+관리자
+1234
+true
+===getSession sessioninfo log print end===
+[0mPOST /users [32m200 [0m50.457 ms - 7414[0m
+===setSession sessioninfo log print===
+
+
+
+
+false
++++setSession sessioninfo log print+++
+[0mGET /logout [36m302 [0m17.184 ms - 46[0m
+===getSession sessioninfo log print===
+
+
+
+
+false
+===getSession sessioninfo log print end===
+[0mGET / [36m304 [0m1.832 ms - -[0m
+===getSession sessioninfo log print===
+
+
+
+
+false
+===getSession sessioninfo log print end===
+[0mGET /users [32m200 [0m2.324 ms - 5203[0m
+===setSession sessioninfo log print===
+admin
+관리자
+관리자
+1234
+true
++++setSession sessioninfo log print+++
+===getSession sessioninfo log print===
+admin
+관리자
+관리자
+1234
+true
+===getSession sessioninfo log print end===
+[0mPOST /users [32m200 [0m44.494 ms - 7414[0m
+===getSession sessioninfo log print===
+admin
+관리자
+관리자
+1234
+true
+===getSession sessioninfo log print end===
+[0mGET / [32m200 [0m1.959 ms - 7414[0m
+===setSession sessioninfo log print===
+
+
+
+
+false
++++setSession sessioninfo log print+++
+[0mGET /logout [36m302 [0m17.447 ms - 46[0m
+===getSession sessioninfo log print===
+
+
+
+
+false
+===getSession sessioninfo log print end===
+[0mGET / [32m200 [0m2.259 ms - 7434[0m
+===getSession sessioninfo log print===
+
+
+
+
+false
+===getSession sessioninfo log print end===
+[0mGET /users [32m200 [0m1.797 ms - 5203[0m
+===getSession sessioninfo log print===
+
+
+
+
+false
+===getSession sessioninfo log print end===
+[0mGET / [32m200 [0m1.886 ms - 7434[0m
+[0mGET /images/favicon.ico [33m404 [0m1.723 ms - 1203[0m
+===getSession sessioninfo log print===
+
+
+
+
+false
+===getSession sessioninfo log print end===
+[0mGET /users [32m200 [0m1.584 ms - 5203[0m
+[0mGET /images/favicon.ico [33m404 [0m0.728 ms - 1203[0m
+===setSession sessioninfo log print===
+admin
+관리자
+관리자
+1234
+true
++++setSession sessioninfo log print+++
+===getSession sessioninfo log print===
+admin
+관리자
+관리자
+1234
+true
+===getSession sessioninfo log print end===
+[0mPOST /users [32m200 [0m46.505 ms - 7414[0m
+===getSession sessioninfo log print===
+admin
+관리자
+관리자
+1234
+true
+===getSession sessioninfo log print end===
+[0mGET / [32m200 [0m1.921 ms - 7414[0m
+===getSession sessioninfo log print===
+admin
+관리자
+관리자
+1234
+true
+===getSession sessioninfo log print end===
+[0mGET / [32m200 [0m1.830 ms - 7414[0m
+===getSession sessioninfo log print===
+admin
+관리자
+관리자
+1234
+true
+===getSession sessioninfo log print end===
+[0mGET /users [32m200 [0m1.814 ms - 5183[0m
+===getSession sessioninfo log print===
+admin
+관리자
+관리자
+1234
+true
+===getSession sessioninfo log print end===
+[0mGET / [36m304 [0m1.887 ms - -[0m
+===setSession sessioninfo log print===
+
+
+
+
+false
++++setSession sessioninfo log print+++
+[0mGET /logout [36m302 [0m17.586 ms - 46[0m
+===getSession sessioninfo log print===
+
+
+
+
+false
+===getSession sessioninfo log print end===
+[0mGET / [32m200 [0m1.751 ms - 7434[0m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node ./bin/www`[39m
