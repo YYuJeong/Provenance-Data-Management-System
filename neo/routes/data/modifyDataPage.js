@@ -15,7 +15,7 @@ var bodyParser = require('body-parser');
 var session_value = require('../session');
 
 router.get('/', function(req, res, next) {
-  res.render('data/modifyDataPage.ejs', {esession: req.session});
+  res.render('data/modifyDataPage.ejs', {esession: session_value.getSession()});
 });
 
 

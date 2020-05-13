@@ -5,7 +5,7 @@ var session_value = require('./session');
 /* GET users listing. */
 router.get('/', function (req, res, next) {
     res.render("users.ejs", {
-        esession: req.session
+        esession: session_value.getSession()
     });
 });
 

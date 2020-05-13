@@ -131,30 +131,14 @@ router.post('/contact', function (req, res, next) {
 });
 
 router.get('/logout', function (req, res, next) {
-    //session_value.setSession('', '', '', '', '', false);
-    
-    req.session.email = '';
-    req.session.user = '';
-    req.session.user_name = '';
-    req.session.gubun = '';
-    req.session.password = '';
-    req.session.authenticated = false;
-
-    esession.email = '';
-    esession.name = '';
-    esession.user = '';
-    esession.user_name = '';
-    esession.gubun = '';
-    esession.password = '';
-    esession.authenticated = false;
-    
+    session_value.setSession('', '', '', '', '', false);
     res.redirect('/');
-    //res.render('index', {esession: req.session });
+    //res.render('index', {esession: session_value.getSession() });
 });
 
 router.route('/search/searchPage').post(
     function (req, res) {
-        res.render('search/searchPage', {esession: req.session});
+        res.render('search/searchPage', {esession: session_value.getSession()});
     }
 )
 
@@ -175,26 +159,14 @@ router.post('/users', function (req, res){
             else {
                 if (results[0].password === password) {
 
-                    //session_value.setSession(body.email, results[0]["name"], results[0]["gubun"], body.password, true);
-                    esession.email = body.email;
-                    esession.name = results[0]["name"];
-                    esession.user = results[0]["name"];
-                    esession.user_name = results[0]["name"];
-                    esession.gubun = results[0]["gubun"];
-                    esession.password = body.password;
-                    esession.authenticated = true;
-
+                    session_value.setSession(body.email, results[0]["name"], results[0]["gubun"], body.password, true);
                     req.session.email = body.email;
-                    req.session.user_name = results[0]["name"];
-                    req.session.user = results[0]["name"];
+                    req.session.name = results[0]["name"];
                     req.session.gubun = results[0]["gubun"];
                     req.session.password = body.password;
                     req.session.authenticated = true;
-                    
 
                     res.render('index', {message: '로그인 되었습니다', esession: req.session});
-
-                    console.log(esession.user_name);
                 }
                 else {
                     res.render('users', {message: '비밀번호를 확인해주십시오', esession: undefined});
@@ -206,7 +178,7 @@ router.post('/users', function (req, res){
 
 router.route('/ins/editIns').post(
     function (req, res) {
-        res.render('ins/editIns', {esession: req.session});
+        res.render('ins/editIns', {esession: session_value.getSession()});
     }
 )
 
@@ -224,7 +196,7 @@ router.post('/insAdd', function (req, res) {
             //console.log("rows : " + rows);
 
             res.render('ins/addIns', {
-                esession: req.session});
+                esession: session_value.getSession()});
         });
          
 });
@@ -255,7 +227,7 @@ router.get('/ins/modifyIns', function (req, res) {
             console.log(insNames);
             console.log(insValues);
             res.render('ins/modifyIns', {
-                esession: req.session,
+                esession: session_value.getSession(),
                 insNames: insNames,
                 insValues: insValues
             });
@@ -307,7 +279,7 @@ router.post('/insGetModifyData', function (req, res) {
         console.log("modiInsInfo : ", modiInsInfo);
 
         res.render('ins/modifyInsResult.ejs', {
-            esession: req.session,
+            esession: session_value.getSession(),
 
             modiFlag: modiFlag,
             insNames: modiInsName,
@@ -353,7 +325,7 @@ router.post('/insModify', function (req, res) {
             console.log(insNames);
             console.log(insValues);
             res.render('ins/modifyIns', {
-                esession: req.session,
+                esession: session_value.getSession(),
                 insNames: insNames,
                 insValues: insValues
             });
@@ -366,7 +338,7 @@ let upload = multer({
 });
 
 router.get('/data/uploadData', function (req, res, next) {    
-   res.render('data/uploadData', {esession: req.session});
+   res.render('data/uploadData', {esession: session_value.getSession()});
 });
 
 router.post('/data/uploadData', function (req, res,next) {
@@ -459,9 +431,9 @@ router.post('/data/uploadData', function (req, res,next) {
                 
                 process.on('close', function (data) {
                     //console.log(uploadFile);
-                    //res.render("search/searchKeyword", {esession: req.session, data:keyResult.getKeywordResult()});
+                    //res.render("search/searchKeyword", {esession: session_value.getSession(), data:keyResult.getKeywordResult()});
                     //res.redirect('/data/uploadData');
-                    //res.render('data/uploadData', {esession: req.session});
+                    //res.render('data/uploadData', {esession: session_value.getSession()});
                 });
                 
             }, 
@@ -470,7 +442,7 @@ router.post('/data/uploadData', function (req, res,next) {
                 
             });
 
-        res.render('data/uploadData', {esession: req.session});
+        res.render('data/uploadData', {esession: session_value.getSession()});
     });
 
     // track progress
@@ -536,10 +508,10 @@ router.post('/dataAdd', function (req, res) {
     }
     var date = year.toString() + month + day
 
-    var user_name = req.session.user; 
-    var user_pid = req.session.pid; //주민번호로 바꾸기
+    var user_name = session_value.getSession().user; 
+    var user_pid = session_value.getSession().pid; //주민번호로 바꾸기
     var user_type;
-    if(req.session.gubun == '사용자'){
+    if(session_value.getSession().gubun == '사용자'){
         user_type = '개인'
     }
     console.log(file_path)
@@ -571,11 +543,11 @@ router.post('/dataAdd', function (req, res) {
         .catch(function (err) {
             console.log(err);
         });
-    res.render('addPage', {esession: req.session});
+    res.render('addPage', {esession: session_value.getSession()});
 });
 
 router.get('/addPage', function (req, res, next) {
-    res.render('addPage', {esession: req.session});
+    res.render('addPage', {esession: session_value.getSession()});
 })
 
 router.get('/', function (req, res, next) {
@@ -663,9 +635,9 @@ router.get('/viewPage', function (req, res) {
     var fileDownloadPath = [];
 
     var i = 0;
-    var user_gubun = req.session.gubun;
-    var user_name = req.session.user;
-    var user_pid = req.session.pid;
+    var user_gubun = session_value.getSession().gubun;
+    var user_name = session_value.getSession().user;
+    var user_pid = session_value.getSession().pid;
     
     if (user_gubun == '사용자') {
         console.log('사용자')
@@ -762,7 +734,7 @@ router.get('/viewPage', function (req, res) {
                 });
                 console.log(fileDownloadPath);
                 res.render('viewPage', {
-                    esession: req.session,
+                    esession: session_value.getSession(),
 
                     names: nameArr,
                     pids: pidArr,
@@ -905,7 +877,7 @@ router.get('/viewPage', function (req, res) {
 
 
           res.render('viewPage', {
-            esession: req.session,
+            esession: session_value.getSession(),
             names: nameArr,
             affiliations: affiliationArr,
             dataTypes3: dataTypeArr3,
@@ -953,7 +925,7 @@ router.get('/viewPage', function (req, res) {
     }*/
     else {
         res.render('viewPage', {
-            esession: req.session,
+            esession: session_value.getSession(),
             names: undefined,
             affiliations: undefined,
             dataTypes3: undefined,
@@ -1012,10 +984,10 @@ router.post('/getViewValues', function (req, res) {
     var dataFile = dataFilesTotal[checkValue]
     var dataOrigin = dataOriginTotal[checkValue]
 
-    var user_name = req.session.user;
-    var user_pid = req.session.pid;
+    var user_name = session_value.getSession().user;
+    var user_pid = session_value.getSession().pid;
     var user_type;
-    if(req.session.gubun == '사용자'){
+    if(session_value.getSession().gubun == '사용자'){
         user_type = '개인'
     }
 
@@ -1222,7 +1194,7 @@ router.post('/getViewValues', function (req, res) {
                     dateArr3.push(' ')
                 }
                 res.render('viewLink.ejs', {
-                    esession: req.session,
+                    esession: session_value.getSession(),
 
                     names: nameArr,
                     pids: pidArr,
@@ -1345,9 +1317,9 @@ router.post('/DataSearch', function (req, res) {
     console.log("origin: " + origin);
 
     var nullcount = 0;
-    var user_gubun = req.session.gubun;
-    var user_name = req.session.user;
-    var user_pid = req.session.pid;
+    var user_gubun = session_value.getSession().gubun;
+    var user_name = session_value.getSession().user;
+    var user_pid = session_value.getSession().pid;
 
     var dataNameCyper3 = " d.name = ";
     var originCyper3 = " d.origin = ";
@@ -1561,7 +1533,7 @@ router.post('/DataSearch', function (req, res) {
 
 
                         res.render('search/searchDataResult.ejs', {
-                            esession: req.session,
+                            esession: session_value.getSession(),
 
                             names: nameArr,
                             pids: pidArr,
@@ -1623,9 +1595,9 @@ router.post('/nameSearch', function (req, res) {
 
     var nameFlag = true;
 
-    var user_gubun = req.session.gubun;
-    var user_name = req.session.user;
-    var user_pid = req.session.pid;
+    var user_gubun = session_value.getSession().gubun;
+    var user_name = session_value.getSession().user;
+    var user_pid = session_value.getSession().pid;
 
     //생성
     var nameArr = [];
@@ -1783,7 +1755,7 @@ router.post('/nameSearch', function (req, res) {
 
 
             res.render('search/searchNameResult.ejs', {
-                esession: req.session,
+                esession: session_value.getSession(),
 
                 names: nameArr,
                 pids: pidArr,
@@ -1892,9 +1864,9 @@ router.post('/periodSearch', function (req, res) {
 
     var nullcount = 0;
 
-    var user_gubun = req.session.gubun;
-    var user_name = req.session.user;
-    var user_pid = req.session.pid;
+    var user_gubun = session_value.getSession().gubun;
+    var user_name = session_value.getSession().user;
+    var user_pid = session_value.getSession().pid;
 
     var matchCyper5;
     var matchCyper4;
@@ -2138,7 +2110,7 @@ router.post('/periodSearch', function (req, res) {
                     console.log(dataNameArr4)
                     console.log(p_typeArr5)
                     res.render('search/searchPeriodResult.ejs', {
-                        esession: req.session,
+                        esession: session_value.getSession(),
                         query3: query3,
                         query4: query4,
                         query5: query5, 
@@ -2235,7 +2207,7 @@ router.post('/periodSearch', function (req, res) {
                         dateArr3.push(' ')
                     }
                     res.render('search/searchPeriodResult.ejs', {
-                        esession: req.session,
+                        esession: session_value.getSession(),
                         query3: query3,
                         query4: query4,
                         query5: query5, 
@@ -2315,7 +2287,7 @@ router.post('/periodSearch', function (req, res) {
                         r_pTypeArr.push(' ')
                 }
                 res.render('search/searchPeriodResult.ejs', {
-                    esession: req.session,
+                    esession: session_value.getSession(),
                     query3: query3,
                     query4: query4,
                     query5: query5, 
@@ -2394,7 +2366,7 @@ router.post('/periodSearch', function (req, res) {
                     originArr6.push(' ')
                 }
                 res.render('search/searchPeriodResult.ejs', {
-                    esession: req.session,
+                    esession: session_value.getSession(),
                     query3: query3,
                     query4: query4,
                     query5: query5, 
@@ -2495,9 +2467,9 @@ function getCheckNode(keyword) {
 
 router.post('/keyword', function (req, res) {
     var user = [];
-    var user_gubun = req.session.gubun;
-    var user_name = req.session.user;
-    var user_pid = req.session.pid;
+    var user_gubun = session_value.getSession().gubun;
+    var user_name = session_value.getSession().user;
+    var user_pid = session_value.getSession().pid;
 
     user.push(user_name);
     user.push(user_pid);
@@ -2551,7 +2523,7 @@ router.post('/keyword', function (req, res) {
                 process.on('close', function (data) {
                     //console.log(kk)
 
-                    //res.render("search/searchKeyword.ejs", {esession: req.session, data:keyResult.getKeywordResult()});
+                    //res.render("search/searchKeyword.ejs", {esession: session_value.getSession(), data:keyResult.getKeywordResult()});
                     res.redirect('search/searchKeyword');
                 });
             }, function (err) {
@@ -2562,7 +2534,7 @@ router.post('/keyword', function (req, res) {
 });
 
 router.get('search/searchKeyword', function(req, res){
-    res.render("search/searchKeyword", {esession: req.session, data:keyResult.getKeywordResult()});
+    res.render("search/searchKeyword", {esession: session_value.getSession(), data:keyResult.getKeywordResult()});
 });
 
 
@@ -2673,7 +2645,7 @@ router.post('/getDeleteValues', function (req, res) {
                         session.run(query5)
                             .then(function (result) {
                                 console.log("삭제 완료")
-                                res.render('data/deleteData', {esession: req.session});
+                                res.render('data/deleteData', {esession: session_value.getSession()});
                             });
                         });
                 session.close();
@@ -2688,7 +2660,7 @@ router.post('/getDeleteValues', function (req, res) {
                 session.run(query4)
                     .then(function (result) {
                         console.log("삭제 완료")
-                        res.render('data/deleteData', {esession: req.session});
+                        res.render('data/deleteData', {esession: session_value.getSession()});
                     });
                 session.close();
             })
@@ -2702,7 +2674,7 @@ router.post('/getDeleteValues', function (req, res) {
                 session.run(query5)
                     .then(function (result) {
                         console.log("삭제 완료")
-                        res.render('data/deleteData', {esession: req.session});
+                        res.render('data/deleteData', {esession: session_value.getSession()});
                     });
                 session.close();
             })
@@ -2716,7 +2688,7 @@ router.post('/getDeleteValues', function (req, res) {
                 session.run(query5)
                     .then(function (result) {
                         console.log("삭제 완료")
-                        res.render('data/deleteData', {esession: req.session});
+                        res.render('data/deleteData', {esession: session_value.getSession()});
                     });
                 session.close();
             })
@@ -2728,7 +2700,7 @@ router.post('/getDeleteValues', function (req, res) {
         if (delFlag4) {
             session.run(query4)
                 .then(function (result) {
-                    res.render('data/deleteData', {esession: req.session});
+                    res.render('data/deleteData', {esession: session_value.getSession()});
                     session.close();
                 })
                 .catch(function (err) {
@@ -2738,7 +2710,7 @@ router.post('/getDeleteValues', function (req, res) {
         else if (delFlag3) {
             session.run(query3)
                 .then(function (result) {
-                    res.render('data/deleteData', {esession: req.session});
+                    res.render('data/deleteData', {esession: session_value.getSession()});
                     session.close();
                 })
                 .catch(function (err) {
@@ -2748,7 +2720,7 @@ router.post('/getDeleteValues', function (req, res) {
         else {
             session.run(query5)
                 .then(function (result) {
-                    res.render('data/deleteData', {esession: req.session});
+                    res.render('data/deleteData', {esession: session_value.getSession()});
                     session.close();
                 })
                 .catch(function (err) {
@@ -2818,8 +2790,8 @@ router.post('/delete', function (req, res) {
 
     setArray()
 
-    var user_gubun = req.session.gubun;
-    var user_name = req.session.user;
+    var user_gubun = session_value.getSession().gubun;
+    var user_name = session_value.getSession().user;
     console.log("dataName: " + dataName);
     console.log("name: " + name);
 
@@ -2860,8 +2832,8 @@ router.post('/delete', function (req, res) {
         newQuery3 = matchCyper3 + whereCyper3 + "p.name = '" + user_name + "' ) AND (";
     }
 
-    var user_gubun = req.session.gubun;
-    var user_name = req.session.user;
+    var user_gubun = session_value.getSession().gubun;
+    var user_name = session_value.getSession().user;
 
 
     var dataNameCyper = " d.name = ";
@@ -3016,7 +2988,7 @@ router.post('/delete', function (req, res) {
                         dateArr3.push(' ')
                     }
                     res.render('data/deleteDataResult.ejs', {
-                        esession: req.session,
+                        esession: session_value.getSession(),
 
                         names: nameArr,
                         affiliations: affiliationArr,
@@ -3141,9 +3113,9 @@ router.get('/data/modifyData', function (req, res) {
     //var dataOwnerAff = [];
 
     var i = 0;
-    var user_gubun = req.session.gubun;
-    var user_name = req.session.user;
-    var user_pid = req.session.pid;
+    var user_gubun = session_value.getSession().gubun;
+    var user_name = session_value.getSession().user;
+    var user_pid = session_value.getSession().pid;
 
     modiInsName = [];
         
@@ -3250,7 +3222,7 @@ router.get('/data/modifyData', function (req, res) {
 
                 });
                 res.render('data/modifyData', {
-                    esession: req.session,
+                    esession: session_value.getSession(),
 
                     names: nameArr,
                     pids: pidArr,
@@ -3306,7 +3278,7 @@ router.get('/data/modifyData', function (req, res) {
             });
           }); */
             res.render('data/modifyData', {
-                esession: req.session,
+                esession: session_value.getSession(),
 
 
                 s_names: s_nameArr,
@@ -3403,7 +3375,7 @@ router.get('/data/modifyData', function (req, res) {
 
 
           res.render('data/modifyData', {
-            esession: req.session,
+            esession: session_value.getSession(),
             names: nameArr,
             affiliations: affiliationArr,
             dataTypes3: dataTypeArr3,
@@ -3451,7 +3423,7 @@ router.get('/data/modifyData', function (req, res) {
     }
     else {
         res.render('data/modifyData', {
-            esession: req.session,
+            esession: session_value.getSession(),
             names: undefined,
             affiliations: undefined,
             dataTypes3: undefined,
@@ -3538,7 +3510,7 @@ router.get('/data/modifyData', function (req, res) {
             session.run(modiQuery3)
                 .then(function (result) {
                     res.render('data/modifyData.ejs', {
-                        esession: req.session,
+                        esession: session_value.getSession(),
                         authenticated: true
                     });
                     session.close();
@@ -3554,7 +3526,7 @@ router.get('/data/modifyData', function (req, res) {
             session.run(modiQuery3)
                 .then(function (result) {
                     res.render('data/modifyData.ejs', {
-                        esession: req.session,
+                        esession: session_value.getSession(),
                         authenticated: true
                     });
                     session.close();
@@ -3572,7 +3544,7 @@ router.get('/data/modifyData', function (req, res) {
             session.run(modiQuery4)
                 .then(function (result) {
                     res.render('data/modifyData.ejs', {
-                        esession: req.session,
+                        esession: session_value.getSession(),
                         authenticated: true
                     });
                     session.close();
@@ -3589,7 +3561,7 @@ router.get('/data/modifyData', function (req, res) {
             session.run(modiQuery4)
                 .then(function (result) {
                     res.render('data/modifyData.ejs', {
-                        esession: req.session,
+                        esession: session_value.getSession(),
                         authenticated: true
                     });
                     session.close();
@@ -3608,7 +3580,7 @@ router.get('/data/modifyData', function (req, res) {
             session.run(modiQuery5)
                 .then(function (result) {
                     res.render('data/modifyData.ejs', {
-                        esession: req.session,
+                        esession: session_value.getSession(),
                         authenticated: true
                     });
                     session.close();
@@ -3624,7 +3596,7 @@ router.get('/data/modifyData', function (req, res) {
             session.run(modiQuery5)
                 .then(function (result) {
                     res.render('data/modifyData.ejs', {
-                        esession: req.session,
+                        esession: session_value.getSession(),
                         authenticated: true
                     });
                     session.close();
@@ -3680,7 +3652,7 @@ router.post('/getModifyValues', function (req, res) {
         console.log("provInfo : ", provInfo);
 
         res.render('data/modifyDataPage.ejs', {
-            esession: req.session,
+            esession: session_value.getSession(),
 
             modiFlag: modiFlag,
             provInfo: provInfo,
@@ -3701,10 +3673,10 @@ router.post('/transfer', function (req, res) {
     var permission = req.body.permission;
     var manuMethod = req.body.manuMethod;
 
-    var user_name = req.session.user;
-    var user_pid = req.session.pid;
+    var user_name = session_value.getSession().user;
+    var user_pid = session_value.getSession().pid;
     var user_type;
-    if(req.session.gubun == '사용자'){
+    if(session_value.getSession().gubun == '사용자'){
         user_type = '개인'
     }
 
@@ -3769,7 +3741,7 @@ router.post('/transfer', function (req, res) {
         console.log(err);
     });
     res.render('data/modifyData.ejs', {
-        esession: req.session, 
+        esession: session_value.getSession(), 
         dataNamesTotal: dataN,
         dataValuesTotal: datavalue,
         dataFilesTotal: datafile,
@@ -3792,8 +3764,8 @@ router.post('/modify', function (req, res) {
 
     setArray()
 
-    var user_gubun = req.session.gubun;
-    var user_name = req.session.user;
+    var user_gubun = session_value.getSession().gubun;
+    var user_name = session_value.getSession().user;
     console.log("dataName: " + dataName);
     console.log("name: " + name);
 
@@ -3834,8 +3806,8 @@ router.post('/modify', function (req, res) {
         newQuery3 = matchCyper3 + whereCyper3;
     }
 
-    var user_gubun = req.session.gubun;
-    var user_name = req.session.user;
+    var user_gubun = session_value.getSession().gubun;
+    var user_name = session_value.getSession().user;
 
     var dataNameCyper4 = " d1.name = ";
     var dataNameCyper3 = " d.name = ";
@@ -3991,7 +3963,7 @@ router.post('/modify', function (req, res) {
                     dateArr3.push(' ')
                 }
                 res.render('data/modifyDataResult.ejs', {
-                        esession: req.session,
+                        esession: session_value.getSession(),
 
                         names: nameArr,
                         affiliations: affiliationArr,

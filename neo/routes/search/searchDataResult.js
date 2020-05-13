@@ -17,7 +17,7 @@ router.use(bodyParser.urlencoded({ extended: false }));
 //router.use(express.static(path.join(__dirname, 'public')));
 
 router.get('/', function(req, res, next) {
-  res.render('search/searchDataResult.ejs', {esession: req.session});
+  res.render('search/searchDataResult.ejs', {esession: session_value.getSession()});
 });
 
 module.exports = router;
