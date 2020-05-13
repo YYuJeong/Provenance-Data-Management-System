@@ -3,12 +3,14 @@
 
 <head>
     <% include ../before_loading.ejs %>
-    <title>이력 정보 관리시스템</title>
+    <title>개인정보 이력관리 시스템</title>
 
     <style type="text/css">
+        @font-face { font-family: 'Binggrae-Bold'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Binggrae-Bold.woff') format('woff'); font-weight: normal; font-style: normal; }
+        @font-face { font-family: 'RIDIBatang'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/RIDIBatang.woff') format('woff'); font-weight: normal; font-style: normal; }
         body {
-            font-family: 'Do Hyeon';
-            color: #303030;
+            font-family: 'RIDIBatang';
+            color: #333333;
             letter-spacing: 1px;
         }
     </style>
@@ -24,12 +26,12 @@
         <% include ../menu %>
 
         <hr class="featurette-divider">
-        <div class="jumbotron">
+        <div class="jumbotron" style="background-color: #f8f8f8;">
             <% if(esession.authenticated == false){ %>
                 <% include ../notAuthenticated.ejs %>
             <% }else{ %>
                 <div class="container">
-                    <div style="text-align: center; font-size:2em;">사용자로 검색<br><br>
+                    <div style="text-align: center; font-size:2em;">기관으로 검색<br><br>
                     </div>
                     <form method="post" action="/nameSearch">
 
@@ -37,22 +39,18 @@
                             <!--Start Here:)-->
                             <div style="margin:0 auto;">
                                 <div class="input-group" style="width:30%; margin:0 auto;">
-                                    <span class="input-group-addon">이름</span>
+                                    <span class="input-group-addon">기관명</span>
                                     <input type="text" id="name" name="name" class="form-control"/>
                                     <!--placeholder="이름을 입력해주세요"-->
                                 </div>
                                 <br>
-                                <div class="input-group" style="width:30%; margin:0 auto;">
-                                    <span class="input-group-addon">소속</span>
-                                    <input type="text" id="affiliation" name="affiliation" class="form-control"/>
-                                </div>
                             </div>
                         </div>
                         <!--디비연결전송오류로잠시위치이동-->
                         <div style="text-align: center;"><br><br>
                             <a href="/search/searchNameResult"><input class="btn btn-primary" type="submit" value="검색"
-                                                                      style="width:100px"></a>
-                            <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px"></a>
+                                style="width:100px; background-color: #4a9dea; border-color:  #4a9dea;"></a>
+                            <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px; background-color: #dddddd;"></a>
                         </div>
                         <!--원래폼위치-->
                     </form>

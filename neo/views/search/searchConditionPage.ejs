@@ -3,11 +3,13 @@
 
 <head>
     <% include ../before_loading.ejs %>
-    <title>이력 정보 관리시스템</title>
+    <title>개인정보 이력관리 시스템</title>
 
     <style type="text/css">
+         @font-face { font-family: 'Binggrae-Bold'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Binggrae-Bold.woff') format('woff'); font-weight: normal; font-style: normal; }
+        @font-face { font-family: 'RIDIBatang'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/RIDIBatang.woff') format('woff'); font-weight: normal; font-style: normal; }
         body {
-            font-family: 'Do Hyeon';
+            font-family: 'RIDIBatang';
             color: #303030;
             letter-spacing: 1px;
         }
@@ -38,20 +40,28 @@
         <% if(esession.authenticated == false){ %>
             <% include ../notAuthenticated.ejs %>
         <% }else{ %>
-        <a href="/search/searchData">
-            <button type="button" class="btn btn-primary btn-lg btn-block" style="width:300px;">데이터로 검색</button>
-        </a>
-        <br><br>
-        <% if(esession.gubun == '관리자'){ %>
-            <a href="/search/searchName">
-                <button type="button" class="btn btn-default btn-lg btn-block" style="width:300px;">사용자로 검색</button>
-            </a>
-            <br><br>
-        <% } %>
-        <a href="/search/searchPeriod">
-            <button type="button" class="btn btn-dark btn-lg btn-block" style="width:300px;">활동으로 검색</button>
-        </a>
-        <br><br>
+        <div class="jumbotron" style="background-color: #ffffff;">
+            <!--<div style="font-size:2em;">기관 관리</div>-->
+            <div class="fontSize">
+                    <div class="row">
+                        <div style="margin:0 auto;" align=center>
+                            <a href="/search/searchData">
+                                <button type="button" class="btn btn-primary btn-lg btn-block" style="width:300px; background-color: #4a9dea; border-color:  #4a9dea;">데이터로 검색</button>
+                            </a>
+                            <br><br>
+                            <% if(esession.gubun == '사용자'){ %>
+                                <a href="/search/searchName">
+                                    <button type="button" class="btn btn-default btn-lg btn-block" style="width:300px;">기관으로 검색</button>
+                                </a>
+                                <br><br>
+                            <% } %>
+                            <a href="/search/searchPeriod">
+                                <button type="button" class="btn btn-dark btn-lg btn-block" style="width:300px; ">활동으로 검색</button>
+                            </a>
+                        </div>
+                    </div>
+            </div>
+
         <% } %>
     </div>
     <hr class="featurette-divider">

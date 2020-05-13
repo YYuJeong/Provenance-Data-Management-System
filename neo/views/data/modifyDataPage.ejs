@@ -10,9 +10,11 @@
   <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.min.js"></script>
 
   <style type="text/css"> 
+    @font-face { font-family: 'Binggrae-Bold'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Binggrae-Bold.woff') format('woff'); font-weight: normal; font-style: normal; }
+    @font-face { font-family: 'RIDIBatang'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/RIDIBatang.woff') format('woff'); font-weight: normal; font-style: normal; }
     body {
-      font-family: 'Do Hyeon';
-      color: #303030;
+      font-family: 'RIDIBatang';
+      color: #333333;
       letter-spacing: 1px;
     }
     .fontSize {
@@ -22,48 +24,57 @@
 
   <script>
     function onAdd(){
-      alert("이력 정보가 수정되었습니다.");
+      alert("개인정보가 제공되었습니다.");
     };
         
-    $(document).ready(function() {
-      $('#datePicker')
-        .datepicker({
-          format: 'yyyymmdd'
-        })
-        .on('changeDate', function(e) {
-          // Revalidate the date field
-          $('#eventForm').formValidation('revalidateField', 'date');
+    $(document).ready(function () {
+            $('#datePicker')
+                .datepicker({
+                    format: 'yyyymmdd'
+                })
+                .on('changeDate', function (e) {
+                    // Revalidate the date field
+                    $('#eventForm').formValidation('revalidateField', 'date');
+                });
+
+            $('#datePicker2')
+                .datepicker({
+                    format: 'yyyymmdd'
+                })
+                .on('changeDate', function (e) {
+                    // Revalidate the date field
+                    $('#eventForm').formValidation('revalidateField', 'date');
+                });
+
+            $('#eventForm').formValidation({
+                framework: 'bootstrap',
+                icon: {
+                    valid: 'glyphicon glyphicon-ok',
+                    invalid: 'glyphicon glyphicon-remove',
+                    validating: 'glyphicon glyphicon-refresh'
+                },
+                fields: {
+                    name: {
+                        validators: {
+                            notEmpty: {
+                                message: 'The name is required'
+                            }
+                        }
+                    },
+                    date: {
+                        validators: {
+                            notEmpty: {
+                                message: 'The date is required'
+                            },
+                            date: {
+                                format: 'YYYYMMDD',
+                                message: 'The date is not a valid'
+                            }
+                        }
+                    }
+                }
+            });
         });
-        
-      $('#eventForm').formValidation({
-        framework: 'bootstrap',
-        icon: {
-          valid: 'glyphicon glyphicon-ok',
-          invalid: 'glyphicon glyphicon-remove',
-          validating: 'glyphicon glyphicon-refresh'
-        },
-        fields: {
-          name: {
-            validators: {
-              notEmpty: {
-                message: 'The name is required'
-              }
-            }
-          },
-          date: {
-            validators: {
-              notEmpty: {
-                message: 'The date is required'
-              },
-              date: {
-                format: 'YYYYMMDD',
-                message: 'The date is not a valid'
-              }
-            }
-          }
-        }
-      });
-    });
   </script>
 
   
@@ -79,10 +90,73 @@
       <%if(esession.authenticated == false){ %>
       <%include ../notAuthenticated.ejs%>
       <% } else {%>
-      <div class="jumbotron">
-        <div style="font-size:2em;">개인정보 이력 변경</div><br><br>
+      <div class="jumbotron" style="background-color: #f8f8f8;">
+        <div style="font-size:2em;">개인정보 제공</div><br><br>
           <div class="fontSize">
-            <form method="post" action="/dataModify" >
+            <form method="post" action="/transfer" >             
+              <div style="text-align: center; font-size:1.5em;">세부 사항</div>
+              <br>
+              <div class="row">
+                  <div style="margin:0 auto;">
+                      <!--<div class="input-group" style="width:30%; margin:0 auto;">
+                          <span class="input-group-addon">기관</span>
+                          <input type="text" id="company" name="company" class="form-control"/>
+                      </div>
+                      <br>-->
+                      <div class="input-group" style="width:30%; margin:0 auto;">
+                        <span class="input-group-addon">기관</span>
+                        <select id="company" name="company" class="form-control">
+                          <option value=''>선택 (필수)</option>
+                          <% for(var i = 0; i < insNames.length; i++) { %>
+                            <option value='<%= insNames[i] %>' %>><%= insNames[i] %></option>
+                          <% } %>
+                        </select>
+                      </div>
+                      <br>
+                      <div class="row">
+                      <div style="width:29%; margin:0 auto;">
+                      <div class="input-group input-append date" id="datePicker">
+                        <input type="text" class="form-control" id="allowedPeriodFrom" name="allowedPeriodFrom" placeholder="허용 기간 시작일"/>
+                        <span class="input-group-addon add-on">
+                        <span class="glyphicon glyphicon-calendar"></span></span>
+                      </div>
+                      </div>
+                      <br>
+                      <div style="width:29%; margin:0 auto;">
+                      <div class="input-group input-append date" id="datePicker2">
+                        <input type="text" class="form-control" id="allowedPeriodTo" name="allowedPeriodTo" placeholder="허용 기간 종료일"/>
+                        <span class="input-group-addon add-on">
+                        <span class="glyphicon glyphicon-calendar"></span></span>
+                      </div>
+                      </div>
+                      </div>
+                      <br>
+                      <div class="input-group" style="width:30%; margin:0 auto;">
+                          <span class="input-group-addon">가격</span>
+                          <input type="text" id="price" name="price" class="form-control"/>
+                      </div>
+                      <br>
+                      <div class="input-group" style="width:30%; margin:0 auto;">
+                          <span class="input-group-addon">정보제공 동의여부</span>
+                          <select id="permission" name="permission" class="form-control">
+                            <option value=''>선택 (필수)</option>
+                            <option value="Yes">YES</option>
+                            <option value="NO">NO</option>
+                          </select>
+                      </div>
+                      <br>
+                      <div class="input-group" style="width:30%; margin:0 auto;">
+                          <span class="input-group-addon">가공방법</span>
+                          <select id="manuMethod" name="manuMethod" class="form-control">
+                            <option value=''>선택 (필수)</option>
+                            <option value="미가공">미가공</option>
+                            <option value="암호화">암호화</option>
+                            <option value="익명화">익명화</option>
+                          </select>
+                      </div>
+                  </div>
+              </div>
+              <!--
               <div style="text-align: center; font-size:1.5em;">소유자<br></div>
               <div class="row" >
                 <div style="margin:0 auto;">
@@ -211,7 +285,6 @@
               </div>
               <br>
               <div class="row">
-                <!-- Include Bootstrap Datepicker -->
                 <div class="form-group" style="text-align: center;">
                   <div style="width:320px; margin:0 auto;">
                     <div class="input-group input-append date" id="datePicker" >
@@ -334,12 +407,9 @@
                 </div>
               </div>
               <% } %>
-
-              </div>
-              </div>
+              -->
               <br><br>
-              <input class="btn btn-primary" type="submit" value="변경" style="width:100px;" onClick="onAdd()">
-              <input class="btn btn-light" type="reset" value="취소" style="width:100px;">
+              <input class="btn btn-primary" type="submit" value="확인" style="width:100px; background-color: #4a9dea; border-color:  #4a9dea;" onClick="onAdd()">
               <br><br>
             </form>
           </div>

@@ -15,13 +15,13 @@ from neo4j import GraphDatabase
 
 def check_nodeLabel(tx, keyword):
     personNodes = (tx.run("MATCH (n:Person)"
-                          "WHERE (any(prop in ['name', 'affiliation'] WHERE n[prop] = $keyword))"
+                          "WHERE (any(prop in ['name', 'pid', 'p_type'] WHERE n[prop] = $keyword))"
                           "RETURN n", keyword = keyword)).value()
     dataNodes = (tx.run("MATCH (n:Data)"
-                      "WHERE (any(prop in ['name', 'd_type', 'device', 'price'] WHERE n[prop] = $keyword))"
+                      "WHERE (any(prop in ['name', 'value', 'file_path', 'origin'] WHERE n[prop] = $keyword))"
                       "RETURN n", keyword = keyword)).value()
     activityNodes = (tx.run("MATCH (n:Activity)"
-                  "WHERE (any(prop in ['name', 'date'] WHERE n[prop] = $keyword))"
+                  "WHERE (any(prop in ['name', 'date','detail'] WHERE n[prop] = $keyword))"
                   "RETURN n", keyword = keyword)).value()
 
     if(personNodes):
@@ -51,6 +51,11 @@ def delete_duplicateNode(kNodes):
 
     return candidN
 
+def get_nodes(tx, user_name , user_pid):
+    nodes = (tx.run("MERGE (p: Person {name:$user_name, pid: $user_pid, p_type: '개인'}) "
+                    "RETURN p"
+                    , user_name = user_name, user_pid = user_pid)).values()
+    return nodes
 
 def generate_shortestPathQuery(n, m):
     prop1 = [*n.keys()]
@@ -76,9 +81,7 @@ def generate_shortestPathQuery(n, m):
     
 
 def shortestPath(tx, spQuery):
- 
     length = (tx.run(spQuery)).values()
-
     if length:
         return length
     
@@ -95,7 +98,7 @@ def sort_result(graphs):
     resultLen = []
     for each in results:
         sumLen = 0
-        for i in range(len(keywords)-1):
+        for i in range(len(keywords)):
             sumLen = sumLen + len(each[i])
         resultLen.append(sumLen)
     resultIndex = sorted(range(len(resultLen)), key=lambda k: resultLen[k])         
@@ -124,7 +127,7 @@ def generate_outputQuery(ranking):
         resultWhere = ""
         resultSp = ""
         resultRt = ""
-        for i in range(len(keywords)-1):    
+        for i in range(len(keywords)):    
             psLabel = next(iter(ranking[r][i].start_node.labels))
             peLabel = next(iter(ranking[r][i].end_node.labels))
             labelTemp = "(s"+str(j) +":" + psLabel +"), (e"+str(j) +":"+peLabel +")"
@@ -148,7 +151,7 @@ def generate_outputQuery(ranking):
             spTemp = " MATCH p" + str(i) +" = shortestPath((s" + str(j) +")-[*]-(e" +str(j)+")) " 
             resultSp =  resultSp + spTemp       
             resultRt = resultRt + "p" + str(i) 
-            if i+1 != len(keywords)-1:
+            if i+1 != len(keywords):
                 resultLabel = resultLabel + ", "
                 resultWhere = resultWhere + "AND "
                 resultRt = resultRt + ", "
@@ -165,7 +168,7 @@ def generate_outputTable(ranking):
     outTable = ""
     for r in range(len(ranking)):
         pTmp = []
-        for i in range(len(keywords)-1):
+        for i in range(len(keywords)):
             psTmp = []
             peTmp = []
           
@@ -200,15 +203,15 @@ def generate_outputTable(ranking):
             outTmp = ""
             for j in range(len(p)):
                 if j == 0:
-                    outTmp = outTmp + p[j] + " "
+                    outTmp = outTmp + p[j] + "="
                 else:
                     if j == floor(len(p)/2):            
-                        outTmp = outTmp + p[j] + " "
+                        outTmp = outTmp + p[j] + "="
                     else:
                         if j == len(p)-1:
                             outTmp = outTmp + p[j] + "/"
                         else:
-                            outTmp = outTmp + p[j] + "."
+                            outTmp = outTmp + p[j] + "^"
             
             out = out + outTmp
 
@@ -220,17 +223,19 @@ def generate_outputTable(ranking):
 if __name__ == "__main__":
     driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "wowhi223"))
     with driver.session() as session:
-
-        
         keywords = sys.argv[1].split(' ')
-		
-        start_time = time.time()
-		
+        
+        user_name = keywords[0]
+        user_pid = keywords[1]
+        userNode = session.read_transaction(get_nodes, user_name = user_name, user_pid = user_pid)
+
+        del keywords[0]
+        del keywords[0]
+
         #search for all nodes with keywords
-        kNodes = []
+        kNodes = userNode
         for i in range(len(keywords)):
             kNodes.append(session.read_transaction(check_nodeLabel,  keyword= keywords[i]))
-
         candidN = delete_duplicateNode(kNodes)   
 
         g = []
@@ -285,7 +290,7 @@ if __name__ == "__main__":
 
         ranking = sort_result(graphs)
         if len(ranking) == 0:
-            print(len(keywords))
+            print(len(keywords)+1)
         else:     
             if len(ranking) <= 10:
                 outQuery = generate_outputQuery(ranking)

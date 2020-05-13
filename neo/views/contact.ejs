@@ -20,8 +20,11 @@
   </script>
 
  <style type="text/css">
+    @font-face { font-family: 'Binggrae-Bold'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Binggrae-Bold.woff') format('woff'); font-weight: normal; font-style: normal; }
+    @font-face { font-family: 'RIDIBatang'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/RIDIBatang.woff') format('woff'); font-weight: normal; font-style: normal; }
+
     body {
-      font-family: 'Do Hyeon';
+      font-family: 'RIDIBatang';
       color: #303030;
     letter-spacing: 1px;
     }
@@ -42,11 +45,20 @@
                     <input class="form-control" placeholder="이름" type="text" id="name" name="name">
                 </div> <!-- form-group// -->
                 <br>
+
+                <div class="form-group input-group" style=" margin:0 auto;">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-address-card"></i></span>
+                     </div>
+                    <input class="form-control" placeholder="주민번호" type="text" id="pid" name="pid">
+                </div> <!-- form-group// -->
+                <br>
+
                 <div class="form-group input-group" style=" margin:0 auto;">
                     <div class="input-group-prepend">
                         <span class="input-group-text"><i class="fa fa-envelope"></i></span>
                     </div>
-                    <input class="form-control" placeholder="이메일 주소" type="text" id="email" name="email">
+                    <input class="form-control" placeholder="아이디(이메일 주소)" type="text" id="email" name="email">
                 </div> <!-- form-group// -->
                 <br>
                 <div class="form-group input-group" style=" margin:0 auto;">
@@ -56,6 +68,7 @@
                     <input class="form-control" placeholder="비밀번호" type="password" id="password" name="password">
                 </div> <!-- form-group// -->
                 <br>
+                <!--
                 <div class="form-group input-group" style=" margin:0 auto;">
                     <div class="input-group-prepend">
                         <span class="input-group-text"> <i class="fa fa-phone"></i> </span>
@@ -67,7 +80,8 @@
                         <option value="3">+1</option>
                     </select>
                     <input name="" class="form-control" placeholder="번호" type="text">
-                </div> <!-- form-group// -->
+                </div> 
+                -->
                 <br>
                 <div class="form-group">
                     <button type="button" class="btn btn-primary btn-block" onclick="join();" style=" margin:0 auto; width: 200px;" >가입</button>

@@ -9,7 +9,7 @@
     <link rel="shortcut icon" href="/images/favicon.ico">
     <link rel="icon" href="/images/favicon.ico">
 
-    <title>이력 정보 관리시스템</title>
+    <title>개인정보 이력관리시스템</title>
 
     <link href="http://bootstrapk.com/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="http://bootstrapk.com/assets/js/ie-emulation-modes-warning.js"></script>
@@ -26,6 +26,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/hgyoseo/ridibatang@master/font.css">
 
     <style type="text/css">
+        @font-face { font-family: 'Binggrae-Bold'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Binggrae-Bold.woff') format('woff'); font-weight: normal; font-style: normal; }
+        @font-face { font-family: 'RIDIBatang'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/RIDIBatang.woff') format('woff'); font-weight: normal; font-style: normal; }
 
         table {
             border-collapse: collapse;
@@ -38,14 +40,13 @@
         }
 
         body {
-            font-family: 'Do Hyeon';
-            color: #303030;
+            font-family: 'RIDIBatang';
+            color: #333333;
             letter-spacing: 1px;
         }
 
         th,td {
             text-align: center;
-            border-right: 2px dashed white;
             padding: 5px;
             height: 80px;
         }
@@ -69,7 +70,7 @@
     <hr class="featurette-divider">
     <br><br>
     <!-- START THE FEATURETTES -->
-    <div class="jumbotron">
+    <div class="jumbotron" style="background-color: #f8f8f8;">
         <% if(esession.authenticated == false){ %>
             <% include ../notAuthenticated.ejs %>
         <% }else{ %>
@@ -90,7 +91,7 @@
                                 -->
                                     <!--<input class="btn btn-primary" value="검색" id="keywordBtn" onclick="location.href='searchkey'">-->
                                     <!--<input class="btn btn-primary" type="submit" value="검색">-->
-                                    <button type="button" class="btn btn-primary" id="ksb">검색</button>
+                                    <button type="button" class="btn btn-primary" id="ksb" style="background-color: #4a9dea; border-color:  #4a9dea;">검색</button>
                                 
                                 <!--</a>-->
                             </td>
@@ -100,7 +101,8 @@
             </div>
         <% } %>
     </div>
-    <div style="display: none;" id="keyData" name="keyData">
+    <!--<div style="display: inline-block; background: pink;" id="keyData" name="keyData">-->
+    <div style="display: none;" id="keyData" name="keyData">    
         <%=data%>
     </div>
     <hr class="featurette-divider">
@@ -160,6 +162,7 @@
        
     var keyDatas = document.getElementById("keyData").innerHTML;
     var resultFlag
+
     if(!isNaN(Number(keyDatas))){
         resultFlag = false
         var keylen = Number(keyDatas)
@@ -170,7 +173,6 @@
 
         queries = result[0].split('/');
         queries.splice(0, 1);
-
 
         var tables = result[1].split(';');
         tables.splice(tables.length-1, 1);
@@ -185,11 +187,12 @@
         rankings.forEach(function(rank, index){
             rnk = []
             rank.forEach(function(r, ind){
-                var tmp = r.split(' ')
+                var tmp = r.split('=')
                 rnk[ind] = tmp
             })
             ranking[index] = rnk
         })
+
         var resultLabel = []
         var resultProp = []
         var resultVal = []
@@ -206,11 +209,11 @@
                         label.push(r)
                     }
                     else if(ind == 1){
-                        var tmp = r.split('.')
+                        var tmp = r.split('^')
                         prop.push(tmp)
                     }
                     else{
-                        var tmp = r.split('.')
+                        var tmp = r.split('^')
                         val.push(tmp)
                     }
                 })
@@ -224,7 +227,7 @@
         })
         var keywordNames = []
         var keywordVals = []
-        
+
         for(var k = 0; k < resultLabel.length; k++){
             console.log("랭킹: " , k)
             var nt = [];
@@ -236,20 +239,24 @@
                 if(resultLabel[k][i][0] == 'Person'){
                     console.log("person")
                     nameTmp.push(resultVal[k][i][0][0])
-                    valTmp.push(resultVal[k][i][0][1]) 
+                    valTmp.push(resultVal[k][i][0][1]) //p_type
+                    //valTmp.push(resultVal[k][i][0][2]) //pid
                 }
                 else if(resultLabel[k][i][0] == "Data"){
                     console.log("Data")
-                    nameTmp.push(resultVal[k][i][0][1])
-                    valTmp.push(resultVal[k][i][0][0]) 
-                    valTmp.push(resultVal[k][i][0][2]) 
-                    valTmp.push(resultVal[k][i][0][3]+"원") 
+                    nameTmp.push(resultVal[k][i][0][0])
+                    if(resultVal[k][i][0][1] != ""){
+                        valTmp.push(resultVal[k][i][0][1]) //value
+                    }
+                    else if(resultVal[k][i][0][2] != ""){
+                        valTmp.push(resultVal[k][i][0][2]) //file_path
+                    } 
+                    valTmp.push(resultVal[k][i][0][3]) //origin
                 }
                 else{
                     console.log("Activity")
-                    console.log(resultVal[k][i][0][1])
                     nameTmp.push(resultVal[k][i][0][1])
-                    valTmp.push(resultVal[k][i][0][0]) 
+                    valTmp.push(resultVal[k][i][0][0]) //날짜 
                 }
                 nt.push(nameTmp)
                 vt.push(valTmp)
@@ -257,7 +264,7 @@
             keywordNames.push(nt)
             keywordVals.push(vt)
         }
-
+        /*
         keywordNames.forEach(function(element, index){
             console.log(index)
             console.log(element)
@@ -266,6 +273,7 @@
             console.log(index)
             console.log(element)
         })
+        */
     }
 
     if(!resultFlag){
@@ -325,7 +333,7 @@
         else {
             tdObj=document.createElement("td");
             //tdObj.style.backgroundColor = "#f8f8f8" 
-            tdObj.innerHTML='<button type="button" class="btn btn-primary" onclick="Show(' + (i-1) + ')">그래프 보기</button>';
+            tdObj.innerHTML='<button type="button" class="btn btn-primary" style="background-color: #4a9dea; border-color:  #4a9dea;" onclick="Show(' + (i-1) + ')">그래프 보기</button>';
             trObj.appendChild(tdObj); 
         }
     dataTable.appendChild(trObj); 
@@ -345,18 +353,37 @@
     function showAtrr(query) {
         var attrs = [];
         attrs = query.split(',');
+        console.log(attrs)
         if(attrs[0] == 'Person') {
-            document.getElementById("nodeContent").innerHTML = "이름: " + attrs[2] + "<br>" + "소속: " + attrs[1];
+            var pid;
+            if(attrs[2] == "개인"){
+                pid = Array.from(attrs[3])
+                for(var i = 8; i<pid.length; i++ ){
+                    pid[i] = "*";
+                }
+                pid = pid.join('')
+            }
+            document.getElementById("nodeContent").innerHTML = "이름: " + attrs[1] + "<br>" + "타입: " + attrs[2] + "<br>" + "ID: " + pid;
         }
         else if(attrs[0] == 'Activity') {
-            document.getElementById("nodeContent").innerHTML = "행동: " + attrs[2] + "<br>" + "날짜: " + attrs[1];
+            if(attrs[2] == "가공"){
+                document.getElementById("nodeContent").innerHTML = "행동: " + attrs[2] + "<br>" + "날짜: " + attrs[1] + "<br>" + "가공방법: " + attrs[3];
+            }
+            else{
+                document.getElementById("nodeContent").innerHTML = "행동: " + attrs[2] + "<br>" + "날짜: " + attrs[1];
+            }
+
         }
         else if(attrs[0] == 'Data') {
-            document.getElementById("nodeContent").innerHTML = "데이터ID: " + attrs[3] + "<br>" + "데이터 종류: " + attrs[1] + "<br>" + "수집장치: " + attrs[4] + "<br>" + "가격: " + attrs[2] + "원";
+            if(attrs[1] != ""){
+                document.getElementById("nodeContent").innerHTML = "데이터명: " + attrs[3] + "<br>" + "파일: " + attrs[1] + "<br>" + "생성처: " + attrs[2];
+            }
+            else if(attrs[3] != ""){
+                document.getElementById("nodeContent").innerHTML = "데이터명: " + attrs[3] + "<br>" + "값: " + attrs[4] + "<br>" + "생성처: " + attrs[2];
+            }
         }
         //document.getElementById("nodeContent").innerHTML = attrs;
         //document.getElementById("nodeContent").innerHTML = query;
-        console.log(attrs);
     }
     
 

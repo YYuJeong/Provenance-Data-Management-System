@@ -11,7 +11,13 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var contactRouter = require('./routes/contact');
 
+var editInsRouter = require('./routes/ins/editIns');
+var addInsRouter = require('./routes/ins/addIns');
+var modifyInsRouter = require('./routes/ins/modifyIns');
+var modifyInsResultRouter = require('./routes/ins/modifyInsResult');
+
 var viewPage = require('./routes/viewPage');
+var viewLink = require('./routes/viewLink');
 var addPage = require('./routes/addPage');
 var searchPage =  require('./routes/search/searchPage');
 
@@ -68,7 +74,13 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/contact', contactRouter);
 
+app.use('/ins/editIns', editInsRouter);
+app.use('/ins/addIns', addInsRouter);
+app.use('/ins/modifyIns', modifyInsRouter);
+app.use('/ins/modifyInsResult', modifyInsResultRouter);
+
 app.use('/viewPage', viewPage);
+app.use('/viewLink', viewLink);
 app.use('/addPage', addPage);
 app.use('/search/searchPage', searchPage);
 

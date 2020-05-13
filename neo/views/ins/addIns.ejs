@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <% include ../before_loading.ejs %>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.min.css" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker3.min.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.min.js"></script>
+
+    <title>개인정보 이력관리 시스템</title>
+
+    <style type="text/css">
+        @font-face { font-family: 'Binggrae-Bold'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Binggrae-Bold.woff') format('woff'); font-weight: normal; font-style: normal; }
+        @font-face { font-family: 'RIDIBatang'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/RIDIBatang.woff') format('woff'); font-weight: normal; font-style: normal; }
+        body {
+            font-family: 'RIDIBatang';
+            color: #333333;
+            letter-spacing: 1px;
+        }
+
+        .fontSize {
+            font-size: 1.2em;
+        }
+    </style>
+
+    <script>
+        function onAdd() {
+            alert("기관이 등록되었습니다.");
+        };
+
+    </script>
+
+
+</head>
+
+<body style="overflow:auto">
+<% include ../header %>
+<div class="container marketing">
+    <% include ../menu %>
+    <hr class="featurette-divider">
+    <div class="container" style="display: inline-block; text-align: center;">
+        <% if(esession.authenticated == false){ %>
+            <% include ../notAuthenticated.ejs %>
+        <% } else { %>
+            <div class="jumbotron" style="background-color: #f8f8f8;">
+                <div style="font-size:2em;">기관 등록</div>
+                <br><br>
+                <div class="fontSize">
+                    <form method="post" action="/insAdd">
+                        <br>
+                        <div class="row">
+                            <div style="margin:0 auto;">
+                                <div class="input-group" style="width:30%; margin:0 auto;">
+                                    <span class="input-group-addon">기관명</span>
+                                    <input type="text" id="insName" name="insName" class="form-control"/>
+                                </div>
+                                <br>
+                                <div class="input-group" style="width:30%; margin:0 auto;">
+                                    <span class="input-group-addon">사업자등록번호</span>
+                                    <input type="text" id="insValue" name="insValue" class="form-control"/>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br><br>
+                        <input class="btn btn-primary" type="submit" value="등록" style="width:100px; background-color: #4a9dea; border-color:  #4a9dea;" onClick="onAdd()">
+                        <input class="btn btn-light" type="reset" value="취소" style="width:100px;  background-color: #dddddd;">
+                        <br><br>
+                    </form>
+                </div>
+            </div>
+        <% } %>
+    </div>
+</div>
+<hr class="featurette-divider">
+</div><!-- /.container -->
+</body>
+</html>

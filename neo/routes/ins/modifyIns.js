@@ -14,12 +14,9 @@ var logger = require('morgan');
 var bodyParser = require('body-parser');
 var session_value = require('../session');
 
+
 router.get('/', function(req, res, next) {
-  res.render('data/modifyData.ejs');
+    res.render('ins/modifyIns.ejs', {esession: session_value.getSession()});
 });
-
-
-
-
 
 module.exports = router;
