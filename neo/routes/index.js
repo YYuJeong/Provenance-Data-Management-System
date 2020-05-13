@@ -188,7 +188,7 @@ router.post('/insAdd', function (req, res) {
         ], function (err, rows, fields) {
     
             console.log("err : " + err);
-            console.log("rows : " + rows);
+            //console.log("rows : " + rows);
 
             res.render('ins/addIns', {
                 esession: session_value.getSession()});
@@ -201,6 +201,8 @@ router.get('/ins/modifyIns', function (req, res) {
     var insNames = [];
     var insValues = [];
     modiInsInfo = [];
+    modiInsName = [];
+    modiInsValue = [];
     con.query("SELECT * FROM iitp.institutions;", function (err, rows, fields) {
         //console.log("err : " + err);
         if (err) {
@@ -217,7 +219,7 @@ router.get('/ins/modifyIns', function (req, res) {
                 modiInsValue.push(rows[index]["pid"]);
 
             }
-            console.log("  ss", insNames);
+            console.log(insNames);
             console.log(insValues);
             res.render('ins/modifyIns', {
                 esession: session_value.getSession(),
@@ -236,28 +238,38 @@ router.post('/insGetModifyData', function (req, res) {
     console.log(checkValues);
 
     var modiFlag = false;
-    modiInsInfo = []
+
     if (checkValues == undefined) {
         checkLen = 0;
-        modiFlag = false
-    } else {
+    } else if (Array.isArray(checkValues)) {
+        checkLen = 0;
+    }
+    else {
         checkLen = checkValues.length;
-        if (typeof(checkValues) == 'string') {
-            console.log("------------check ------------", checkValues, checkValues.length);
-            modiFlag = true;
-        }
-        else if(typeof(checkValues) == 'object' && checkLen > 1){
-            modiFlag = false;
-        }
-    
     }
 
+    if (Array.isArray(checkValues)) {
+        modiFlag = false;
+    }
+
+    if (!(checkLen == 0)) {
+        console.log("------------check ------------", checkValues, checkValues.length);
+        modiFlag = true;
+    }
+
+    if (!modiFlag) {
+        console.log("false");
+        modiFlag = false;
+    }
+
+    if (checkLen == 0) 
+        modiFlag = false;
+
     if (modiFlag) {
-        var checkNum = parseInt(checkValues);
-        console.log(checkNum, modiInsName[checkNum])
-        modiInsInfo.push(modiInsName[checkNum]);
-        modiInsInfo.push(modiInsValue[checkNum]);
-        console.log(modiInsName)
+
+        modiInsInfo.push(modiInsName[checkValues]);
+        modiInsInfo.push(modiInsValue[checkValues]);
+
         console.log("modiFlag : ", modiFlag);
         console.log("modiInsInfo : ", modiInsInfo);
 
@@ -3584,171 +3596,39 @@ router.get('/data/modifyData', function (req, res) {
 
 
 router.post('/getModifyValues', function (req, res) {
-    var checkValues5 = req.body.modifyCheck5;
-    var checkValues4 = req.body.modifyCheck4;
-    var checkValues3 = req.body.modifyCheck3;
-    var check3Len;
-    var check4Len;
-    var check5Len;
 
     var checkValues = req.body.modifyCheck;
     var checkLen;
 
-
-    var multiCheckFlag = false;
-    var modiFlag3 = false;
-    var modiFlag4 = false;
-    var modiFlag5 = false;
-
     var modiFlag = false;
 
-    var activityType = ['생성', '가공', '제공'];
-    var deviceType = ['AI스피커', 'T머니', '레일플러스', '스마트워치', '페이션트모니터', '캐시비'];
-    var dataType = ['건강데이터', '의료데이터', '위치데이터', '음성데이터'];
-
-    if (checkValues3 == undefined) {
-        check3Len = 0;
-    } else {
-        check3Len = checkValues3.length;
-    }
-
-    if (checkValues4 == undefined) {
-        check4Len = 0;
-    } else {
-        check4Len = checkValues4.length;
-    }
-
-    if (checkValues5== undefined) {
-        check5Len = 0;
-    } else {
-        check5Len = checkValues5.length;
-    }
-
-    if (checkValues== undefined) {
+    if (checkValues == undefined) {
         checkLen = 0;
-    } else {
+    } else if (Array.isArray(checkValues)) {
+        checkLen = 0;
+    }
+    else {
         checkLen = checkValues.length;
     }
 
-    if (check3Len == 1) {
-        console.log("------------check3 ------------", checkValues3, checkValues3.length);
-        modiFlag3 = true;
+    if (Array.isArray(checkValues)) {
+        modiFlag = false;
     }
-    else if (check4Len == 1) {
-        console.log("------------check4 ------------", checkValues4, checkValues4.length);
-        modiFlag4 = true;
-    }
-    else if (check5Len == 1) {
-        console.log("------------check5 ------------", checkValues5, checkValues5.length);
-        modiFlag5 = true;
-    }
-    else if (checkLen == 1) {
-        console.log("------------ss check ------------", checkValues, checkValues.length);
+
+    if (!(checkLen == 0)) {
+        console.log("------------check ------------", checkValues, checkValues.length);
         modiFlag = true;
     }
 
-    if (modiFlag4 && modiFlag3 && modiFlag5 && modiFlag) {
-        console.log("all false");
-        modiFlag3 = false;
-        modiFlag4 = false;
-        modiFlag5 = false;
+    if (!modiFlag) {
+        console.log("false");
         modiFlag = false;
     }
 
-    if ((check3Len + check4Len + check5Len + checkLen) > 1) {
-        modiFlag3 = false;
-        modiFlag4 = false;
-        modiFlag5 = false;
+    if (checkLen == 0) 
         modiFlag = false;
-    }
 
-    if (modiFlag3) {
-        provInfo3.push(nameArr[checkValues3]);
-        provInfo3.push(affiliationArr[checkValues3]);
-        provInfo3.push(activityTypeArr3[checkValues3]);
-        provInfo3.push(dateArr3[checkValues3]);
-        provInfo3.push(dataNameArr3[checkValues3]);
-        provInfo3.push(priceArr3[checkValues3]);
-        provInfo3.push(deviceArr3[checkValues3]);
-        provInfo3.push(dataTypeArr3[checkValues3]);
-
-        console.log("modiFlag3 : ", modiFlag3);
-
-
-        res.render('data/modifyDataPage.ejs', {
-            esession: session_value.getSession(),
-
-            modiFlag3: modiFlag3,
-            modiFlag4: modiFlag4,
-            modiFlag5: modiFlag5,
-            provInfo3: provInfo3,
-
-            activityType: activityType,
-            dataType: dataType,
-            deviceType: deviceType,
-
-            authenticated: true
-        });
-    } else if (modiFlag4) {
-        provInfo4.push(s_nameArr[checkValues4]);
-        provInfo4.push(s_affiliationArr[checkValues4]);
-        provInfo4.push(activityTypeArr4[checkValues4]);
-        provInfo4.push(dateArr4[checkValues4]);
-        provInfo4.push(dataNameArr4[checkValues4]);
-        provInfo4.push(dataTypeArr4[checkValues4]);
-        provInfo4.push(priceArr4[checkValues4]);
-        provInfo4.push(deviceArr4[checkValues4]);
-        provInfo4.push(r_nameArr[checkValues4]);
-        provInfo4.push(r_affiliationArr[checkValues4]);
-
-        console.log("modiFlag4 : ", modiFlag4);
-        console.log(provInfo4[0]);
-
-        res.render('data/modifyDataPage.ejs', {
-            esession: session_value.getSession(),
-
-            modiFlag3: modiFlag3,
-            modiFlag4: modiFlag4,
-            modiFlag5: modiFlag5,
-            provInfo4: provInfo4,
-
-            activityType: activityType,
-            dataType: dataType,
-            deviceType: deviceType,
-
-            authenticated: true
-        });
-    } else if (modiFlag5) {
-        provInfo5.push(nameArr5[checkValues5]);
-        provInfo5.push(affiliationArr5[checkValues5]);
-        provInfo5.push(dataNameArr5[checkValues5]);
-        provInfo5.push(dataTypeArr5[checkValues5]);
-        provInfo5.push(deviceArr5[checkValues5]);
-        provInfo5.push(priceArr5[checkValues5]);
-        provInfo5.push(activityTypeArr5[checkValues5]);
-        provInfo5.push(dateArr5[checkValues5]);
-        provInfo5.push(dataNameArr6[checkValues5]);
-        provInfo5.push(dataTypeArr6[checkValues5]);
-        provInfo5.push(deviceArr6[checkValues5]);
-        provInfo5.push(priceArr6[checkValues5]);
-
-        console.log("modiFlag5 : ", modiFlag5);
-
-        res.render('data/modifyDataPage.ejs', {
-            esession: session_value.getSession(),
-
-            modiFlag3: modiFlag3,
-            modiFlag4: modiFlag4,
-            modiFlag5: modiFlag5,
-            provInfo5: provInfo5,
-
-            activityType: activityType,
-            dataType: dataType,
-            deviceType: deviceType,
-
-            authenticated: true
-        });  
-    } else if (modiFlag) {
+    if (modiFlag) {
         provInfo.push(dataN[checkValues]);
         provInfo.push(datavalue[checkValues]);
         provInfo.push(datafile[checkValues]);
@@ -3760,14 +3640,10 @@ router.post('/getModifyValues', function (req, res) {
         res.render('data/modifyDataPage.ejs', {
             esession: session_value.getSession(),
 
-            modiFlag3: modiFlag3,
-            modiFlag4: modiFlag4,
-            modiFlag5: modiFlag5,
             modiFlag: modiFlag,
             provInfo: provInfo,
             insNames: modiInsName,
- 
-            activityType: activityType,
+
             authenticated: true
         });  
     } else {
