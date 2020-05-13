@@ -16,7 +16,7 @@ var session_value = require('../session');
 
 
 router.get('/', function(req, res, next) {
-    res.render('ins/addIns.ejs', {esession: session_value.getSession()});
+    res.render('ins/addIns.ejs', {esession: req.session});
 });
 
 module.exports = router;

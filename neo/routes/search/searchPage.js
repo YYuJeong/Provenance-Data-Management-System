@@ -16,7 +16,7 @@ var session_value = require('../session');
 
 
 router.get('/', function(req, res, next) {
-  res.render('search/searchPage.ejs', {esession: session_value.getSession()});
+  res.render('search/searchPage.ejs', {esession: req.session});
 });
 
 module.exports = router;
