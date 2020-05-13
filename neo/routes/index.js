@@ -9,6 +9,8 @@ var neo4j = require('neo4j-driver').v1;
 var multer = require("multer");
 var multiparty = require('multiparty');
 var fs = require('fs');
+var path = require('path');
+var mime = require('mime');
 const exec = require('child_process').exec;
 const spawn = require('child_process').spawn;
 const neo4j_connection = require('../public/scripts/config');
@@ -17,7 +19,7 @@ const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic(db_info.DB
 const session = driver.session();
 const iconv = require('iconv-lite');
 var keyResult = require('./keyResult');
-var Cy2NeoD3 = require('../public/scripts/cy2neod3')
+var Cy2NeoD3 = require('../public/scripts/cy2neod3');
 
 let nameArr5 = [];
 let affiliationArr5 = [];
@@ -198,6 +200,7 @@ router.post('/insAdd', function (req, res) {
 router.get('/ins/modifyIns', function (req, res) {
     var insNames = [];
     var insValues = [];
+    modiInsInfo = [];
     con.query("SELECT * FROM iitp.institutions;", function (err, rows, fields) {
         //console.log("err : " + err);
         if (err) {
@@ -432,6 +435,36 @@ router.post('/data/uploadData', function (req, res,next) {
 
     form.parse(req);
 })
+
+
+router.get('/download', function(req, res, next) {
+    var name = req.body.name;
+    console.log(name);
+    var upload_folder = 'upload/';
+    var file = upload_folder + 'ticket'; // ex) /upload/files/sample.txt
+    
+    try {
+      if (fs.existsSync(file)) { // 파일이 존재하는지 체크
+        var filename = path.basename(file); // 파일 경로에서 파일명(확장자포함)만 추출
+        var mimetype = mime.getType(file); // 파일의 타입(형식)을 가져옴
+      
+        res.setHeader('Content-disposition', 'attachment; filename=' + filename); // 다운받아질 파일명 설정
+        res.setHeader('Content-type', mimetype); // 파일 형식 지정
+      
+        var filestream = fs.createReadStream(file);
+        filestream.pipe(res);
+      } else {
+        res.send('해당 파일이 없습니다.');  
+        return;
+      }
+    } catch (e) { // 에러 발생시
+      console.log(e);
+      res.send('파일을 다운로드하는 중에 에러가 발생하였습니다.');
+      return;
+    }
+  });
+
+
 
 let add = multer({
     dest: "add/"
