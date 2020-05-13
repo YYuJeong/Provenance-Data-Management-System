@@ -9,6 +9,8 @@ var neo4j = require('neo4j-driver').v1;
 var multer = require("multer");
 var multiparty = require('multiparty');
 var fs = require('fs');
+var path = require('path');
+var mime = require('mime');
 const exec = require('child_process').exec;
 const spawn = require('child_process').spawn;
 const neo4j_connection = require('../public/scripts/config');
@@ -17,7 +19,7 @@ const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic(db_info.DB
 const session = driver.session();
 const iconv = require('iconv-lite');
 var keyResult = require('./keyResult');
-var Cy2NeoD3 = require('../public/scripts/cy2neod3')
+var Cy2NeoD3 = require('../public/scripts/cy2neod3');
 
 let nameArr5 = [];
 let affiliationArr5 = [];
@@ -69,6 +71,9 @@ let dataValuesTotal =[];
 let dataFilesTotal =[];
 let dataOriginTotal =[];
 
+let modiInsInfo = [];
+let modiInsName = [];
+let modiInsValue = [];
 
 app.use(esession({
     secret: "asdfasffdas",
@@ -166,6 +171,163 @@ router.route('/users').post(
     }
 );
 
+router.route('/ins/editIns').post(
+    function (req, res) {
+        res.render('ins/editIns', {esession: session_value.getSession()});
+    }
+)
+
+router.post('/insAdd', function (req, res) {
+        var insName = req.body.insName;
+        var insValue = req.body.insValue;
+
+        console.log(insName, insValue);
+
+        con.query("INSERT INTO iitp.institutions (name, pid) VALUES (?, ?);", [
+            insName, insValue
+        ], function (err, rows, fields) {
+    
+            console.log("err : " + err);
+            //console.log("rows : " + rows);
+
+            res.render('ins/addIns', {
+                esession: session_value.getSession()});
+        });
+         
+});
+
+
+router.get('/ins/modifyIns', function (req, res) {
+    var insNames = [];
+    var insValues = [];
+    modiInsInfo = [];
+    modiInsName = [];
+    modiInsValue = [];
+    con.query("SELECT * FROM iitp.institutions;", function (err, rows, fields) {
+        //console.log("err : " + err);
+        if (err) {
+            console.log(err);
+            console.log("QUERY ERROR!");
+        }
+        else {
+            //console.log(rows[1]["name"]);
+            for (var index = 0; index < rows.length; index++) {
+                insNames.push(rows[index]["name"]);
+                insValues.push(rows[index]["pid"]);
+
+                modiInsName.push(rows[index]["name"]);
+                modiInsValue.push(rows[index]["pid"]);
+
+            }
+            console.log(insNames);
+            console.log(insValues);
+            res.render('ins/modifyIns', {
+                esession: session_value.getSession(),
+                insNames: insNames,
+                insValues: insValues
+            });
+        }
+    });
+});
+
+router.post('/insGetModifyData', function (req, res) {
+
+    var checkValues = req.body.modifyInsCheck;
+    var checkLen;
+
+    console.log(checkValues);
+
+    var modiFlag = false;
+
+    if (checkValues == undefined) {
+        checkLen = 0;
+    } else if (Array.isArray(checkValues)) {
+        checkLen = 0;
+    }
+    else {
+        checkLen = checkValues.length;
+    }
+
+    if (Array.isArray(checkValues)) {
+        modiFlag = false;
+    }
+
+    if (!(checkLen == 0)) {
+        console.log("------------check ------------", checkValues, checkValues.length);
+        modiFlag = true;
+    }
+
+    if (!modiFlag) {
+        console.log("false");
+        modiFlag = false;
+    }
+
+    if (checkLen == 0) 
+        modiFlag = false;
+
+    if (modiFlag) {
+
+        modiInsInfo.push(modiInsName[checkValues]);
+        modiInsInfo.push(modiInsValue[checkValues]);
+
+        console.log("modiFlag : ", modiFlag);
+        console.log("modiInsInfo : ", modiInsInfo);
+
+        res.render('ins/modifyInsResult.ejs', {
+            esession: session_value.getSession(),
+
+            modiFlag: modiFlag,
+            insNames: modiInsName,
+            insValues: modiInsValue,
+            modiInsInfo: modiInsInfo,
+
+            authenticated: true
+        });  
+    } else {
+        res.send('<script type="text/javascript">alert("하나의 기관을 선택해주세요."); window.history.go(-1);</script>');
+    }
+});
+
+router.post('/insModify', function (req, res) {
+    var insNames = [];
+    var insValues = [];
+    var insName = req.body.insName;
+    var insValue = req.body.insValue;
+    var originName = modiInsInfo[0];
+    var sql= 'UPDATE iitp.institutions SET name=?, pid=? WHERE name=?';
+
+    console.log(insName, insValue, originName);
+
+    con.query(sql, [insName, insValue, originName], function (err, rows) {
+        console.log("err : " + err);
+    });
+
+    con.query("SELECT * FROM iitp.institutions;", function (err, rows) {
+        //console.log("err : " + err);
+        if (err) {
+            console.log(err);
+            console.log("QUERY ERROR!");
+        }
+        else {
+            for (var index = 0; index < rows.length; index++) {
+                insNames.push(rows[index]["name"]);
+                insValues.push(rows[index]["pid"]);
+
+                modiInsName.push(rows[index]["name"]);
+                modiInsValue.push(rows[index]["pid"]);
+
+            }
+            console.log(insNames);
+            console.log(insValues);
+            res.render('ins/modifyIns', {
+                esession: session_value.getSession(),
+                insNames: insNames,
+                insValues: insValues
+            });
+        }
+    });
+});
+
 let upload = multer({
     dest: "upload/"
 });
@@ -173,8 +335,6 @@ let upload = multer({
 router.get('/data/uploadData', function (req, res, next) {    
    res.render('data/uploadData', {esession: session_value.getSession()});
 });
-
-
 
 router.post('/data/uploadData', function (req, res,next) {
     var form = new multiparty.Form();
@@ -288,6 +448,36 @@ router.post('/data/uploadData', function (req, res,next) {
     form.parse(req);
 })
 
+
+router.get('/download', function(req, res, next) {
+    var name = req.body.name;
+    console.log(name);
+    var upload_folder = 'upload/';
+    var file = upload_folder + 'ticket'; // ex) /upload/files/sample.txt
+    
+    try {
+      if (fs.existsSync(file)) { // 파일이 존재하는지 체크
+        var filename = path.basename(file); // 파일 경로에서 파일명(확장자포함)만 추출
+        var mimetype = mime.getType(file); // 파일의 타입(형식)을 가져옴
+      
+        res.setHeader('Content-disposition', 'attachment; filename=' + filename); // 다운받아질 파일명 설정
+        res.setHeader('Content-type', mimetype); // 파일 형식 지정
+      
+        var filestream = fs.createReadStream(file);
+        filestream.pipe(res);
+      } else {
+        res.send('해당 파일이 없습니다.');  
+        return;
+      }
+    } catch (e) { // 에러 발생시
+      console.log(e);
+      res.send('파일을 다운로드하는 중에 에러가 발생하였습니다.');
+      return;
+    }
+  });
+
+
+
 let add = multer({
     dest: "add/"
 });
@@ -322,9 +512,27 @@ router.post('/dataAdd', function (req, res) {
     console.log(file_path)
    // track progress
 
+   var mergeData = "MATCH (d:Data) "
+                + "WITH d.name as name, d.value as value, d.file_path as file_path, d.origin as origin, COLLECT(d) AS ns "
+                + "WHERE size(ns) > 1 "
+                + "CALL apoc.refactor.mergeNodes(ns) YIELD node "
+                + "RETURN node"
+   var mergePerson = "MATCH (p:Person) "
+                   + "WITH toLower(p.name) as name, p.pid as pid, p.p_type as p_type, COLLECT(p) AS ns "
+                   + "WHERE size(ns) > 1 "
+                   + "CALL apoc.refactor.mergeNodes(ns) YIELD node "
+                   + "RETURN node"
+   var deleteRel = "start r=relationship(*) "
+                  + "match (s)-[r]->(e) "
+                  + "with s,e,type(r) as typ, tail(collect(r)) as coll "
+                  + "foreach(x in coll | delete x) "
     session
         .run("CREATE (d:Data {name: '" + dataName + "' , value: '" + value + "' , origin: '" + origin + "', file_path: '" + file_path + "'})-[:Generate]->(ac:Activity {name: '생성', date: '" + date + "', detail: '' })-[:Act]->(p:Person {name: '" + user_name + "' , pid: '" + user_pid + "', p_type: '" + user_type + "'})")
         .then(function (result) {
+            session.run(mergeData)
+            session.run(mergePerson)
+            session.run(deleteRel)
+
             session.close();
         })
         .catch(function (err) {
@@ -399,6 +607,11 @@ router.get('/viewPage', function (req, res) {
     var file_pathArr10 = [];
     var originArr10 = [];
 
+    var dataNameArr10 = [];
+    var dataTypeArr10 = [];
+    var priceArr10 = [];
+    var deviceArr10 = [];
+
     var nameArr11 = [];
     var pidArr11 = [];
     var pTypeArr11 = [];
@@ -414,14 +627,17 @@ router.get('/viewPage', function (req, res) {
     dataOriginTotal =[];
     datasname = [];
 
+    var fileDownloadPath = [];
+
     var i = 0;
     var user_gubun = session_value.getSession().gubun;
     var user_name = session_value.getSession().user;
+    var user_pid = session_value.getSession().pid;
     
     if (user_gubun == '사용자') {
         console.log('사용자')
         session
-          .run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' AND p.name = '" + user_name + "' RETURN p, d, ac LIMIT 10")
+          .run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' AND p.name = '" + user_name + "' AND p.pid = '"+ user_pid +"' RETURN p, d, ac")
           .then(function (result) {
             result.records.forEach(function (record) {
 
@@ -444,9 +660,11 @@ router.get('/viewPage', function (req, res) {
               dataValuesTotal.push(record._fields[1].properties.value)
               dataFilesTotal.push(record._fields[1].properties.file_path)
               dataOriginTotal.push(record._fields[1].properties.origin)
+
+              fileDownloadPath.push("upload/" + record._fields[1].properties.file_path)
             });
             
-            session.run("MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '가공' AND ( p.name = '" + user_name + "' ) RETURN p, d2, ac, d1 LIMIT 10")
+            session.run("MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '가공' AND ( p.name = '" + user_name + "' ) RETURN p, d2, ac, d1 ")
           .then(function (result) {
             result.records.forEach(function (record) {
 
@@ -475,7 +693,7 @@ router.get('/viewPage', function (req, res) {
               dataOriginTotal.push(record._fields[1].properties.origin)
             });
 
-              session.run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[s:Send]-(p1:Person), (ac:Activity)-[r:Receive]-(p2:Person) WHERE ac.name = '제공' AND p1.name = '" + user_name + "' RETURN p1, d, ac, r, p2 LIMIT 10")
+              session.run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[s:Send]-(p1:Person), (ac:Activity)-[r:Receive]-(p2:Person) WHERE ac.name = '제공' AND p1.name = '" + user_name + "' RETURN p1, d, ac, r, p2 ")
               .then(function (result) {
                 result.records.forEach(function (record) {
     
@@ -509,6 +727,7 @@ router.get('/viewPage', function (req, res) {
     
 
                 });
+                console.log(fileDownloadPath);
                 res.render('viewPage', {
                     esession: session_value.getSession(),
 
@@ -571,6 +790,8 @@ router.get('/viewPage', function (req, res) {
                     dataValuesTotal: dataValuesTotal,
                     dataFilesTotal: dataFilesTotal,
                     dataOriginTotal: dataOriginTotal,
+
+                    fileDownloadPath: fileDownloadPath,
                     
                     authenticated: true
                 });
@@ -582,10 +803,11 @@ router.get('/viewPage', function (req, res) {
                 console.log(err);
             });
     }
+    /*
     else if (user_gubun == '관리자') {
         console.log("관리자")
         session
-          .run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' RETURN p, d, ac LIMIT 10")
+          .run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' RETURN p, d, ac ")
           .then(function (result) {
             result.records.forEach(function (record) {
 
@@ -604,7 +826,7 @@ router.get('/viewPage', function (req, res) {
             });
 
 
-          session.run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[s:Send]-(p1:Person), (ac:Activity)-[r:Receive]-(p2:Person) WHERE ac.name IN ['배포', '판매'] RETURN p1, d, ac, p2 LIMIT 10")
+          session.run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[s:Send]-(p1:Person), (ac:Activity)-[r:Receive]-(p2:Person) WHERE ac.name IN ['배포', '판매'] RETURN p1, d, ac, p2 ")
           .then(function (result) {
             result.records.forEach(function (record) {
 
@@ -625,7 +847,7 @@ router.get('/viewPage', function (req, res) {
               affiliationArr2.push(record._fields[3].properties.affiliation)
             });
 
-              session.run("MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person) WHERE ac.name IN ['가공', '변환'] RETURN p, d2, ac, d1 LIMIT 10")
+              session.run("MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person) WHERE ac.name IN ['가공', '변환'] RETURN p, d2, ac, d1 ")
               .then(function (result) {
                 result.records.forEach(function (record) {
     
@@ -695,7 +917,7 @@ router.get('/viewPage', function (req, res) {
  .catch(function (err) {
   console.log(err);
 });
-    }
+    }*/
     else {
         res.render('viewPage', {
             esession: session_value.getSession(),
@@ -819,18 +1041,18 @@ router.post('/getViewValues', function (req, res) {
     var geneCypher = "MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' "
                     + "AND (p.name = '" + user_name + "' AND p.pid = '" + user_pid + "' AND p.p_type = '" + user_type + "') "
                     + "AND ( d.name = '" + dataName + "' AND d.value = '" + dataValue + "' AND d.file_path = '" + dataFile + "' AND d.origin = '" + dataOrigin + "') "
-                    + "RETURN p, d, ac LIMIT 10 "
+                    + "RETURN p, d, ac  "
 
     var manuCypher = "MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '가공' " 
                     + "AND (p.name = '" + user_name + "' AND p.pid = '" + user_pid + "' AND p.p_type = '" + user_type + "') "
                     + "AND (d1.name = '" + dataName + "' AND d1.value = '" + dataValue + "' AND d1.file_path = '" + dataFile + "' AND d1.origin = '" + dataOrigin + "') "
                     + "OR  (d2.name = '" + dataName + "' AND d2.value = '" + dataValue + "' AND d2.file_path = '" + dataFile + "' AND d2.origin = '" + dataOrigin + "') "
-                    + "RETURN p, d2, ac, d1 LIMIT 10"
+                    + "RETURN p, d2, ac, d1 "
 
     var offCypher = "MATCH (d:Data)-[:Generate]-(ac:Activity)-[s:Send]-(p1:Person), (ac:Activity)-[r:Receive]-(p2:Person) WHERE ac.name = '제공' "
                     + "AND (p1.name = '" + user_name + "' AND p1.pid = '" + user_pid + "' AND p1.p_type = '" + user_type + "') "
                     + "AND ( d.name = '" + dataName + "' AND d.value = '" + dataValue + "' AND d.file_path = '" + dataFile + "' AND d.origin = '" + dataOrigin + "') "
-                    + "RETURN p1, d, ac, r, p2 LIMIT 10 "
+                    + "RETURN p1, d, ac, r, p2 "
 
     //console.log(geneCypher)
     //console.log(manuCypher)
@@ -1118,9 +1340,9 @@ router.post('/DataSearch', function (req, res) {
     var matchCyper4;
     var matchCyper3;
 
-    var returnCyper5 = ") RETURN p, d2, ac, d1 LIMIT 10"
-    var returnCyper4 = ") RETURN p1, d, ac, r, p2 LIMIT 10"
-    var returnCyper3 = ") RETURN p, d, ac LIMIT 10"
+    var returnCyper5 = ") RETURN p, d2, ac, d1 "
+    var returnCyper4 = ") RETURN p1, d, ac, r, p2 "
+    var returnCyper3 = ") RETURN p, d, ac "
     var whereCyper5 = " WHERE ac.name = '가공' AND ("
     var whereCyper4 = " WHERE ac.name = '제공' AND ("
     var whereCyper3 = " WHERE ac.name = '생성' AND ("
@@ -1293,7 +1515,7 @@ router.post('/DataSearch', function (req, res) {
                     else {
                         nameArr.push(' ')
                         pidArr.push(' ')
-                        p_type.push(' ')
+                        p_typeArr.push(' ')
 
                         dataNameArr3.push(' ')
                         valueArr3.push(' ')
@@ -1372,6 +1594,19 @@ router.post('/nameSearch', function (req, res) {
     var user_name = session_value.getSession().user;
     var user_pid = session_value.getSession().pid;
 
+    //생성
+    var nameArr = [];
+    var pidArr = [];
+    var p_typeArr = [];
+    var activityTypeArr3 = [];
+    var dateArr3 = [];
+    var detailArr3 = [];
+    var dataNameArr3 = [];
+    var valueArr3 = [];
+    var file_pathArr3 = [];
+    var originArr3 = [];
+
+
     //제공
     var s_nameArr = [];
     var s_pidArr = [];
@@ -1392,13 +1627,15 @@ router.post('/nameSearch', function (req, res) {
     var r_pTypeArr = [];
 
     var query4resultNum;
-
+    var query3resultNum; 
     console.log("name: " + name);
 
-
+    var geneCypher = "MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' "
+                    + "AND (p.name = '" + user_name + "' AND p.pid = '" + user_pid + "') AND ( d.origin = '" + name + "') "
+                    + "RETURN p, d, ac  "
     var matchCyper4;
 
-    var returnCyper4 = ") RETURN p1, d, ac, r, p2 LIMIT 10"
+    var returnCyper4 = ") RETURN p1, d, ac, r, p2 "
 
     var whereCyper4 = " WHERE ac.name = '제공' AND ("
     var newQuery4;
@@ -1422,6 +1659,7 @@ router.post('/nameSearch', function (req, res) {
 
     console.log(newQuery4)
     console.log("********************************************")
+    console.log(geneCypher)
 
     session.run(newQuery4)
     .then(function (result) {
@@ -1476,8 +1714,54 @@ router.post('/nameSearch', function (req, res) {
             r_pidArr.push(' ')
             r_pTypeArr.push(' ')
         }
-        res.render('search/searchNameResult.ejs', {
-            esession: session_value.getSession(),
+        session.run(geneCypher)
+        .then(function (result) {
+            query3resultNum = result.records.length;
+            if (query3resultNum != 0) {
+                result.records.forEach(function (record) {
+                    //console.log(record)
+                    nameArr.push(record._fields[0].properties.name)
+                    pidArr.push(record._fields[0].properties.pid)
+                    p_typeArr.push(record._fields[0].properties.p_type)
+
+                    dataNameArr3.push(record._fields[1].properties.name)
+                    valueArr3.push(record._fields[1].properties.value)
+                    file_pathArr3.push(record._fields[1].properties.file_path)
+                    originArr3.push(record._fields[1].properties.origin)
+
+                    activityTypeArr3.push(record._fields[2].properties.name)
+                    dateArr3.push(record._fields[2].properties.date)
+                    detailArr3.push(record._fields[2].properties.detail)
+                });
+            }
+            else {
+                nameArr.push(' ')
+                pidArr.push(' ')
+                p_typeArr.push(' ')
+
+                dataNameArr3.push(' ')
+                valueArr3.push(' ')
+                file_pathArr3.push(' ')
+                originArr3.push(' ')
+
+                activityTypeArr3.push(' ')
+                dateArr3.push(' ')
+            }
+
+
+            res.render('search/searchNameResult.ejs', {
+                esession: session_value.getSession(),
+
+                names: nameArr,
+                pids: pidArr,
+                p_types: p_typeArr,
+                dataNames3: dataNameArr3,
+                values3: valueArr3,
+                file_paths3: file_pathArr3,
+                origins3: originArr3,
+                activityTypes3: activityTypeArr3,
+                dates3: dateArr3,
+                details3: detailArr3,
 
                 s_names: s_nameArr,
                 s_pids: s_pidArr,
@@ -1493,15 +1777,16 @@ router.post('/nameSearch', function (req, res) {
                 activityTypes4: activityTypeArr4,
                 dates4: dateArr4,
                 details4: detailArr4,
-
                 r_names: r_nameArr,
                 r_pids: r_pidArr,
                 r_pTypes: r_pTypeArr,
 
-            authenticated: true
-        });
 
-    session.close();
+                authenticated: true
+            });
+        });
+        
+        session.close();
     })
     .catch(function (err) {
         console.log(err);
@@ -1582,9 +1867,9 @@ router.post('/periodSearch', function (req, res) {
     var matchCyper4;
     var matchCyper3;
 
-    var returnCyper5 = "RETURN p, d2, ac, d1 LIMIT 10"
-    var returnCyper4 = "RETURN p1, d, ac, r, p2 LIMIT 10"
-    var returnCyper3 = "RETURN p, d, ac LIMIT 10"
+    var returnCyper5 = "RETURN p, d2, ac, d1 "
+    var returnCyper4 = "RETURN p1, d, ac, r, p2"
+    var returnCyper3 = "RETURN p, d, ac "
 
     var newQuery5;
     var newQuery4;
@@ -1662,7 +1947,7 @@ router.post('/periodSearch', function (req, res) {
                 newQuery3 = newQuery3 + " (ac.name = '생성') "
                 query3 = true;
             }
-            if (activityType == '제공'){
+            else if (activityType == '제공'){
                 newQuery4 = newQuery4 + " (ac.name = '제공') "
                 query4 = true;
             }
@@ -1803,7 +2088,7 @@ router.post('/periodSearch', function (req, res) {
                     else {
                         nameArr.push(' ')
                         pidArr.push(' ')
-                        p_type.push(' ')
+                        p_typeArr.push(' ')
 
                         dataNameArr3.push(' ')
                         valueArr3.push(' ')
@@ -1906,7 +2191,7 @@ router.post('/periodSearch', function (req, res) {
                     else {
                         nameArr.push(' ')
                         pidArr.push(' ')
-                        p_type.push(' ')
+                        p_typeArr.push(' ')
 
                         dataNameArr3.push(' ')
                         valueArr3.push(' ')
@@ -2184,7 +2469,10 @@ router.post('/keyword', function (req, res) {
     user.push(user_name);
     user.push(user_pid);
 
+    //console.log("ON",req.body.keyword.length);
     var keyStr = req.body.keyword;
+    var len = keyStr.length;
+
     keyStr = user_name + " " + user_pid + " " + keyStr
     console.log(user_name + " " + user_pid + " " + keyStr);
     
@@ -2207,7 +2495,7 @@ router.post('/keyword', function (req, res) {
     */
 
     var startTime = new Date().getTime();
-    if(keyStr == '' || keyStr == null) {
+    if(len == 0) {
         res.send('<script type="text/javascript">alert("검색어를 입력해주세요."); window.history.go(-1);</script>');
     }
     else{
@@ -2481,6 +2769,11 @@ function setArray() {
     datavalue = [];
     datafile = [];
     dataorigin = [];
+
+    modiInsInfo = [];
+    modiInsName = [];
+    modiInsValue = [];
+    
 }
 
 router.post('/delete', function (req, res) {
@@ -2506,9 +2799,9 @@ router.post('/delete', function (req, res) {
     var matchCyper4;
     var matchCyper3;
 
-    var returnCyper5 = ") RETURN p, d2, ac, d1 LIMIT 10"
-    var returnCyper4 = ") RETURN p1, d, ac, p2 LIMIT 10"
-    var returnCyper3 = ") RETURN p, d, ac LIMIT 10"
+    var returnCyper5 = ") RETURN p, d2, ac, d1 "
+    var returnCyper4 = ") RETURN p1, d, ac, p2 "
+    var returnCyper3 = ") RETURN p, d, ac "
     var whereCyper5 = " WHERE ac.name IN ['가공', '변환'] AND ("
     var whereCyper4 = " WHERE ac.name IN ['배포', '판매'] AND ("
     var whereCyper3 = " WHERE ac.name = '생성' AND ("
@@ -2791,6 +3084,10 @@ router.get('/data/modifyData', function (req, res) {
     var isAgreeArr10 = [];
 
     var dataNameArr10 = [];
+    var dataTypeArr10 = [];
+    var deviceArr10 = [];
+
+    var dataNameArr10 = [];
     var valueArr10 = [];
     var file_pathArr10 = [];
     var originArr10 = [];
@@ -2806,23 +3103,32 @@ router.get('/data/modifyData', function (req, res) {
     var priceArr11 = [];
     var deviceArr11 = [];
 
-    var dataNamesTotal = [];
-    var dataValuesTotal =[];
-    var dataFilesTotal =[];
-    var dataOriginTotal =[];
-
-
     //var dataOwner = [];
     //var dataOwnerAff = [];
 
     var i = 0;
     var user_gubun = session_value.getSession().gubun;
     var user_name = session_value.getSession().user;
+    var user_pid = session_value.getSession().pid;
+
+    modiInsName = [];
+        
+     con.query("SELECT * FROM iitp.institutions;", function (err, rows, fields) {
+        if (err) {
+            console.log(err);
+            console.log("QUERY ERROR!");
+        }
+        else {
+            for (var index = 0; index < rows.length; index++) {
+                modiInsName.push(rows[index]["name"]);
+            }
+        }
+    });
     
     if (user_gubun == '사용자') {
         console.log('사용자')
         session
-          .run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' AND p.name = '" + user_name + "' RETURN p, d, ac LIMIT 10")
+          .run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' AND p.name = '" + user_name + "' AND p.pid = '"+ user_pid +"' RETURN p, d, ac")
           .then(function (result) {
             result.records.forEach(function (record) {
 
@@ -2984,6 +3290,8 @@ router.get('/data/modifyData', function (req, res) {
                 dataValuesTotal: datavalue,
                 dataFilesTotal: datafile,
                 dataOriginTotal: dataorigin,
+
+                indNames: modiInsName,
                 
                 authenticated: true
             });
@@ -2996,7 +3304,7 @@ router.get('/data/modifyData', function (req, res) {
     else if (user_gubun == '관리자') {
         console.log("관리자")
         session
-          .run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' RETURN p, d, ac LIMIT 10")
+          .run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' RETURN p, d, ac ")
           .then(function (result) {
             result.records.forEach(function (record) {
 
@@ -3015,7 +3323,7 @@ router.get('/data/modifyData', function (req, res) {
             });
 
 
-          session.run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[s:Send]-(p1:Person), (ac:Activity)-[r:Receive]-(p2:Person) WHERE ac.name IN ['배포', '판매'] RETURN p1, d, ac, p2 LIMIT 10")
+          session.run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[s:Send]-(p1:Person), (ac:Activity)-[r:Receive]-(p2:Person) WHERE ac.name IN ['배포', '판매'] RETURN p1, d, ac, p2")
           .then(function (result) {
             result.records.forEach(function (record) {
 
@@ -3036,7 +3344,7 @@ router.get('/data/modifyData', function (req, res) {
               affiliationArr2.push(record._fields[3].properties.affiliation)
             });
 
-              session.run("MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person) WHERE ac.name IN ['가공', '변환'] RETURN p, d2, ac, d1 LIMIT 10")
+              session.run("MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person) WHERE ac.name IN ['가공', '변환'] RETURN p, d2, ac, d1 ")
               .then(function (result) {
                 result.records.forEach(function (record) {
     
@@ -3294,172 +3602,41 @@ router.get('/data/modifyData', function (req, res) {
     }*/
 });
 
+
 router.post('/getModifyValues', function (req, res) {
-    var checkValues5 = req.body.modifyCheck5;
-    var checkValues4 = req.body.modifyCheck4;
-    var checkValues3 = req.body.modifyCheck3;
-    var check3Len;
-    var check4Len;
-    var check5Len;
 
     var checkValues = req.body.modifyCheck;
     var checkLen;
 
-
-    var multiCheckFlag = false;
-    var modiFlag3 = false;
-    var modiFlag4 = false;
-    var modiFlag5 = false;
-
     var modiFlag = false;
 
-    var activityType = ['생성', '가공', '제공'];
-    var deviceType = ['AI스피커', 'T머니', '레일플러스', '스마트워치', '페이션트모니터', '캐시비'];
-    var dataType = ['건강데이터', '의료데이터', '위치데이터', '음성데이터'];
-
-    if (checkValues3 == undefined) {
-        check3Len = 0;
-    } else {
-        check3Len = checkValues3.length;
-    }
-
-    if (checkValues4 == undefined) {
-        check4Len = 0;
-    } else {
-        check4Len = checkValues4.length;
-    }
-
-    if (checkValues5== undefined) {
-        check5Len = 0;
-    } else {
-        check5Len = checkValues5.length;
-    }
-
-    if (checkValues== undefined) {
+    if (checkValues == undefined) {
         checkLen = 0;
-    } else {
+    } else if (Array.isArray(checkValues)) {
+        checkLen = 0;
+    }
+    else {
         checkLen = checkValues.length;
     }
 
-    if (check3Len == 1) {
-        console.log("------------check3 ------------", checkValues3, checkValues3.length);
-        modiFlag3 = true;
+    if (Array.isArray(checkValues)) {
+        modiFlag = false;
     }
-    else if (check4Len == 1) {
-        console.log("------------check4 ------------", checkValues4, checkValues4.length);
-        modiFlag4 = true;
-    }
-    else if (check5Len == 1) {
-        console.log("------------check5 ------------", checkValues5, checkValues5.length);
-        modiFlag5 = true;
-    }
-    else if (checkLen == 1) {
-        console.log("------------ss check ------------", checkValues, checkValues.length);
+
+    if (!(checkLen == 0)) {
+        console.log("------------check ------------", checkValues, checkValues.length);
         modiFlag = true;
     }
 
-    if (modiFlag4 && modiFlag3 && modiFlag5 && modiFlag) {
-        console.log("all false");
-        modiFlag3 = false;
-        modiFlag4 = false;
-        modiFlag5 = false;
+    if (!modiFlag) {
+        console.log("false");
         modiFlag = false;
     }
 
-    if ((check3Len + check4Len + check5Len + checkLen) > 1) {
-        modiFlag3 = false;
-        modiFlag4 = false;
-        modiFlag5 = false;
+    if (checkLen == 0) 
         modiFlag = false;
-    }
 
-    if (modiFlag3) {
-        provInfo3.push(nameArr[checkValues3]);
-        provInfo3.push(affiliationArr[checkValues3]);
-        provInfo3.push(activityTypeArr3[checkValues3]);
-        provInfo3.push(dateArr3[checkValues3]);
-        provInfo3.push(dataNameArr3[checkValues3]);
-        provInfo3.push(priceArr3[checkValues3]);
-        provInfo3.push(deviceArr3[checkValues3]);
-        provInfo3.push(dataTypeArr3[checkValues3]);
-
-        console.log("modiFlag3 : ", modiFlag3);
-
-
-        res.render('data/modifyDataPage.ejs', {
-            esession: session_value.getSession(),
-
-            modiFlag3: modiFlag3,
-            modiFlag4: modiFlag4,
-            modiFlag5: modiFlag5,
-            provInfo3: provInfo3,
-
-            activityType: activityType,
-            dataType: dataType,
-            deviceType: deviceType,
-
-            authenticated: true
-        });
-    } else if (modiFlag4) {
-        provInfo4.push(s_nameArr[checkValues4]);
-        provInfo4.push(s_affiliationArr[checkValues4]);
-        provInfo4.push(activityTypeArr4[checkValues4]);
-        provInfo4.push(dateArr4[checkValues4]);
-        provInfo4.push(dataNameArr4[checkValues4]);
-        provInfo4.push(dataTypeArr4[checkValues4]);
-        provInfo4.push(priceArr4[checkValues4]);
-        provInfo4.push(deviceArr4[checkValues4]);
-        provInfo4.push(r_nameArr[checkValues4]);
-        provInfo4.push(r_affiliationArr[checkValues4]);
-
-        console.log("modiFlag4 : ", modiFlag4);
-        console.log(provInfo4[0]);
-
-        res.render('data/modifyDataPage.ejs', {
-            esession: session_value.getSession(),
-
-            modiFlag3: modiFlag3,
-            modiFlag4: modiFlag4,
-            modiFlag5: modiFlag5,
-            provInfo4: provInfo4,
-
-            activityType: activityType,
-            dataType: dataType,
-            deviceType: deviceType,
-
-            authenticated: true
-        });
-    } else if (modiFlag5) {
-        provInfo5.push(nameArr5[checkValues5]);
-        provInfo5.push(affiliationArr5[checkValues5]);
-        provInfo5.push(dataNameArr5[checkValues5]);
-        provInfo5.push(dataTypeArr5[checkValues5]);
-        provInfo5.push(deviceArr5[checkValues5]);
-        provInfo5.push(priceArr5[checkValues5]);
-        provInfo5.push(activityTypeArr5[checkValues5]);
-        provInfo5.push(dateArr5[checkValues5]);
-        provInfo5.push(dataNameArr6[checkValues5]);
-        provInfo5.push(dataTypeArr6[checkValues5]);
-        provInfo5.push(deviceArr6[checkValues5]);
-        provInfo5.push(priceArr6[checkValues5]);
-
-        console.log("modiFlag5 : ", modiFlag5);
-
-        res.render('data/modifyDataPage.ejs', {
-            esession: session_value.getSession(),
-
-            modiFlag3: modiFlag3,
-            modiFlag4: modiFlag4,
-            modiFlag5: modiFlag5,
-            provInfo5: provInfo5,
-
-            activityType: activityType,
-            dataType: dataType,
-            deviceType: deviceType,
-
-            authenticated: true
-        });  
-    } else if (modiFlag) {
+    if (modiFlag) {
         provInfo.push(dataN[checkValues]);
         provInfo.push(datavalue[checkValues]);
         provInfo.push(datafile[checkValues]);
@@ -3471,13 +3648,10 @@ router.post('/getModifyValues', function (req, res) {
         res.render('data/modifyDataPage.ejs', {
             esession: session_value.getSession(),
 
-            modiFlag3: modiFlag3,
-            modiFlag4: modiFlag4,
-            modiFlag5: modiFlag5,
             modiFlag: modiFlag,
             provInfo: provInfo,
+            insNames: modiInsName,
 
-            activityType: activityType,
             authenticated: true
         });  
     } else {
@@ -3515,6 +3689,23 @@ router.post('/transfer', function (req, res) {
     console.log("DDD",  provInfo)
     console.log(company, allowedPeriodFrom, allowedPeriodTo, price, permission, manuMethod);
     
+
+    var mergeData = "MATCH (d:Data) "
+                    + "WITH d.name as name, d.value as value, d.file_path as file_path, d.origin as origin, COLLECT(d) AS ns "
+                    + "WHERE size(ns) > 1 "
+                    + "CALL apoc.refactor.mergeNodes(ns) YIELD node "
+                    + "RETURN node"
+    var mergePerson = "MATCH (p:Person) "
+                    + "WITH toLower(p.name) as name, p.pid as pid, p.p_type as p_type, COLLECT(p) AS ns "
+                    + "WHERE size(ns) > 1 "
+                    + "CALL apoc.refactor.mergeNodes(ns) YIELD node "
+                    + "RETURN node"
+    var deleteRel = "start r=relationship(*) "
+                    + "match (s)-[r]->(e) "
+                    + "with s,e,type(r) as typ, tail(collect(r)) as coll "
+                    + "foreach(x in coll | delete x) "
+
+
     if(manuMethod != '미가공') {
         var manuCypher = "CREATE (p:Person), (d1:Data), (d2:Data), (ac:Activity) SET p = {name: '" + user_name + "', pid: '" + user_pid + "', p_type: '" + user_type + "'}, "
                         + "d1 = {name: '" + provInfo[0] + "', value: '" + provInfo[1] + "', file_path:'" + provInfo[2] + "', origin:'" + provInfo[3] + "'}, "
@@ -3526,15 +3717,18 @@ router.post('/transfer', function (req, res) {
         .run(manuCypher)
     }
     var receiveCypher = "CREATE (p:Person), (d:Data), (p2:Person), (ac:Activity)"
-    + "SET p = {name: '" + user_name + "', pid: '" + user_pid + "', p_type: '" + user_type + "'}, "
-    + "    d = {name: '" + provInfo[0] + "', value: '" + provInfo[1] + "', file_path:'" + provInfo[2] + "', origin:'" + provInfo[3] + "'}, "
-    + "    ac = {name: '제공', date:'" + date + "', detail: ''}, "
-    + "    p2 = {name: '" + company + "' , pid: '111111', p_type: '기관'} "
-    + "CREATE (p) <- [s:Send] -(ac), (p2) <- [r:Receive{allowed_period_from:'" + allowedPeriodFrom + "', allowed_period_to: '" + allowedPeriodTo + "', is_agreed: '" + permission + "', price: '" + price + "'}] -(ac), (ac) <- [g:Generate] -(d)"
+                        + "SET p = {name: '" + user_name + "', pid: '" + user_pid + "', p_type: '" + user_type + "'}, "
+                        + "    d = {name: '" + provInfo[0] + "', value: '" + provInfo[1] + "', file_path:'" + provInfo[2] + "', origin:'" + provInfo[3] + "'}, "
+                        + "    ac = {name: '제공', date:'" + date + "', detail: ''}, "
+                        + "    p2 = {name: '" + company + "' , pid: '111111', p_type: '기관'} "
+                        + "CREATE (p) <- [s:Send] -(ac), (p2) <- [r:Receive{allowed_period_from:'" + allowedPeriodFrom + "', allowed_period_to: '" + allowedPeriodTo + "', is_agreed: '" + permission + "', price: '" + price + "'}] -(ac), (ac) <- [g:Generate] -(d)"
     console.log(receiveCypher)
     session
     .run(receiveCypher)
     .then(function (result) {
+        session.run(mergeData)
+        session.run(mergePerson)
+        session.run(deleteRel)
         session.close();
     })
     .catch(function (err) {
@@ -3579,9 +3773,9 @@ router.post('/modify', function (req, res) {
     var matchCyper4;
     var matchCyper3;
 
-    var returnCyper5 = ") RETURN p, d2, ac, d1 LIMIT 10"
-    var returnCyper4 = ") RETURN p1, d, ac, p2 LIMIT 10"
-    var returnCyper3 = ") RETURN p, d, ac LIMIT 10"
+    var returnCyper5 = ") RETURN p, d2, ac, d1 "
+    var returnCyper4 = ") RETURN p1, d, ac, p2 "
+    var returnCyper3 = ") RETURN p, d, ac"
     var whereCyper5 = " WHERE ac.name IN ['가공', '변환'] AND ("
     var whereCyper4 = " WHERE ac.name IN ['배포', '판매'] AND ("
     var whereCyper3 = " WHERE ac.name = '생성' AND ("

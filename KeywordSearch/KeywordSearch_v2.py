@@ -55,10 +55,10 @@ def delete_duplicateNode(kNodes):
     return candidN
 
 # next (iter (k1nodes[0].labels)) : frozenset 값 얻는법
-def get_nodes(tx, keyword, nodeLabel):
-    nodes = (tx.run("MERGE (referee: " + nodeLabel + " {name:$keyword}) "
-                    "RETURN referee"
-                    , nodeLabel = nodeLabel, keyword = keyword)).values()
+def get_nodes(tx, user_name , user_pid):
+    nodes = (tx.run("MERGE (p: Person {name:$user_name, pid: $user_pid, p_type: '개인'}) "
+                    "RETURN p"
+                    , user_name = user_name, user_pid = user_pid)).values()
     return nodes
 
 def generate_shortestPathQuery(n, m):
@@ -102,7 +102,8 @@ def sort_result(graphs):
     resultLen = []
     for each in results:
         sumLen = 0
-        for i in range(len(keywords)-1):
+        #for i in range(len(keywords)-1):
+        for i in range(len(keywords)):
             sumLen = sumLen + len(each[i])
         resultLen.append(sumLen)
     resultIndex = sorted(range(len(resultLen)), key=lambda k: resultLen[k])         
@@ -130,7 +131,8 @@ def generate_outputQuery(ranking):
         resultWhere = ""
         resultSp = ""
         resultRt = ""
-        for i in range(len(keywords)-1):    
+        #for i in range(len(keywords)-1):
+        for i in range(len(keywords)):    
             psLabel = next(iter(ranking[r][i].start_node.labels))
             peLabel = next(iter(ranking[r][i].end_node.labels))
             labelTemp = "(s"+str(j) +":" + psLabel +"), (e"+str(j) +":"+peLabel +")"
@@ -154,7 +156,8 @@ def generate_outputQuery(ranking):
             spTemp = " MATCH p" + str(i) +" = shortestPath((s" + str(j) +")-[*]-(e" +str(j)+")) " 
             resultSp =  resultSp + spTemp       
             resultRt = resultRt + "p" + str(i) 
-            if i+1 != len(keywords)-1:
+            #if i+1 != len(keywords)-1:
+            if i+1 != len(keywords):
                 resultLabel = resultLabel + ", "
                 resultWhere = resultWhere + "AND "
                 resultRt = resultRt + ", "
@@ -171,7 +174,8 @@ def generate_outputTable(ranking):
     outTable = ""
     for r in range(len(ranking)):
         pTmp = []
-        for i in range(len(keywords)-1):
+        #for i in range(len(keywords)-1):
+        for i in range(len(keywords)):
             psTmp = []
             peTmp = []
           
@@ -215,7 +219,7 @@ def generate_outputTable(ranking):
                         if j == len(p)-1:
                             outTmp = outTmp + p[j] + "/"
                         else:
-                            outTmp = outTmp + p[j] + "."
+                            outTmp = outTmp + p[j] + "^"
             
             out = out + outTmp
 
@@ -229,14 +233,21 @@ with driver.session() as session:
 
     #keywords = ['성별데이터','나나나','이미지데이터','중소기업진흥공단','data_912']
 
-    keywords = ['이상우','차번호']
+    user_name = '이상우'
+    user_pid = '980514-1520414'
+    
+    userNode = session.read_transaction(get_nodes, user_name = user_name, user_pid = user_pid)
 
+    keywords = ['차번호','주민번호']
+ 
     start_time = time.time()
     
     #search for all nodes with keywords
-    kNodes = []  
+    kNodes = userNode  
+    #kNodes = []
     for i in range(len(keywords)):
         kNodes.append(session.read_transaction(check_nodeLabel,  keyword= keywords[i]))
+    
     
     candidN = delete_duplicateNode(kNodes)    
     print(len(candidN))
@@ -254,7 +265,7 @@ with driver.session() as session:
         pathLen = []
 
         flag = True
-        print(k)
+        print(N)
         for i in range(len(N)):
 
             pathTmp = []
@@ -262,10 +273,12 @@ with driver.session() as session:
             if not flag:
                 break
             for j in range(i+1, len(N)):
-
+                
                 spQuery = generate_shortestPathQuery(N[i], N[j])
+                print(spQuery)
                 shortP = session.read_transaction(shortestPath, spQuery)
-
+                print("-"*50)
+                print(shortP)
                 if shortP is not None:
                     pathTmp.append(shortP[0][0])
                     pathLenTmp.append(shortP[0][1])
@@ -274,15 +287,19 @@ with driver.session() as session:
                     break
             path.append(pathTmp)
             pathLen.append(pathLenTmp)  
-   
+            print(path)
+            print(pathLen)
+            print("="*100)
         #algorithm
+        print(pathLen, flag)
         if pathLen and flag:
             g.append(N[0])
             del N[0]
             graphs.append([])
+    
             for i in range(nodeSum-1):
                 shortestLenIndex = pathLen[i].index(min(pathLen[i]))
-
+                print("sh: ", shortestLenIndex)
                 graphs[k].append(path[i][shortestLenIndex])
                 g.append(N[shortestLenIndex])
                 del N[shortestLenIndex]

@@ -81,10 +81,14 @@
 <div class="container marketing">
     <% include ./menu %>
     <hr class="featurette-divider">
-    <div class="container" style="display: inline-block; text-align: center;">
+    <div class="container fontSize" style="display: inline-block; text-align: center;">
         <% if(esession.authenticated == false){ %>
             <% include ./notAuthenticated.ejs %>
-        <% } else { %>
+            <% } 
+            else if(esession.gubun == '관리자'){ %>
+                <% include ./adminres %>
+            <% } 
+            else{ %>
             <div class="jumbotron" style="background-color: #f8f8f8;">
                 <div style="font-size:2em;">개인정보 등록</div>
                 <br><br>
@@ -105,7 +109,7 @@
                                 </div>
                                 <br>
                                 <div class="input-group" style="width:30%; margin:0 auto;">
-                                    <input type="file" name="file_path" id="file_path"/>
+                                    <input type="file" name="file_path" id="file_path" style="width: 300px;"/>
                                 </div>
                                 <br>
                                 <div class="input-group" style="width:30%; margin:0 auto;">

@@ -16,6 +16,10 @@
         th {
             text-align: center;
         }
+
+        td {
+            font-size: 0.9em;
+        }
     </style>
 
 </head>
@@ -62,25 +66,73 @@
             else { %>
             <div class="jumbotron" style="background-color: #f8f8f8;">
                 <div class="panel panel-default" style="background-color: #ffffff">
-                    <div class="panel-heading" style="font-size:1.5em; background-color: #e7ebee;">기관 검색 결과</div>
+                    <div class="panel-heading" style="font-size:1.5em; background-color: #e7ebee;">기관 검색 결과 (생성)</div>
                     <!-- Table -->
+
                     <table class="table table-striped">
                         <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>데이터명</th>
-                                <th>값</th>
-                                <th>파일</th>
-                                <th>행동</th>
-                                <th>날짜</th>
-                                <th>가격</th>
-                                <th>허용기간</th>
-                                <th>정보제공 동의여부</th>
-                                <th>기타정보</th>
-                            </tr>
+                        <tr>
+                            <th>#</th>
+                            <th>데이터명</th>
+                            <th>값</th>
+                            <th>파일</th>
+                            <th>생성처</th>
+                            <th>날짜</th>
+                            <th>기타정보</th>
+                        </tr>
                         </thead>
                         <tbody>
-                        <% for(var i = 0; i < r_names.length; i++ ) { %>
+                        <% for(var i = 0; i < names.length; i++ ) { %>
+                            <tr>
+                                <th scope="row">
+                                    <%= (i + 1) %>
+                                </th>
+                                <td>
+                                    <%= dataNames3[i] %>
+                                </td>
+                                <td align=center width=200;>
+                                    <%= values3[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= file_paths3[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= origins3[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= dates3[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= details3[i] %>
+                                </td>
+                            </tr>
+                        <% } %>
+                        </tbody>
+                    </table>
+                </div>
+                <br><br>
+           
+       
+                <div class="panel panel-default" style="background-color: #ffffff">
+                    <div class="panel-heading" style="font-size:1.5em; background-color: #e7ebee;">기관 검색 결과 (제공)</div>
+                    <table class="table table-striped" style="font-size: 0.85em;">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>데이터명</th>
+                            <th>값</th>
+                            <th>파일</th>
+                            <th>생성처</th>
+                            <th>날짜</th>
+                            <th>제공기관</th>
+                            <th>가격</th>
+                            <th>허용기간</th>
+                            <th>정보제공 동의여부</th>
+                            <th>기타정보</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <% for(var i = 0; i < s_names.length; i++ ) { %>
                             <tr>
                                 <th scope="row">
                                     <%= (i + 1) %>
@@ -95,10 +147,13 @@
                                     <%= file_paths4[i] %>
                                 </td>
                                 <td align=center>
-                                    <%= activityTypes4[i] %>
+                                    <%= origins4[i] %>
                                 </td>
                                 <td align=center>
                                     <%= dates4[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= r_names[i] %>
                                 </td>
                                 <td align=center>
                                     <%= prices4[i] %>
@@ -115,7 +170,7 @@
                             </tr>
                         <% } %>
                         </tbody>
-                    </table>
+                    </table>             
                 </div>
             </div>
             <% } %> 

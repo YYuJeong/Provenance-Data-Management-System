@@ -24,6 +24,7 @@
 <% if (esession != undefined){
     if(esession.email){
     %>
+    <% if(esession.gubun == '사용자') { %>
 <div class="navbar-wrapper">
     <div class="container-fluid">
         <nav class="navbar navbar-inverse navbar-static-top">
@@ -37,6 +38,23 @@
                                 <a href=#><%=esession.user%>님 환영합니다
                                 <button id="logout" class="btn btn-default" style="color:#303030; margin-left: 5px;" onclick="logout()">logout</button></a>
                             </li>
+                            <% } else {%>
+<div class="navbar-wrapper">
+    <div class="container-fluid">
+        <nav class="navbar navbar-inverse navbar-static-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" style="font-size: 2.2em; font-family: 'Binggrae-Bold'; margin-top: 10px; margin-bottom: 10px" href="/" >개인정보 이력관리 시스템</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse" style="float:right;">
+                    <ul class="nav navbar-nav">
+                            <li id="login_name" margin="auto" style="color:#303030; font-size:1.5em">
+                                <a href=#>
+                                <%=esession.user%>님 환영합니다
+                                <button id="logout" class="btn btn-default" style="color:#303030; margin-left: 5px;" onclick="location.href='/ins/editIns'">기관 관리</button>
+                                <button id="institution" class="btn btn-default" style="color:#303030; margin-left: 5px;" onclick="logout()">logout</button></a>
+                            </li>                        
+                            <%}%>
                             <%}else{%>
                                 <div class="navbar-wrapper">
                                     <div class="container-fluid">
