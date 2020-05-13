@@ -214,7 +214,7 @@ router.get('/ins/modifyIns', function (req, res) {
                 modiInsValue.push(rows[index]["pid"]);
 
             }
-            console.log(insNames);
+            console.log("  ss", insNames);
             console.log(insValues);
             res.render('ins/modifyIns', {
                 esession: session_value.getSession(),
@@ -233,29 +233,27 @@ router.post('/insGetModifyData', function (req, res) {
     console.log(checkValues);
 
     var modiFlag = false;
-
+    modiInsInfo = []
     if (checkValues == undefined) {
         checkLen = 0;
+        modiFlag = false
     } else {
         checkLen = checkValues.length;
+        if (typeof(checkValues) == 'string') {
+            console.log("------------check ------------", checkValues, checkValues.length);
+            modiFlag = true;
+        }
+        else if(typeof(checkValues) == 'object' && checkLen > 1){
+            modiFlag = false;
+        }
+    
     }
-
-    if (checkLen == 1) {
-        console.log("------------check ------------", checkValues, checkValues.length);
-        modiFlag = true;
-    }
-
-    if (!modiFlag) {
-        console.log("false");
-        modiFlag = false;
-    }
-
-    if (checkLen > 1) 
-        modiFlag = false;
 
     if (modiFlag) {
-        modiInsInfo.push(modiInsName[checkValues]);
-        modiInsInfo.push(modiInsValue[checkValues]);
+        var checkNum = parseInt(checkValues);
+        console.log(checkNum, modiInsName[checkNum])
+        modiInsInfo.push(modiInsName[checkNum]);
+        modiInsInfo.push(modiInsValue[checkNum]);
 
         console.log("modiFlag : ", modiFlag);
         console.log("modiInsInfo : ", modiInsInfo);
