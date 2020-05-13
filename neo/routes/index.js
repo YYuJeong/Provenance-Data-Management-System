@@ -1929,7 +1929,7 @@ router.post('/periodSearch', function (req, res) {
                 newQuery3 = newQuery3 + " (ac.name = '생성') "
                 query3 = true;
             }
-            if (activityType == '제공'){
+            else if (activityType == '제공'){
                 newQuery4 = newQuery4 + " (ac.name = '제공') "
                 query4 = true;
             }
