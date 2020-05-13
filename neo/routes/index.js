@@ -266,6 +266,7 @@ router.post('/insGetModifyData', function (req, res) {
         modiFlag = false;
 
     if (modiFlag) {
+
         modiInsInfo.push(modiInsName[checkValues]);
         modiInsInfo.push(modiInsValue[checkValues]);
 
