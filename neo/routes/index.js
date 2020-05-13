@@ -188,7 +188,7 @@ router.post('/insAdd', function (req, res) {
         ], function (err, rows, fields) {
     
             console.log("err : " + err);
-            console.log("rows : " + rows);
+            //console.log("rows : " + rows);
 
             res.render('ins/addIns', {
                 esession: session_value.getSession()});
@@ -201,6 +201,8 @@ router.get('/ins/modifyIns', function (req, res) {
     var insNames = [];
     var insValues = [];
     modiInsInfo = [];
+    modiInsName = [];
+    modiInsValue = [];
     con.query("SELECT * FROM iitp.institutions;", function (err, rows, fields) {
         //console.log("err : " + err);
         if (err) {
@@ -239,11 +241,18 @@ router.post('/insGetModifyData', function (req, res) {
 
     if (checkValues == undefined) {
         checkLen = 0;
-    } else {
+    } else if (Array.isArray(checkValues)) {
+        checkLen = 0;
+    }
+    else {
         checkLen = checkValues.length;
     }
 
-    if (checkLen == 1) {
+    if (Array.isArray(checkValues)) {
+        modiFlag = false;
+    }
+
+    if (!(checkLen == 0)) {
         console.log("------------check ------------", checkValues, checkValues.length);
         modiFlag = true;
     }
@@ -253,7 +262,7 @@ router.post('/insGetModifyData', function (req, res) {
         modiFlag = false;
     }
 
-    if (checkLen > 1) 
+    if (checkLen == 0) 
         modiFlag = false;
 
     if (modiFlag) {
