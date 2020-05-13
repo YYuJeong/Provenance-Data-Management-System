@@ -626,6 +626,8 @@ router.get('/viewPage', function (req, res) {
     dataOriginTotal =[];
     datasname = [];
 
+    var fileDownloadPath = [];
+
     var i = 0;
     var user_gubun = session_value.getSession().gubun;
     var user_name = session_value.getSession().user;
@@ -657,6 +659,8 @@ router.get('/viewPage', function (req, res) {
               dataValuesTotal.push(record._fields[1].properties.value)
               dataFilesTotal.push(record._fields[1].properties.file_path)
               dataOriginTotal.push(record._fields[1].properties.origin)
+
+              fileDownloadPath.push("upload/" + record._fields[1].properties.file_path)
             });
             
             session.run("MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '가공' AND ( p.name = '" + user_name + "' ) RETURN p, d2, ac, d1 ")
@@ -722,6 +726,7 @@ router.get('/viewPage', function (req, res) {
     
 
                 });
+                console.log(fileDownloadPath);
                 res.render('viewPage', {
                     esession: session_value.getSession(),
 
@@ -784,6 +789,8 @@ router.get('/viewPage', function (req, res) {
                     dataValuesTotal: dataValuesTotal,
                     dataFilesTotal: dataFilesTotal,
                     dataOriginTotal: dataOriginTotal,
+
+                    fileDownloadPath: fileDownloadPath,
                     
                     authenticated: true
                 });
@@ -795,6 +802,7 @@ router.get('/viewPage', function (req, res) {
                 console.log(err);
             });
     }
+    /*
     else if (user_gubun == '관리자') {
         console.log("관리자")
         session
@@ -908,7 +916,7 @@ router.get('/viewPage', function (req, res) {
  .catch(function (err) {
   console.log(err);
 });
-    }
+    }*/
     else {
         res.render('viewPage', {
             esession: session_value.getSession(),
