@@ -257,7 +257,7 @@ router.post('/insGetModifyData', function (req, res) {
         console.log(checkNum, modiInsName[checkNum])
         modiInsInfo.push(modiInsName[checkNum]);
         modiInsInfo.push(modiInsValue[checkNum]);
-
+        console.log(modiInsName)
         console.log("modiFlag : ", modiFlag);
         console.log("modiInsInfo : ", modiInsInfo);
 
