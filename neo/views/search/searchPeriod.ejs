@@ -86,12 +86,12 @@
                 <% include ../notAuthenticated.ejs %>
             <% }else{ %>
                 <div class="container">
-                    <div style="text-align: center; font-size:2em;">활동으로 검색<br><br>
+                    <div style="text-align: center; font-size:2em;">이력 타입으로 검색<br><br>
                     </div>
                     <form method="post" action="/periodSearch">
                         <div class="row" style="width:490px; margin:0 auto;">
                             <select id="activityType" name="activityType" class="form-control">
-                                <option value=''>타입 (필수)</option>
+                                <option value=''>이력 타입 (필수)</option>
                                 <option value="생성">생성</option>
                                 <option value="가공">가공</option>
                                 <option value="제공">제공</option>

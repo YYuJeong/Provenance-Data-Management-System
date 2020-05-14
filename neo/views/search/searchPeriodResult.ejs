@@ -96,12 +96,12 @@
                 <% include ../notAuthenticated.ejs %>
             <% }else{ %>
                 <div class="container">
-                    <div style="text-align: center; font-size:2em;">활동으로 검색<br><br>
+                    <div style="text-align: center; font-size:2em;">이력 타입으로 검색<br><br>
                     </div>
                     <form method="post" action="/periodSearch">
                         <div class="row" style="width:490px; margin:0 auto;">
                             <select id="activityType" name="activityType" class="form-control">
-                                <option value=''>타입 (필수)</option>
+                                <option value=''>이력 타입 (필수)</option>
                                 <option value="생성">생성</option>
                                 <option value="가공">가공</option>
                                 <option value="제공">제공</option>
@@ -153,7 +153,7 @@
                     <% if(query3 == true) { %>
                         <div class="jumbotron" style="background-color: #f8f8f8;">
                         <div class="panel panel-default" style="background-color: #ffffff; width: 890px;">
-                            <div class="panel-heading" style="font-size:1.5em; background-color: #e7ebee;">활동 검색 결과 (생성)</div>
+                            <div class="panel-heading" style="font-size:1.5em; background-color: #e7ebee;">이력 타입 검색 결과 (생성이력)</div>
                             <!-- Table -->
                             <table class="table table-striped">
                                 <thead>
@@ -162,7 +162,7 @@
                                     <th>데이터명</th>
                                     <th>값</th>
                                     <th>파일</th>
-                                    <th>생성처</th>
+                                    <th>발급처</th>
                                     <th>날짜</th>
                                     <th>기타정보</th>
                                 </tr>
@@ -202,7 +202,7 @@
                         <br><br>
                         <div class="jumbotron" style="background-color: #f8f8f8;">
                             <div class="panel panel-default" style="background-color: #ffffff; width: 890px;">
-                                <div class="panel-heading" style="font-size:1.5em; background-color: #e7ebee; ">활동 검색 결과 (가공)</div>
+                                <div class="panel-heading" style="font-size:1.5em; background-color: #e7ebee; ">이력 타입 검색 결과 (가공이력)</div>
                             <table class="table table-striped">
                                 <thead>
                                 <tr>
@@ -210,7 +210,7 @@
                                     <th>데이터명</th>
                                     <th>값</th>
                                     <th>파일</th>
-                                    <th>생성처</th>
+                                    <th>발급처</th>
                                     <th>날짜</th>
                                     <th>기타정보</th>
                                     <th>(가공)</th>
@@ -269,7 +269,7 @@
                         <% if(query4 == true) { %>
                             <div class="jumbotron" style="background-color: #f8f8f8;">
                                 <div class="panel panel-default" style="background-color: #ffffff; width: 890px;">
-                                    <div class="panel-heading" style="font-size:1.5em; background-color: #e7ebee;">활동 검색 결과 (제공)</div>
+                                    <div class="panel-heading" style="font-size:1.5em; background-color: #e7ebee;">이력 타입 검색 결과 (제공이력)</div>
                                 <table class="table table-striped" style="font-size: 0.85em;">
                                     <thead>
                                     <tr>
@@ -277,7 +277,7 @@
                                         <th>데이터명</th>
                                         <th>값</th>
                                         <th>파일</th>
-                                        <th>생성처</th>
+                                        <th>발급처</th>
                                         <th>날짜</th>
                                         <th>제공기관</th>
                                         <th>허용기간</th>
