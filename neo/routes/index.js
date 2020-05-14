@@ -827,7 +827,7 @@ router.get('/viewPage', function (req, res) {
                 console.log(err);
             });
     }
-    /*
+    
     else if (user_gubun == '관리자') {
         console.log("관리자")
         session
@@ -897,40 +897,6 @@ router.get('/viewPage', function (req, res) {
 
           res.render('viewPage', {
             esession: session_value.getSession(),
-            names: nameArr,
-            affiliations: affiliationArr,
-            dataTypes3: dataTypeArr3,
-            dataNames3: dataNameArr3,
-            devices3: deviceArr3,
-            prices3: priceArr3,
-            activityTypes3: activityTypeArr3,
-            dates3: dateArr3,
-
-            s_names: s_nameArr,
-            s_affiliations: s_affiliationArr,
-            dataTypes4: dataTypeArr4,
-            dataNames4: dataNameArr4,
-            devices4: deviceArr4,
-            prices4: priceArr4,
-            activityTypes4: activityTypeArr4,
-            dates4: dateArr4,
-            r_names: r_nameArr,
-            r_affiliations: r_affiliationArr,
-
-            names2 : nameArr2,
-            affiliations2 : affiliationArr2,
-            names10 : nameArr10,
-            affiliations10 : affiliationArr10,
-            activityTypes10 : activityTypeArr10,
-            dates10 : dateArr10,
-            dateNames10 : dataNameArr10,
-            dateTypes10 : dataTypeArr10,
-            prices10: priceArr10,
-            devices10: deviceArr10,
-            dateNames11 : dataNameArr11,
-            dateTypes11 : dataTypeArr11,
-            prices11: priceArr11,
-            devices11: deviceArr11,
 
             authenticated: true
       });
@@ -941,7 +907,7 @@ router.get('/viewPage', function (req, res) {
  .catch(function (err) {
   console.log(err);
 });
-    }*/
+    }
     else {
         res.render('viewPage', {
             esession: session_value.getSession(),
