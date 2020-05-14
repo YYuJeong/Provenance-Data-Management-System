@@ -114,13 +114,19 @@
                                 <br>
                                 <div class="input-group" style="width:30%; margin:0 auto;">
                                     <span class="input-group-addon">생성처</span>
-                                    <input type="text" id="origin" name="origin" class="form-control"/>
+                                    <select id="origin" name="origin" class="form-control">
+                                      <option value=''>선택 (필수)</option>
+                                      <% for(var i = 0; i < insNames.length; i++) { %>
+                                        <option value='<%= insNames[i] %>' %>><%= insNames[i] %></option>
+                                      <% } %>
+                                    </select>
                                 </div>
                             </div>
-                        </div>
+                        </div style="margin: auto 0;">
                         <br><br>
-                        <input class="btn btn-primary" type="submit" value="등록" style="width:100px; background-color: #4a9dea; border-color:  #4a9dea;" onClick="onAdd()">
-                        <input class="btn btn-light" type="reset" value="취소" style="width:100px;  background-color: #dddddd;">
+                        <input class="btn btn-primary" type="submit" value="등록" style="width:98px; background-color: #4a9dea; border-color:  #4a9dea;" onClick="onAdd()">
+                        <input class="btn btn-light" type="reset" value="취소" style="width:98px;  background-color: #dddddd;">
+                        <input class="btn btn-primary" type="#" value="개인정보 요청/발급" style="width:180px; background-color: #9eb9d2; border-color:  #9eb9d2;" onClick="">
                         <br><br>
                     </form>
                 </div>
