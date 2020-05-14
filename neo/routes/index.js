@@ -3612,17 +3612,15 @@ router.post('/getModifyValues', function (req, res) {
 
     if (checkValues == undefined) {
         checkLen = 0;
-    } else if (Array.isArray(checkValues)) {
-        checkLen = 0;
-    }
+    } 
     else {
         checkLen = checkValues.length;
     }
-
+    /*
     if (Array.isArray(checkValues)) {
         modiFlag = false;
     }
-
+    */
     if (!(checkLen == 0)) {
         console.log("------------check ------------", checkValues, checkValues.length);
         modiFlag = true;
@@ -3637,14 +3635,26 @@ router.post('/getModifyValues', function (req, res) {
         modiFlag = false;
 
     if (modiFlag) {
-        provInfo.push(dataN[checkValues]);
-        provInfo.push(datavalue[checkValues]);
-        provInfo.push(datafile[checkValues]);
-        provInfo.push(dataorigin[checkValues]);
+        if(!Array.isArray(checkValues)){
+            provInfo.push(dataN[checkValues]);
+            provInfo.push(datavalue[checkValues]);
+            provInfo.push(datafile[checkValues]);
+            provInfo.push(dataorigin[checkValues]);
 
-        console.log("modiFlag : ", modiFlag);
-        console.log("provInfo : ", provInfo);
-
+            console.log("modiFlag : ", modiFlag);
+            console.log("provInfo : ", provInfo);
+        }
+        else{
+            for(var i = 0; i < checkLen ; i++){
+                provInfo.push(dataN[checkValues[i]]);
+                provInfo.push(datavalue[checkValues[i]]);
+                provInfo.push(datafile[checkValues[i]]);
+                provInfo.push(dataorigin[checkValues[i]]);
+    
+                console.log("modiFlag : ", modiFlag);
+                console.log("provInfo : ", provInfo);
+            }
+        }
         res.render('data/modifyDataPage.ejs', {
             esession: session_value.getSession(),
 
@@ -3705,35 +3715,36 @@ router.post('/transfer', function (req, res) {
                     + "with s,e,type(r) as typ, tail(collect(r)) as coll "
                     + "foreach(x in coll | delete x) "
 
-
-    if(manuMethod != '미가공') {
-        var manuCypher = "CREATE (p:Person), (d1:Data), (d2:Data), (ac:Activity) SET p = {name: '" + user_name + "', pid: '" + user_pid + "', p_type: '" + user_type + "'}, "
-                        + "d1 = {name: '" + provInfo[0] + "', value: '" + provInfo[1] + "', file_path:'" + provInfo[2] + "', origin:'" + provInfo[3] + "'}, "
-                        + "ac = {name: '가공', date:'" + date + "', detail: '" + manuMethod + "' }, "
-                        + "d2 = {name: '" + provInfo[0] + "', value: '" + provInfo[1] + "', file_path:'" + provInfo[2] + "', origin:'" + provInfo[3] + "'} "
-                        + "CREATE (p) <- [a:Act] -(ac), (ac) <- [g1:Generate] -(d2), (d1) <- [g2:Generate] -(ac)"
-        console.log(manuCypher)
+    for(var i = 0 ; i < provInfo.length/4; i++){
+        if(manuMethod != '미가공') {
+            var manuCypher = "CREATE (p:Person), (d1:Data), (d2:Data), (ac:Activity) SET p = {name: '" + user_name + "', pid: '" + user_pid + "', p_type: '" + user_type + "'}, "
+                            + "d1 = {name: '" + provInfo[i*4] + "', value: '" + provInfo[i*4+1] + "', file_path:'" + provInfo[i*4+2] + "', origin:'" + provInfo[i*4+3] + "'}, "
+                            + "ac = {name: '가공', date:'" + date + "', detail: '" + manuMethod + "' }, "
+                            + "d2 = {name: '" + provInfo[i*4] + "', value: '" + provInfo[i*4+1] + "', file_path:'" + provInfo[i*4+2] + "', origin:'" + provInfo[i*4+3] + "'} "
+                            + "CREATE (p) <- [a:Act] -(ac), (ac) <- [g1:Generate] -(d2), (d1) <- [g2:Generate] -(ac)"
+            console.log(manuCypher)
+            session
+            .run(manuCypher)
+        }
+        var receiveCypher = "CREATE (p:Person), (d:Data), (p2:Person), (ac:Activity)"
+                            + "SET p = {name: '" + user_name + "', pid: '" + user_pid + "', p_type: '" + user_type + "'}, "
+                            + "    d = {name: '" + provInfo[i*4] + "', value: '" + provInfo[i*4+1] + "', file_path:'" + provInfo[i*4+2] + "', origin:'" + provInfo[i*4+3] + "'}, "
+                            + "    ac = {name: '제공', date:'" + date + "', detail: ''}, "
+                            + "    p2 = {name: '" + company + "' , pid: '111111', p_type: '기관'} "
+                            + "CREATE (p) <- [s:Send] -(ac), (p2) <- [r:Receive{allowed_period_from:'" + allowedPeriodFrom + "', allowed_period_to: '" + allowedPeriodTo + "', is_agreed: '" + permission + "', price: '" + price + "'}] -(ac), (ac) <- [g:Generate] -(d)"
+        console.log(receiveCypher)
         session
-        .run(manuCypher)
+        .run(receiveCypher)
+        .then(function (result) {
+            session.run(mergeData)
+            session.run(mergePerson)
+            session.run(deleteRel)
+            session.close();
+        })
+        .catch(function (err) {
+            console.log(err);
+        });
     }
-    var receiveCypher = "CREATE (p:Person), (d:Data), (p2:Person), (ac:Activity)"
-                        + "SET p = {name: '" + user_name + "', pid: '" + user_pid + "', p_type: '" + user_type + "'}, "
-                        + "    d = {name: '" + provInfo[0] + "', value: '" + provInfo[1] + "', file_path:'" + provInfo[2] + "', origin:'" + provInfo[3] + "'}, "
-                        + "    ac = {name: '제공', date:'" + date + "', detail: ''}, "
-                        + "    p2 = {name: '" + company + "' , pid: '111111', p_type: '기관'} "
-                        + "CREATE (p) <- [s:Send] -(ac), (p2) <- [r:Receive{allowed_period_from:'" + allowedPeriodFrom + "', allowed_period_to: '" + allowedPeriodTo + "', is_agreed: '" + permission + "', price: '" + price + "'}] -(ac), (ac) <- [g:Generate] -(d)"
-    console.log(receiveCypher)
-    session
-    .run(receiveCypher)
-    .then(function (result) {
-        session.run(mergeData)
-        session.run(mergePerson)
-        session.run(deleteRel)
-        session.close();
-    })
-    .catch(function (err) {
-        console.log(err);
-    });
     res.render('data/modifyData.ejs', {
         esession: session_value.getSession(), 
         dataNamesTotal: dataN,
