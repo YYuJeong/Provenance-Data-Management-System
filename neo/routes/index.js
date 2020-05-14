@@ -75,6 +75,8 @@ let modiInsInfo = [];
 let modiInsName = [];
 let modiInsValue = [];
 
+let addInsName = [];
+
 app.use(esession({
     secret: "asdfasffdas",
     resave: false,
@@ -487,6 +489,9 @@ router.post('/dataAdd', function (req, res) {
     var value = req.body.value;
     var origin = req.body.origin;
     var file_path = req.body.file_path;
+    var insName = [];
+
+    //console.log(origin);
 
     if(file_path == undefined)
         file_path = '';
@@ -538,11 +543,30 @@ router.post('/dataAdd', function (req, res) {
         .catch(function (err) {
             console.log(err);
         });
-    res.render('addPage', {esession: session_value.getSession()});
+    res.render('addPage', {
+        esession: session_value.getSession(),
+        insNames: addInsName
+    });
 });
 
 router.get('/addPage', function (req, res, next) {
-    res.render('addPage', {esession: session_value.getSession()});
+    var insName = [];
+    addInsName = [];
+    con.query("SELECT * FROM iitp.institutions;", function (err, rows, fields) {
+       if (err) {
+           console.log(err);
+           console.log("QUERY ERROR!");
+       }
+       else {
+           for (var index = 0; index < rows.length; index++) {
+               insName.push(rows[index]["name"]);
+           }
+           res.render('addPage', {
+            esession: session_value.getSession(),
+            insNames: insName
+            });
+       }
+   });
 })
 
 router.get('/', function (req, res, next) {
@@ -2773,6 +2797,8 @@ function setArray() {
     modiInsInfo = [];
     modiInsName = [];
     modiInsValue = [];
+
+    addInsName = [];
     
 }
 
