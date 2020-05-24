@@ -495,7 +495,7 @@ router.get('/download', function(req, res, next) {
     var name = req.body.name;
     console.log(name);
     var upload_folder = 'upload/';
-    var file = upload_folder + 'ticket'; // ex) /upload/files/sample.txt
+    var file = upload_folder + 'loan'; // ex) /upload/files/sample.txt
     
     try {
       if (fs.existsSync(file)) { // 파일이 존재하는지 체크
