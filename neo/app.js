@@ -38,8 +38,8 @@ var modifyData = require('./routes/data/modifyData');
 var modifyDataResult = require('./routes/data/modifyDataResult');
 var modifyDataPage = require('./routes/data/modifyDataPage');
 
-var deleteData = require('./routes/data/deleteData');
-var deleteDataResult = require('./routes/data/deleteDataResult');
+var analyzeData = require('./routes/data/analyzeData');
+var analyzeDataResult = require('./routes/data/analyzeDataResult');
 
 var fileuploadRouter = require('./routes/data/uploadData');
 
@@ -95,8 +95,8 @@ app.use('/data/modifyData', modifyData);
 app.use('/data/modifyDataResult', modifyDataResult);
 app.use('/data/modifyDataPage', modifyDataPage);
 
-app.use('/data/deleteData', deleteData);
-app.use('/data/deleteDataResult', deleteDataResult);
+app.use('/data/analyzeData', analyzeData);
+app.use('/data/analyzeDataResult', analyzeDataResult);
 
 app.use('/data/uploadData', fileuploadRouter);
 //app.use('/upload', express.static('uploads'));
