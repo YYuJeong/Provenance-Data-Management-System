@@ -16,7 +16,7 @@ with open("DemoData.csv", 'r', encoding='utf-8') as f:
 
 from neo4j import GraphDatabase
 
-driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "wowhi223"))
+driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "wowhi223"), encrypted=False)
 
 
 def add_node(tx, s_name, s_pid, s_type, dataName1, value1, file_path1, origin1, activityType, date, detail, r_name, r_pid, r_type, allowed_period_from, allowed_period_to, price, is_agreed):
