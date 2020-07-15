@@ -64,6 +64,13 @@ def merge_data(tx):
 def merge_person(tx):
    tx.run("MATCH (p:Person) "
           "WITH toLower(p.name) as name, p.pid as pid, p.p_type as p_type, COLLECT(p) AS ns "
+          "WHERE size(ns) > 1 AND NOT (p.p_type = '기관')"
+          "CALL apoc.refactor.mergeNodes(ns) YIELD node "
+          "RETURN node" )
+
+def merge_activity(tx):
+   tx.run("MATCH (ac:Activity) "
+          "WITH ac.name as name, COLLECT(ac) AS ns "
           "WHERE size(ns) > 1 "
           "CALL apoc.refactor.mergeNodes(ns) YIELD node "
           "RETURN node" )
@@ -75,12 +82,12 @@ def delete_duplRelation(tx):
            "foreach(x in coll | delete x) ")
 
 with driver.session() as session:
-    
     for i in range(len(matrix)):
         session.write_transaction(add_node,matrix[i][0],matrix[i][1],matrix[i][2],matrix[i][3],matrix[i][4],matrix[i][5],matrix[i][6],matrix[i][7], matrix[i][8],matrix[i][9],matrix[i][10],matrix[i][11], matrix[i][12],matrix[i][13],  matrix[i][14],matrix[i][15],matrix[i][16])
-        
-    session.read_transaction(merge_data)
+   
+    #session.read_transaction(merge_data)
     session.read_transaction(merge_person)
+    #session.read_transaction(merge_activity)
     session.read_transaction(delete_duplRelation)
     
 print("start_time", start_time)
