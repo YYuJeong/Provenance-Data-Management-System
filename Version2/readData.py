@@ -10,7 +10,7 @@ start_time = time.time()
 
 
 
-with open("DemoData.csv", 'r', encoding='utf-8') as f:
+with open("AnalysisData.csv", 'r', encoding='utf-8') as f:
 
     matrix = list(csv.reader(f, delimiter=","))
 
@@ -64,7 +64,7 @@ def merge_data(tx):
 def merge_person(tx):
    tx.run("MATCH (p:Person) "
           "WITH toLower(p.name) as name, p.pid as pid, p.p_type as p_type, COLLECT(p) AS ns "
-          "WHERE size(ns) > 1 AND NOT (p.p_type = '기관')"
+          "WHERE size(ns) > 1 "
           "CALL apoc.refactor.mergeNodes(ns) YIELD node "
           "RETURN node" )
 
@@ -87,7 +87,7 @@ with driver.session() as session:
    
     session.read_transaction(merge_data)
     session.read_transaction(merge_person)
-    session.read_transaction(merge_activity)
+    #session.read_transaction(merge_activity)
     session.read_transaction(delete_duplRelation)
     
 print("start_time", start_time)
