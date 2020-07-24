@@ -39,7 +39,10 @@ var modifyDataResult = require('./routes/data/modifyDataResult');
 var modifyDataPage = require('./routes/data/modifyDataPage');
 
 var analyzeData = require('./routes/data/analyzeData');
-var analyzeDataResult = require('./routes/data/analyzeDataResult');
+var analyzeSimResult = require('./routes/data/analyzeSimResult');
+var analyzeFreqResult = require('./routes/data/analyzeFreqResult');
+var analyzeSim = require('./routes/data/analyzeSim');
+var analyzeFreq = require('./routes/data/analyzeFreq');
 
 var fileuploadRouter = require('./routes/data/uploadData');
 
@@ -96,7 +99,10 @@ app.use('/data/modifyDataResult', modifyDataResult);
 app.use('/data/modifyDataPage', modifyDataPage);
 
 app.use('/data/analyzeData', analyzeData);
-app.use('/data/analyzeDataResult', analyzeDataResult);
+app.use('/data/analyzeSimResult', analyzeSimResult);
+app.use('/data/analyzeFreqResult', analyzeFreqResult);
+app.use('/data/analyzeSim', analyzeSim);
+app.use('/data/analyzeFreq', analyzeFreq);
 
 app.use('/data/uploadData', fileuploadRouter);
 //app.use('/upload', express.static('uploads'));

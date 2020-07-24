@@ -23,10 +23,10 @@
 <% include ../header %>
 
 <div class="container marketing">
-    <!-- Three columns of text below the carousel -->
     <% include ../menu %>
+
     <hr class="featurette-divider">
-    <div class="container fontSize" style="display: inline-block;text-align: center;">
+    <div class="jumbotron" style="background-color: #f8f8f8;">
         <% if(esession.authenticated == false){ %>
             <% include ../notAuthenticated.ejs %>
             <% } 
@@ -36,26 +36,17 @@
                 </div>
             <% } 
             else{ %>
-            <div class="jumbotron" style="background-color: #ffffff;">
-                <div class="fontSize">
-                    <div class="row">
-                        <div style="margin:0 auto;" align=center>
-                            <br>
-                            <a href="/data/analyzeSim">
-                                <button type="button" class="btn btn-primary btn-lg btn-block" style="width:300px; background-color: #4a9dea; border-color:  #4a9dea;">유사 노드 탐색</button>
-                            </a>
-                            <br>
-                            <a href="/data/analyzeFreq">
-                                <button type="button" class="btn btn-dark btn-lg btn-block" style="width:300px; ">빈발 패턴 탐색</button>
-                            </a>
+                <div class="container">
+                    <div style="margin: auto; padding: 10%; text-align: center; font-size:2em;">빈발 패턴 탐색 결과
+                    </div>
+                        <div class="row">
+                            <!---->
                         </div>
                     </div>
                 </div>
-            </div>
-        <% } %>
-    </div>
-</div>
-<hr class="featurette-divider">
+            <% } %>
+        </div>
+    <hr class="featurette-divider">
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>

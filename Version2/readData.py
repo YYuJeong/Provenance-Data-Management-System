@@ -64,7 +64,7 @@ def merge_data(tx):
 def merge_person(tx):
    tx.run("MATCH (p:Person) "
           "WITH toLower(p.name) as name, p.pid as pid, p.p_type as p_type, COLLECT(p) AS ns "
-          "WHERE size(ns) > 1 AND NOT (p.p_type = '기관')"
+          "WHERE size(ns) > 1 "
           "CALL apoc.refactor.mergeNodes(ns) YIELD node "
           "RETURN node" )
 
