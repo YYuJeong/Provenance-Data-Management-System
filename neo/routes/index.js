@@ -19,6 +19,7 @@ const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic(db_info.DB
 const session = driver.session();
 const iconv = require('iconv-lite');
 var keyResult = require('./keyResult');
+var fsmResult = require('./fsmResult');
 var Cy2NeoD3 = require('../public/scripts/cy2neod3');
 
 let nameArr5 = [];
@@ -2518,10 +2519,68 @@ router.post('/keyword', function (req, res) {
 });
 
 router.get('search/searchKeyword', function(req, res){
+    console.log("render searchKeyword")
     res.render("search/searchKeyword", {esession: session_value.getSession(), data:keyResult.getKeywordResult()});
 });
 
+// start fsm algorithm
+// router.get('data/analyzeFreq', function(req, res){
+//      res.render("data/analyzeFreq", {esession: session_value.getSession()})
+//  });
 
+router.post('/fsm', function (req, res) {
+    // get support from web page
+    //var iSupport = req.body.support;
+    
+    /*
+    python -m gspan_mining -s 5000 -d True ./graphdata/graph.data
+    */
+
+    console.log('enter fsm')
+    console.log(__dirname + '\\data\\gSpan\\gspan_mining\\main.py')
+    var process = spawn('python', [__dirname + '\\data\\gSpan\\gspan_mining\\main.py']);
+    var wrote = 0;
+    var startTime = new Date().getTime();
+    if(req.body.keyword.length == 0) {
+        res.send('<script type="text/javascript">alert("최소 지지도를 입력해주세요."); window.history.go(-1);</script>');
+    }
+    else
+    {
+        promiseFromChildProcess(process)
+            .then(function (result)
+            {
+                console.log('promise complete frequent: ', result);
+                process.stdout.on('fsmdata', function (data)
+                {
+                    if (wrote == 0)
+                    {
+                        fsm_gSpan = iconv.decode(data, 'EUC-KR').toString();
+                        fsmResult.setfsm_result(fsm_gSpan);
+                        console.log(fsm_gSpan)
+                    }
+                    wrote += 1;
+                });
+                var endTime = new Date().getTime();
+                console.log("Execution time : ", (endTime - startTime));
+
+                process.on('close', function (data)
+                {
+                    res.redirect('data/analyzeFreqResult');
+                    console.log("go to analyzeFreqResult")
+                });
+
+            }, function (err){
+                console.log('promise rejected: ', err);
+        });
+    }
+
+});
+
+router.get('data/analyzeFreq', function(req, res){
+    console.log("render analyzeFreq")
+    res.render("data/analyzeFreqResult", {esession: session_value.getSession(), fsmdata:fsmResult.getfsm_result()});
+}); 
+// end fsm algorithm
 
 
 router.post('/getDeleteValues', function (req, res) {

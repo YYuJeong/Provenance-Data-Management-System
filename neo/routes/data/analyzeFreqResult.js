@@ -13,13 +13,13 @@ var path = require('path');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var session_value = require('../session');
+var fsmResult = require('../fsmResult');
 
 router.get('/', function(req, res, next) {
-  res.render('data/analyzeFreqResult.ejs', {esession: session_value.getSession()});
+  let fsmresult = fsmResult.getfsm_result();
+  fsmResult.setfsm_result("");
+  res.render('data/analyzeFreqResult.ejs', {esession: session_value.getSession(), fsmdata:fsmresult});
 });
-
-
-
 
 
 module.exports = router;
