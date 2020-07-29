@@ -2550,7 +2550,7 @@ router.post('/fsm', function (req, res) {
             .then(function (result)
             {
                 console.log('promise complete frequent: ', result);
-                process.stdout.on('fsmdata', function (data)
+                process.stdout.on('data', function (data)
                 {
                     if (wrote == 0)
                     {
@@ -2566,7 +2566,6 @@ router.post('/fsm', function (req, res) {
                 process.on('close', function (data)
                 {
                     res.redirect('data/analyzeFreqResult');
-                    console.log("go to analyzeFreqResult")
                 });
 
             }, function (err){

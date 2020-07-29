@@ -2,14 +2,13 @@ let fsm_result = "";
 
 function setfsm_result(data) {
     fsm_result = data;
+    console.log(fsm_result)
 }
 
 function getfsm_result() {
     let fsmresult = fsm_result;
     fsm_result = '';
-    console.log('-------getfsm_result-------')
     console.log(fsmresult)
-    console.log('-------getfsm_result-------')
     return fsmresult;
 }
 
