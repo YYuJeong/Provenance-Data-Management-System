@@ -1,12 +1,7 @@
-"""The main program that runs gSpan."""
-# -*- coding=utf-8 -*-
+"""Implementation of gSpan."""
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
-
-
-
-import numpy as np
 
 import codecs
 import collections
@@ -129,11 +124,12 @@ def generateInput():
              records.append(personNode["p.name"])
          personDict = {k: v for v, k in enumerate(records)}
     
+         perDict = {'개인': 0}
          records = []
         
          for personNode in personNodes:
              records.append(personNode["p.name"])
-         instDict = {k: (v+1)  for v, k in enumerate(records)}
+         instDict = {k: v + len(perDict) for v, k in enumerate(records)}
        
     
          #dataDict = {'데이터': 0}
@@ -143,19 +139,18 @@ def generateInput():
          for dataNode in dataNodes:
              records.append(dataNode["d.name"])
 
-         dataDict = {k: (v+len(instDict)+1) for v, k in enumerate(records)}
+         dataDict = {k: (v+len(perDict)+len(instDict)) for v, k in enumerate(records)}
     
          
          #activityNodes to dict
          activityNodes = ['생성', '가공', '제공']
-         actDict = {k: (v+len(dataDict)+len(instDict)+1) for v, k in enumerate(activityNodes)}
+         actDict = {k: (v+len(perDict)+len(dataDict)+len(instDict)) for v, k in enumerate(activityNodes)}
          
          #edge labels to dict
          edgeLabels = ['Act', 'Generate', 'Send', 'Receive']
          edgeDict = {k: v for v, k in enumerate(edgeLabels)}
     
-         perDict = {'개인': len(dataDict) +len(instDict)+len(actDict)+1 }
-         allDict = {**instDict,**dataDict, **actDict, **perDict}
+         allDict = {**perDict, **instDict,**dataDict, **actDict}
          print(allDict)
          
          #get all graphs 
@@ -784,213 +779,3 @@ class gSpan(object):
             self._DFScode.pop()
 
         return self
-
-
-def main(FLAGS=None):
-    """Run gSpan."""
-    '''
-    if FLAGS is None:
-        FLAGS, _ = parser.parse_known_args(args=sys.argv[1:])
-
-    if not os.path.exists(FLAGS.database_file_name):
-        print('{} does not exist.'.format(FLAGS.database_file_name))
-        sys.exit()
-    '''    
-    gs = gSpan(
-        #database_file_name=FLAGS.database_file_name,
-        database_file_name='../gSpan-master/graphdata/neo4j.txt',
-        
-        #min_support=FLAGS.min_support,
-        min_support=2,
-        
-#        min_num_vertices=FLAGS.lower_bound_of_num_vertices,
-#        max_num_vertices=FLAGS.upper_bound_of_num_vertices,
-
-#        max_ngraphs=FLAGS.num_graphs,
-        is_undirected=False,
-#        verbose=FLAGS.verbose,
-#        visualize=FLAGS.plot,
-#        where=FLAGS.where
-    )
-
-    gs.run()
-    gs.time_stats()
-    return gs
-
-
-if __name__ == '__main__':
-    gs = main()
-
-
-    global allDict
-    global edgeDict
-    global instDict
-    global dataDict
-    global actDict
-    # Create an empty list 
-
-    row_list =[] 
-      
-    # Iterate over each row 
-    for index, rows in gs._report_df.iterrows(): 
-        # Create list for the current row 
-        my_list =[rows.support, rows.vertex, rows.link, rows.num_vert] 
-          
-        # append the list to the final list 
-        row_list.append(my_list) 
-        
-    #Generate ouputTable
-   # edgeInfo = row_list[38]  #example
-    final = []
-    for i in range(len(row_list)):
-        print("result graph #" , i)
-        edgeInfo = row_list[i]
-    #Extract row's information
-        support = edgeInfo[0]
-        nodes = edgeInfo[1]
-        edges = edgeInfo[2]
-        numVer = edgeInfo[3]
-       
-    #Create table output
-   
-    #Create cypher output
-    
-    #decode dict to node
-        dic2graph = []
-        for edge in edges:
-            #print(edge)
-            dic2node = []
-            dic2node.append(list(allDict.keys())[list(allDict.values()).index(edge[0])])
-            dic2node.append(list(allDict.keys())[list(allDict.values()).index(edge[1])])
-            dic2node.append(list(edgeDict.keys())[list(edgeDict.values()).index(edge[2])])          
-            #(dic2node)
-            dic2graph.append(dic2node)
-    
-        #look up original node
-        fsmResult = []
-        for nodes in dic2graph:
-            dic2node = []
-            for node in nodes:
-                if instDict.get(node) != None:
-                    label = '기관'
-                elif dataDict.get(node) != None:
-                    label = 'Data'
-                elif actDict.get(node) != None:
-                    label = 'Activity'
-                elif edgeDict.get(node) != None:
-                    label = 'Edge'
-                else:
-                    label = '개인'
-                dic2node.append((node, label))
-            #print(dic2node)
-            fsmResult.append(dic2node)
-
-        #create cypher by activity type
-        rets = []
-        searches = []
-        creates = [] #결과 그래프 하나 당 사이퍼들
-        for result in fsmResult:
-            print("result: ", result)
-            if result[0][1] == 'Activity':
-                node2 = result[0]
-                node1 = result[1]
-            else:
-                node1 = result[0]
-                node2 = result[1]
-            edge = result[2]
-            create = ''
-            search = ''
-            ret = []
-            ret1 = ''
-            ret2 = '' 
-            if node1[1] == 'Activity' : ret1 = 'ac'
-            elif node1[1] == 'Data': ret1 = 'd'
-            elif node1[1] == '개인' : ret1 = 'p'
-            else: ret1 = 'p'
-            print(node1[1])
-            
-            if node2[1] == 'Activity' : ret2 = 'ac'
-            elif node2[1] == 'Data': ret2 = 'd'
-            elif node2[1] == '개인' : ret2 = 'p'
-            else: ret2 = 'p'
-            print(node2[1])
-            print(ret1, ret2)
-            ret.append(ret1)
-            ret.append(ret2)
-            if node2[0] == '생성': #두번째 노드가 
-                if edge[0] == 'Generate':
-                    create = ("CREATE (d:Data), (ac:Activity) "
-                             "SET d = {name: " + "'" + node1[0] +"', graph : " + str(i) + "},"
-                             "   ac = {name: " + "'" + node2[0] +"', graph : " + str(i) + "} "
-                             "CREATE (ac) <- [g:Generate] - (d)")
-                    search = ("MATCH (d:Data), (ac:Activity) "
-                              "WHERE d.name =  " + "'" + node1[0] +"' and d.graph = " + str(i) +
-                              " and ac.name = "+ "'" + node2[0] + "' and ac.graph = " + str(i))
-                 
-                elif edge[0] == 'Act':
-                    create = ("CREATE (p:Person), (ac:Activity) "
-                             "SET p = {name: " + "'" + node1[0] + "', graph : " + str(i) + "},"
-                             "   ac = {name: " + "'" + node2[0] + "', graph : " + str(i) + "} "
-                             "CREATE (ac) - [a:Act] -> (p)")
-                    search = ("MATCH (p:Person), (ac:Activity) "
-                              "WHERE p.name =  " + "'" + node1[0] +"' and p.graph = " + str(i) +
-                              " and ac.name = "+ "'" + node2[0] + "' and ac.graph = " + str(i))
-            elif node2[0] == '가공':
-                if edge[0] == 'Generate':
-                    create = ("CREATE (d:Data), (ac:Activity) "
-                             "SET d = {name: " + "'" + node1[0] + "', graph : " + str(i) + "},"
-                             "   ac = {name: " + "'" + node2[0] + "', graph : " + str(i) + "} "
-                             "CREATE (ac) <- [g:Generate] - (d)")
-                    search = ("MATCH (d:Data), (ac:Activity) "
-                              "WHERE d.name =  " + "'" + node1[0] +"' and d.graph = " + str(i) +
-                              " and ac.name = "+ "'" + node2[0] + "' and ac.graph = " + str(i))                    
-                elif edge[0] == 'Act':
-                    create = ("CREATE (p:Person), (ac:Activity) "
-                             "SET p = {name: " + "'" + node1[0] + "', graph : " + str(i) + "},"
-                             "   ac = {name: " + "'" + node2[0] + "', graph : " + str(i) + "} " 
-                             "CREATE (ac) - [a:Act] -> (p)")
-                    search = ("MATCH (p:Person), (ac:Activity) "
-                              "WHERE p.name =  " + "'" + node1[0] +"' and p.graph = " + str(i) +
-                              " and ac.name = "+ "'" + node2[0] + "' and ac.graph = " + str(i))                         
-            elif node2[0] == '제공':
-                if edge[0] == 'Generate':
-                    create = ("CREATE (d:Data), (ac:Activity) "
-                             "SET d = {name: " + "'" + node1[0] + "', graph : " + str(i) + "},"
-                             "   ac = {name: " + "'" + node2[0] + "', graph : " + str(i) + "} "
-                             "CREATE (ac) <- [g:Generate] - (d)")
-                    search = ("MATCH (d:Data), (ac:Activity) "
-                              "WHERE d.name =  " + "'" + node1[0] +"' and d.graph = " + str(i) +
-                              " and ac.name = "+ "'" + node2[0] + "' and ac.graph = " + str(i))     
-                elif edge[0] == 'Send':
-                    create = ("CREATE (p:Person), (ac:Activity) "
-                             "SET p = {name: " + "'" + node1[0] + "', graph : " + str(i) + "},"
-                             "   ac = {name: " + "'" + node2[0] + "', graph : " + str(i) + "} "
-                             "CREATE (ac) - [s:Send] -> (p)")
-                    search = ("MATCH (p:Person), (ac:Activity) "
-                              "WHERE p.name =  " + "'" + node1[0] +"' and p.graph = " + str(i) +
-                              " and ac.name = "+ "'" + node2[0] + "' and ac.graph = " + str(i))                                 
-                elif edge[0] == 'Receive':
-                    create = ("CREATE (p:Person), (ac:Activity) "
-                             "SET p = {name: " + "'" + node1[0] + "', graph : " + str(i) + "},"
-                             "   ac = {name: " + "'" + node2[0] + "', graph : " + str(i) + "} "
-                             "CREATE (ac) - [r:Receive] -> (p)")
-                    search = ("MATCH (p:Person), (ac:Activity) "
-                              "WHERE p.name =  " + "'" + node1[0] +"' and p.graph = " + str(i) +
-                              " and ac.name = "+ "'" + node2[0] + "' and ac.graph = " + str(i))             
-            
-            #print(cypher)
-            #print(search)
-            searches.append(search)
-            creates.append(create)
-            rets.append(ret)
-
-        print(creates)
-        print(searches)   
-        rets = list(set(np.array(rets).flatten().tolist()))
-        print(rets)
-        final.append([creates, searches, rets])
-
-        
-        
-        
-        
