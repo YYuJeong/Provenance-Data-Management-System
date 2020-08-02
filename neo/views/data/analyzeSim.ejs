@@ -41,26 +41,37 @@
                     </div>
                     <!--Start-->
                     <br><br>
-                    <form class="form-inline" method="post" action="/" name="" id="" >
+                    <form class="form-inline" method="post" action="/node" name="node" id="node" >
                         <table style="margin: auto; border: 0px;">
                             <tr>
-                                <td><input type="text" class="form-control" name="keyword" id="keyword" style="width:600px;"></td>
+                                <td><input type="text" class="form-control" name="keywords" id="keywords" style="width:600px;"></td>
                             </tr>
                         </table><br><br>
                         <div style="text-align: center;">
-                            <a href="/data/analyzeSimResult"><input class="btn btn-primary" type="/" value="검색"
-                                style="width:100px; background-color: #4a9dea; border-color:  #4a9dea;"></a>
-                                <!--폼 액션 설정되면 type submit으로 변경-->
+                            <!--폼 액션 설정되면 type submit으로 변경-->
+                            <button type="button" class="btn btn-primary" id="snb" style="width:100px; background-color: #4a9dea; border-color:  #4a9dea;">검색</button>
                             <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px; background-color: #dddddd;"></a>
                         </div>
                     </form>
                 </div>
             <% } %>
         </div>
-<hr class="featurette-divider">
+    <hr class="featurette-divider">
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#snb").click(function() {
+            $("#node").submit();
+    });
+}); 
+
+</script>
+
 
 </body>
 </html>

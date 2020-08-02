@@ -19,6 +19,7 @@ const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic(db_info.DB
 const session = driver.session();
 const iconv = require('iconv-lite');
 var keyResult = require('./keyResult');
+var nodeResult = require('./nodeResult');
 var Cy2NeoD3 = require('../public/scripts/cy2neod3');
 
 let nameArr5 = [];
@@ -664,7 +665,6 @@ router.get('/viewPage', function (req, res) {
           .run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' AND p.name = '" + user_name + "' AND p.pid = '"+ user_pid +"' RETURN p, d, ac")
           .then(function (result) {
             result.records.forEach(function (record) {
-
               s_nameArr.push(record._fields[0].properties.name)
               s_pidArr.push(record._fields[0].properties.pid)
               s_pTypeArr.push(record._fields[0].properties.p_type)
@@ -752,7 +752,7 @@ router.get('/viewPage', function (req, res) {
 
                 });
                 console.log(fileDownloadPath);
-                res.render('viewPage', {
+                res.render('viewPage.ejs', {
                     esession: session_value.getSession(),
 
                     names: nameArr,
@@ -2491,7 +2491,7 @@ router.post('/keyword', function (req, res) {
     else{
         promiseFromChildProcess(process)
             .then(function (result) {
-                //console.log('promise complete: ', result);
+                console.log('promise complete: ', result);
                 process.stdout.on('data', function (data) {
                     if (wrote == 0) {
 
@@ -4007,5 +4007,136 @@ router.post('/modify', function (req, res) {
         });
 });
 
+router.post('/getModifyValues', function (req, res) {
+
+    var checkValues = req.body.modifyCheck;
+    var checkLen;
+
+    var modiFlag = false;
+
+    if (checkValues == undefined) {
+        checkLen = 0;
+    } 
+    else {
+        checkLen = checkValues.length;
+    }
+    /*
+    if (Array.isArray(checkValues)) {
+        modiFlag = false;
+    }
+    */
+    if (!(checkLen == 0)) {
+        console.log("------------check ------------", checkValues, checkValues.length);
+        modiFlag = true;
+    }
+
+    if (!modiFlag) {
+        console.log("false");
+        modiFlag = false;
+    }
+
+    if (checkLen == 0) 
+        modiFlag = false;
+
+    if (modiFlag) {
+        if(!Array.isArray(checkValues)){
+            provInfo.push(dataN[checkValues]);
+            provInfo.push(datavalue[checkValues]);
+            provInfo.push(datafile[checkValues]);
+            provInfo.push(dataorigin[checkValues]);
+
+            console.log("modiFlag : ", modiFlag);
+            console.log("provInfo : ", provInfo);
+        }
+        else{
+            for(var i = 0; i < checkLen ; i++){
+                provInfo.push(dataN[checkValues[i]]);
+                provInfo.push(datavalue[checkValues[i]]);
+                provInfo.push(datafile[checkValues[i]]);
+                provInfo.push(dataorigin[checkValues[i]]);
+    
+                console.log("modiFlag : ", modiFlag);
+                console.log("provInfo : ", provInfo);
+            }
+        }
+        res.render('data/modifyDataPage.ejs', {
+            esession: session_value.getSession(),
+
+            modiFlag: modiFlag,
+            provInfo: provInfo,
+            insNames: modiInsName,
+
+            authenticated: true
+        });  
+    } else {
+        res.send('<script type="text/javascript">alert("하나의 개인정보를 선택해주세요."); window.history.go(-1);</script>');
+    }
+});
+
+router.post('/node', function (req, res) {
+    var nodeKeyword = req.body.keywords;
+    var nodeKeywords = nodeKeyword.split(' ');
+    var nodeSentence = nodeKeywords[0] + ',' + nodeKeywords[1];
+    var ReturnKeyword = nodeKeywords[0] + '(' + nodeKeywords[1] + ')';
+    //console.log(nodeKeywords.length);
+    console.log(nodeKeywords);
+    var warningZero = '<script type="text/javascript">'
+                + 'alert("검색어를 입력해주세요.");'
+                + 'window.history.go(-1);'
+                + '</script>'
+    var wrote = 0;
+    var len = nodeKeyword.length;
+    var nameTemp = [];
+
+    var process = spawn('python', [__dirname + '\\data\\analyzeNode.py', nodeSentence]);
+
+    if(len == 0) {
+        res.send(warningZero);
+    }
+    else{
+        promiseFromChildProcess(process)
+            .then(function (result) {
+                console.log('promise complete: ', result);
+                process.stdout.on('data', function (data) {
+                    if (wrote == 0) {
+                        dataString = iconv.decode(data, 'EUC-KR').toString();
+                        //dataString = data.toString();
+                        nodeResult.setnodeResult(dataString);
+                    }
+                    wrote += 1;
+                });
+                process.on('close', function (data) {
+                    console.log(dataString);
+                    var nameAndSimilarity = dataString.split("+");
+                    var name = nameAndSimilarity[0].split("/");
+                    var similarity = nameAndSimilarity[1].split("/");
+                    for(i = 0; i < similarity.length; i++){
+                        similarity[i] = Number(similarity[i]);
+                        similarity[i] = similarity[i] * 10000;
+                        similarity[i] = Math.floor(similarity[i]);
+                        similarity[i] = similarity[i] / 100;
+                        similarity[i] = String(similarity[i]) + '%';
+                    };
+                    for(i = 0; i < name.length; i++){
+                        nameTemp = name[i].split(',');
+                        nameSentence = nameTemp[0] + '*' + '(' + nameTemp[1] + ')';
+                        name[i] = nameSentence;
+                    };
+                    console.log(name);
+                    console.log(similarity);
+                    res.render("data/analyzeSimResult", {
+                        esession: session_value.getSession(),
+                        ReturnKeyword: ReturnKeyword,
+                        name: name,
+                        similarity: similarity
+                    });
+                    //res.redirect('data/analyzeSim');
+                });
+            }, function (err) {
+                console.log('promise rejected: ', err);
+        });
+    }
+    //console.log(nodeResult.getnodeResult());
+});
 
 module.exports = router;

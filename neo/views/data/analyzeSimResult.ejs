@@ -36,20 +36,73 @@
                 </div>
             <% } 
             else{ %>
-                <div class="container">
-                    <div style="margin: auto; padding: 10%; text-align: center; font-size:2em;">유사 노드 탐색 결과
+                <div class="container" style="display: inline-block; text-align: center;">
+                    <div style="text-align: center; font-size:2em;">유사 노드 탐색
                     </div>
-                        <div class="row">
-                            <!---->
+                    <!--Start-->
+                    <br><br>
+                    <form class="form-inline" method="post" action="/node" name="node" id="node" >
+                        <table style="margin: auto; border: 0px;">
+                            <tr>
+                                <td><input type="text" class="form-control" name="keywords" id="keywords" style="width:600px;"></td>
+                            </tr>
+                        </table><br><br>
+                        <div style="text-align: center;">
+                            <!--폼 액션 설정되면 type submit으로 변경-->
+                            <button type="button" class="btn btn-primary" id="snb" style="width:100px; background-color: #4a9dea; border-color:  #4a9dea;">검색</button>
+                            <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px; background-color: #dddddd;"></a>
                         </div>
-                    </div>
+                    </form>
                 </div>
-            <% } %>
         </div>
-    <hr class="featurette-divider">
+        
+        <hr class="featurette-divider">
+        <div class="jumbotron" style="background-color: #ffffff;">
+            <!--<div class="container" style="display: inline-block;text-align: center;">-->
+                <!--div class="panel panel-default" style="background-color: #ffffff; width: 890px;">-->
+                <!--<div class="panel-heading" style="font-size:1.3em; background-color: #f8f8f8;"> <%=ReturnKeyword%>과 유사 노드 검색 결과</div>-->
+                <!-- Table -->
+                <table class="table" style="margin: auto; text-align: center;">
+                    <thead>
+                        <tr>
+                            <th style="background-color: #f8f8f8; height: 80px; text-align: center; vertical-align: middle; font-size: 16px;">순위</th>
+                            <th style="background-color: #f8f8f8; height: 80px; text-align: center; vertical-align: middle; font-size: 16px;">데이터</th>
+                            <th style="background-color: #f8f8f8; height: 80px; text-align: center; vertical-align: middle; font-size: 16px;">유사도</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for(var i = 0; i < name.length; i++ ) { %>
+                            <tr>
+                                <th scope="row"; align=center; style="background-color: #f8f8f8; height: 60px; text-align: center; vertical-align: middle;">
+                                    <%= (i + 1) %>
+                                </th>
+                                <td align=center; style="vertical-align: middle;">
+                                    <%= (name[i].split('*'))[0] %> <br> <%= (name[i].split('*'))[1] %>
+                                </td>
+                                <td align=center; style="vertical-align: middle; width: 200px;">
+                                    <%= similarity[i] %>
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+<% } %>
+<hr class="featurette-divider">
 </div>
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#snb").click(function() {
+            $("#node").submit();
+    });
+}); 
+
+</script>
+
 
 </body>
 </html>
