@@ -5,7 +5,7 @@ var session_value = require('../session');
 var graphs = "";
 
 router.get('/', function (req, res, next) {
-    let result = keyResult.getKeywordResult();;
+    let result = keyResult.getKeywordResult();
     keyResult.setKeywordResult("");
     res.render('search/searchKeyword.ejs', {esession: session_value.getSession(), data:result});
 });
