@@ -119,7 +119,6 @@ def generateInput():
     
     driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "wowhi223"))
     with driver.session() as session:
-         
          # All personNodes to dict 
          personNodes = session.read_transaction(search_personNode)
          perNodes = session.read_transaction(search_perNode)
@@ -169,7 +168,6 @@ def generateInput():
          
          allGraph2Dic = []
          for key in personDict:
-             
              allGraph2Dic.append(list(session.read_transaction(get_allGraphs, key, allDict, edgeDict)))
          
       
@@ -519,6 +517,48 @@ class gSpan(object):
             self._DFScode.append(DFSedge(0, 1, vevlb))
             self._subgraph_mining(projected)
             self._DFScode.pop()
+        
+        # _max_vertices_size
+        
+        # 보다 편한 비교를 위해 캐스트
+        report_df_list = list()
+        for index, rows in self._report_df.iterrows():
+            my_list =[rows.support, rows.description, rows.num_vert] 
+            report_df_list.append(my_list)
+            
+        maximul_report_count = itertools.count()
+        maximul_list = list()
+        
+        for dataframe in report_df_list:
+            # 버텍스와 엣지의 사이즈를 비교하여 버텍스 수가 많은 경우 맥시멈을 교체
+            if self._max_vertices_size < dataframe[2]:
+                self._max_vertices_size = dataframe[2]
+                num_edges = dataframe[1].count('e')
+                if self._max_edges_size < num_edges:
+                    self._max_edges_size = num_edges
+                    
+        for dataframe in report_df_list:
+            # 버텍스 사이즈를 비교하여 버텍스 수가 많은 경우 맥시멈을 교체
+            if self._max_vertices_size <= dataframe[2]:
+                # 버텍스 사이즈가 같은 경우 엣지의 수가 많은게 더 맥시멀한 그래프
+                num_edges = dataframe[1].count('e')
+                if self._max_edges_size <= num_edges:
+                    maximuldataframe = pd.DataFrame(
+                        {
+                            'support': dataframe[0],
+                            'description': dataframe[1],
+                            'num_vert': dataframe[2]
+                            },
+                        index = [int(repr(maximul_report_count)[6:-1])]
+                        )
+                    maximul_list.append(maximuldataframe)
+          
+        maximul_report_df = pd.DataFrame()
+        for dataframe in maximul_list:
+            maximul_report_df = maximul_report_df.append(dataframe)    
+            
+        self._report_df = maximul_report_df
+        # _max_vertices_size
 
     def _get_support(self, projected):
         return len(set([pdfs.gid for pdfs in projected]))
@@ -820,7 +860,6 @@ def main(FLAGS=None):
 
 if __name__ == '__main__':
     gs = main()
-
 
     global allDict
     global edgeDict
