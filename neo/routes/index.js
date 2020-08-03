@@ -4010,23 +4010,36 @@ router.post('/modify', function (req, res) {
 router.post('/node', function (req, res) {
     var nodeKeyword = req.body.keywords;
     var nodeKeywords = nodeKeyword.split(' ');
-    var nodeSentence = nodeKeywords[0] + ',' + nodeKeywords[1];
-    var ReturnKeyword = nodeKeywords[0] + '(' + nodeKeywords[1] + ')';
-    //console.log(nodeKeywords.length);
+
+    if(nodeKeywords[0] == '주소') 
+        var nodeSentence = nodeKeywords[0] + ',' + nodeKeywords[1] + ' ' + nodeKeywords[2];
+    else 
+        var nodeSentence = nodeKeywords[0] + ',' + nodeKeywords[1];
+    
+    if(nodeKeywords[0] == '주소') 
+        var ReturnKeyword = nodeKeywords[0] + '*' + nodeKeywords[1] + ' ' + nodeKeywords[2];
+    else 
+        var ReturnKeyword = nodeKeywords[0] + '*' + nodeKeywords[1];
+
     console.log(nodeKeywords);
+    console.log(nodeSentence);
     var warningZero = '<script type="text/javascript">'
                 + 'alert("검색어를 입력해주세요.");'
                 + 'window.history.go(-1);'
                 + '</script>'
+    var warningNone = '<script type="text/javascript">'
+                + 'alert("검색 결과가 없습니다.");'
+                + 'window.history.go(-1);'
+                + '</script>'
+            
     var wrote = 0;
     var len = nodeKeyword.length;
     var nameTemp = [];
 
     var process = spawn('python', [__dirname + '\\data\\analyzeNode.py', nodeSentence]);
 
-    if(len == 0) {
+    if(len == 0) 
         res.send(warningZero);
-    }
     else{
         promiseFromChildProcess(process)
             .then(function (result) {
@@ -4040,31 +4053,40 @@ router.post('/node', function (req, res) {
                     wrote += 1;
                 });
                 process.on('close', function (data) {
-                    console.log(dataString);
-                    var nameAndSimilarity = dataString.split("+");
-                    var name = nameAndSimilarity[0].split("/");
-                    var similarity = nameAndSimilarity[1].split("/");
-                    for(i = 0; i < similarity.length; i++){
-                        similarity[i] = Number(similarity[i]);
-                        similarity[i] = similarity[i] * 10000;
-                        similarity[i] = Math.floor(similarity[i]);
-                        similarity[i] = similarity[i] / 100;
-                        similarity[i] = String(similarity[i]) + '%';
-                    };
-                    for(i = 0; i < name.length; i++){
-                        nameTemp = name[i].split(',');
-                        nameSentence = nameTemp[0] + '*' + '(' + nameTemp[1] + ')';
-                        name[i] = nameSentence;
-                    };
-                    console.log(name);
-                    console.log(similarity);
-                    res.render("data/analyzeSimResult", {
-                        esession: session_value.getSession(),
-                        ReturnKeyword: ReturnKeyword,
-                        name: name,
-                        similarity: similarity
-                    });
-                    //res.redirect('data/analyzeSim');
+                    //console.log("dataString");
+                    //console.log(dataString);
+                    //console.log("nodeResult");
+                    //console.log(nodeResult.getnodeResult());
+                    var NEResult = nodeResult.getnodeResult();
+                    //console.log(NEResult.length);
+                    if(NEResult.length < 1)
+                        res.send(warningNone);
+                    else {
+                        var nameAndSimilarity = NEResult.split("+");
+                        var name = nameAndSimilarity[0].split("/");
+                        var similarity = nameAndSimilarity[1].split("/");
+                        for(i = 0; i < similarity.length; i++){
+                            similarity[i] = Number(similarity[i]);
+                            similarity[i] = similarity[i] * 10000;
+                            similarity[i] = Math.floor(similarity[i]);
+                            similarity[i] = similarity[i] / 100;
+                            similarity[i] = String(similarity[i]) + '%';
+                        };
+                        for(i = 0; i < name.length; i++){
+                            nameTemp = name[i].split(',');
+                            nameSentence = nameTemp[0] + '*' + nameTemp[1];
+                            name[i] = nameSentence;
+                        };
+                        console.log(name);
+                        console.log(similarity);
+                        res.render("data/analyzeSimResult", {
+                            esession: session_value.getSession(),
+                            ReturnKeyword: ReturnKeyword,
+                            name: name,
+                            similarity: similarity
+                        });
+                        //res.redirect('data/analyzeSim');
+                    }
                 });
             }, function (err) {
                 console.log('promise rejected: ', err);

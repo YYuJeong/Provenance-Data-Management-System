@@ -1,4 +1,4 @@
-let nodeResult = "";
+let nodeResult = '';
 
 function setnodeResult(data) {
     nodeResult = data;
