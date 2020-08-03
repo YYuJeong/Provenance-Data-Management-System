@@ -97,7 +97,7 @@ def merge_person(tx):
 
 def merge_activity(tx):
    tx.run("MATCH (ac:Activity) "
-          "WITH ac.name as name, COLLECT(ac) AS ns "
+          "WITH ac.name as name, ac.value as value, COLLECT(ac) AS ns "
           "WHERE size(ns) > 1 "
           "CALL apoc.refactor.mergeNodes(ns) YIELD node "
           "RETURN node" )
@@ -114,7 +114,7 @@ with driver.session() as session:
    
     session.read_transaction(merge_data)
     session.read_transaction(merge_person)
-    #session.read_transaction(merge_activity)
+    session.read_transaction(merge_activity)
     session.read_transaction(delete_duplRelation)
     
 print("start_time", start_time)
