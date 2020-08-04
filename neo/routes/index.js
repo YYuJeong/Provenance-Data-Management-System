@@ -19,6 +19,7 @@ const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic(db_info.DB
 const session = driver.session();
 const iconv = require('iconv-lite');
 var keyResult = require('./keyResult');
+var nodeResult = require('./nodeResult');
 var Cy2NeoD3 = require('../public/scripts/cy2neod3');
 
 let nameArr5 = [];
@@ -704,7 +705,6 @@ router.get('/viewPage', function (req, res) {
           .run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' AND p.name = '" + user_name + "' AND p.pid = '"+ user_pid +"' RETURN p, d, ac")
           .then(function (result) {
             result.records.forEach(function (record) {
-
               s_nameArr.push(record._fields[0].properties.name)
               s_pidArr.push(record._fields[0].properties.pid)
               s_pTypeArr.push(record._fields[0].properties.p_type)
@@ -794,6 +794,7 @@ router.get('/viewPage', function (req, res) {
                 console.log(fileDownloadPath);
                 res.render('viewPage', {
                     esession: req.session,
+
 
                     names: nameArr,
                     pids: pidArr,
@@ -2566,7 +2567,7 @@ router.post('/keyword', function (req, res) {
     else{
         promiseFromChildProcess(process)
             .then(function (result) {
-                //console.log('promise complete: ', result);
+                console.log('promise complete: ', result);
                 process.stdout.on('data', function (data) {
                     if (wrote == 0) {
 
@@ -4082,5 +4083,92 @@ router.post('/modify', function (req, res) {
         });
 });
 
+router.post('/node', function (req, res) {
+    var nodeKeyword = req.body.keywords;
+    var nodeKeywords = nodeKeyword.split(' ');
+
+    if(nodeKeywords[0] == '주소') 
+        var nodeSentence = nodeKeywords[0] + ',' + nodeKeywords[1] + ' ' + nodeKeywords[2];
+    else 
+        var nodeSentence = nodeKeywords[0] + ',' + nodeKeywords[1];
+    
+    if(nodeKeywords[0] == '주소') 
+        var ReturnKeyword = nodeKeywords[0] + '*' + nodeKeywords[1] + ' ' + nodeKeywords[2];
+    else 
+        var ReturnKeyword = nodeKeywords[0] + '*' + nodeKeywords[1];
+
+    console.log(nodeKeywords);
+    console.log(nodeSentence);
+    var warningZero = '<script type="text/javascript">'
+                + 'alert("검색어를 입력해주세요.");'
+                + 'window.history.go(-1);'
+                + '</script>'
+    var warningNone = '<script type="text/javascript">'
+                + 'alert("검색 결과가 없습니다.");'
+                + 'window.history.go(-1);'
+                + '</script>'
+            
+    var wrote = 0;
+    var len = nodeKeyword.length;
+    var nameTemp = [];
+
+    var process = spawn('python', [__dirname + '\\data\\analyzeNode.py', nodeSentence]);
+
+    if(len == 0) 
+        res.send(warningZero);
+    else{
+        promiseFromChildProcess(process)
+            .then(function (result) {
+                console.log('promise complete: ', result);
+                process.stdout.on('data', function (data) {
+                    if (wrote == 0) {
+                        dataString = iconv.decode(data, 'EUC-KR').toString();
+                        //dataString = data.toString();
+                        nodeResult.setnodeResult(dataString);
+                    }
+                    wrote += 1;
+                });
+                process.on('close', function (data) {
+                    //console.log("dataString");
+                    //console.log(dataString);
+                    //console.log("nodeResult");
+                    //console.log(nodeResult.getnodeResult());
+                    var NEResult = nodeResult.getnodeResult();
+                    //console.log(NEResult.length);
+                    if(NEResult.length < 1)
+                        res.send(warningNone);
+                    else {
+                        var nameAndSimilarity = NEResult.split("+");
+                        var name = nameAndSimilarity[0].split("/");
+                        var similarity = nameAndSimilarity[1].split("/");
+                        for(i = 0; i < similarity.length; i++){
+                            similarity[i] = Number(similarity[i]);
+                            similarity[i] = similarity[i] * 10000;
+                            similarity[i] = Math.floor(similarity[i]);
+                            similarity[i] = similarity[i] / 100;
+                            similarity[i] = String(similarity[i]) + '%';
+                        };
+                        for(i = 0; i < name.length; i++){
+                            nameTemp = name[i].split(',');
+                            nameSentence = nameTemp[0] + '*' + nameTemp[1];
+                            name[i] = nameSentence;
+                        };
+                        console.log(name);
+                        console.log(similarity);
+                        res.render("data/analyzeSimResult", {
+                            esession: session_value.getSession(),
+                            ReturnKeyword: ReturnKeyword,
+                            name: name,
+                            similarity: similarity
+                        });
+                        //res.redirect('data/analyzeSim');
+                    }
+                });
+            }, function (err) {
+                console.log('promise rejected: ', err);
+        });
+    }
+    //console.log(nodeResult.getnodeResult());
+});
 
 module.exports = router;

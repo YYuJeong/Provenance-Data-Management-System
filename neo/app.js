@@ -38,8 +38,11 @@ var modifyData = require('./routes/data/modifyData');
 var modifyDataResult = require('./routes/data/modifyDataResult');
 var modifyDataPage = require('./routes/data/modifyDataPage');
 
-var deleteData = require('./routes/data/deleteData');
-var deleteDataResult = require('./routes/data/deleteDataResult');
+var analyzeData = require('./routes/data/analyzeData');
+var analyzeSimResult = require('./routes/data/analyzeSimResult');
+var analyzeFreqResult = require('./routes/data/analyzeFreqResult');
+var analyzeSim = require('./routes/data/analyzeSim');
+var analyzeFreq = require('./routes/data/analyzeFreq');
 
 var fileuploadRouter = require('./routes/data/uploadData');
 
@@ -101,8 +104,11 @@ app.use('/data/modifyData', modifyData);
 app.use('/data/modifyDataResult', modifyDataResult);
 app.use('/data/modifyDataPage', modifyDataPage);
 
-app.use('/data/deleteData', deleteData);
-app.use('/data/deleteDataResult', deleteDataResult);
+app.use('/data/analyzeData', analyzeData);
+app.use('/data/analyzeSimResult', analyzeSimResult);
+app.use('/data/analyzeFreqResult', analyzeFreqResult);
+app.use('/data/analyzeSim', analyzeSim);
+app.use('/data/analyzeFreq', analyzeFreq);
 
 app.use('/data/uploadData', fileuploadRouter);
 //app.use('/upload', express.static('uploads'));

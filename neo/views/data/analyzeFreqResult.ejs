@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <% include ../before_loading.ejs %>
+    <title>이력 정보 관리시스템</title>
+    <style type="text/css">
+        @font-face { font-family: 'Binggrae-Bold'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Binggrae-Bold.woff') format('woff'); font-weight: normal; font-style: normal; }
+        @font-face { font-family: 'RIDIBatang'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/RIDIBatang.woff') format('woff'); font-weight: normal; font-style: normal; }
+        body {
+            font-family: 'RIDIBatang';
+            color: #303030;
+            letter-spacing: 1px;
+        }
+
+        .fontSize {
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+
+<body style="overflow:auto">
+<% include ../header %>
+
+<div class="container marketing">
+    <% include ../menu %>
+
+    <hr class="featurette-divider">
+    <div class="jumbotron" style="background-color: #f8f8f8;">
+        <% if(esession.authenticated == false){ %>
+            <% include ../notAuthenticated.ejs %>
+            <% } 
+            else if(esession.gubun == '사용자'){ %>
+                <div style="margin: auto; padding: 10%; font-size: 1.5em;">
+                    사용자는 이용 불가능한 메뉴입니다.
+                </div>
+            <% } 
+            else{ %>
+                <div class="container">
+                    <div style="margin: auto; padding: 10%; text-align: center; font-size:2em;">빈발 패턴 탐색 결과
+                    </div>
+                    <div style="display: inline-block; background: pink;" id="fsmData" name="fsmData">
+                        <%=fsmdata%>
+                    </div>
+                        <div class="row">
+                            <!---->
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    <hr class="featurette-divider">
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+</body>
+</html>

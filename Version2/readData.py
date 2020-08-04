@@ -8,13 +8,13 @@ Created on Tue Feb 18 13:10:29 2020
 import csv, sys, time
 start_time = time.time()
 
-with open("DemoData.csv", 'r', encoding='utf-8') as f:
+with open("output.csv", 'r', encoding='utf-8') as f:
     matrix = list(csv.reader(f, delimiter=","))
 
 from neo4j import GraphDatabase
 
 #52.79.241.1
-driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "wowhi223"))
+driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "wowhi223"), encrypted=False)
 
 
 def add_node(tx, s_name, s_pid, s_type, dataName1, value1, file_path1, origin1, activityType, date, detail, r_name, r_pid, r_type, allowed_period_from, allowed_period_to, price, is_agreed):
@@ -65,6 +65,14 @@ def merge_person(tx):
           "WHERE size(ns) > 1 "
           "CALL apoc.refactor.mergeNodes(ns) YIELD node "
           "RETURN node" )
+
+
+def merge_activity(tx):
+   tx.run("MATCH (ac:Activity) "
+          "WITH ac.name as name, COLLECT(ac) AS ns "
+          "WHERE size(ns) > 1 "
+          "CALL apoc.refactor.mergeNodes(ns) YIELD node "
+          "RETURN node" )
     
 def delete_duplRelation(tx):
     tx.run("start r=relationship(*) "
@@ -73,12 +81,12 @@ def delete_duplRelation(tx):
            "foreach(x in coll | delete x) ")
 
 with driver.session() as session:
-    
     for i in range(len(matrix)):
         session.write_transaction(add_node,matrix[i][0],matrix[i][1],matrix[i][2],matrix[i][3],matrix[i][4],matrix[i][5],matrix[i][6],matrix[i][7], matrix[i][8],matrix[i][9],matrix[i][10],matrix[i][11], matrix[i][12],matrix[i][13],  matrix[i][14],matrix[i][15],matrix[i][16])
-        
+   
     session.read_transaction(merge_data)
     session.read_transaction(merge_person)
+    #session.read_transaction(merge_activity)
     session.read_transaction(delete_duplRelation)
     
 print("start_time", start_time)
