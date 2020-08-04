@@ -416,6 +416,8 @@ router.post('/data/uploadData', function (req, res,next) {
     });
 
 
+    // tag - ubuntuServer
+    // 나중에 우분투 서버에서 테스트할 때 문제가 생길 것 같다
     // all uploads are completed
     form.on('close', function () {
         var path = __dirname.split("\\");
@@ -430,8 +432,11 @@ router.post('/data/uploadData', function (req, res,next) {
         // python
         const iconv = require('iconv-lite');
         var spawn = require("child_process").spawn;
-        var uploadPython = __dirname+"\\data\\uploadData.py";
-        var uploadPythonArg = path1 + "upload\\"+ name;
+
+        // tag - ubuntuServer
+        // 파일 path 역슬래쉬를 슬래쉬로.
+        var uploadPython = __dirname+"/data/uploadData.py";
+        var uploadPythonArg = path1 + "upload/"+ name;
         var process = spawn('python', [uploadPython,uploadPythonArg]);
         
         function promiseFromChildProcess(child){
@@ -457,6 +462,8 @@ router.post('/data/uploadData', function (req, res,next) {
                 process.stdout.on('data',function(data){
                     if(wrote == 0){
                         //console.log(data);
+                        // tag - ubuntuServer
+                        // 나중에 서버에 올릴 때 문제가 생길 것 같은 부분
                         uploadFile = iconv.decode(data, 'euc-kr').toString();
                         uploadJS.setUploadResult(uploadFile);
                         getData().then().catch(function(err) {
@@ -2542,7 +2549,10 @@ router.post('/keyword', function (req, res) {
     console.log(user_name + " " + user_pid + " " + keyStr);
     
     var wrote = 0;
+
+    // tag - ubuntuServer
     // ubuntu에서 실행할때는 슬래쉬방향이어야 한다
+    // 현재 ubuntu에 맞게 변경되어있음 
     console.log(__dirname + '/search/search.py');
     var process = spawn('python', [__dirname + '/search/search.py', keyStr]);
 
@@ -2572,8 +2582,9 @@ router.post('/keyword', function (req, res) {
                 process.stdout.on('data', function (data) {
                     if (wrote == 0) {
 
-                        // euc-kr 수정해야하는 부분 - 서버에 올릴때.
-                        kk = iconv.decode(data, 'euc-kr').toString();
+                        // tag - ubuntuServer
+                        // euc-kr를 utf-8로 수정해야하는 부분 - 서버에 올릴때.
+                        kk = iconv.decode(data, 'utf-8').toString();
 
                         keyResult.setKeywordResult(kk);
                     }
@@ -4114,7 +4125,9 @@ router.post('/node', function (req, res) {
     var len = nodeKeyword.length;
     var nameTemp = [];
 
-    var process = spawn('python', [__dirname + '\\data\\analyzeNode.py', nodeSentence]);
+    // tag - ubuntuServer
+    // 파일 path 역슬래쉬를 슬래쉬로.
+    var process = spawn('python', [__dirname + '/data/analyzeNode.py', nodeSentence]);
 
     if(len == 0) 
         res.send(warningZero);
@@ -4124,7 +4137,9 @@ router.post('/node', function (req, res) {
                 console.log('promise complete: ', result);
                 process.stdout.on('data', function (data) {
                     if (wrote == 0) {
-                        dataString = iconv.decode(data, 'EUC-KR').toString();
+                        // tag - ubuntuServer
+                        // euc-kr utf-8
+                        dataString = iconv.decode(data, 'utf-8').toString();
                         //dataString = data.toString();
                         nodeResult.setnodeResult(dataString);
                     }
