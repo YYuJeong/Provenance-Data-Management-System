@@ -16,9 +16,6 @@ var session_value = require('../session');
 
 router.get('/', function(req, res, next) {
   res.render('data/deleteData.ejs', {esession: req.session});
-
-
-
-
+});
 
 module.exports = router;

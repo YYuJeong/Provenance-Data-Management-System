@@ -457,7 +457,7 @@ router.post('/data/uploadData', function (req, res,next) {
                 process.stdout.on('data',function(data){
                     if(wrote == 0){
                         //console.log(data);
-                        uploadFile = iconv.decode(data, 'UTF-8').toString();
+                        uploadFile = iconv.decode(data, 'euc-kr').toString();
                         uploadJS.setUploadResult(uploadFile);
                         getData().then().catch(function(err) {
                             console.log(err);
@@ -2542,8 +2542,8 @@ router.post('/keyword', function (req, res) {
     console.log(user_name + " " + user_pid + " " + keyStr);
     
     var wrote = 0;
-    console.log(__dirname + '/search/search.py');
-    var process = spawn('python3', [__dirname + '/search/search.py', keyStr]);
+    console.log(__dirname + '\\search\\search.py');
+    var process = spawn('python', [__dirname + '\\search\\search.py', keyStr]);
 
     /*
     Promise.all([getCheckNode(keyword[0]), getCheckNode(keyword[1])])
@@ -2571,7 +2571,8 @@ router.post('/keyword', function (req, res) {
                 process.stdout.on('data', function (data) {
                     if (wrote == 0) {
 
-                        kk = iconv.decode(data, 'UTF-8').toString();
+                        // euc-kr 수정해야하는 부분 - 서버에 올릴때.
+                        kk = iconv.decode(data, 'euc-kr').toString();
 
                         keyResult.setKeywordResult(kk);
                     }
