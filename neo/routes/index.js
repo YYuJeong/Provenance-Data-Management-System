@@ -2542,8 +2542,9 @@ router.post('/keyword', function (req, res) {
     console.log(user_name + " " + user_pid + " " + keyStr);
     
     var wrote = 0;
-    console.log(__dirname + '\\search\\search.py');
-    var process = spawn('python', [__dirname + '\\search\\search.py', keyStr]);
+    // ubuntu에서 실행할때는 슬래쉬방향이어야 한다
+    console.log(__dirname + '/search/search.py');
+    var process = spawn('python', [__dirname + '/search/search.py', keyStr]);
 
     /*
     Promise.all([getCheckNode(keyword[0]), getCheckNode(keyword[1])])
