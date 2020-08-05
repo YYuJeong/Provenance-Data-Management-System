@@ -20,6 +20,7 @@ const session = driver.session();
 const iconv = require('iconv-lite');
 var keyResult = require('./keyResult');
 var nodeResult = require('./nodeResult');
+var fsmResult = require('./fsmResult');
 var Cy2NeoD3 = require('../public/scripts/cy2neod3');
 
 let nameArr5 = [];
@@ -2556,21 +2557,6 @@ router.post('/keyword', function (req, res) {
     console.log(__dirname + '/search/search.py');
     var process = spawn('python', [__dirname + '/search/search.py', keyStr]);
 
-    /*
-    Promise.all([getCheckNode(keyword[0]), getCheckNode(keyword[1])])
-        .then(function(results){
-            console.log("TT: ", results);
-            resolve(results);
-        })
-        .then(
-            session.run("MATCH (personA:Person { name: '양유정', affiliation: '한국인터넷진흥원'}), (personB:Person { name: '서민지', affiliation: '한국보건산업진흥원' }) WITH personA, personB MATCH p = shortestPath((personA)-[*]-(personB)) RETURN p, length(p)")
-            .then(function (result) {
-                console.log(result.records[0].get('p'))
-                console.log(result.records[0].get('length(p)'))
-            })
-        )
-    */
-
     var startTime = new Date().getTime();
     if(len == 0) {
         res.send('<script type="text/javascript">alert("검색어를 입력해주세요."); window.history.go(-1);</script>');
@@ -2610,7 +2596,44 @@ router.get('search/searchKeyword', function(req, res){
     res.render("search/searchKeyword", {esession: req.session, data:keyResult.getKeywordResult()});
 });
 
+// fsm post func
+router.post('/fsm', function (req, res) {
+    var wrote = 0;
+    var process = spawn('python', [__dirname + '/data/gSpan/gspan_mining/main.py']);
 
+    var keyStr = req.body.keyword;
+    var len = keyStr.length;
+
+    var startTime = new Date().getTime();
+    if(len == 0) {
+        res.send('<script type="text/javascript">alert("검색어를 입력해주세요."); window.history.go(-1);</script>');
+    }
+    else{
+        promiseFromChildProcess(process)
+            .then(function (result) {
+                console.log('promise complete: ', result);
+                process.stdout.on('data', function (data) {
+                    if (wrote == 0) {
+                        // tag - ubuntuServer
+                        // euc-kr를 utf-8로 수정해야하는 부분 - 서버에 올릴때.
+                        kk = iconv.decode(data, 'utf-8').toString();
+                        fsmResult.setfsm_result(kk);
+                        console.log(kk);
+                    }
+                    wrote += 1;
+                });
+                var endTime = new Date().getTime();
+                console.log("Execution time : ", (endTime - startTime));
+
+                process.on('close', function (data) {
+                    res.redirect('data/analyzeFreqResult');
+                });
+            }, function (err) {
+                console.log('promise rejected: ', err);
+        });
+    }
+
+});
 
 
 router.post('/getDeleteValues', function (req, res) {
@@ -4097,8 +4120,15 @@ router.post('/modify', function (req, res) {
 });
 
 router.post('/node', function (req, res) {
-    var nodeKeyword = req.body.keywords;
-    var nodeKeywords = nodeKeyword.split(' ');
+
+    if(req.body.nodeType == 'personNode') {
+        var nodeKeyword = req.body.personName + ' ' + req.body.personValue;
+    }
+    else if(req.body.nodeType == 'dataNode') {
+        var nodeKeyword = req.body.dataName + ' ' +  req.body.dataValue;
+    }
+
+    var nodeKeywords = nodeKeyword.split(' ')
 
     if(nodeKeywords[0] == '주소') 
         var nodeSentence = nodeKeywords[0] + ',' + nodeKeywords[1] + ' ' + nodeKeywords[2];
@@ -4110,8 +4140,9 @@ router.post('/node', function (req, res) {
     else 
         var ReturnKeyword = nodeKeywords[0] + '*' + nodeKeywords[1];
 
-    console.log(nodeKeywords);
-    console.log(nodeSentence);
+    //console.log(nodeKeywords);
+    //console.log(nodeSentence);
+
     var warningZero = '<script type="text/javascript">'
                 + 'alert("검색어를 입력해주세요.");'
                 + 'window.history.go(-1);'
