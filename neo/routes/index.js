@@ -593,7 +593,7 @@ router.post('/dataAdd', function (req, res) {
             console.log(err);
         });
     res.render('addPage', {
-        esession: session_value.getSession(),
+        esession: req.session,
         insNames: addInsName
     });
 });
@@ -611,7 +611,7 @@ router.get('/addPage', function (req, res, next) {
                insName.push(rows[index]["name"]);
            }
            res.render('addPage', {
-            esession: session_value.getSession(),
+            esession: req.session,
             insNames: insName
             });
        }
@@ -4204,7 +4204,7 @@ router.post('/node', function (req, res) {
                         console.log(name);
                         console.log(similarity);
                         res.render("data/analyzeSimResult", {
-                            esession: session_value.getSession(),
+                            esession: req.session,
                             ReturnKeyword: ReturnKeyword,
                             name: name,
                             similarity: similarity

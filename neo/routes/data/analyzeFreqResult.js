@@ -19,7 +19,7 @@ router.get('/', function(req, res, next) {
   let fsm_result = fsmResult.getfsm_result();
   fsmResult.setfsm_result("");
   console.log("-----fsmdata:fsm_result pass to ejs-----")
-  res.render('data/analyzeFreqResult.ejs', {esession: session_value.getSession(), fsmdata:fsm_result});
+  res.render('data/analyzeFreqResult.ejs', {esession: req.session, fsmdata:fsm_result});
 });
 
 
