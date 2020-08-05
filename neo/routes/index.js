@@ -4044,8 +4044,15 @@ router.post('/modify', function (req, res) {
 });
 
 router.post('/node', function (req, res) {
-    var nodeKeyword = req.body.keywords;
-    var nodeKeywords = nodeKeyword.split(' ');
+
+    if(req.body.nodeType == 'personNode') {
+        var nodeKeyword = req.body.personName + ' ' + req.body.personValue;
+    }
+    else if(req.body.nodeType == 'dataNode') {
+        var nodeKeyword = req.body.dataName + ' ' +  req.body.dataValue;
+    }
+
+    var nodeKeywords = nodeKeyword.split(' ')
 
     if(nodeKeywords[0] == '주소') 
         var nodeSentence = nodeKeywords[0] + ',' + nodeKeywords[1] + ' ' + nodeKeywords[2];
@@ -4057,8 +4064,9 @@ router.post('/node', function (req, res) {
     else 
         var ReturnKeyword = nodeKeywords[0] + '*' + nodeKeywords[1];
 
-    console.log(nodeKeywords);
-    console.log(nodeSentence);
+    //console.log(nodeKeywords);
+    //console.log(nodeSentence);
+
     var warningZero = '<script type="text/javascript">'
                 + 'alert("검색어를 입력해주세요.");'
                 + 'window.history.go(-1);'
