@@ -17,9 +17,10 @@ var session_value = require('../session');
 var fsmResult = require('../fsmResult');
 
 router.get('/', function(req, res, next) {
-  let fsmresult = fsmResult.getfsm_result();
+  let fsm_result = fsmResult.getfsm_result();
   fsmResult.setfsm_result("");
-  res.render('data/analyzeFreqResult.ejs', {esession: session_value.getSession(), fsmdata:fsmresult});
+  console.log("-----fsmdata:fsm_result pass to ejs-----")
+  res.render('data/analyzeFreqResult.ejs', {esession: session_value.getSession(), fsmdata:fsm_result});
 });
 
 
