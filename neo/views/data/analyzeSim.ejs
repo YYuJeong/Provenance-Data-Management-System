@@ -3,7 +3,7 @@
 
 <head>
     <% include ../before_loading.ejs %>
-    <title>이력 정보 관리시스템</title>
+    <title>개인정보 이력관리시스템</title>
     <style type="text/css">
         @font-face { font-family: 'Binggrae-Bold'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Binggrae-Bold.woff') format('woff'); font-weight: normal; font-style: normal; }
         @font-face { font-family: 'RIDIBatang'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/RIDIBatang.woff') format('woff'); font-weight: normal; font-style: normal; }
@@ -44,7 +44,7 @@
                     </div>
                     <!--Start-->
                     <br><br>
-                    <form class="form-inline" method="post" action="/node" name="node" id="node" >
+                    <form class="form-inline" method="post" action="/node2Vec" name="node" id="node" >
                         <div class="row" style="margin:0 auto;">
                             <select class="form-control" id="nodeType" name="nodeType" style="width:30%; margin:0 auto;">
                                 <option value="" selected="selected">노드 타입</option>
@@ -55,30 +55,24 @@
                         <div class="personLayer">
                             <br>
                             <div class="input-group" style="width:30%; margin:0 auto;">
-                                <span class="input-group-addon">이름</span>
-                                <input type="text" id="personName" name="personName" class="form-control"/>
-                            </div>
-                            <br><br>
-                            <div class="input-group" style="width:30%; margin:0 auto;">
                                 <span class="input-group-addon">PID</span>
-                                <input type="text" id="personValue" name="personValue" class="form-control"/>
+                                <input type="text" id="personID" name="personID" class="form-control"/>
                             </div>
                         </div>
                         <div class="dataLayer">
                             <br>
                             <div class="input-group" style="width:30%; margin:0 auto;">
-                                <span class="input-group-addon">데이터 명</span>
-                                <input type="text" id="dataName" name="dataName" class="form-control"/>
+                                <span class="input-group-addon">PID</span>
+                                <input type="text" id="dataOwnerID" name="dataOwnerID" class="form-control"/>
                             </div>
                             <br><br>
                             <div class="input-group" style="width:30%; margin:0 auto;">
-                                <span class="input-group-addon">데이터 값</span>
-                                <input type="text" id="dataValue" name="dataValue" class="form-control"/>
+                                <span class="input-group-addon">데이터 명</span>
+                                <input type="text" id="dataName" name="dataName" class="form-control"/>
                             </div>
                         </div>
                         <br><br>
                         <div style="text-align: center;">
-                            <!--폼 액션 설정되면 type submit으로 변경-->
                             <button type="button" class="btn btn-primary" id="snb" style="width:100px; background-color: #4a9dea; border-color:  #4a9dea;">검색</button>
                             <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px; background-color: #dddddd;"></a>
                         </div>

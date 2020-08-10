@@ -3,7 +3,29 @@
 
 <head>
     <% include ../before_loading.ejs %>
-    <title>이력 정보 관리시스템</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- favicon -->
+    <link rel="shortcut icon" href="/images/favicon.ico">
+    <link rel="icon" href="/images/favicon.ico">
+
+    <title>개인정보 이력관리시스템</title>
+
+    <link href="http://bootstrapk.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="http://bootstrapk.com/assets/js/ie-emulation-modes-warning.js"></script>
+    <link href="../../public/stylesheets/carousel.css">
+    <link href="https://fonts.googleapis.com/css?family=Do+Hyeon&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/codemirror.css">
+    <link rel="stylesheet" href="/styles/codemirror-neo.css">
+    <link rel="stylesheet" href="/styles/cy2neo.css">
+    <link rel="stylesheet" href="/styles/neod3.css">
+    <link rel="stylesheet" href="/styles/datatable.css">
+    <link rel="stylesheet" href="/styles/vendor.css">
+    <link rel="stylesheet" href="/styles/sweet-alert.css">
+    <link rel="stylesheet" href="/styles/gh-fork-ribbon.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/hgyoseo/ridibatang@master/font.css">
+
     <style type="text/css">
         @font-face { font-family: 'Binggrae-Bold'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Binggrae-Bold.woff') format('woff'); font-weight: normal; font-style: normal; }
         @font-face { font-family: 'RIDIBatang'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/RIDIBatang.woff') format('woff'); font-weight: normal; font-style: normal; }
@@ -44,7 +66,7 @@
                     </div>
                     <!--Start-->
                     <br><br>
-                    <form class="form-inline" method="post" action="/node" name="node" id="node" >
+                    <form class="form-inline" method="post" action="/node2Vec" name="node" id="node" >
                         <div class="row" style="margin:0 auto;">
                             <select class="form-control" id="nodeType" name="nodeType" style="width:30%; margin:0 auto;">
                                 <option value="" selected="selected">노드 타입</option>
@@ -55,30 +77,24 @@
                         <div class="personLayer">
                             <br>
                             <div class="input-group" style="width:30%; margin:0 auto;">
-                                <span class="input-group-addon">이름</span>
-                                <input type="text" id="personName" name="personName" class="form-control"/>
-                            </div>
-                            <br><br>
-                            <div class="input-group" style="width:30%; margin:0 auto;">
                                 <span class="input-group-addon">PID</span>
-                                <input type="text" id="personValue" name="personValue" class="form-control"/>
+                                <input type="text" id="personID" name="personID" class="form-control"/>
                             </div>
                         </div>
                         <div class="dataLayer">
                             <br>
                             <div class="input-group" style="width:30%; margin:0 auto;">
-                                <span class="input-group-addon">데이터 명</span>
-                                <input type="text" id="dataName" name="dataName" class="form-control"/>
+                                <span class="input-group-addon">PID</span>
+                                <input type="text" id="dataOwnerID" name="dataOwnerID" class="form-control"/>
                             </div>
                             <br><br>
                             <div class="input-group" style="width:30%; margin:0 auto;">
-                                <span class="input-group-addon">데이터 값</span>
-                                <input type="text" id="dataValue" name="dataValue" class="form-control"/>
+                                <span class="input-group-addon">데이터 명</span>
+                                <input type="text" id="dataName" name="dataName" class="form-control"/>
                             </div>
                         </div>
                         <br><br>
                         <div style="text-align: center;">
-                            <!--폼 액션 설정되면 type submit으로 변경-->
                             <button type="button" class="btn btn-primary" id="snb" style="width:100px; background-color: #4a9dea; border-color:  #4a9dea;">검색</button>
                             <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px; background-color: #dddddd;"></a>
                         </div>
@@ -95,46 +111,102 @@
                     <thead>
                         <tr>
                             <th style="background-color: #f8f8f8; height: 80px; text-align: center; vertical-align: middle; font-size: 16px;">순위</th>
-                            <th style="background-color: #f8f8f8; height: 80px; text-align: center; vertical-align: middle; font-size: 16px;">검색어</th>
+                            <th style="background-color: #f8f8f8; height: 80px; text-align: center; vertical-align: middle; font-size: 16px;">검색 노드</th>
+                            <th style="background-color: #f8f8f8; text-align: center; vertical-align: middle;"><img src="/images/node.png" width="" height=""></th>
                             <th style="background-color: #f8f8f8; height: 80px; text-align: center; vertical-align: middle; font-size: 16px;">유사 노드</th>
+                            <th style="background-color: #f8f8f8; text-align: center; vertical-align: middle;"><img src="/images/node.png" width="" height=""></th>
                             <th style="background-color: #f8f8f8; height: 80px; text-align: center; vertical-align: middle; font-size: 16px;">유사도</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <% for(var i = 0; i < name.length; i++ ) { %>
+                        <% var PersonName = ReturnKeyword.split('*')[0]; %>
+                        <% var PersonID = ReturnKeyword.split('*')[1]; %>
+
+                        <% for(var i = 0; i < 5; i++ ) { %>
+                            <% if(nodeType == 'personNode') { %>
+                                <% var rPersonName = name[i].split('*')[0]; %>
+                                <% var rPersonID = name[i].split('*')[1]; %>
                             <tr>
                                 <th scope="row"; align=center; style="background-color: #f8f8f8; height: 60px; text-align: center; vertical-align: middle;">
                                     <%= (i + 1) %>
                                 </th>
-                                <td align=center; style="vertical-align: middle;">
-                                    <% if((ReturnKeyword.split('*'))[1].includes(".")) { %>
-                                        <%= (ReturnKeyword.split('*'))[0] %> <br> <a href='upload/<%= (ReturnKeyword.split("*"))[1] %>'>(<%= (ReturnKeyword.split("*"))[1] %>)</a>
-                                    <% } else { %>
+                                    <td align=center; style="vertical-align: middle;">
                                         <%= (ReturnKeyword.split('*'))[0] %> <br> (<%= (ReturnKeyword.split('*'))[1] %>)
-                                    <% } %>
-                                </td>
-                                <td align=center; style="vertical-align: middle;">
-                                    <% if((name[i].split('*'))[1].includes(".")) { %>
-                                        <%= (name[i].split('*'))[0] %> <br> <a href='upload/<%= (name[i].split("*"))[1] %>'>(<%= (name[i].split("*"))[1] %>)</a>
-                                    <% } else { %>
+                                    </td>
+                                    <td align=center; style="vertical-align: middle;">
+                                        <button type="button" class="btn btn-primary" style="background-color: #4a9dea; border-color:  #4a9dea;" onclick="showPersonGraph('<%=PersonName%>','<%=PersonID%>')">그래프 보기</button>
+                                    </td>
+                                    <td align=center; style="vertical-align: middle;">
                                         <%= (name[i].split('*'))[0] %> <br> (<%= (name[i].split('*'))[1] %>)
-                                    <% } %>
-                                </td>
-                                <td align=center; style="vertical-align: middle; width: 200px;">
-                                    <%= similarity[i] %>
+                                    </td>
+                                    <td align=center; style="vertical-align: middle;">
+                                        <button type="button" class="btn btn-primary" style="background-color: #4a9dea; border-color:  #4a9dea;" onclick="showPersonGraph('<%=rPersonName%>','<%=rPersonID%>')">그래프 보기</button>
+                                    </td>
+                                    <td align=center; style="vertical-align: middle; width: 200px;">
+                                        <%= similarity[i] %>
                                 </td>
                             </tr>
+                            <% } else { %>
+                                     <% var dataName = ReturnKeyword.split('*')[2]; %>
+                                     <% var rPersonName = name[i].split('*')[2]; %>
+                                     <% var rPersonID = name[i].split('*')[1]; %>
+                                     <% var rdataName = name[i].split('*')[0]; %>
+                                <tr>
+                                    <th scope="row"; align=center; style="background-color: #f8f8f8; height: 60px; text-align: center; vertical-align: middle;">
+                                        <%= (i + 1) %>
+                                    </th>
+                                        <td align=center; style="vertical-align: middle;">
+                                            <%= (ReturnKeyword.split('*'))[0] %>의 <%= (ReturnKeyword.split('*'))[2] %> <br> (<%= (ReturnKeyword.split('*'))[1] %>)
+                                        </td>
+                                        <td align=center; style="vertical-align: middle;">
+                                            <button type="button" class="btn btn-primary" style="background-color: #4a9dea; border-color:  #4a9dea;" onclick="showDataGraph('<%=PersonName%>','<%=PersonID%>','<%=dataName%>')">그래프 보기</button>
+                                        </td>
+                                        <td align=center; style="vertical-align: middle;">
+                                            <%= (name[i].split('*'))[2] %>의 <%= (name[i].split('*'))[0] %> <br> (<%= (name[i].split('*'))[1] %>)
+                                        </td>
+                                        <td align=center; style="vertical-align: middle;">
+                                            <button type="button" class="btn btn-primary" style="background-color: #4a9dea; border-color:  #4a9dea;" onclick="showDataGraph('<%=rPersonName%>','<%=rPersonID%>','<%=rdataName%>')">그래프 보기</button>
+                                        </td>
+                                        <td align=center; style="vertical-align: middle; width: 200px;">
+                                            <%= similarity[i] %>
+                                        </td>
+                                </tr>
+                                <% } %>
                         <% } %>
                     </tbody>
                 </table>
             <br> 
             <hr class="featurette-divider">
+                <div class="tab-content" style="overflow: hidden;">
+                    <div role="tabpanel" class="tab-pane active" id="graph" style="height: 800px;">
+                        <div class="tab-pane active" id="graph">&nbsp;</div>   
+                </div>
+                <hr class="featurette-divider">
+                </div>
+                <div class="tab-content" style="overflow: hidden;">
+                    <div role="tabpanel" class="tab-pane active" id="graph2" style="height: 800px;">
+                        <div class="tab-pane active" id="graph">&nbsp;</div>
+                    </div>
+                </div>
             </div>
         <!--</div>-->
     </div>
 <% } %>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+<script src="/scripts/codemirror.js"></script>
+<script src="/scripts/codemirror-cypher.js"></script>
+<script src="/scripts/vendor.js"></script>
+<script src="/scripts/sweet-alert.min.js"></script>
+<script src="/scripts/neod3.js"></script>
+<script src="/scripts/neod3-visualization.js"></script>
+<script src="/scripts/neo4d3.js"></script>
+<script src="/scripts/cy2neod3.js"></script>
+<script src="/scripts/jquery.dataTables.min.js"></script>
+<script src="/scripts/cypher.datatable.js"></script>
+<script src="/scripts/config.js"></script>
+
 <script type="text/javascript">
 
     $(document).ready(function () {
@@ -153,6 +225,61 @@
             jQuery('.dataLayer').show();
         }
     });
+
+    function showPersonGraph(name, pid) {
+        var config = {}
+        var connection = function () {
+            return {url: Neo4j.DB_URL, user: Neo4j.DB_USR, pass: Neo4j.DB_PWD};
+        }
+
+        var name = name;
+        var pid = pid;
+
+        query = "MATCH (p:Person), (d:Data) "
+              + "WHERE p.name = '" + name + "' AND "
+              + "p.pid = '" + pid + "' AND "
+              + "d.pid = '" + pid + "' "
+              + "CALL apoc.path.expandConfig(p, { "
+              //+ "relationshipFilter: '<Act|Generate|<Send', "
+              + "beginSequenceAtStart: true, "
+              + "maxLevel : 2, "
+              + "uniqueness:'RELATIONSHIP_PATH'}) "
+              + "YIELD path WITH p, "
+              + "RELATIONSHIPS(path) as r, "
+              + "LAST(NODES(path)) as es "
+              + "RETURN p,es,r"
+
+        //alert(query);
+
+        new Cy2NeoD3(config, "graph", "datatable", query, "execute", connection, true);
+    }
+
+    function showDataGraph(name, pid, data) {
+        var config = {}
+        var connection = function () {
+            return {url: Neo4j.DB_URL, user: Neo4j.DB_USR, pass: Neo4j.DB_PWD};
+        }
+
+        var name = name;
+        var pid = pid;
+        var data = data;
+
+        query = "MATCH (p:Person), (d:Data) "
+              + "WHERE p.name = '" + name + "' AND "
+              + "p.pid = '" + pid + "' AND "
+              + "d.name = '" + data + "' "
+              + "CALL apoc.path.expandConfig(p, { "
+              //+ "relationshipFilter: '<Act|Generate|<Send', "
+              + "beginSequenceAtStart: true, "
+              + "maxLevel : 2, "
+              + "uniqueness:'RELATIONSHIP_PATH'}) "
+              + "YIELD path WITH p, "
+              + "RELATIONSHIPS(path) as r, "
+              + "LAST(NODES(path)) as es "
+              + "RETURN p,es,r"
+
+        new Cy2NeoD3(config, "graph2", "datatable", query, "execute", connection, true);
+    }
 
 </script>
 </body>
