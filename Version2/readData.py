@@ -10,7 +10,7 @@ start_time = time.time()
 
 
 
-with open("output.csv", 'r', encoding='utf-8') as f:
+with open("AnalysisData.csv", 'r', encoding='utf-8') as f:
 
     matrix = list(csv.reader(f, delimiter=","))
 
@@ -77,8 +77,7 @@ def merge_activity(tx):
           "RETURN node" )
     
 def delete_duplRelation(tx):
-    tx.run("start r=relationship(*) "
-           "match (s)-[r]->(e) "
+    tx.run("Match (s)-[r]->(e) "
            "with s,e,type(r) as typ, tail(collect(r)) as coll "
            "foreach(x in coll | delete x) ")
 

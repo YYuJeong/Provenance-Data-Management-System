@@ -221,7 +221,7 @@ def generate_outputTable(ranking):
 
 # proposed
 if __name__ == "__main__":
-    driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "wowhi223"))
+    driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "wowhi223"), encrypted=False)
     with driver.session() as session:
         keywords = sys.argv[1].split(' ')
         

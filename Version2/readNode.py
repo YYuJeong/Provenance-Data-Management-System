@@ -4,7 +4,7 @@ import csv, sys, time
 start_time = time.time()
 
 
-with open("AnalysisData.csv", 'r', encoding='utf-8') as f:
+with open("AnalysisData_0810.csv", 'r', encoding='utf-8') as f:
     matrix = list(csv.reader(f, delimiter=","))
 
 from neo4j import GraphDatabase
@@ -15,81 +15,50 @@ def add_node(tx, s_name, s_pid, s_type, dataName1, value1, file_path1, origin1, 
     if activityType == "생성":
         if value1:
             tx.run("CREATE (p:Person), (d:Data), (ac:Activity)"
-                   "SET p = {name: $s_name, value: $s_pid, value2: $s_type}, "
-                   "    d = {name: $dataName1, value: $value1, value2: $origin1}, "
-                   "    ac = {name: $activityType, value: $date, detail: $detail} "
+                   "SET p = {name: $s_name, pid: $s_pid, etc: $s_type}, "
+                   "    d = {name: $dataName1, pid: $s_pid, etc: $s_name}, "
+                   "    ac = {name: $activityType, pid: $s_pid, etc: $date} "
                    "CREATE (ac) <- [g:Generate] - (d), (ac)-[a:Act]->(p)"
                    , s_name = s_name, s_pid = s_pid, s_type = s_type,
-                   dataName1 = dataName1, value1 = value1, origin1 = origin1, 
-                   activityType = activityType, date = date, detail = detail)
-        else:
-            tx.run("CREATE (p:Person), (d:Data), (ac:Activity)"
-                   "SET p = {name: $s_name, value: $s_pid, value2: $s_type}, "
-                   "    d = {name: $dataName1, value: $file_path1, value2: $origin1}, "
-                   "    ac = {name: $activityType, value: $date, detail: $detail} "
-                   "CREATE (ac) <- [g:Generate] - (d), (ac)-[a:Act]->(p)"
-                   , s_name = s_name, s_pid = s_pid, s_type = s_type,
-                   dataName1 = dataName1, file_path1 = file_path1, origin1 = origin1, 
+                   dataName1 = dataName1, value1 = value1, file_path1 = file_path1, origin1 = origin1, 
                    activityType = activityType, date = date, detail = detail)
     
     elif activityType == "가공":
         if value1:
             tx.run("CREATE (p:Person), (d1:Data), (d2:Data), (ac:Activity)"
-                   "SET p = {name: $s_name, value: $s_pid, value2: $s_type}, "
-                   "    d1 = {name: $dataName1, value: $value1, value2: $origin1}, "
-                   "    ac = {name: $activityType, value: $date, detail: $detail}, "
-                   "    d2 = {name: $dataName1, value: $value1, value2: $origin1} "
+                   "SET p = {name: $s_name, pid: $s_pid, etc: $s_type}, "
+                   "    d1 = {name: $dataName1, pid: $s_pid, etc: $s_name}, "
+                   "    ac = {name: $activityType, pid: $s_pid, etc: $date}, "
+                   "    d2 = {name: $dataName1, pid: $s_pid, etc: $s_name} "
                    "CREATE (p) <- [a:Act] -(ac), (ac) <- [g1:Generate] -(d2), (d1) <- [g2:Generate] -(ac)"
                    , s_name = s_name, s_pid = s_pid, s_type = s_type, 
-                   dataName1 = dataName1, value1 = value1, origin1 = origin1, 
+                   dataName1 = dataName1, value1 = value1, file_path1 = file_path1, origin1 = origin1,  
                    activityType = activityType, date = date, detail = detail)
-        else:
-            tx.run("CREATE (p:Person), (d1:Data), (d2:Data), (ac:Activity)"
-                   "SET p = {name: $s_name, value: $s_pid, value2: $s_type}, "
-                   "    d1 = {name: $dataName1, value: $file_path1, value2: $origin1}, "
-                   "    ac = {name: $activityType, value: $date, detail: $detail}, "
-                   "    d2 = {name: $dataName1, value: $file_path1, value2: $origin1} "
-                   "CREATE (p) <- [a:Act] -(ac), (ac) <- [g1:Generate] -(d2), (d1) <- [g2:Generate] -(ac)"
-                   , s_name = s_name, s_pid = s_pid, s_type = s_type, 
-                   dataName1 = dataName1, file_path1 = file_path1, origin1 = origin1, 
-                   activityType = activityType, date = date, detail = detail)
-        
+    
     elif activityType == "제공":
         if value1:
             tx.run("CREATE (p:Person), (d:Data), (p2:Person), (ac:Activity)"
-                   "SET p = {name: $s_name, value: $s_pid, value2: $s_type}, "
-                   "    d = {name: $dataName1, value: $value1, value2: $origin1}, "
-                   "    ac = {name: $activityType, value: $date, detail: $detail}, "
-                   "    p2 = {name: $r_name, value: $r_pid, value2: $r_type} "
+                   "SET p = {name: $s_name, pid: $s_pid, etc: $s_type}, "
+                   "    d = {name: $dataName1, pid: $s_pid, etc: $s_name}, "
+                   "    ac = {name: $activityType, pid: $s_pid, etc: $date}, "
+                   "    p2 = {name: $r_name, pid: $r_pid, etc: $r_type} "
                    "CREATE (p) <- [s:Send] -(ac), (p2) <- [r:Receive{allowed_period_from: $allowed_period_from, allowed_period_to: $allowed_period_to, price: $price, is_agreed: $is_agreed}] -(ac), (ac) <- [g:Generate] -(d)"
                    , s_name = s_name, s_pid = s_pid, s_type = s_type, 
-                   dataName1 = dataName1, value1 = value1, origin1 = origin1, 
-                   activityType = activityType, date = date, detail = detail,
-                   allowed_period_from = allowed_period_from, allowed_period_to = allowed_period_to, price = price, is_agreed = is_agreed,
-                   r_name = r_name, r_pid = r_pid, r_type = r_type)
-        else:
-            tx.run("CREATE (p:Person), (d:Data), (p2:Person), (ac:Activity)"
-                   "SET p = {name: $s_name, value: $s_pid, value2: $s_type}, "
-                   "    d = {name: $dataName1, value: $file_path1, value2: $origin1}, "
-                   "    ac = {name: $activityType, value: $date, detail: $detail}, "
-                   "    p2 = {name: $r_name, value: $r_pid, value2: $r_type} "
-                   "CREATE (p) <- [s:Send] -(ac), (p2) <- [r:Receive{allowed_period_from: $allowed_period_from, allowed_period_to: $allowed_period_to, price: $price, is_agreed: $is_agreed}] -(ac), (ac) <- [g:Generate] -(d)"
-                   , s_name = s_name, s_pid = s_pid, s_type = s_type, 
-                   dataName1 = dataName1, file_path1 = file_path1, origin1 = origin1, 
+                   dataName1 = dataName1, value1 = value1, file_path1 = file_path1, origin1 = origin1, 
                    activityType = activityType, date = date, detail = detail,
                    allowed_period_from = allowed_period_from, allowed_period_to = allowed_period_to, price = price, is_agreed = is_agreed,
                    r_name = r_name, r_pid = r_pid, r_type = r_type)
 
 def merge_data(tx):
     tx.run("MATCH (d:Data) "
-           "WITH d.name as name, d.value as value, d.value2 as value2, COLLECT(d) AS ns "
+           "WITH d.name as name, d.pid as pid, COLLECT(d) AS ns "
            "WHERE size(ns) > 1 "
            "CALL apoc.refactor.mergeNodes(ns) YIELD node "
            "RETURN node")
     
 def merge_person(tx):
    tx.run("MATCH (p:Person) "
-          "WITH toLower(p.name) as name, p.value as value, p.value2 as value2, COLLECT(p) AS ns "
+          "WITH toLower(p.name) as name, p.pid as pid, COLLECT(p) AS ns "
           "WHERE size(ns) > 1 "
           "CALL apoc.refactor.mergeNodes(ns) YIELD node "
           "RETURN node" )
@@ -97,14 +66,13 @@ def merge_person(tx):
 
 def merge_activity(tx):
    tx.run("MATCH (ac:Activity) "
-          "WITH ac.name as name, ac.value as value, COLLECT(ac) AS ns "
+          "WITH ac.name as name, ac.pid as pid, COLLECT(ac) AS ns "
           "WHERE size(ns) > 1 "
           "CALL apoc.refactor.mergeNodes(ns) YIELD node "
           "RETURN node" )
     
 def delete_duplRelation(tx):
-    tx.run("start r=relationship(*) "
-           "match (s)-[r]->(e) "
+    tx.run("Match (s)-[r]->(e) "
            "with s,e,type(r) as typ, tail(collect(r)) as coll "
            "foreach(x in coll | delete x) ")
 
