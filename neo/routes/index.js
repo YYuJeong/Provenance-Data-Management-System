@@ -2518,22 +2518,6 @@ router.post('/keyword', function (req, res) {
     
     var wrote = 0;
     var process = spawn('python', [__dirname + '\\search\\search.py', keyStr]);
-
-    /*
-    Promise.all([getCheckNode(keyword[0]), getCheckNode(keyword[1])])
-        .then(function(results){
-            console.log("TT: ", results);
-            resolve(results);
-        })
-        .then(
-            session.run("MATCH (personA:Person { name: '양유정', affiliation: '한국인터넷진흥원'}), (personB:Person { name: '서민지', affiliation: '한국보건산업진흥원' }) WITH personA, personB MATCH p = shortestPath((personA)-[*]-(personB)) RETURN p, length(p)")
-            .then(function (result) {
-                console.log(result.records[0].get('p'))
-                console.log(result.records[0].get('length(p)'))
-            })
-        )
-    */
-
     
 
     var startTime = new Date().getTime();
@@ -2582,6 +2566,24 @@ router.post('/fsm', function (req, res) {
         res.send('<script type="text/javascript">alert("검색어를 입력해주세요."); window.history.go(-1);</script>');
     }
     else{
+        process.stdout.on('data', function (data) {
+            if (wrote == 0) {
+                console.log("-----fsm log start-----")
+                kk = iconv.decode(data, 'EUC-KR').toString();
+                fsmResult.setfsm_result(kk);
+                console.log(kk);
+                console.log("-----fsm log end-----");
+                }
+            wrote += 1;
+        });
+        var endTime = new Date().getTime();
+        console.log("Execution time : ", (endTime - startTime));
+
+        process.on('close', function (data) {
+            res.redirect('data/analyzeFreq');
+        });
+        /*console.log("Path : ",[__dirname + '\\data\\gSpan\\gspan_mining\\main.py']);
+        console.log("before process enter")
         promiseFromChildProcess(process)
         .then(function (result){ 
     console.log('promise complete: ', result);
