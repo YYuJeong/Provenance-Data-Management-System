@@ -8,7 +8,7 @@ from neo4j import GraphDatabase
 import pandas as pd
 
 from functools import reduce
-import operator
+import operator, sys
 
 import numpy as np
 
@@ -790,7 +790,7 @@ def main(FLAGS=None):
         database_file_name='../gSpan-master/graphdata/neo4j.txt',
         
         #min_support=FLAGS.min_support,
-        min_support=3,
+        min_support = int(sys.argv[1]),
         
 #        min_num_vertices=FLAGS.lower_bound_of_num_vertices,
 #        max_num_vertices=FLAGS.upper_bound_of_num_vertices,

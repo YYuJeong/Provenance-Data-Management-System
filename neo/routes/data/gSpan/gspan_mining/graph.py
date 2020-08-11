@@ -112,10 +112,10 @@ class Graph(object):
         display_str = ''
         linkInfo = []
         nodeInfo = []
-        print('t # {}'.format(self.gid))
+        #print('t # {}'.format(self.gid))
         for vid in self.vertices:
             nodeInfo.append([vid, self.vertices[vid].vlb])
-            print('v {} {}'.format(vid, self.vertices[vid].vlb))
+            #print('v {} {}'.format(vid, self.vertices[vid].vlb))
             display_str += 'v {} {} '.format(vid, self.vertices[vid].vlb)
         for frm in self.vertices:
             edges = self.vertices[frm].edges
@@ -124,13 +124,13 @@ class Graph(object):
                     if frm < to:
                         linkInfo.append([ self.vertices[frm].vlb, self.vertices[to].vlb, edges[to].elb])
 
-                        print('e {} {} {}'.format(frm, to, edges[to].elb))
+                        #print('e {} {} {}'.format(frm, to, edges[to].elb))
                         display_str += 'e {} {} {} '.format(
                             frm, to, edges[to].elb)
                 else:
                     linkInfo.append([self.vertices[frm].vlb, self.vertices[to].vlb, edges[to].elb])
 
-                    print('e {} {} {}'.format(frm, to, edges[to].elb))
+                    #print('e {} {} {}'.format(frm, to, edges[to].elb))
                     display_str += 'e {} {} {}'.format(frm, to, edges[to].elb)
         return nodeInfo, linkInfo
     
