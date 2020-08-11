@@ -19,6 +19,13 @@
     <link rel="stylesheet" href="/styles/gh-fork-ribbon.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/hgyoseo/ridibatang@master/font.css">
 
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@3" rel="stylesheet">
+
+
+
     <style type="text/css">
         @font-face { font-family: 'Binggrae-Bold'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Binggrae-Bold.woff') format('woff'); font-weight: normal; font-style: normal; }
         @font-face { font-family: 'RIDIBatang'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/RIDIBatang.woff') format('woff'); font-weight: normal; font-style: normal; }
@@ -115,8 +122,8 @@
 
                         <button type="button" class="btn btn-primary" id="fsgb" style="background-color: #4a9dea; border-color:  #4a9dea;">검색</button>
                         -->
-                    </form>
-                </div>
+                    </form>               
+               </div>
             <% } %>
         </div>
             <!--<div style="display: inline-block; background: pink;" id="keyData" name="keyData">-->
@@ -161,6 +168,11 @@
 <script src="/scripts/config.js"></script>
 
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+
 <script type = "text/javascript">
     var config = {}
     var cypher;
@@ -172,6 +184,8 @@
     $(document).ready(function() {
         $("#fsgb").click(function() {
             $("#fsm").submit();
+            Swal.fire('분석 중')
+            Swal.showLoading()
         });
 
 
@@ -309,6 +323,11 @@
         new Cy2NeoD3(config, "graph", "datatable", queries[num], "execute", connection, true);
         document.getElementById("nodeContent").innerHTML = '';
     }
+
+function loading() {
+    Swal.fire('Please wait')
+    Swal.showLoading()
+    };
 
 
 </script>

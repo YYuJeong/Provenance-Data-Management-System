@@ -30,6 +30,7 @@
     "promise": "^8.0.3",
     "python-shell": "^1.0.8",
     "sweetalert": "^2.1.2",
+    "sweetalert2": "^9.17.1",
     "vendor": "^1.7.0"
   }
 }

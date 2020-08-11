@@ -53,9 +53,9 @@ def search_dataNode(tx):
     return dataNodes 
 
 def get_allGraphs(tx, name, allDict, edgeDict):
-    allGraphs = tx.run("MATCH p = ({name : $name})-[*]-(connected) "
-                       "WHERE size(nodes(p)) = size(apoc.coll.toSet(nodes(p))) "
-                       "RETURN p", name = name).values()
+    allGraphs = tx.run("MATCH p = ({name : '"+name+"'})-[*]-(connected) "
+                       "WHERE size(nodes(p)) = size(apoc.coll.toSet(nodes(p)))"
+                       "RETURN p").values()
     #print(allGraphs)
     '''
     ag = tx.run("""MATCH (p:Person {name: "강민석"}) 
