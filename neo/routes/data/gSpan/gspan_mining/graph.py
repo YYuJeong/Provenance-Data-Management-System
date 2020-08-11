@@ -133,6 +133,9 @@ class Graph(object):
                     print('e {} {} {}'.format(frm, to, edges[to].elb))
                     display_str += 'e {} {} {}'.format(frm, to, edges[to].elb)
         return nodeInfo, linkInfo
+    
+    
+    
 
     def plot(self):
         """Visualize the graph."""

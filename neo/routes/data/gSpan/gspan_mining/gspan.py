@@ -124,12 +124,11 @@ def generateInput():
              records.append(personNode["p.name"])
          personDict = {k: v for v, k in enumerate(records)}
     
-         perDict = {'개인': 0}
          records = []
         
          for personNode in personNodes:
              records.append(personNode["p.name"])
-         instDict = {k: v + len(perDict) for v, k in enumerate(records)}
+         instDict = {k: (v+1)  for v, k in enumerate(records)}
        
     
          #dataDict = {'데이터': 0}
@@ -139,18 +138,19 @@ def generateInput():
          for dataNode in dataNodes:
              records.append(dataNode["d.name"])
 
-         dataDict = {k: (v+len(perDict)+len(instDict)) for v, k in enumerate(records)}
+         dataDict = {k: (v+len(instDict)+1) for v, k in enumerate(records)}
     
          
          #activityNodes to dict
          activityNodes = ['생성', '가공', '제공']
-         actDict = {k: (v+len(perDict)+len(dataDict)+len(instDict)) for v, k in enumerate(activityNodes)}
+         actDict = {k: (v+len(dataDict)+len(instDict)+1) for v, k in enumerate(activityNodes)}
          
          #edge labels to dict
          edgeLabels = ['Act', 'Generate', 'Send', 'Receive']
          edgeDict = {k: v for v, k in enumerate(edgeLabels)}
     
-         allDict = {**perDict, **instDict,**dataDict, **actDict}
+         perDict = {'개인': len(dataDict) +len(instDict)+len(actDict)+1 }
+         allDict = {**instDict,**dataDict, **actDict, **perDict}
          print(allDict)
          
          #get all graphs 

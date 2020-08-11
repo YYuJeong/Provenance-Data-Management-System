@@ -1541,10 +1541,15 @@ neo.utils.measureText = (function() {
           string = '';
           stringCircle = '';
           circleID = '';
-          //console.log(text[0][0]["__data__"]["node"]["propertyList"].length);
+          console.log("ONEW");
+          console.log(text[0][0]["__data__"]["node"]["propertyList"].length);
+          console.log(text[0][0]["__data__"]["node"]["propertyList"]);
+          console.log(text[0][0]["__data__"]["node"]["propertyList"][0]["key"]);
+
           for(var i = 0; i < text.length ; i++) {
             for(var j = 0; j < text[0][0]["__data__"]["node"]["propertyList"].length; j++) {
               textKey.push(text[i][0]["__data__"]["node"]["propertyList"][j]["key"])
+              console.log(j)
             }
           }
           for(var i = 0; i < text.length; i++) {

@@ -20,9 +20,15 @@ nodeSimilarity = ''
 
 if __name__ == "__main__":
     
-    model = Word2Vec.load('model')
-    nodeKeyword = sys.argv[1]
-    #nodeKeyword = '강민석,901421-1154275'
+    model = Word2Vec.load('model');
+    print(model.wv.vocab);
+    del model.wv.vocab['제공,20151119'] 
+    print(model.wv.vocab.keys());
+
+    """
+    #nodeKeyword = sys.argv[1]
+
+    nodeKeyword = '강민석,901421-1154275'
     nodeResult = model.wv.most_similar(nodeKeyword)
     
     for key in range(len(nodeResult)-1):
@@ -35,4 +41,4 @@ if __name__ == "__main__":
     nodeSimilarity = nodeSimilarity + str(model.wv.similarity(nodeKeyword,nodeResult[9][0]))
 
     print(nodeName + "+" + nodeSimilarity)
-    
+    """

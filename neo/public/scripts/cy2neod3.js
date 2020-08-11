@@ -1,11 +1,11 @@
 //      new Cy2NeoD3(config, "graph", "datatable", cypher, "execute", connection, true);
+//console.log("WHYRANO");
 function Cy2NeoD3(config, graphId, tableId, sourceId, execId, urlSource, renderGraph, cbResult) {
     var neod3 = new Neod3Renderer();
     var neo = new Neo(urlSource);
     var editor = sourceId;
     try {
         //evt.preventDefault();
-
         var queries = editor;
         var resArr = [] 
         var graphs = []

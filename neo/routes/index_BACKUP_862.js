@@ -19,9 +19,12 @@ const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic(db_info.DB
 //const session = driver.session();
 const iconv = require('iconv-lite');
 var keyResult = require('./keyResult');
-
+<<<<<<< HEAD
 var similarityResult = require('./similarityResult');
+=======
+var nodeResult = require('./nodeResult');
 var fsmResult = require('./fsmResult');
+>>>>>>> b14e4f6c825d7bc92e82107e5ec3cc0ef9396c9e
 var Cy2NeoD3 = require('../public/scripts/cy2neod3');
 
 let nameArr5 = [];
@@ -2571,40 +2574,17 @@ router.post('/keyword', function (req, res) {
 
 // fsm post func
 router.post('/fsm', function (req, res) {
+    var wrote = 0;
+    var process = spawn('python', [__dirname + '\\data\\gSpan\\gspan_mining\\main.py']);
+
     var keyStr = req.body.keyword;
     var len = keyStr.length;
 
-    var wrote = 0;
-    var process = spawn('python', [__dirname + '\\data\\gSpan\\gspan_mining\\main.py', keyStr]);
-    console.log("처리", keyStr)
     var startTime = new Date().getTime();
     if(len == 0) {
         res.send('<script type="text/javascript">alert("검색어를 입력해주세요."); window.history.go(-1);</script>');
     }
     else{
-        promiseFromChildProcess(process)
-        .then(function (result){ 
-    console.log('promise complete: ', result);
-        process.stdout.on('data', function (data) {
-            if (wrote == 0) {
-                console.log("-----fsm log start-----")
-                kk = iconv.decode(data, 'EUC-KR').toString();
-                fsmResult.setfsm_result(kk);
-                console.log(kk);
-                console.log("-----fsm log end-----");
-                }
-            wrote += 1;
-        });
-        
-        var endTime = new Date().getTime();
-        console.log("Execution time : ", (endTime - startTime));
-
-        process.on('close', function (data) {
-            res.redirect('data/analyzeFreq');
-        });
-    });
-        /*console.log("Path : ",[__dirname + '\\data\\gSpan\\gspan_mining\\main.py']);
-        console.log("before process enter")
         promiseFromChildProcess(process)
             .then(function (result) {
                 console.log('promise complete: ', result);
@@ -2626,10 +2606,11 @@ router.post('/fsm', function (req, res) {
                 });
             }, function (err) {
                 console.log('promise rejected: ', err);
-        });*/
+        });
     }
 
 });
+
 
 router.post('/getDeleteValues', function (req, res) {
     var checkValues5 = req.body.deleteCheck5;

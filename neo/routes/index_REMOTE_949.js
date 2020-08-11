@@ -5,7 +5,7 @@ var mysql = require("mysql");
 var esession = require('express-session');
 var session_value = require('./session');
 var Promise = require('promise');
-var neo4j = require('neo4j-driver');
+var neo4j = require('neo4j-driver').v1;
 var multer = require("multer");
 var multiparty = require('multiparty');
 var fs = require('fs');
@@ -16,11 +16,10 @@ const spawn = require('child_process').spawn;
 const neo4j_connection = require('../public/scripts/config');
 const db_info = neo4j_connection.Neo4j;
 const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic(db_info.DB_USR, db_info.DB_PWD));
-//const session = driver.session();
+const session = driver.session();
 const iconv = require('iconv-lite');
 var keyResult = require('./keyResult');
-
-var similarityResult = require('./similarityResult');
+var nodeResult = require('./nodeResult');
 var fsmResult = require('./fsmResult');
 var Cy2NeoD3 = require('../public/scripts/cy2neod3');
 
@@ -488,12 +487,6 @@ let add = multer({
 });
 
 router.post('/dataAdd', function (req, res) {
-
-    var session = driver.session();
-    var session2 = driver.session();
-    var session3 = driver.session();
-    var session4 = driver.session();
-
     var dataName = req.body.dataName;
     var value = req.body.value;
     var origin = req.body.origin;
@@ -536,40 +529,22 @@ router.post('/dataAdd', function (req, res) {
                    + "WHERE size(ns) > 1 "
                    + "CALL apoc.refactor.mergeNodes(ns) YIELD node "
                    + "RETURN node"
-   var deleteRel =  "MATCH (s)-[r]->(e) "
+   var deleteRel = "start r=relationship(*) "
+                  + "match (s)-[r]->(e) "
                   + "with s,e,type(r) as typ, tail(collect(r)) as coll "
                   + "foreach(x in coll | delete x) "
-
-                  
-    session.run("CREATE (d:Data {name: '" + dataName + "' , value: '" + value + "' , origin: '" + origin + "', file_path: '" + file_path + "'})-[:Generate]->(ac:Activity {name: '생성', date: '" + date + "', detail: '' })-[:Act]->(p:Person {name: '" + user_name + "' , pid: '" + user_pid + "', p_type: '" + user_type + "'})")
+    session
+        .run("CREATE (d:Data {name: '" + dataName + "' , value: '" + value + "' , origin: '" + origin + "', file_path: '" + file_path + "'})-[:Generate]->(ac:Activity {name: '생성', date: '" + date + "', detail: '' })-[:Act]->(p:Person {name: '" + user_name + "' , pid: '" + user_pid + "', p_type: '" + user_type + "'})")
         .then(function (result) {
-        session2.run(mergeData)
-            .then(function (result) {
-                session2.close()
-            })
-            .catch(function (err) {
-                console.log(err);
-            });
-        session3.run(mergePerson)
-            .then(function (result) {
-                session3.close()
-            })
-            .catch(function (err) {
-                console.log(err);
-            });
-        session4.run(deleteRel)
-            .then(function (result) {
-                session4.close()
-            })
-            .catch(function (err) {
-                console.log(err);
-            });
-        session.close()
+            session.run(mergeData)
+            session.run(mergePerson)
+            session.run(deleteRel)
+
+            session.close();
         })
         .catch(function (err) {
             console.log(err);
         });
-
     res.render('addPage', {
         esession: session_value.getSession(),
         insNames: addInsName
@@ -602,9 +577,6 @@ router.get('/', function (req, res, next) {
 
 
 router.get('/viewPage', function (req, res) {
-
-    var session = driver.session();
- 
     var nameArr = [];
     var affiliationArr = [];
     var pidArr = [];
@@ -716,9 +688,9 @@ router.get('/viewPage', function (req, res) {
 
               fileDownloadPath.push("upload/" + record._fields[1].properties.file_path)
             });
-
+            
             session.run("MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '가공' AND ( p.name = '" + user_name + "' ) RETURN p, d2, ac, d1 ")
-            .then(function (result) {
+          .then(function (result) {
             result.records.forEach(function (record) {
 
               nameArr.push(record._fields[0].properties.name)
@@ -777,9 +749,9 @@ router.get('/viewPage', function (req, res) {
                   dataValuesTotal.push(record._fields[1].properties.value)
                   dataFilesTotal.push(record._fields[1].properties.file_path)
                   dataOriginTotal.push(record._fields[1].properties.origin)
-                  session.close()
-                })
+    
 
+                });
                 console.log(fileDownloadPath);
                 res.render('viewPage.ejs', {
                     esession: session_value.getSession(),
@@ -850,7 +822,7 @@ router.get('/viewPage', function (req, res) {
                 });
             });
           });
-            
+                session.close();
             })
             .catch(function (err) {
                 console.log(err);
@@ -877,6 +849,7 @@ router.get('/viewPage', function (req, res) {
               activityTypeArr4.push(record._fields[2].properties.name)
               dateArr4.push(record._fields[2].properties.date)
             });
+
 
           session.run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[s:Send]-(p1:Person), (ac:Activity)-[r:Receive]-(p2:Person) WHERE ac.name IN ['배포', '판매'] RETURN p1, d, ac, p2 ")
           .then(function (result) {
@@ -920,16 +893,17 @@ router.get('/viewPage', function (req, res) {
                   dataTypeArr11.push(record._fields[3].properties.d_type)
                   deviceArr11.push(record._fields[3].properties.device)
                   priceArr11.push(record._fields[3].properties.price)
-                  session.close()
-                })
+                });
+
 
           res.render('viewPage', {
             esession: session_value.getSession(),
+
             authenticated: true
       });
     });
   });
-  //session.close();
+      session.close();
  })
  .catch(function (err) {
   console.log(err);
@@ -982,10 +956,7 @@ router.get('/viewPage', function (req, res) {
 });
 
 router.post('/getViewValues', function (req, res) {
-
-    var session = driver.session();
-
-    var checkValue = req.body.viewCheck;
+     var checkValue = req.body.viewCheck;
 
     console.log("view val: ", checkValue)
     /*
@@ -1193,7 +1164,6 @@ router.post('/getViewValues', function (req, res) {
                         activityTypeArr3.push(record._fields[2].properties.name)
                         dateArr3.push(record._fields[2].properties.date)
                         detailArr3.push(record._fields[2].properties.detail)
-                        session.close()
                     });
                 }
                 else {
@@ -1208,7 +1178,6 @@ router.post('/getViewValues', function (req, res) {
 
                     activityTypeArr3.push(' ')
                     dateArr3.push(' ')
-                    session.close()
                 }
                 res.render('viewLink.ejs', {
                     esession: session_value.getSession(),
@@ -1261,7 +1230,7 @@ router.post('/getViewValues', function (req, res) {
                 });
             
             });
-            //session.close();
+            session.close();
         });
         
     })
@@ -1273,9 +1242,6 @@ router.post('/getViewValues', function (req, res) {
 
 
 router.post('/DataSearch', function (req, res) {
-
-    var session = driver.session();
-
     var dataName = req.body.dataName;
     var origin = req.body.origin;
 
@@ -1535,7 +1501,6 @@ router.post('/DataSearch', function (req, res) {
                             activityTypeArr3.push(record._fields[2].properties.name)
                             dateArr3.push(record._fields[2].properties.date)
                             detailArr3.push(record._fields[2].properties.detail)
-                            session.close()
                         });
                     }
                     else {
@@ -1550,7 +1515,6 @@ router.post('/DataSearch', function (req, res) {
 
                         activityTypeArr3.push(' ')
                         dateArr3.push(' ')
-                        session.close()
                     }
 
 
@@ -1605,7 +1569,7 @@ router.post('/DataSearch', function (req, res) {
                         });
                     });
                 });
-                //session.close();
+                session.close();
             })
         .catch(function (err) {
             console.log(err);
@@ -1613,10 +1577,8 @@ router.post('/DataSearch', function (req, res) {
 });
 
 router.post('/nameSearch', function (req, res) {
-
-    var session = driver.session();
-
     var name = req.body.name;
+
     var nameFlag = true;
 
     var user_gubun = session_value.getSession().gubun;
@@ -1761,7 +1723,6 @@ router.post('/nameSearch', function (req, res) {
                     activityTypeArr3.push(record._fields[2].properties.name)
                     dateArr3.push(record._fields[2].properties.date)
                     detailArr3.push(record._fields[2].properties.detail)
-                    session.close()
                 });
             }
             else {
@@ -1776,7 +1737,6 @@ router.post('/nameSearch', function (req, res) {
 
                 activityTypeArr3.push(' ')
                 dateArr3.push(' ')
-                session.close()
             }
 
 
@@ -1816,7 +1776,8 @@ router.post('/nameSearch', function (req, res) {
                 authenticated: true
             });
         });
-        //session.close();
+        
+        session.close();
     })
     .catch(function (err) {
         console.log(err);
@@ -1825,9 +1786,6 @@ router.post('/nameSearch', function (req, res) {
 });
 
 router.post('/periodSearch', function (req, res) {
-
-    var session = driver.session();
-
     var end_date = req.body.start_date;
     var start_date = req.body.end_date;
     var activityType = req.body.activityType;
@@ -2116,7 +2074,6 @@ router.post('/periodSearch', function (req, res) {
                             activityTypeArr3.push(record._fields[2].properties.name)
                             dateArr3.push(record._fields[2].properties.date)
                             detailArr3.push(' ')
-                            session.close()
                         });
                     }
                     else {
@@ -2132,7 +2089,6 @@ router.post('/periodSearch', function (req, res) {
                         activityTypeArr3.push(' ')
                         dateArr3.push(' ')
                         detailArr3.push(' ')
-                        session.close()
                     }
                     console.log("t/f:", query3, query4, query5)
                     console.log(detailArr3)
@@ -2192,7 +2148,7 @@ router.post('/periodSearch', function (req, res) {
                         authenticated: true
                     });
                     });
-                    //session.close();
+                    session.close();
                 });
                 
             })
@@ -2221,7 +2177,6 @@ router.post('/periodSearch', function (req, res) {
                             activityTypeArr3.push(record._fields[2].properties.name)
                             dateArr3.push(record._fields[2].properties.date)
                             detailArr3.push(record._fields[2].properties.detail)
-                            session.close()
                         });
                     }
                     else {
@@ -2236,7 +2191,6 @@ router.post('/periodSearch', function (req, res) {
 
                         activityTypeArr3.push(' ')
                         dateArr3.push(' ')
-                        session.close()
                     }
                     res.render('search/searchPeriodResult.ejs', {
                         esession: session_value.getSession(),
@@ -2257,6 +2211,7 @@ router.post('/periodSearch', function (req, res) {
                         
                         authenticated: true
                     });
+
                     session.close();
                 })
 
@@ -2293,7 +2248,6 @@ router.post('/periodSearch', function (req, res) {
                         r_nameArr.push(record._fields[4].properties.name)
                         r_pidArr.push(record._fields[4].properties.pid)
                         r_pTypeArr.push(record._fields[4].properties.p_type)
-                        session.close()
                     });
                 }   
                 else {
@@ -2317,7 +2271,6 @@ router.post('/periodSearch', function (req, res) {
                         r_nameArr.push(' ')
                         r_pidArr.push(' ')
                         r_pTypeArr.push(' ')
-                        session.close()
                 }
                 res.render('search/searchPeriodResult.ejs', {
                     esession: session_value.getSession(),
@@ -2377,7 +2330,6 @@ router.post('/periodSearch', function (req, res) {
                         valueArr6.push(record._fields[3].properties.value)
                         file_pathArr6.push(record._fields[3].properties.file_path)
                         originArr6.push(record._fields[3].properties.origin)
-                        session.close()
                     });
                 }
                 else {
@@ -2398,7 +2350,6 @@ router.post('/periodSearch', function (req, res) {
                     valueArr6.push(' ')
                     file_pathArr6.push(' ')
                     originArr6.push(' ')
-                    session.close()
                 }
                 res.render('search/searchPeriodResult.ejs', {
                     esession: session_value.getSession(),
@@ -2423,7 +2374,7 @@ router.post('/periodSearch', function (req, res) {
             
                     authenticated: true
                 });
-                //session.close();
+                session.close();
             })
             .catch(function (err) {
                 console.log(err);
@@ -2571,40 +2522,17 @@ router.post('/keyword', function (req, res) {
 
 // fsm post func
 router.post('/fsm', function (req, res) {
+    var wrote = 0;
+    var process = spawn('python', [__dirname + '\\data\\gSpan\\gspan_mining\\main.py']);
+
     var keyStr = req.body.keyword;
     var len = keyStr.length;
 
-    var wrote = 0;
-    var process = spawn('python', [__dirname + '\\data\\gSpan\\gspan_mining\\main.py', keyStr]);
-    console.log("처리", keyStr)
     var startTime = new Date().getTime();
     if(len == 0) {
         res.send('<script type="text/javascript">alert("검색어를 입력해주세요."); window.history.go(-1);</script>');
     }
     else{
-        promiseFromChildProcess(process)
-        .then(function (result){ 
-    console.log('promise complete: ', result);
-        process.stdout.on('data', function (data) {
-            if (wrote == 0) {
-                console.log("-----fsm log start-----")
-                kk = iconv.decode(data, 'EUC-KR').toString();
-                fsmResult.setfsm_result(kk);
-                console.log(kk);
-                console.log("-----fsm log end-----");
-                }
-            wrote += 1;
-        });
-        
-        var endTime = new Date().getTime();
-        console.log("Execution time : ", (endTime - startTime));
-
-        process.on('close', function (data) {
-            res.redirect('data/analyzeFreq');
-        });
-    });
-        /*console.log("Path : ",[__dirname + '\\data\\gSpan\\gspan_mining\\main.py']);
-        console.log("before process enter")
         promiseFromChildProcess(process)
             .then(function (result) {
                 console.log('promise complete: ', result);
@@ -2626,10 +2554,11 @@ router.post('/fsm', function (req, res) {
                 });
             }, function (err) {
                 console.log('promise rejected: ', err);
-        });*/
+        });
     }
 
 });
+
 
 router.post('/getDeleteValues', function (req, res) {
     var checkValues5 = req.body.deleteCheck5;
@@ -2753,6 +2682,7 @@ router.post('/getDeleteValues', function (req, res) {
                         console.log("삭제 완료")
                         res.render('data/deleteData', {esession: session_value.getSession()});
                     });
+                session.close();
             })
             .catch(function (err) {
                 console.log(err);
@@ -2766,7 +2696,7 @@ router.post('/getDeleteValues', function (req, res) {
                         console.log("삭제 완료")
                         res.render('data/deleteData', {esession: session_value.getSession()});
                     });
-                session.close();    
+                session.close();
             })
             .catch(function (err) {
                 console.log(err);
@@ -3128,9 +3058,6 @@ router.post('/delete', function (req, res) {
 });
 
 router.get('/data/modifyData', function (req, res) {
-
-    var session = driver.session();
-
     var nameArr = [];
     var affiliationArr = [];
     var pidArr = [];
@@ -3251,7 +3178,6 @@ router.get('/data/modifyData', function (req, res) {
               datafile.push(record._fields[1].properties.file_path)
               dataorigin.push(record._fields[1].properties.origin)
               datasname.push(record._fields[0].properties.name)
-              session.close();
             });
             /*
             session.run("MATCH (d2:Data)<-[:Generate]-(ac:Activity)<-[:Generate]-(d1:Data), (ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '가공' AND ( p.name = '" + user_name + "' ) RETURN p, d2, ac, d1 LIMIT 10")
@@ -3397,6 +3323,7 @@ router.get('/data/modifyData', function (req, res) {
                 
                 authenticated: true
             });
+                session.close();
             })
             .catch(function (err) {
                 console.log(err);
@@ -3510,7 +3437,7 @@ router.get('/data/modifyData', function (req, res) {
       });
     });
   });
-    //session.close();
+      session.close();
  })
  .catch(function (err) {
   console.log(err);
@@ -3771,12 +3698,6 @@ router.post('/getModifyValues', function (req, res) {
 });
 
 router.post('/transfer', function (req, res) {
-
-    var session = driver.session();
-    var session2 = driver.session();
-    var session3 = driver.session();
-    var session4 = driver.session();
-
     var company = req.body.company;
     var allowedPeriodFrom = req.body.allowedPeriodFrom;
     var allowedPeriodTo = req.body.allowedPeriodTo;
@@ -3817,7 +3738,8 @@ router.post('/transfer', function (req, res) {
                     + "WHERE size(ns) > 1 "
                     + "CALL apoc.refactor.mergeNodes(ns) YIELD node "
                     + "RETURN node"
-    var deleteRel = "MATCH (s)-[r]->(e) "
+    var deleteRel = "start r=relationship(*) "
+                    + "match (s)-[r]->(e) "
                     + "with s,e,type(r) as typ, tail(collect(r)) as coll "
                     + "foreach(x in coll | delete x) "
 
@@ -3839,30 +3761,13 @@ router.post('/transfer', function (req, res) {
                             + "    p2 = {name: '" + company + "' , pid: '111111', p_type: '기관'} "
                             + "CREATE (p) <- [s:Send] -(ac), (p2) <- [r:Receive{allowed_period_from:'" + allowedPeriodFrom + "', allowed_period_to: '" + allowedPeriodTo + "', is_agreed: '" + permission + "', price: '" + price + "'}] -(ac), (ac) <- [g:Generate] -(d)"
         console.log(receiveCypher)
-        session.run(receiveCypher)
+        session
+        .run(receiveCypher)
         .then(function (result) {
-        session2.run(mergeData)
-            .then(function (result) {
-                    session2.close()
-            })
-            .catch(function (err) {
-                console.log(err);
-            });
-        session3.run(mergePerson)
-            .then(function (result) {
-                session3.close()
-            })
-            .catch(function (err) {
-                console.log(err);
-            });
-        session4.run(deleteRel)
-            .then(function (result) {
-                session4.close()
-            })
-            .catch(function (err) {
-                console.log(err);
-            });
-        session.close()
+            session.run(mergeData)
+            session.run(mergePerson)
+            session.run(deleteRel)
+            session.close();
         })
         .catch(function (err) {
             console.log(err);
@@ -3878,13 +3783,13 @@ router.post('/transfer', function (req, res) {
         authenticated: true
     });
    
+
+
+
 });
 
 
 router.post('/modify', function (req, res) {
-
-    var session = driver.session();
-
     var dataName = req.body.dataName;
     var name = req.body.name;
     var dataNameFlag = true;
@@ -4076,7 +3981,6 @@ router.post('/modify', function (req, res) {
 
                         activityTypeArr3.push(record._fields[2].properties.name)
                         dateArr3.push(record._fields[2].properties.date)
-                        session.close()
                     });
                 }
                 else {
@@ -4090,7 +3994,6 @@ router.post('/modify', function (req, res) {
 
                     activityTypeArr3.push(' ')
                     dateArr3.push(' ')
-                    session.close()
                 }
                 res.render('data/modifyDataResult.ejs', {
                         esession: session_value.getSession(),
@@ -4133,447 +4036,15 @@ router.post('/modify', function (req, res) {
                     });
                 });
             });
-            //session.close();
+            session.close();
         })
         .catch(function (err) {
             console.log(err);
         });
 });
 
-router.post('/node2Vec', function (req, res) {
+router.post('/node', function (req, res) {
 
-    var node2VecSession = driver.session();
-    var searchSession = driver.session();
-    var embeddingSize = 10;
-    var nodeProperties = [];
-    var nodeEmbeddings = [];
-    var nodeLabels = [];
-    var nodeLabelsTemp = [];
-    var nodeOwners = [];
-    var keyNodeIndex;
-    var keyNodeProperties;
-    var keyEmbeddings = [];
-    var comparedProperties = [];
-    var comparedEmbeddings = [];
-    var comparedOwners = [];
-    var comparedLabels = [];
-    var searchPersonName;
-    var personName;
-    var nodeType = req.body.nodeType;
-    var nameExceptIns = [];
-    var similarityExceptIns = [];
-
-    var warningZero = '<script type="text/javascript">'
-                + 'alert("노드 타입을 선택해주세요.");'
-                + 'window.history.go(-1);'
-                + '</script>'
-    var warningNone = '<script type="text/javascript">'
-                + 'alert("검색 결과가 없습니다.");'
-                + 'window.history.go(-1);'
-                + '</script>'
-
-    if(nodeType == 'personNode') {
-        console.log('Person');
-        var personID = req.body.personID;
-
-        var node2Vec = "CALL gds.alpha.node2vec.stream("
-                    + "'Nodes', {"
-                 /* + "walkLength: 80,"
-                    + "windowSize: 10,"
-                    + "inOutFactor: 1.0,"
-                    + "returnFactor: 1.0," */
-                    + "embeddingSize: " + embeddingSize + ", "
-                    + "iterations: 1}) "
-                    + "YIELD nodeId as id, embedding "
-                    + "RETURN coalesce(gds.util.asNode(id).name + '/' + gds.util.asNode(id).pid) as keys, embedding, labels(gds.util.asNode(id)) as labels "
-
-                    //console.log(node2Vec);
-
-        //var cosineSimilarity = "RETURN gds.alpha.similarity.cosine(" + key1 + ", " + key2 + ") as similarity"
-        //console.log(cosineSimilarity);
-
-        node2VecSession.run(node2Vec)
-                        .then(function (result) {
-                            result.records.forEach(function (record) {
-                                nodeProperties.push(String(record._fields[0]));
-                                nodeEmbeddings.push(record._fields[1]);
-                                nodeLabels.push(record._fields[2]);
-                                //console.log("ONEW");
-                                //console.log(nodeLabels);
-                                //console.log(typeof(nodeLabels));
-                                //console.log(nodeLabels[0]);
-                                //console.log(nodeLabels[0][0]);
-                                //console.log(nodeProperties);
-                                //console.log(nodeEmbeddings);
-
-                                searchPersonName = "MATCH (p:Person)"
-                                                 + "WHERE p.pid = '" + personID + "'"
-                                                 + "RETURN p.name";
-                            })
-
-                            /*
-                            for (var node = 0; node < nodeEmbeddings.length; node++) {
-                                for(var vector = 0; vector< nodeEmbeddings[node].length; vector++) {
-                                    nodeEmbeddings[node][vector] = parseFloat(nodeEmbeddings[node][vector]);
-                                }
-                            }
-                            
-                            searchPersonName = "MATCH (p:Person)"
-                                                + "WHERE p.pid = '" + personID + "'"
-                                                + "RETURN p.name";
-                            */
-
-                            searchSession.run(searchPersonName)
-                                        .then (function (result) {
-                                            result.records.forEach(function (record) {
-                                            personName = record._fields[0];
-
-                                            //for(i = 0; i < nodeProperties.length; i++) attach labels to nodes
-                                                //nodeProperties[i] = nodeLabels[i][0] + '/' + nodeProperties[i];
-
-                                           console.log("ONEW")
-                                            console.log(nodeProperties)
-
-                                            for(i = 0; i < nodeLabels.length; i++) {
-                                                nodeLabelsTemp[i] = nodeLabels[i][0]
-                                            }
-
-                                            //console.log("ONEW");
-                                            //console.log(nodeLabelsTemp);
-                                
-                                            for (var node = 0, Index = 0; node < nodeProperties.length; node++, Index++) { 
-                                                if(nodeProperties[node].includes(personName + '/' + personID)) {
-                                                    keyNodeIndex = node;
-                                                    Index = Index - 1;
-                                                    //console.log(keyNodeIndex); positon of search keyword
-                                                    //console.log(Index); check Index -1
-                                                }
-                                                else { 
-                                                    comparedProperties[Index] = nodeProperties[node];
-                                                    comparedEmbeddings[Index] = nodeEmbeddings[node]; 
-                                                    comparedLabels[Index] = nodeLabelsTemp[node];
-                                                    //else comparedProperties[Index] = { name : nodeProperties[node], similarity: nodeEmbeddings[node] };
-                                                }
-                                            }
-
-                                            //console.log(comparedLabels);
-
-                                            keyNodeProperties = nodeProperties[keyNodeIndex];
-                                            keyEmbeddings = nodeEmbeddings[keyNodeIndex];
-
-                                            // console.log(keyNodeProperties);
-                                            //console.log(keyEmbeddings);
-
-                                            /*
-                                            console.log(nodeProperties);
-                                            console.log(nodeEmbeddings);
-                                            console.log(comparedProperties);
-                                            console.log("LENGTH");
-                                            console.log(nodeProperties.length);
-                                            console.log(nodeEmbeddings.length);
-                                            console.log(comparedProperties.length);
-                                            */
-                                            
-                                        //for (var Index = 0; Index < comparedNode.length; Index++) {
-
-                                                //cosineSimilarity = "RETURN gds.alpha.similarity.cosine([" + keyEmbeddings + "], [" + comparedNode[Index].similarity + "]) as similarity"
-                                                //console.log(comparedNode);
-                                                var process = spawn('python', [__dirname + '\\data\\node2Vec\\computeSimilarity.py', embeddingSize, keyEmbeddings, comparedProperties, comparedEmbeddings, nodeType, comparedLabels]);
-
-                                                promiseFromChildProcess(process)
-                                                .then(function (result) {
-                                                    console.log('promise complete: ', result);
-                                                    process.stdout.on('data', function (data) {
-                                                            dataString = iconv.decode(data, 'EUC-KR').toString();
-                                                            //dataString = data.toString();
-                                                            similarityResult.setSimilarityResult(dataString);
-                                                    });
-                                                    process.on('close', function (data) {
-                                                        //console.log(dataString);
-                                                        var NEResult = similarityResult.getSimilarityResult();
-                                                        if(NEResult.length < 1)
-                                                            res.send(warningNone);
-                                                        else {
-                                                            var nameAndSimilarity = NEResult.split("+");
-                                                            //nameAndSimilarity[1] = nameAndSimilarity[1].replace("(\r\n|\r|\n|\n\r)", "");
-                                                            var name = nameAndSimilarity[0].split(",");
-                                                            var similarity = nameAndSimilarity[1].split(",");
-                                                            console.log(name);
-                                                            console.log(similarity);
-                                                            for(i = 0; i < similarity.length; i++){
-                                                                similarity[i] = Number(similarity[i]);
-                                                                similarity[i] = (similarity[i] + 1) / 2;
-                                                                similarity[i] = similarity[i] * 10000;
-                                                                similarity[i] = Math.floor(similarity[i]);
-                                                                similarity[i] = similarity[i] / 100;
-                                                                similarity[i] = String(similarity[i]) + '%';
-                                                            };
-                                                            for(i = 0; i < name.length; i++){
-                                                                nameTemp = name[i].split('/');
-                                                                nameSentence =  nameTemp[1] + '*' + nameTemp[2];
-                                                                name[i] = nameSentence;
-                                                            };
-                                                            //console.log(name);
-                                                            //console.log(similarity);
-
-                                                            var ReturnKeyword = personName + '*' + personID;
-
-                                                            for(i = 0, count = 0; i < name.length; i++) {
-                                                                if ((name[i].split('*'))[1].length > 13) {
-                                                                    nameExceptIns[count] = name[i];
-                                                                    similarityExceptIns[count] = similarity[i];
-                                                                    count = count + 1;
-                                                                }
-                                                            }
-
-                                                            console.log(name);
-                                                            console.log(nameExceptIns);
-                                                            console.log(similarity);
-                                                            console.log(similarityExceptIns);
-
-                                                            res.render("data/analyzeSimResult", {
-                                                                esession: session_value.getSession(),
-                                                                ReturnKeyword: ReturnKeyword,
-                                                                name: nameExceptIns,
-                                                                similarity: similarityExceptIns,
-                                                                nodeType: 'personNode'
-                                                            });
-                                                            //res.redirect('data/analyzeSim');
-                                                        }   
-                                                    });
-                                                }, function (err) {
-                                                    console.log('promise rejected: ', err);
-                                                });
-                                                //console.log(cosineSimilarity);
-                                                /*
-                                                console.log(Index);
-                                                cosineSimilaritySession.run(cosineSimilarity)
-                                                                        .then (function (result) {
-                                                                            result.records.forEach(function (record) {
-                                                                                result = record._fields[0];
-                                                                                console.log("SIMILARITY");
-                                                                                console.log(result);
-                                                                                //console.log("Dokja");
-                                                                                //console.log(nodeProperties[0]);
-                                                                            })
-                                                                        })
-                                                                        .catch(error => {
-                                                                            console.log("WOW:" + error)
-                                                                        })
-                                                                        .then(() => cosineSimilaritySession.close())
-                                                                        */
-                                            //}
-                                            })
-                                        searchSession.close();
-                                        })
-                        node2VecSession.close();
-                        })
-    }
-    else if(nodeType == 'dataNode') {
-        console.log('Data');
-        var dataOwnerID = req.body.dataOwnerID;
-        var dataName = req.body.dataName;
-
-        var node2Vec = "CALL gds.alpha.node2vec.stream("
-                    + "'Nodes', {"
-                /* + "walkLength: 80,"
-                    + "windowSize: 10,"
-                    + "inOutFactor: 1.0,"
-                    + "returnFactor: 1.0," */
-                    + "embeddingSize: " + embeddingSize + ", "
-                    + "iterations: 1}) "
-                    + "YIELD nodeId as id, embedding "
-                    + "RETURN coalesce(gds.util.asNode(id).name + '/' + gds.util.asNode(id).pid) as keys, embedding, labels(gds.util.asNode(id)) as labels, gds.util.asNode(id).etc as owner "
-
-                    //console.log(node2Vec);
-
-        //var cosineSimilarity = "RETURN gds.alpha.similarity.cosine(" + key1 + ", " + key2 + ") as similarity"
-        //console.log(cosineSimilarity);
-
-        node2VecSession.run(node2Vec)
-                        .then(function (result) {
-                            result.records.forEach(function (record) {
-                                nodeProperties.push(String(record._fields[0]));
-                                nodeEmbeddings.push(record._fields[1]);
-                                nodeLabels.push(record._fields[2]);
-                                nodeOwners.push(record._fields[3]);
-                                //console.log("ONEW");
-                                //console.log(nodeLabels);
-                                //console.log(typeof(nodeLabels));
-                                //console.log(nodeLabels[0]);
-                                //console.log(nodeLabels[0][0]);
-                                //console.log(nodeProperties);
-                                //console.log(nodeEmbeddings);
-
-                                searchPersonName = "MATCH (p:Person)"
-                                                 + "WHERE p.pid = '" + dataOwnerID + "'"
-                                                 + "RETURN p.name";
-                            })
-
-                            /*
-                            for (var node = 0; node < nodeEmbeddings.length; node++) {
-                                for(var vector = 0; vector< nodeEmbeddings[node].length; vector++) {
-                                    nodeEmbeddings[node][vector] = parseFloat(nodeEmbeddings[node][vector]);
-                                }
-                            }
-                            
-                            searchPersonName = "MATCH (p:Person)"
-                                                + "WHERE p.pid = '" + personID + "'"
-                                                + "RETURN p.name";
-                            */
-
-                            searchSession.run(searchPersonName)
-                                        .then (function (result) {
-                                            result.records.forEach(function (record) {
-                                            personName = record._fields[0];
-
-                                            //for(i = 0; i < nodeProperties.length; i++) attach labels to nodes
-                                                //nodeProperties[i] = nodeLabels[i][0] + '/' + nodeProperties[i];
-
-                                           //console.log("ONEW")
-                                            //console.log(nodeProperties)
-
-                                            for(i = 0; i < nodeLabels.length; i++) {
-                                                nodeLabelsTemp[i] = nodeLabels[i][0]
-                                            }
-
-                                            //console.log("ONEW");
-                                            //console.log(nodeLabelsTemp);
-
-                                            console.log(dataName + '/' + dataOwnerID);
-
-                                            for (var node = 0, Index = 0; node < nodeProperties.length; node++, Index++) { 
-                                                if(nodeProperties[node].includes(dataName + '/' + dataOwnerID)) {
-                                                    keyNodeIndex = node;
-                                                    Index = Index - 1;
-                                                    //console.log(keyNodeIndex); positon of search keyword
-                                                    //console.log(Index); check Index -1
-                                                }
-                                                else { 
-                                                    comparedProperties[Index] = nodeProperties[node];
-                                                    comparedEmbeddings[Index] = nodeEmbeddings[node];
-                                                    comparedOwners[Index] = nodeOwners[node];
-                                                    comparedLabels[Index] = nodeLabelsTemp[node];
-                                                    //else comparedProperties[Index] = { name : nodeProperties[node], similarity: nodeEmbeddings[node] };
-                                                }
-                                            }
-
-                                            keyNodeProperties = nodeProperties[keyNodeIndex];
-                                            keyEmbeddings = nodeEmbeddings[keyNodeIndex];
-
-                                            //console.log(keyNodeProperties);
-                                            //console.log(keyEmbeddings);
-                                            //console.log(nodeType);
-
-                                            /*
-                                            console.log(nodeProperties);
-                                            console.log(nodeEmbeddings);
-                                            console.log(comparedProperties);
-                                            console.log("LENGTH");
-                                            console.log(nodeProperties.length);
-                                            console.log(nodeEmbeddings.length);
-                                            console.log(comparedProperties.length);
-                                            */
-
-                                            
-                                        //for (var Index = 0; Index < comparedNode.length; Index++) {
-
-                                                //cosineSimilarity = "RETURN gds.alpha.similarity.cosine([" + keyEmbeddings + "], [" + comparedNode[Index].similarity + "]) as similarity"
-                                                /*
-                                                console.log(embeddingSize);
-                                                console.log(keyEmbeddings);
-                                                console.log(comparedProperties);
-                                                console.log(comparedEmbeddings);
-                                                console.log(nodeType);
-                                                */
-                                               console.log(comparedOwners);
-                                                var process = spawn('python', [__dirname + '\\data\\node2Vec\\computeSimilarity.py', embeddingSize, keyEmbeddings, comparedProperties, comparedEmbeddings, nodeType, comparedLabels, comparedOwners]);
-
-                                                promiseFromChildProcess(process)
-                                                .then(function (result) {
-                                                    console.log('promise complete: ', result);
-                                                    process.stdout.on('data', function (data) {
-                                                        dataString = iconv.decode(data, 'EUC-KR').toString();
-                                                        //dataString = data.toString();
-                                                        similarityResult.setSimilarityResult(dataString);
-                                                    });
-                                                    process.on('close', function (data) {
-                                                        var NEResult = similarityResult.getSimilarityResult();
-                                                        if(NEResult.length < 1)
-                                                            res.send(warningNone);
-                                                        else {
-                                                            var nameAndSimilarity = NEResult.split("+");
-                                                            //nameAndSimilarity[1] = nameAndSimilarity[1].replace("(\r\n|\r|\n|\n\r)", "");
-                                                            //console.log(nameAndSimilarity);
-                                                            var name = nameAndSimilarity[0].split(",");
-                                                            var similarity = nameAndSimilarity[1].split(",");
-                                                            console.log(name);
-                                                            console.log(similarity);
-                                                            for(i = 0; i < similarity.length; i++){
-                                                                similarity[i] = Number(similarity[i]);
-                                                                similarity[i] = (similarity[i] + 1) / 2;
-                                                                similarity[i] = similarity[i] * 10000;
-                                                                similarity[i] = Math.floor(similarity[i]);
-                                                                similarity[i] = similarity[i] / 100;
-                                                                similarity[i] = String(similarity[i]) + '%';
-                                                            };
-                                                            for(i = 0; i < name.length; i++){
-                                                                nameTemp = name[i].split('/');
-                                                                nameSentence =  nameTemp[1] + '*' + nameTemp[2] + '*' + nameTemp[3];
-                                                                name[i] = nameSentence;
-                                                            };
-                                                            //console.log(name);    
-                                                            //console.log(similarity);
-
-                                                            var ReturnKeyword = personName + '*' + dataOwnerID + '*' + dataName;
-
-                                                            res.render("data/analyzeSimResult", {
-                                                                esession: session_value.getSession(),
-                                                                ReturnKeyword: ReturnKeyword,
-                                                                name: name,
-                                                                similarity: similarity,
-                                                                nodeType: 'dataNode'
-                                                            });
-                                                            //res.redirect('data/analyzeSim');
-                                                        }
-                                                    });
-                                                }, function (err) {
-                                                    console.log('promise rejected: ', err);
-                                                });
-                                                //console.log(cosineSimilarity);
-                                                /*
-                                                console.log(Index);
-                                                cosineSimilaritySession.run(cosineSimilarity)
-                                                                        .then (function (result) {
-                                                                            result.records.forEach(function (record) {
-                                                                                result = record._fields[0];
-                                                                                console.log("SIMILARITY");
-                                                                                console.log(result);
-                                                                                //console.log("Dokja");
-                                                                                //console.log(nodeProperties[0]);
-                                                                            })
-                                                                        })
-                                                                        .catch(error => {
-                                                                            console.log("WOW:" + error)
-                                                                        })
-                                                                        .then(() => cosineSimilaritySession.close())
-                                                                        */
-                                            //}
-                                            })
-                                        searchSession.close();
-                                        })
-                        node2VecSession.close();
-                        })
-    }
-    else {
-        res.send(warningZero);
-    }
-                    /* .catch(function (err) {
-                        console.log(err);
-                    })*/
-
-
-    /* previous version (using gensim)
     if(req.body.nodeType == 'personNode') {
         var nodeKeyword = req.body.personName + ' ' + req.body.personValue;
     }
@@ -4666,9 +4137,6 @@ router.post('/node2Vec', function (req, res) {
         });
     }
     //console.log(nodeResult.getnodeResult());
-
-    res.redirect('data/analyzeSim');
-    */
-
 });
+
 module.exports = router;

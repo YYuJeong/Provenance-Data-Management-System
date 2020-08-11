@@ -4,7 +4,7 @@ import csv, sys, time
 start_time = time.time()
 
 
-with open("AnalysisData0810.csv", 'r', encoding='utf-8') as f:
+with open("AnalysisData.csv", 'r', encoding='utf-8') as f:
     matrix = list(csv.reader(f, delimiter=","))
 
 from neo4j import GraphDatabase
@@ -15,9 +15,9 @@ def add_node(tx, s_name, s_pid, s_type, dataName1, value1, file_path1, origin1, 
     if activityType == "생성":
         if value1:
             tx.run("CREATE (p:Person), (d:Data), (ac:Activity)"
-                   "SET p = {name: $s_name, pid: $s_pid, etc: $s_type}, "
+                   "SET p = {name: $s_name, pid: '', etc: ''}, "
                    "    d = {name: $dataName1, pid: $s_pid, etc: $s_name}, "
-                   "    ac = {name: $activityType, pid: $s_pid, etc: $date} "
+                   "    ac = {name: $activityType, pid: '', etc: ''} "
                    "CREATE (ac) <- [g:Generate] - (d), (ac)-[a:Act]->(p)"
                    , s_name = s_name, s_pid = s_pid, s_type = s_type,
                    dataName1 = dataName1, value1 = value1, file_path1 = file_path1, origin1 = origin1, 
@@ -26,9 +26,9 @@ def add_node(tx, s_name, s_pid, s_type, dataName1, value1, file_path1, origin1, 
     elif activityType == "가공":
         if value1:
             tx.run("CREATE (p:Person), (d1:Data), (d2:Data), (ac:Activity)"
-                   "SET p = {name: $s_name, pid: $s_pid, etc: $s_type}, "
+                   "SET p = {name: $s_name, pid: '', etc: ''}, "
                    "    d1 = {name: $dataName1, pid: $s_pid, etc: $s_name}, "
-                   "    ac = {name: $activityType, pid: $s_pid, etc: $date}, "
+                   "    ac = {name: $activityType, pid: '', etc: ''}, "
                    "    d2 = {name: $dataName1, pid: $s_pid, etc: $s_name} "
                    "CREATE (p) <- [a:Act] -(ac), (ac) <- [g1:Generate] -(d2), (d1) <- [g2:Generate] -(ac)"
                    , s_name = s_name, s_pid = s_pid, s_type = s_type, 
@@ -38,10 +38,10 @@ def add_node(tx, s_name, s_pid, s_type, dataName1, value1, file_path1, origin1, 
     elif activityType == "제공":
         if value1:
             tx.run("CREATE (p:Person), (d:Data), (p2:Person), (ac:Activity)"
-                   "SET p = {name: $s_name, pid: $s_pid, etc: $s_type}, "
+                   "SET p = {name: $s_name, pid: '', etc: ''}, "
                    "    d = {name: $dataName1, pid: $s_pid, etc: $s_name}, "
-                   "    ac = {name: $activityType, pid: $s_pid, etc: $date}, "
-                   "    p2 = {name: $r_name, pid: $r_pid, etc: $r_type} "
+                   "    ac = {name: $activityType, pid: '', etc: ''}, "
+                   "    p2 = {name: $r_name, pid: '', etc: ''} "
                    "CREATE (p) <- [s:Send] -(ac), (p2) <- [r:Receive{allowed_period_from: $allowed_period_from, allowed_period_to: $allowed_period_to, price: $price, is_agreed: $is_agreed}] -(ac), (ac) <- [g:Generate] -(d)"
                    , s_name = s_name, s_pid = s_pid, s_type = s_type, 
                    dataName1 = dataName1, value1 = value1, file_path1 = file_path1, origin1 = origin1, 
@@ -58,7 +58,7 @@ def merge_data(tx):
     
 def merge_person(tx):
    tx.run("MATCH (p:Person) "
-          "WITH toLower(p.name) as name, p.pid as pid, COLLECT(p) AS ns "
+          "WITH toLower(p.name) as name, COLLECT(p) AS ns "
           "WHERE size(ns) > 1 "
           "CALL apoc.refactor.mergeNodes(ns) YIELD node "
           "RETURN node" )
@@ -66,7 +66,7 @@ def merge_person(tx):
 
 def merge_activity(tx):
    tx.run("MATCH (ac:Activity) "
-          "WITH ac.name as name, ac.pid as pid, COLLECT(ac) AS ns "
+          "WITH ac.name as name, COLLECT(ac) AS ns "
           "WHERE size(ns) > 1 "
           "CALL apoc.refactor.mergeNodes(ns) YIELD node "
           "RETURN node" )

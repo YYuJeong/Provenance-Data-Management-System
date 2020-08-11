@@ -77,14 +77,14 @@
                         <div class="personLayer">
                             <br>
                             <div class="input-group" style="width:30%; margin:0 auto;">
-                                <span class="input-group-addon">PID</span>
+                                <span class="input-group-addon">등록 번호</span>
                                 <input type="text" id="personID" name="personID" class="form-control"/>
                             </div>
                         </div>
                         <div class="dataLayer">
                             <br>
                             <div class="input-group" style="width:30%; margin:0 auto;">
-                                <span class="input-group-addon">PID</span>
+                                <span class="input-group-addon">등록 번호</span>
                                 <input type="text" id="dataOwnerID" name="dataOwnerID" class="form-control"/>
                             </div>
                             <br><br>
@@ -100,97 +100,93 @@
                         </div>
                     </form>
                 </div>
-        </div>
-        <hr class="featurette-divider">
-        <!--<div class="jumbotron" style="background-color: #ffffff;">-->
-            <!--<div class="container" style="display: inline-block;text-align: center;">-->
-                <!--div class="panel panel-default" style="background-color: #ffffff; width: 890px;">-->
-                <!--<div class="panel-heading" style="font-size:1.3em; background-color: #f8f8f8;"> <%=ReturnKeyword%>과 유사 노드 검색 결과</div>-->
-                <!-- Table -->
-                <table class="table" style="margin: auto; text-align: center;">
-                    <thead>
-                        <tr>
-                            <th style="background-color: #f8f8f8; height: 80px; text-align: center; vertical-align: middle; font-size: 16px;">순위</th>
-                            <th style="background-color: #f8f8f8; height: 80px; text-align: center; vertical-align: middle; font-size: 16px;">검색 노드</th>
-                            <th style="background-color: #f8f8f8; text-align: center; vertical-align: middle;"><img src="/images/node.png" width="" height=""></th>
-                            <th style="background-color: #f8f8f8; height: 80px; text-align: center; vertical-align: middle; font-size: 16px;">유사 노드</th>
-                            <th style="background-color: #f8f8f8; text-align: center; vertical-align: middle;"><img src="/images/node.png" width="" height=""></th>
-                            <th style="background-color: #f8f8f8; height: 80px; text-align: center; vertical-align: middle; font-size: 16px;">유사도</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% var PersonName = ReturnKeyword.split('*')[0]; %>
-                        <% var PersonID = ReturnKeyword.split('*')[1]; %>
+    </div>
+    <hr class="featurette-divider">
+    <!--<div class="jumbotron" style="background-color: #ffffff;">-->
+        <!--<div class="container" style="display: inline-block;text-align: center;">-->
+            <!--div class="panel panel-default" style="background-color: #ffffff; width: 890px;">-->
+            <!--<div class="panel-heading" style="font-size:1.3em; background-color: #f8f8f8;"> <%=ReturnKeyword%>과 유사 노드 검색 결과</div>-->
+            <!-- Table -->
+            <table class="table" style="margin: auto; text-align: center;">
+                <thead>
+                    <tr>
+                        <th style="background-color: #f8f8f8; height: 80px; text-align: center; vertical-align: middle; font-size: 16px;">순위</th>
+                        <th style="background-color: #f8f8f8; height: 80px; text-align: center; vertical-align: middle; font-size: 16px;">검색 노드</th>
+                        <th style="background-color: #f8f8f8; text-align: center; vertical-align: middle;"><img src="/images/node.png" width="" height=""></th>
+                        <th style="background-color: #f8f8f8; height: 80px; text-align: center; vertical-align: middle; font-size: 16px;">유사 노드</th>
+                        <th style="background-color: #f8f8f8; text-align: center; vertical-align: middle;"><img src="/images/node.png" width="" height=""></th>
+                        <th style="background-color: #f8f8f8; height: 80px; text-align: center; vertical-align: middle; font-size: 16px;">유사도</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% var PersonName = ReturnKeyword.split('*')[0]; %>
+                    <% var PersonID = ReturnKeyword.split('*')[1]; %>
 
-                        <% for(var i = 0; i < 5; i++ ) { %>
-                            <% if(nodeType == 'personNode') { %>
-                                <% var rPersonName = name[i].split('*')[0]; %>
-                                <% var rPersonID = name[i].split('*')[1]; %>
+                    <% for(var i = 0; i < 5; i++ ) { %>
+                        <% if(nodeType == 'personNode') { %>
+                            <% var rPersonName = name[i].split('*')[0]; %>
+                            <% var rPersonID = name[i].split('*')[1]; %>
+                        <tr>
+                            <th scope="row"; align=center; style="background-color: #f8f8f8; height: 60px; text-align: center; vertical-align: middle;">
+                                <%= (i + 1) %>
+                            </th>
+                                <td align=center; style="vertical-align: middle;">
+                                    <%= (ReturnKeyword.split('*'))[0] %> <br> (<%= (ReturnKeyword.split('*'))[1] %>)
+                                </td>
+                                <td align=center; style="vertical-align: middle;">
+                                    <button type="button" class="btn btn-primary" style="background-color: #4a9dea; border-color:  #4a9dea;" onclick="showPersonGraphKEY('<%=PersonName%>','<%=PersonID%>')">그래프 보기</button>
+                                </td>
+                                <td align=center; style="vertical-align: middle;">
+                                    <%= (name[i].split('*'))[0] %> <br> (<%= (name[i].split('*'))[1] %>)
+                                </td>
+                                <td align=center; style="vertical-align: middle;">
+                                    <button type="button" class="btn btn-primary" style="background-color: #4a9dea; border-color:  #4a9dea;" onclick="showPersonGraphRES('<%=rPersonName%>','<%=rPersonID%>')">그래프 보기</button>
+                                </td>
+                                <td align=center; style="vertical-align: middle; width: 200px;">
+                                    <%= similarity[i] %>
+                            </td>
+                        </tr>
+                        <% } else { %>
+                                    <% var dataName = ReturnKeyword.split('*')[2]; %>
+                                    <% var rPersonName = name[i].split('*')[2]; %>
+                                    <% var rPersonID = name[i].split('*')[1]; %>
+                                    <% var rdataName = name[i].split('*')[0]; %>
                             <tr>
                                 <th scope="row"; align=center; style="background-color: #f8f8f8; height: 60px; text-align: center; vertical-align: middle;">
                                     <%= (i + 1) %>
                                 </th>
                                     <td align=center; style="vertical-align: middle;">
-                                        <%= (ReturnKeyword.split('*'))[0] %> <br> (<%= (ReturnKeyword.split('*'))[1] %>)
+                                        <%= (ReturnKeyword.split('*'))[0] %>의 <%= (ReturnKeyword.split('*'))[2] %> <br> (<%= (ReturnKeyword.split('*'))[1] %>)
                                     </td>
                                     <td align=center; style="vertical-align: middle;">
-                                        <button type="button" class="btn btn-primary" style="background-color: #4a9dea; border-color:  #4a9dea;" onclick="showPersonGraph('<%=PersonName%>','<%=PersonID%>')">그래프 보기</button>
+                                        <button type="button" class="btn btn-primary" style="background-color: #4a9dea; border-color:  #4a9dea;" onclick="showDataGraph('<%=PersonName%>','<%=PersonID%>','<%=dataName%>')">그래프 보기</button>
                                     </td>
                                     <td align=center; style="vertical-align: middle;">
-                                        <%= (name[i].split('*'))[0] %> <br> (<%= (name[i].split('*'))[1] %>)
+                                        <%= (name[i].split('*'))[2] %>의 <%= (name[i].split('*'))[0] %> <br> (<%= (name[i].split('*'))[1] %>)
                                     </td>
                                     <td align=center; style="vertical-align: middle;">
-                                        <button type="button" class="btn btn-primary" style="background-color: #4a9dea; border-color:  #4a9dea;" onclick="showPersonGraph('<%=rPersonName%>','<%=rPersonID%>')">그래프 보기</button>
+                                        <button type="button" class="btn btn-primary" style="background-color: #4a9dea; border-color:  #4a9dea;" onclick="showDataGraph('<%=rPersonName%>','<%=rPersonID%>','<%=rdataName%>')">그래프 보기</button>
                                     </td>
                                     <td align=center; style="vertical-align: middle; width: 200px;">
                                         <%= similarity[i] %>
-                                </td>
+                                    </td>
                             </tr>
-                            <% } else { %>
-                                     <% var dataName = ReturnKeyword.split('*')[2]; %>
-                                     <% var rPersonName = name[i].split('*')[2]; %>
-                                     <% var rPersonID = name[i].split('*')[1]; %>
-                                     <% var rdataName = name[i].split('*')[0]; %>
-                                <tr>
-                                    <th scope="row"; align=center; style="background-color: #f8f8f8; height: 60px; text-align: center; vertical-align: middle;">
-                                        <%= (i + 1) %>
-                                    </th>
-                                        <td align=center; style="vertical-align: middle;">
-                                            <%= (ReturnKeyword.split('*'))[0] %>의 <%= (ReturnKeyword.split('*'))[2] %> <br> (<%= (ReturnKeyword.split('*'))[1] %>)
-                                        </td>
-                                        <td align=center; style="vertical-align: middle;">
-                                            <button type="button" class="btn btn-primary" style="background-color: #4a9dea; border-color:  #4a9dea;" onclick="showDataGraph('<%=PersonName%>','<%=PersonID%>','<%=dataName%>')">그래프 보기</button>
-                                        </td>
-                                        <td align=center; style="vertical-align: middle;">
-                                            <%= (name[i].split('*'))[2] %>의 <%= (name[i].split('*'))[0] %> <br> (<%= (name[i].split('*'))[1] %>)
-                                        </td>
-                                        <td align=center; style="vertical-align: middle;">
-                                            <button type="button" class="btn btn-primary" style="background-color: #4a9dea; border-color:  #4a9dea;" onclick="showDataGraph('<%=rPersonName%>','<%=rPersonID%>','<%=rdataName%>')">그래프 보기</button>
-                                        </td>
-                                        <td align=center; style="vertical-align: middle; width: 200px;">
-                                            <%= similarity[i] %>
-                                        </td>
-                                </tr>
-                                <% } %>
                         <% } %>
-                    </tbody>
-                </table>
-            <br> 
-            <hr class="featurette-divider">
-                <div class="tab-content" style="overflow: hidden;">
-                    <div role="tabpanel" class="tab-pane active" id="graph" style="height: 800px;">
-                        <div class="tab-pane active" id="graph">&nbsp;</div>   
+                    <% } %>
+                </tbody>
+            </table>
+        <br> 
+        <hr class="featurette-divider">
+            <div class="tab-content" style="overflow: hidden;">
+                <div role="tabpanel" class="tab-pane active" id="graphKEY" style="height: 500px;">
+                    <div class="tab-pane active" id="graph">&nbsp;</div>   
                 </div>
-                <hr class="featurette-divider">
-                </div>
-                <div class="tab-content" style="overflow: hidden;">
-                    <div role="tabpanel" class="tab-pane active" id="graph2" style="height: 800px;">
-                        <div class="tab-pane active" id="graph">&nbsp;</div>
-                    </div>
+                <div role="tabpanel" class="tab-pane active" id="graphRES" style="height: 500px;">
+                    <div class="tab-pane active" id="graph">&nbsp;</div>   
                 </div>
             </div>
-        <!--</div>-->
-    </div>
+        <hr class="featurette-divider">
+    <!--</div>-->
 <% } %>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
@@ -226,7 +222,7 @@
         }
     });
 
-    function showPersonGraph(name, pid) {
+    function showPersonGraphKEY(name, pid) {
         var config = {}
         var connection = function () {
             return {url: Neo4j.DB_URL, user: Neo4j.DB_USR, pass: Neo4j.DB_PWD};
@@ -251,7 +247,35 @@
 
         //alert(query);
 
-        new Cy2NeoD3(config, "graph", "datatable", query, "execute", connection, true);
+        new Cy2NeoD3(config, "graphKEY", "datatable", query, "execute", connection, true);
+    }
+
+    function showPersonGraphRES(name, pid) {
+        var config = {}
+        var connection = function () {
+            return {url: Neo4j.DB_URL, user: Neo4j.DB_USR, pass: Neo4j.DB_PWD};
+        }
+
+        var name = name;
+        var pid = pid;
+
+        query = "MATCH (p:Person), (d:Data) "
+              + "WHERE p.name = '" + name + "' AND "
+              + "p.pid = '" + pid + "' AND "
+              + "d.pid = '" + pid + "' "
+              + "CALL apoc.path.expandConfig(p, { "
+              //+ "relationshipFilter: '<Act|Generate|<Send', "
+              + "beginSequenceAtStart: true, "
+              + "maxLevel : 2, "
+              + "uniqueness:'RELATIONSHIP_PATH'}) "
+              + "YIELD path WITH p, "
+              + "RELATIONSHIPS(path) as r, "
+              + "LAST(NODES(path)) as es "
+              + "RETURN p,es,r"
+
+        //alert(query);
+
+        new Cy2NeoD3(config, "graphRES", "datatable", query, "execute", connection, true);
     }
 
     function showDataGraph(name, pid, data) {

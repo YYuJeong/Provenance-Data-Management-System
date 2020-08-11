@@ -4,19 +4,54 @@
 <head>
     <% include ../before_loading.ejs %>
     <title>이력 정보 관리시스템</title>
+
+    <link href="http://bootstrapk.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="http://bootstrapk.com/assets/js/ie-emulation-modes-warning.js"></script>
+    <link href="../../public/stylesheets/carousel.css">
+    <link href="https://fonts.googleapis.com/css?family=Do+Hyeon&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/codemirror.css">
+    <link rel="stylesheet" href="/styles/codemirror-neo.css">
+    <link rel="stylesheet" href="/styles/cy2neo.css">
+    <link rel="stylesheet" href="/styles/neod3.css">
+    <link rel="stylesheet" href="/styles/datatable.css">
+    <link rel="stylesheet" href="/styles/vendor.css"> <!-- bootstrap-->
+    <link rel="stylesheet" href="/styles/sweet-alert.css">
+    <link rel="stylesheet" href="/styles/gh-fork-ribbon.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/hgyoseo/ridibatang@master/font.css">
+
     <style type="text/css">
         @font-face { font-family: 'Binggrae-Bold'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Binggrae-Bold.woff') format('woff'); font-weight: normal; font-style: normal; }
         @font-face { font-family: 'RIDIBatang'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/RIDIBatang.woff') format('woff'); font-weight: normal; font-style: normal; }
+
+        table {
+            border-collapse: collapse;
+            color: black;
+            border-left: 2px dashed white;
+            border-bottom: 2px dashed white;
+            border-top: 2px dashed white;
+            min-width: 50%;
+            padding: 5px;
+        }
+
         body {
             font-family: 'RIDIBatang';
-            color: #303030;
+            color: #333333;
             letter-spacing: 1px;
         }
 
-        .fontSize {
-            font-size: 1.2em;
+        th,td {
+            text-align: center;
+            padding: 5px;
+            height: 80px;
+        }
+
+        th {
+            border-bottom-width: 2px;
+            font-weight: normal;
+            background-color: #f8f8f8;
         }
     </style>
+
 </head>
 
 <body style="overflow:auto">
@@ -45,24 +80,237 @@
                     <form class="form-inline" method="post" action="/fsm" name="fsm" id="fsm" >
                         <table style="margin: auto; border: 0px;">
                             <tr>
-                                <td><input type="text" class="form-control" name="keyword" id="keyword" style="width:600px;"></td>
+                                <!--<td><input type="text" class="form-control" name="keyword" id="keyword" style="width:600px;"></td>-->
+                                <td>
+                                <div class="input-group" style="width:500px; margin:0 auto;">
+                                    <span class="input-group-addon">최소 발생 빈도</span>
+                                    <input type="text" id="keyword" name="keyword" class="form-control"/>
+                                </div>
+                                </td>
                             </tr>
-                        </table><br><br>
+                            <tr>
+                                <td><br>
+                                    <!--
+                                    <a title="Execute" id="execute">
+                                    -->
+                                        <!--<input class="btn btn-primary" value="검색" id="keywordBtn" onclick="location.href='searchkey'">-->
+                                        <!--<input class="btn btn-primary" type="submit" value="검색">-->
+                                       
+                                    <button type="button" class="btn btn-primary" id="fsgb" style="background-color: #4a9dea; border-color:  #4a9dea;">
+                                        검색
+                                    </button>
+
+                                    <!--</a>-->
+                                </td>
+                            </tr>
+                        </table>
+                        <!--
                         <div style="text-align: center;">
                             <a href="/data/getKeywordResult">
                             <input class="btn btn-primary" id="fsgb" type="submit" value="검색"
                                 style="width:100px; background-color: #4a9dea; border-color:  #4a9dea;"></a>
-                                <!--폼 액션 설정되면 type submit으로 변경-->
+                               
                             <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px; background-color: #dddddd;"></a>
                         </div>
+
+                        <button type="button" class="btn btn-primary" id="fsgb" style="background-color: #4a9dea; border-color:  #4a9dea;">검색</button>
+                        -->
                     </form>
                 </div>
             <% } %>
         </div>
-<hr class="featurette-divider">
-</div>
+            <!--<div style="display: inline-block; background: pink;" id="keyData" name="keyData">-->
+    <div style="display: none;" id="fsmData" name="fsmData">
+        <%=data%>
+    </div>
+    <hr class="featurette-divider">
+    <div style="font-family: RIDIBatang">
+        <table class="table table-striped" id="dataTable">
+        </table>
+    </div>
+    <hr class="featurette-divider">
+    <div style="font-family: RIDIBatang; text-align: center; font-weight: bold;" id="nodeContent">
+        <!--노드 정보 추가할 자리-->
+    </div>
+    <hr class="featurette-divider">   
+    <div class="tab-content" style="overflow: hidden;">
+        <div role="tabpanel" class="tab-pane active" id="graph" style="height: 800px;">
+            <div class="tab-pane active" id="graph">&nbsp;</div>
+        </div>
+    </div>
+    </div>
+    <hr class="featurette-divider">
+</div><!-- /.container -->
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+<script src="/scripts/codemirror.js"></script>
+<script src="/scripts/codemirror-cypher.js"></script>
+<script src="/scripts/vendor.js"></script>
+<script src="/scripts/sweet-alert.min.js"></script>
+<script src="/scripts/neod3.js"></script>
+<script src="/scripts/neod3-visualization.js"></script>
+<script src="/scripts/neo4d3.js"></script>
+<script src="/scripts/cy2neod3.js"></script>
+<script src="/scripts/jquery.dataTables.min.js"></script>
+<script src="/scripts/cypher.datatable.js"></script>
+<script src="/scripts/config.js"></script>
+
+
+<script type = "text/javascript">
+    var config = {}
+    var cypher;
+    var graphNum;
+    
+    var nodeInfo = []
+    var queries;
+    var supports;
+    $(document).ready(function() {
+        $("#fsgb").click(function() {
+            $("#fsm").submit();
+        });
+
+
+    var keyDatas = document.getElementById("fsmData").innerHTML;
+    var resultFlag = false
+
+    if(!isNaN(Number(keyDatas))){
+        resultFlag = false
+        var keylen = Number(keyDatas)
+    }
+    else{
+        resultFlag = true
+        var result = keyDatas.split('|')
+
+        queries = result[0].split('/')
+        queries.splice(0, 1);
+        queries.splice(queries.length-1, 1);
+
+        supports = result[1].split('^')
+        supports.splice(0, 1);
+        supports.splice(supports.length-1, 1);
+
+        nodesInfo = result[2].split('^')
+        nodesInfo.splice(0, 1);
+        nodesInfo.splice(nodesInfo.length-1, 1);
+
+        for(var i = 0; i<nodesInfo.length ; i++){
+            nodeInfo.push(nodesInfo[i].split('-'))
+        } 
+
+        for(var i = 0; i<nodeInfo.length ; i++){
+            nodeInfo[i].splice(nodeInfo[i].length-1, 1);
+        } 
+
+    }
+
+
+    if(!resultFlag){
+        var trNum = 1;
+        var thNum = 1;
+        var tdNum = 1;
+    }
+    else {
+        if(supports.length < 10){
+            var trNum = supports.length;
+            var thNum = supports.length; 
+        }
+        else{
+            var trNum = 10;
+            var thNum = 10;
+        }
+
+        var tdNum = 3;
+    }
+    var kNum = 0;
+    var trObj;
+    var thObj;
+    var tdObj;
+
+    for(var i = 0; i < trNum + 1; i++){
+        if(i == 0){
+            trObj=document.createElement("tr")
+            thObj=document.createElement("th");
+            trObj.appendChild(thObj); 
+            thObj.innerHTML='순위';
+            thObj.style.height = '50px';
+            len = supports.length;
+            if(!resultFlag){
+                len = keylen
+            }
+        }
+         else {
+            trObj=document.createElement("tr")
+            thObj=document.createElement("th");
+            trObj.appendChild(thObj); 
+            thObj.innerHTML = i;
+            len = supports.length;
+        }   
+        for(var k = 0; k < 1; k++){
+            if(i == 0){
+                tdObj=document.createElement("td");
+                tdObj.innerHTML='빈번하게 발생한 노드'
+                tdObj.style.backgroundColor = "#f8f8f8";
+                trObj.appendChild(tdObj);
+
+                tdObj=document.createElement("td");
+                tdObj.innerHTML='발생 빈도'
+                tdObj.style.backgroundColor = "#f8f8f8";
+                trObj.appendChild(tdObj);
+                kNum = kNum + 2;
+            }
+            else{
+                tdObj=document.createElement("td");
+                //tdObj.innerHTML = keywordNames[i-1][k] + "<br>(" + keywordVals[i-1][k] + ")"; 
+                content = ''
+                for(var m = 0; m < nodeInfo[i-1].length; m++){
+                    content = content + nodeInfo[i-1][m] + '  '
+                }
+                tdObj.innerHTML = content; 
+                trObj.appendChild(tdObj); 
+            }             
+        }
+        if(i == 0){
+            tdObj=document.createElement("td");
+            tdObj.style.backgroundColor = "#f8f8f8" 
+            tdObj.innerHTML= '<img src="/images/node.png" width="" height="">'
+            trObj.appendChild(tdObj); 
+        }
+        else {
+  
+            trObj.appendChild(tdObj); 
+
+            tdObj=document.createElement("td");
+            //tdObj.style.backgroundColor = "#f8f8f8" 
+            tdObj.innerHTML = supports[i-1]; 
+            trObj.appendChild(tdObj); 
+            
+            tdObj=document.createElement("td");
+            //tdObj.style.backgroundColor = "#f8f8f8" 
+            tdObj.innerHTML='<button type="button" class="btn btn-primary" style="background-color: #4a9dea; border-color:  #4a9dea;" onclick="Show(' + (i-1) + ')">이력 그래프 보기</button>';
+            trObj.appendChild(tdObj); 
+        }
+    dataTable.appendChild(trObj); 
+    } 
+    
+    }); 
+
+    
+
+    
+    function Show(num) {
+        var connection = function () {
+            return {url: Neo4j.DB_URL, user: Neo4j.DB_USR, pass: Neo4j.DB_PWD};
+        }
+        new Cy2NeoD3(config, "graph", "datatable", queries[num], "execute", connection, true);
+        document.getElementById("nodeContent").innerHTML = '';
+    }
+
+
 </script>
 
 </body>

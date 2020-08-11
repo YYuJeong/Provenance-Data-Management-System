@@ -13,7 +13,7 @@ from neo4j import GraphDatabase
 host = 'bolt://localhost:7687'
 user = 'neo4j'
 password = 'wowhi223'
-driver = GraphDatabase.driver(host,auth=(user, password))
+driver = GraphDatabase.driver(host,auth=(user, password), encrypted=False);
 
 
 with driver.session() as session:
@@ -36,11 +36,11 @@ CALL gds.alpha.randomWalk.stream('Nodes', {
   steps: 5,
   walks: 5,
   mode:'node2vec',
-  inOut:0.6,
-  return:1.0
+  inOut:1.0,
+  return:0.5
 })
 YIELD nodeIds
-RETURN [id in nodeIds | coalesce(gds.util.asNode(id).name + ','  + gds.util.asNode(id).value)] as walks
+RETURN [id in nodeIds | coalesce(gds.util.asNode(id).name + ',' + gds.util.asNode(id).value)] as walks
 
 """
 # Fetch data from Neo4j
