@@ -89,19 +89,15 @@
                             <tr>
                                 <!--<td><input type="text" class="form-control" name="keyword" id="keyword" style="width:600px;"></td>-->
                                 <td>
-                                <div class="input-group" style="width:500px; margin:0 auto;">
-                                    <span class="input-group-addon">최소 발생 빈도</span>
-                                    <input type="text" id="keyword" name="keyword" class="form-control"/>
-                                </div>
+
+                                    <div class="input-group" style="width:500px; margin:0 auto;">
+                                        <span class="input-group-addon">최소 발생 빈도</span>
+                                        <input type="text" id="keyword" name="keyword" class="form-control"/>
+                                    </div>
                                 </td>
                             </tr>
                             <tr>
                                 <td><br>
-                                    <!--
-                                    <a title="Execute" id="execute">
-                                    -->
-                                        <!--<input class="btn btn-primary" value="검색" id="keywordBtn" onclick="location.href='searchkey'">-->
-                                        <!--<input class="btn btn-primary" type="submit" value="검색">-->
                                        
                                     <button type="button" class="btn btn-primary" id="fsgb" style="background-color: #4a9dea; border-color:  #4a9dea;">
                                         검색
@@ -111,17 +107,7 @@
                                 </td>
                             </tr>
                         </table>
-                        <!--
-                        <div style="text-align: center;">
-                            <a href="/data/getKeywordResult">
-                            <input class="btn btn-primary" id="fsgb" type="submit" value="검색"
-                                style="width:100px; background-color: #4a9dea; border-color:  #4a9dea;"></a>
-                               
-                            <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px; background-color: #dddddd;"></a>
-                        </div>
 
-                        <button type="button" class="btn btn-primary" id="fsgb" style="background-color: #4a9dea; border-color:  #4a9dea;">검색</button>
-                        -->
                     </form>               
                </div>
             <% } %>
@@ -177,7 +163,7 @@
     var config = {}
     var cypher;
     var graphNum;
-    
+    var stmtInfo = []
     var nodeInfo = []
     var queries;
     var supports;
@@ -219,7 +205,22 @@
         for(var i = 0; i<nodeInfo.length ; i++){
             nodeInfo[i].splice(nodeInfo[i].length-1, 1);
         } 
+        nodeInfo[0].splice(0, 1)
+        
+        stmts = result[3].split('^')
+        stmts.splice(0, 1)
+        stmts.splice(stmts.length-1, 1)
 
+        for(var i = 0; i<stmts.length ; i++){
+            stmtInfo.push(stmts[i].split('-'))
+        } 
+
+        for(var i = 0; i<stmtInfo.length ; i++){
+            stmtInfo[i].splice(stmtInfo[i].length-1, 1);
+        } 
+        stmtInfo[0].splice(0, 1)
+        console.log(stmtInfo)
+        console.log(nodeInfo)
     }
 
 
@@ -321,12 +322,17 @@
             return {url: Neo4j.DB_URL, user: Neo4j.DB_USR, pass: Neo4j.DB_PWD};
         }
         new Cy2NeoD3(config, "graph", "datatable", queries[num], "execute", connection, true);
-        document.getElementById("nodeContent").innerHTML = '';
+        stmt = '<div style="text-align: center; font-size:1.5em;"> < 패턴 설명 > </div> <br>'
+        for(var i = 0; i<stmtInfo[num].length; i++){
+            stmt = stmt + stmtInfo[num][i] + "<br>"
+        }
+        console.log(stmt)
+        document.getElementById("nodeContent").innerHTML = stmt + '';
     }
 
-function loading() {
-    Swal.fire('Please wait')
-    Swal.showLoading()
+    function loading() {
+        Swal.fire('Please wait')
+        Swal.showLoading()
     };
 
 
