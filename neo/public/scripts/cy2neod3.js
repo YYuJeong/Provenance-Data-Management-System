@@ -100,8 +100,10 @@ function Cy2NeoD3(config, graphId, tableId, sourceId, execId, urlSource, renderG
                         c.empty();
                         neod3.render(graphId, c, graph);
                         renderResult(tableId, res.table);
-                        console.log(graph)
-                        console.log(Object.keys(graph))
+                        setGraph(graph);
+                        //console.log(graph)
+                        //console.log(res.table);
+                        //console.log(Object.keys(graph))
                         //console.log(Object.valuesOf(graph))
                     } else {
                         if (err) {
@@ -163,4 +165,18 @@ function Cy2NeoD3(config, graphId, tableId, sourceId, execId, urlSource, renderG
     }
 }
 
+function getGraph() {
+    let graphRES2 = graphRES;
+    graphRES = '';
+    //console.log(graphRES2)
+    return graphRES2;
+}
+
+function setGraph(graph) {
+    graphRES = (graph);
+    //console.log(graphRES)
+}
+
 exports.Cy2NeoD3 = Cy2NeoD3;
+exports.getGraph = getGraph;
+exports.setGraph = setGraph;
