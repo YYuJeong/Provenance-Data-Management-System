@@ -368,7 +368,17 @@ if __name__ == '__main__':
         
         links.append(l)
         indexs.append(i)
+    '''
+    # Iterate over each row 
+    for index, rows in gs.iterrows(): 
+        # Create list for the current row 
+        my_list =[rows.support, rows.vertex, rows.link, rows.num_vert] 
+        # append the list to the final list 
+        row_list.append(my_list) 
 
+        links.append(rows.link)
+        indexs.append(index)
+    '''
     # Extract maximum graph
     linksFlatten = []
     for link in links:
@@ -570,8 +580,24 @@ if __name__ == '__main__':
         returnCypher = returnCypher[:len(returnCypher)-2]      
         returnsFinal.append(returnCypher)
 
-
     createResult = [item for sublist in createsFinal for item in sublist]
+
+
+    #print(nodesInfo)
+    ndict = {tuple(k): v for v, k in enumerate(nodesInfo)}
+    n2dict = []
+    for i in nodesInfo:
+        n2dict.append(ndict[tuple(i)]) 
+    
+    delInd = []    
+    seen = set()
+    for idx, item in enumerate(n2dict):
+        if item not in seen:
+            seen.add(item)          # First time seeing the element
+        else:
+            delInd.append(idx)      # Already seen, add the index to the result
+    #print(delInd)
+
 
    
     cypherFinal = []
@@ -585,7 +611,10 @@ if __name__ == '__main__':
     for i in range(len(supports)):
         ranking.append([supports[i], cypherFinal[i], nodesInfo[i]])
 
-
+    #remove duplicate list
+    for index in sorted(delInd, reverse=True): 
+        del ranking[index]
+        del stmtInfo[index]
     #ranking = sorted(ranking, key = operator.itemgetter(0), reverse=True)
     
     #create explainable statement
@@ -599,7 +628,7 @@ if __name__ == '__main__':
     for index in sorted(delInd, reverse=True):
         del ranking[index]
         del stmtInfo[index]
-
+    
     # 2. search predefined prov structure
     # provFlag = [personFlag, instFlag, dataFlag, createFlag, provideFlag, processFlag]
     provFlags = []
@@ -666,10 +695,6 @@ if __name__ == '__main__':
     for i in range(len(ranking)):
         ranking[i].append(stmtsFinal[i])
     ranking = sorted(ranking, key = operator.itemgetter(0), reverse=True)
-
-    #ranking = sorted(ranking, key = operator.itemgetter(0), reverse=True)
-   
-    #ranking = sorted(ranking, key = operator.itemgetter(0), reverse=True)
     
     #create Output [support, Match Cyphers, Frequent Nodes]    
     outTable = '/'        
