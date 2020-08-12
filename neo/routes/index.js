@@ -4167,6 +4167,8 @@ router.post('/modify', function (req, res) {
 
 router.post('/node2Vec', function (req, res) {
 
+    var range = req.body.range;
+    console.log(range);
     var node2VecSession = driver.session();
     var searchSession = driver.session();
     var embeddingSize = 10;
@@ -4213,7 +4215,6 @@ router.post('/node2Vec', function (req, res) {
                     + "RETURN coalesce(gds.util.asNode(id).name + '/' + gds.util.asNode(id).pid) as keys, embedding, labels(gds.util.asNode(id)) as labels "
 
                     //console.log(node2Vec);
-
         //var cosineSimilarity = "RETURN gds.alpha.similarity.cosine(" + key1 + ", " + key2 + ") as similarity"
         //console.log(cosineSimilarity);
 
@@ -4256,8 +4257,8 @@ router.post('/node2Vec', function (req, res) {
                                             //for(i = 0; i < nodeProperties.length; i++) attach labels to nodes
                                                 //nodeProperties[i] = nodeLabels[i][0] + '/' + nodeProperties[i];
 
-                                           console.log("ONEW")
-                                            console.log(nodeProperties)
+                                            //console.log("ONEW")
+                                            //console.log(nodeProperties)
 
                                             for(i = 0; i < nodeLabels.length; i++) {
                                                 nodeLabelsTemp[i] = nodeLabels[i][0]
@@ -4298,6 +4299,7 @@ router.post('/node2Vec', function (req, res) {
                                             console.log(nodeEmbeddings.length);
                                             console.log(comparedProperties.length);
                                             */
+                                            
                                             
                                         //for (var Index = 0; Index < comparedNode.length; Index++) {
 
@@ -4344,24 +4346,30 @@ router.post('/node2Vec', function (req, res) {
                                                             var ReturnKeyword = personName + '*' + personID;
 
                                                             for(i = 0, count = 0; i < name.length; i++) {
-                                                                if ((name[i].split('*'))[1].length > 13) {
+                                                                if (!(name[i].split('*'))[1].includes('-')) {
                                                                     nameExceptIns[count] = name[i];
                                                                     similarityExceptIns[count] = similarity[i];
                                                                     count = count + 1;
                                                                 }
                                                             }
-
+                                                            
+                                                            /*
                                                             console.log(name);
                                                             console.log(nameExceptIns);
                                                             console.log(similarity);
                                                             console.log(similarityExceptIns);
+                                                            */
 
+                                                            console.log(nameExceptIns);
+                                                            console.log(similarityExceptIns);
+                                                            
                                                             res.render("data/analyzeSimResult", {
                                                                 esession: session_value.getSession(),
                                                                 ReturnKeyword: ReturnKeyword,
                                                                 name: nameExceptIns,
                                                                 similarity: similarityExceptIns,
-                                                                nodeType: 'personNode'
+                                                                nodeType: 'personNode',
+                                                                range: range
                                                             });
                                                             //res.redirect('data/analyzeSim');
                                                         }   
