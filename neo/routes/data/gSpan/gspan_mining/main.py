@@ -236,13 +236,13 @@ def main(min_sup):
     
     
     for i, ext in enumerate(extensions):
-        print('Pattern %d' % (i+1))
-        print('Support : %d' %extensions_sups[i])
+        #print('Pattern %d' % (i+1))
+        #print('Support : %d' %extensions_sups[i])
         nodelist = list()
         edgelist = list()
         graphIndex.append(i)
         for _c in ext:
-            print(_c)
+            #print(_c)
             nodes = []
             nodes.append(_c[0])
             nodes.append(_c[2])
@@ -272,9 +272,9 @@ def main(min_sup):
                 )
             )
             
-        print('')
-    print("_report_df : print")
-    print(_report_df)
+        #print('')
+    #print("_report_df : print")
+    #print(_report_df)
     return _report_df
 # def main(FLAGS=None):
 #     """Run gSpan."""
@@ -368,17 +368,7 @@ if __name__ == '__main__':
         
         links.append(l)
         indexs.append(i)
-    '''
-    # Iterate over each row 
-    for index, rows in gs.iterrows(): 
-        # Create list for the current row 
-        my_list =[rows.support, rows.vertex, rows.link, rows.num_vert] 
-        # append the list to the final list 
-        row_list.append(my_list) 
 
-        links.append(rows.link)
-        indexs.append(index)
-    '''
     # Extract maximum graph
     linksFlatten = []
     for link in links:
@@ -388,6 +378,7 @@ if __name__ == '__main__':
     linkSet = [list(t) for t in set(tuple(element) for element in linksFlatten)]
     link2Dict = {tuple(k): v for v, k in enumerate(linkSet)}
 
+   
     # Convert edge to dictionary
     edge2Dict = []
     for link in links:
@@ -462,12 +453,15 @@ if __name__ == '__main__':
     returnsFinal = []
     createsFinal = []
     nodeInfoFinal = []
+    
+    stmtsFinal = []
     for i in range(len(fsmResults)):  
         #create cypher by activity type
         returns = []
         searches = []
         creates = [] #결과 그래프 하나 당 사이퍼들
         nodes = []
+        stmts = []
         #print(fsmResults[i])
         for index, result in enumerate(fsmResults[i]):
             #print(index)
@@ -481,25 +475,8 @@ if __name__ == '__main__':
             edge = result[2]
             create = ''
             search = ''
-            '''
-            if node1[1] == 'Activity' : ret1 = 'ac'
-            elif node1[1] == 'Data': ret1 = 'd'
-            elif node1[1] == '개인' : ret1 = 'p'
-            else: ret1 = 'p'
-           # print(node1[1])
-            
-            if node2[1] == 'Activity' : ret2 = 'ac'
-            elif node2[1] == 'Data': ret2 = 'd'
-            elif node2[1] == '개인' : ret2 = 'p'
-            else: ret2 = 'p'
-           # print(node2[1])
-            #print(ret1+str(index))
-            #print(ret1, ret2)
-            ret.append(ret1+str(index))
-            ret.append(ret2+str(index))
-            #print(ret)
-
-            '''
+            #print(node1, node2)
+            stmt = [node1, node2]
             node = [node1[0], node2[0]]
             if node2[0] == '생성': #두번째 노드가 
                 if edge[0] == 'Generate':
@@ -571,16 +548,22 @@ if __name__ == '__main__':
             searches.append(search)
             creates.append(create)
             nodes.append(node) 
+            stmts.append(stmt)
             #returns.append(ret)
         #print(searches)
         searchesFinal.append(searches)
         createsFinal.append(creates)
         nodeInfoFinal.append(nodes)
+        stmtsFinal.append(stmts)
         
+        stmtInfo = []
         nodesInfo = []
         for i in range(len(nodeInfoFinal)):
             nodesInfo.append(list(set(np.array(nodeInfoFinal[i]).flatten().tolist()))) 
-        
+            stmtInfo.append(list(set([e for sl in stmtsFinal[i] for e in sl])))
+            
+            
+            
         returnCypher = 'RETURN '
         for ret in returns:
             returnCypher = returnCypher + ret + ', '
@@ -598,28 +581,113 @@ if __name__ == '__main__':
             cyphers = cyphers + searchesFinal[i][j] + ' '
         cypherFinal.append(cyphers + returnsFinal[i])
     
-    ranking = []
+    ranking = [] 
     for i in range(len(supports)):
         ranking.append([supports[i], cypherFinal[i], nodesInfo[i]])
+
+
+    #ranking = sorted(ranking, key = operator.itemgetter(0), reverse=True)
     
+    #create explainable statement
+    # 1. if frequentNodes's length is 2, it is deleted
+    frequentNodes = []
+    delInd = []
+    for i in range(len(ranking)):
+        if len(ranking[i][2]) == 2:
+            delInd.append(i)
+
+    for index in sorted(delInd, reverse=True):
+        del ranking[index]
+        del stmtInfo[index]
+
+    # 2. search predefined prov structure
+    # provFlag = [personFlag, instFlag, dataFlag, createFlag, provideFlag, processFlag]
+    provFlags = []
+    provStruc = []
+    for i in range(len(stmtInfo)):
+        per = ''
+        inst = ''
+        data = ''
+        create = ''
+        prov = ''
+        proc = ''
+        provFlag = [False, False, False, False, False, False]
+        for node in stmtInfo[i]:
+            if node[1] == '개인':
+                provFlag[0] = True
+                per = node[0]
+            elif node[1] == '기관':
+                provFlag[1] = True
+                inst = node[0]
+            elif node[1] == 'Data':
+                provFlag[2] = True
+                data = node[0]
+            else:
+                if node[0] == '생성':
+                    provFlag[3] = True
+                    create = '생성'
+                elif node[0] == '제공':
+                    provFlag[4] = True
+                    prov = '제공'
+                else:
+                    provFlag[5] = True
+                    proc = '가공'
+        provFlags.append(provFlag)
+        provStruc.append([per, inst, data, create, prov, proc])
+
+    delInd = []
+    stmtsFinal = []
+    for i in range(len(provFlags)):
+        remainFlag = False
+        stmts = []
+        if provFlags[i][0] and provFlags[i][2] and provFlags[i][3]: #생성
+            createStmt = "개인이 개인정보 " + provStruc[i][2] + '을(를) 많이 생성함 ('+str(ranking[i][0])+"회 발생)"
+            remainFlag = True
+            stmts.append(createStmt)
+        if provFlags[i][0] and provFlags[i][1] and provFlags[i][2] and provFlags[i][4]: #제공 
+            provStmt = "개인이 개인정보 " + provStruc[i][2] + "을(를) " + provStruc[i][1] +"에게 많이 제공함 ("+str(ranking[i][0]) +"회 발생)"
+            remainFlag = True
+            stmts.append(provStmt)
+        if provFlags[i][0] and provFlags[i][2] and provFlags[i][5]: #가공
+            procStmt = "개인이 개인정보 " + provStruc[i][2] + '을(를) 많이 가공함 ('+str(ranking[i][0])+"회 발생)"
+            remainFlag = True
+            stmts.append(procStmt)
+        if not(remainFlag):
+            delInd.append(i)
+        stmtsFinal.append(stmts)
+
+    
+    for index in sorted(delInd, reverse=True):
+        #print(ranking[index])
+        #print(stmtsFinal[index])
+        del ranking[index]
+        del stmtsFinal[index]       
+   
+    for i in range(len(ranking)):
+        ranking[i].append(stmtsFinal[i])
     ranking = sorted(ranking, key = operator.itemgetter(0), reverse=True)
-        
+
+    #ranking = sorted(ranking, key = operator.itemgetter(0), reverse=True)
+   
+    #ranking = sorted(ranking, key = operator.itemgetter(0), reverse=True)
+    
+    #create Output [support, Match Cyphers, Frequent Nodes]    
     outTable = '/'        
     sup = '^'
     node = '^-'
+    stmt = '^-'
     for i in range(len(ranking)):
         outTable = outTable + ranking[i][1] +'/'
         sup = sup + str(ranking[i][0]) + '^'
         for n in ranking[i][2]:
             node = node + n + '-'
         node = node + '^'
-
-    outTable = outTable + '|' + sup + '|' + node
+        for s in ranking[i][3]:
+            stmt = stmt + s + '-'
+        stmt = stmt + '^'
+    outTable = outTable + '|' + sup + '|' + node + '|' + stmt
     print(outTable)
 
-  
-    
-    
     #upload FSM result graphs to NEO4j
     driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "wowhi223"), encrypted=False)    
 
@@ -633,5 +701,3 @@ if __name__ == '__main__':
         session.read_transaction(merge_activity)
         session.read_transaction(delete_duplRelation)
     driver.close()
-
-        
