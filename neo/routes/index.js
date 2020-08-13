@@ -4407,6 +4407,8 @@ router.post('/node2Vec', function (req, res) {
         console.log('Data');
         var dataOwnerID = req.body.dataOwnerID;
         var dataName = req.body.dataName;
+        var range = req.body.range;
+        console.log(range);
 
         var node2Vec = "CALL gds.alpha.node2vec.stream("
                     + "'Nodes', {"
@@ -4566,7 +4568,8 @@ router.post('/node2Vec', function (req, res) {
                                                                 ReturnKeyword: ReturnKeyword,
                                                                 name: name,
                                                                 similarity: similarity,
-                                                                nodeType: 'dataNode'
+                                                                nodeType: 'dataNode',
+                                                                range: range
                                                             });
                                                             //res.redirect('data/analyzeSim');
                                                         }
