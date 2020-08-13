@@ -14,6 +14,7 @@ from neo4j import GraphDatabase
 
 
 def check_nodeLabel(tx, keyword):
+    '''
     personNodes = (tx.run("MATCH (n:Person)"
                           "WHERE (any(prop in ['name', 'pid', 'p_type'] WHERE n[prop] = $keyword))"
                           "RETURN n", keyword = keyword)).value()
@@ -23,6 +24,19 @@ def check_nodeLabel(tx, keyword):
     activityNodes = (tx.run("MATCH (n:Activity)"
                   "WHERE (any(prop in ['name', 'date','detail'] WHERE n[prop] = $keyword))"
                   "RETURN n", keyword = keyword)).value()
+    '''
+    personNodes = (tx.run("MATCH (n:Person)"
+                          "where not exists(n.graph) "
+                          "and (any(prop in ['name', 'pid', 'p_type'] WHERE n[prop] = '"+keyword+"'))"
+                          "RETURN n")).value()
+    dataNodes = (tx.run("MATCH (n:Data)"
+                        "where not exists(n.graph) "
+                      "and (any(prop in ['name', 'value', 'file_path', 'origin'] WHERE n[prop] = '"+keyword+"'))"
+                      "RETURN n")).value()
+    activityNodes = (tx.run("MATCH (n:Activity)"
+                            "where not exists(n.graph) "
+                          "and (any(prop in ['name', 'date','detail'] WHERE n[prop] = '"+keyword+"'))"
+                          "RETURN n")).value()
 
     if(personNodes):
         return personNodes

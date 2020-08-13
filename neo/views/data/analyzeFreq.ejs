@@ -90,8 +90,13 @@
                                 <!--<td><input type="text" class="form-control" name="keyword" id="keyword" style="width:600px;"></td>-->
                                 <td>
                                     <div class="input-group" style="width:500px; margin:0 auto;">
-                                        <span class="input-group-addon">최소 발생 빈도</span>
+                                        <span class="input-group-addon">최소 발생 빈도 (횟수)</span>
                                         <input type="text" id="keyword" name="keyword" class="form-control"/>
+                                    </div>
+                                    <br><br>
+                                    <div class="input-group" style="width:500px; margin:0 auto;">
+                                        <span class="input-group-addon">결과 표시 개수</span>
+                                        <input type="text" id="tableLen" name="tableLen" value="" class="form-control"/>
                                     </div>
                                 </td>
                             </tr>
@@ -166,11 +171,14 @@
     var nodeInfo = []
     var queries;
     var supports;
+    var tableLen = '';
+
     $(document).ready(function() {
         $("#fsgb").click(function() {
             $("#fsm").submit();
             Swal.fire('분석 중')
             Swal.showLoading()
+            tableLen =  $("#tableLen").val();
         });
 
 
@@ -229,14 +237,9 @@
         var tdNum = 1;
     }
     else {
-        if(supports.length < 10){
-            var trNum = supports.length;
-            var thNum = supports.length; 
-        }
-        else{
-            var trNum = 10;
-            var thNum = 10;
-        }
+
+        var trNum = supports.length;
+        var thNum = supports.length; 
 
         var tdNum = 3;
     }
@@ -321,18 +324,14 @@
             return {url: Neo4j.DB_URL, user: Neo4j.DB_USR, pass: Neo4j.DB_PWD};
         }
         new Cy2NeoD3(config, "graph", "datatable", queries[num], "execute", connection, true);
-        stmt = '<div style="text-align: center; font-size:1.5em;"> < 패턴 설명 > </div> <br>'
+        st = "<div style='text-align: center; font-size:1.5em;'> < 패턴 상세 설명 (발생 빈도: " + supports[num]  +"회) ></div> <br>"
+        stmt = '<div>'
         for(var i = 0; i<stmtInfo[num].length; i++){
             stmt = stmt + stmtInfo[num][i] + "<br>"
         }
         console.log(stmt)
-        document.getElementById("nodeContent").innerHTML = stmt + '';
+        document.getElementById("nodeContent").innerHTML = st+ stmt + '</div>';
     }
-
-    function loading() {
-        Swal.fire('Please wait')
-        Swal.showLoading()
-    };
 
 
 </script>

@@ -2556,10 +2556,11 @@ router.post('/keyword', function (req, res) {
 // fsm post func
 router.post('/fsm', function (req, res) {
     var keyStr = req.body.keyword;
+    var tableLen = req.body.tableLen;
     var len = keyStr.length;
 
     var wrote = 0;
-    var process = spawn('python', [__dirname + '\\data\\gSpan\\gspan_mining\\main.py', keyStr]);
+    var process = spawn('python', [__dirname + '\\data\\gSpan\\gspan_mining\\main.py', keyStr, tableLen]);
     console.log("처리", keyStr)
     var startTime = new Date().getTime();
     if(len == 0) {

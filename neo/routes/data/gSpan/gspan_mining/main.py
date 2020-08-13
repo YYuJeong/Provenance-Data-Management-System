@@ -341,7 +341,7 @@ def delete_duplRelation(tx):
 if __name__ == '__main__':
     gs = main(int(sys.argv[1]))
     # gs = main()
-
+    tableLen = int(sys.argv[2])
     global allDict
     global edgeDict
     global instDict
@@ -670,15 +670,15 @@ if __name__ == '__main__':
         remainFlag = False
         stmts = []
         if provFlags[i][0] and provFlags[i][2] and provFlags[i][3]: #생성
-            createStmt = "개인이 개인정보 " + provStruc[i][2] + '을(를) 많이 생성함 ('+str(ranking[i][0])+"회 발생)"
+            createStmt = '개인이 "' + provStruc[i][2] + '(개인정보)"을(를) "생성"함'
             remainFlag = True
             stmts.append(createStmt)
         if provFlags[i][0] and provFlags[i][1] and provFlags[i][2] and provFlags[i][4]: #제공 
-            provStmt = "개인이 개인정보 " + provStruc[i][2] + "을(를) " + provStruc[i][1] +"에게 많이 제공함 ("+str(ranking[i][0]) +"회 발생)"
+            provStmt = '개인이 "' + provStruc[i][2] + '(개인정보)"을(를) "' + provStruc[i][1] +'"에게 "제공"함'
             remainFlag = True
             stmts.append(provStmt)
         if provFlags[i][0] and provFlags[i][2] and provFlags[i][5]: #가공
-            procStmt = "개인이 개인정보 " + provStruc[i][2] + '을(를) 많이 가공함 ('+str(ranking[i][0])+"회 발생)"
+            procStmt = '개인이 "' + provStruc[i][2] + '(개인정보)"을(를) "가공"함'
             remainFlag = True
             stmts.append(procStmt)
         if not(remainFlag):
@@ -701,16 +701,29 @@ if __name__ == '__main__':
     sup = '^'
     node = '^-'
     stmt = '^-'
-    for i in range(len(ranking)):
-        outTable = outTable + ranking[i][1] +'/'
-        sup = sup + str(ranking[i][0]) + '^'
-        for n in ranking[i][2]:
-            node = node + n + '-'
-        node = node + '^'
-        for s in ranking[i][3]:
-            stmt = stmt + s + '-'
-        stmt = stmt + '^'
-    outTable = outTable + '|' + sup + '|' + node + '|' + stmt
+    if tableLen < len(ranking):
+        for i in range(tableLen):
+            outTable = outTable + ranking[i][1] +'/'
+            sup = sup + str(ranking[i][0]) + '^'
+            for n in ranking[i][2]:
+                node = node + n + '-'
+            node = node + '^'
+            for s in ranking[i][3]:
+                stmt = stmt + s + '-'
+            stmt = stmt + '^'
+        outTable = outTable + '|' + sup + '|' + node + '|' + stmt    
+    else:
+        for i in range(len(ranking)):
+            outTable = outTable + ranking[i][1] +'/'
+            sup = sup + str(ranking[i][0]) + '^'
+            for n in ranking[i][2]:
+                node = node + n + '-'
+            node = node + '^'
+            for s in ranking[i][3]:
+                stmt = stmt + s + '-'
+            stmt = stmt + '^'
+        outTable = outTable + '|' + sup + '|' + node + '|' + stmt   
+
     print(outTable)
 
     #upload FSM result graphs to NEO4j
