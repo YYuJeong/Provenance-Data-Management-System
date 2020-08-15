@@ -270,7 +270,7 @@
         for(var k = 0; k < 1; k++){
             if(i == 0){
                 tdObj=document.createElement("td");
-                tdObj.innerHTML='발생 패턴'
+                tdObj.innerHTML='발생 이력 패턴'
                 tdObj.style.backgroundColor = "#f8f8f8";
                 trObj.appendChild(tdObj);
 
@@ -285,7 +285,12 @@
                 //tdObj.innerHTML = keywordNames[i-1][k] + "<br>(" + keywordVals[i-1][k] + ")"; 
                 content = ''
                 for(var m = 0; m < nodeInfo[i-1].length; m++){
-                    content = content + nodeInfo[i-1][m] + '  '
+                    if(m != nodeInfo[i-1].length-1){
+                        content = content + nodeInfo[i-1][m] + '-'
+                    }
+                    else{
+                        content = content + nodeInfo[i-1][m]
+                    }
                 }
                 tdObj.innerHTML = content; 
                 trObj.appendChild(tdObj); 
