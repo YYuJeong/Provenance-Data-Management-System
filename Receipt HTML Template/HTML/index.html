@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link rel="stylesheet" href="receipt.css" type="text/css" charset="utf-8" />
+	<link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,700' rel='stylesheet' type='text/css'>
+
+	<title>Receipt of Payment</title>
+
+</head>
+
+<body>
+
+
+	<div class="receipt">
+	<div class="receipt-top"></div>
+		<h1>Receipt of Payment</h1>
+		<h2 class="hidden-heading">Item List</h2>
+		<ul class="items">
+			<li><div class="description">Product 1</div><div class="value">$25.00</div></li>
+			<li><div class="description">Product 2</div><div class="value">$25.00</div></li>
+			<li><div class="description">Product 3</div><div class="value">$25.00</div></li>
+			<li><div class="description">Product 4</div><div class="value">$25.00</div></li>
+		</ul>
+		<h2 class="hidden-heading">Totals</h2>
+		<ul class="totals">
+			<li><div class="description">Sub Total</div><div class="value">$100</div></li>
+			<li><div class="description">Tax (20%)</div><div class="value">$20</div></li>
+			<li ><div class="description" style="font-weight: 700;">Total</div><div class="value" style="font-weight: 700;">$120</div></li>
+		</ul>
+		
+		<!--Additional details will only be visible when printed-->
+		<h2 class="hidden-heading">Additional Details</h2>
+		<ul class="additional-fields">
+			<li><div class="description">Additional Field 1</div><div class="value">Value</div></li>
+			<li><div class="description">Additional Field 2</div><div class="value">Value</div></li>
+		</ul>
+		
+		<a href="javascript:window.print()" class="print-btn"><img src="images/print-icn.svg" />Print a copy</a>
+	</div>
+<div class="receipt-bottom"></div>
+
+</body>
+</html>

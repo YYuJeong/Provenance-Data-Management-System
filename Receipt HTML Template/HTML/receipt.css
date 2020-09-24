@@ -1,0 +1,143 @@
+@media screen {
+	body {
+		background: #3f444e;
+		color: #8e9197;
+		font: 12px 'Roboto Slab', "Helvetica Neue", Helvetica, Arial, sans-serif;
+	}
+	
+	.receipt-top {
+		width: 300px;
+		margin: 0 auto;
+		margin-top: 100px;
+		background: url(images/receipt-top.svg) no-repeat;
+		height: 50px;
+	}
+	
+	.receipt {
+		width: 300px;
+		padding: 0;
+		margin: 0 auto;
+		background: #ffffff;
+		min-height: 100px;
+		position: relative;
+		-webkit-box-shadow: 0 0 50px rgba(0,0,0,.25);
+		-moz-box-shadow: 0 0 50px rgba(0,0,0,.25);
+		box-shadow: 0 0 50px rgba(0,0,0,.25);
+	}
+	
+	h1 {
+		width: 280px;
+		margin: 0 auto;
+		height: 50px;
+		color: #48b9a0;
+		font-size: 19px;
+		text-align: center;
+		line-height: 50px;
+	}
+	
+	ul.items {
+		margin: 0 auto;
+		margin-top: 20px;
+		padding: 0;
+		width: 240px;
+		
+	}
+	ul.items li {
+		list-style: none;
+		border-bottom: 1px dotted #BABCC1;
+		clear: both;
+		height: 40px;
+		padding: 0;
+		line-height: 40px;
+	}
+	
+	ul.items li:last-child {
+		border: none;
+	}
+	
+	li .description {
+		width: 80%;
+		float: left;
+		font-weight: 400;
+	}
+	
+	li .value {
+		width: 20%;
+		float: right;
+		text-align: right;
+		font-weight: 700;
+	}
+	
+	ul.totals li .value {
+		font-weight: 400;
+	}
+	
+	ul.totals {
+		margin: 10px auto 0px;
+		padding: 20px 30px;
+		width: 240px;
+		background: #f5f6f8;
+	}
+	
+	ul.totals li {
+		list-style: none;
+		clear: both;
+		height: 15px;
+		margin-bottom: 8px;
+		font-size: 15px;
+		color: #555963;
+	}
+	
+	ul.additional-fields, .hidden-heading {
+		display: none;
+	}
+	
+	a.print-btn {
+		display: block;
+		background: #48b9a0;
+		width: 300px;
+		padding: 0;
+		height: 80px;
+		line-height: 80px;
+		color: #ffffff;
+		font-size: 17px;
+		text-decoration: none;
+		text-align: center;
+	}
+	
+	a.print-btn:hover { background: #56cab0; }
+	a.print-btn:active { background: #3ba68e; }
+	
+	a.print-btn img {
+		margin: 0 10px -2px 0;
+	}
+}
+
+
+@media print {
+   body {
+   	font-family: Arial;
+   }
+   
+   ul.items, ul.totals, ul.additional-fields {
+   	margin: 0;
+   }
+   ul.items li, ul.totals li, ul.additional-fields li {
+   	list-style: none;
+   	border-bottom: 1px solid #BABCC1;
+   	padding: 1em;
+   	margin-left: -3em;
+   }
+   
+   ul.items li div, ul.totals li div, ul.additional-fields li div {
+   	display: inline-block;
+   }
+   
+   li .value {
+   	float: right;
+   }
+   
+   a.print-btn {
+   	display: none;
+   }
+}
