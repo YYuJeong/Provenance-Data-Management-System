@@ -38,8 +38,9 @@ def extractCreateProps(p, d, ac):
         acDates.append(ac[idx]['date'])
         acDetails.append(ac[idx]['detail'])
         
-        data = {'이름': userNames,
-                'ID' : userIds,
+        data = {
+                #'이름': userNames,
+                #'ID' : userIds,
                 '데이터명' : dataNames,
                 '값' : dataVals,
                 '파일': dataFilePaths,
@@ -76,8 +77,9 @@ def extractProcessProps(p, d2, ac, d1):
         acDates.append(ac[idx]['date'])
         acDetails.append(ac[idx]['detail'])
         
-        data = {'이름': userNames,
-                'ID' : userIds,
+        data = {
+                #'이름': userNames,
+                #'ID' : userIds,
                 '데이터명' : dataNames1,
                 '값' : dataVals1,
                 '파일': dataFilePaths1,
@@ -101,6 +103,7 @@ def extractProvideProps(p1, d, ac, r, p2):
     rNames = []
     prices, APFroms, APTos, isAgrees = [], [], [], [] 
     acNames, acDates, acDetails = [], [], []
+    APPeriods = [] 
     
     for idx, val in enumerate(d):
         userNames.append(p1[idx]['name'])
@@ -114,6 +117,7 @@ def extractProvideProps(p1, d, ac, r, p2):
         dataOrigins.append(d[idx]['origin'])
         
         prices.append(r[idx]['price'])
+        APPeriods.append(str(r[idx]['allowed_period_from']) + '~' + str(r[idx]['allowed_period_to']))
         APFroms.append(r[idx]['allowed_period_from'])
         APTos.append(r[idx]['allowed_period_to'])
         isAgrees.append(r[idx]['is_agreed'])
@@ -122,8 +126,8 @@ def extractProvideProps(p1, d, ac, r, p2):
         acDates.append(ac[idx]['date'])
         acDetails.append(ac[idx]['detail'])
         
-        data = {'이름': userNames,
-                'ID' : userIds,
+        data = {#'이름': userNames,
+                #'ID' : userIds,
                 '데이터명' : dataNames,
                 '값' : dataVals,
                 '파일': dataFilePaths,
@@ -131,10 +135,9 @@ def extractProvideProps(p1, d, ac, r, p2):
                 '제공날짜' : acDates,
                 '제공기관' : rNames,
                 '가격' : prices,
-                '제공시작날짜' : APFroms,
-                '제공마지막날짜' : APTos,
                 '정보제공 동의여부' : isAgrees,
-                '기타정보' : acDetails
+                '기타정보' : acDetails,
+                '제공허용기간' : APPeriods,
                 } 
         
         provideDF = pd.DataFrame(data, index=range(1,len(acDates)+1))
@@ -225,7 +228,7 @@ def searchProvideProv(tx, dateFlag):
 user_name = '이상우'
 user_pid = '880514-1520414'
 
-filename = user_name + '님의이력데이터.xlsx'
+filename = user_name + '(' + user_pid +')님의 이력데이터.xlsx'
 writer = pd.ExcelWriter(filename, engine='xlsxwriter')
 
 dateFlag = True
