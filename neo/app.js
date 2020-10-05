@@ -46,6 +46,8 @@ var analyzeFreq = require('./routes/data/analyzeFreq');
 
 var fileuploadRouter = require('./routes/data/uploadData');
 
+var downloadData = require('./routes/data/downloadData');
+
 var ejs = require('ejs');
 var app = express();
 
@@ -107,6 +109,8 @@ app.use('/data/analyzeFreq', analyzeFreq);
 
 app.use('/data/uploadData', fileuploadRouter);
 //app.use('/upload', express.static('uploads'));
+
+app.use('/data/downloadData', downloadData);
 
 app.set('scripts', express.static(path.join(__dirname , "scripts")))
 

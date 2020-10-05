@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <% include ../before_loading.ejs %>
+    <title>개인정보 이력관리시스템</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.min.css"/>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker3.min.css"/>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.min.js"></script>
+
+    <style type="text/css">
+        @font-face { font-family: 'Binggrae-Bold'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Binggrae-Bold.woff') format('woff'); font-weight: normal; font-style: normal; }
+        @font-face { font-family: 'RIDIBatang'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/RIDIBatang.woff') format('woff'); font-weight: normal; font-style: normal; }
+        body {
+            font-family: 'RIDIBatang';
+            color: #303030;
+            letter-spacing: 1px;
+        }
+
+        .fontSize {
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+
+<body style="overflow:auto">
+    <% include ../header %>
+    <div class="container marketing">
+    <% include ../menu %>
+
+    <hr class="featurette-divider">
+        <div class="jumbotron" style="background-color: #f8f8f8;">
+        <% if(esession.authenticated == false){ %>
+            <% include ../notAuthenticated.ejs %>
+            <% } 
+            else if(esession.gubun == '관리자'){ %>
+                <div style="margin: auto; padding: 10%; font-size: 1.5em;">
+                    관리자는 이용 불가능한 메뉴입니다.
+                </div>
+            <% } 
+            else{ %>
+                <div class="container" style="display: inline-block; text-align: center;">
+                    <div style="text-align: center; font-size:2em;">개인정보 이력 다운로드
+                    </div>
+                    <!--Start-->
+                    <br><br>
+                    <form class="form-inline" method="post" action="/downloadData" name="data" id="data" >
+                        <div class="row" style="padding-right:70px;">
+                            <div class="form-group" style="text-align: center;">
+                                <div style="width:40%; margin:0 auto; float:right;">
+                                    <div class="input-group input-append date" id="datePicker">
+                                        <input type="text" class="form-control" name="endDate" placeholder="종료 기간 선택"/>
+                                        <span class="input-group-addon add-on">
+                                        <span class="glyphicon glyphicon-calendar"></span></span>
+                                    </div>
+                                </div>
+                                <div style="width:6%; margin:0 auto; float:right;">
+                                    <p class="font-weight-bold">&nbsp~&nbsp</p>
+                                </div>
+                                <div style="width:40%; margin:0 auto; float:right;">
+                                    <div class="input-group input-append date" id="datePicker2">
+                                        <input type="text" class="form-control" name="startDate" placeholder="시작 기간 선택"/>
+                                        <span class="input-group-addon add-on">
+                                        <span class="glyphicon glyphicon-calendar"></span></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <label>활동 선택 :</label>
+                            <label class="checkbox-inline"><input type="checkbox" name="generate" value="생성">생성</label>
+                            <label class="checkbox-inline"><input type="checkbox" name="process" value="가공">가공</label>
+                            <label class="checkbox-inline"><input type="checkbox" name="provide" value="제공">제공</label>
+                        </div>
+                        <br><br>
+                        <div style="text-align: center;">
+                            <button type="button" class="btn btn-primary" id="download" style="width:100px; background-color: #4a9dea; border-color:  #4a9dea;">검색</button>
+                            <a href=""><input class="btn btn-light" type="reset" value="취소" style="width:100px; background-color: #dddddd;"></a>
+                        </div>
+                    </form>
+                </div>
+            <% } %>
+        </div>
+    <hr class="featurette-divider">
+</div>        
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#download").click(function() {
+            $("#data").submit();
+        });
+    });
+
+    $(document).ready(function () {
+            $('#datePicker')
+                .datepicker({
+                    format: 'yyyymmdd'
+                })
+                .on('changeDate', function (e) {
+                    // Revalidate the date field
+                    $('#eventDate').formValidation('revalidateField', 'date');
+                });
+
+            $('#datePicker2')
+                .datepicker({
+                    format: 'yyyymmdd'
+                })
+                .on('changeDate', function (e) {
+                    // Revalidate the date field
+                    $('#eventDate').formValidation('revalidateField', 'date');
+                });
+
+            $('#eventDate').formValidation({
+                framework: 'bootstrap',
+                icon: {
+                    valid: 'glyphicon glyphicon-ok',
+                    invalid: 'glyphicon glyphicon-remove',
+                    validating: 'glyphicon glyphicon-refresh'
+                },
+                fields: {
+                    name: {
+                        validators: {
+                            notEmpty: {
+                                message: 'The name is required'
+                            }
+                        }
+                    },
+                    date: {
+                        validators: {
+                            notEmpty: {
+                                message: 'The date is required'
+                            },
+                            date: {
+                                format: 'YYYYMMDD',
+                                message: 'The date is not a valid'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+         
+</script>
+</body>
+</html>

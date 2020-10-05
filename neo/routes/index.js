@@ -4201,6 +4201,7 @@ router.post('/node2Vec', function (req, res) {
                 + '</script>'
 
     if(nodeType == 'personNode') {
+        var startTime = new Date().getTime();
         console.log('Person');
         var personID = req.body.personID;
 
@@ -4363,6 +4364,8 @@ router.post('/node2Vec', function (req, res) {
 
                                                             console.log(nameExceptIns);
                                                             console.log(similarityExceptIns);
+                                                            var endTime = new Date().getTime();
+                                                            console.log("Execution time : ", (endTime - startTime));
                                                             
                                                             res.render("data/analyzeSimResult", {
                                                                 esession: session_value.getSession(),
@@ -4609,7 +4612,6 @@ router.post('/node2Vec', function (req, res) {
                         console.log(err);
                     })*/
 
-
     /* previous version (using gensim)
     if(req.body.nodeType == 'personNode') {
         var nodeKeyword = req.body.personName + ' ' + req.body.personValue;
@@ -4706,6 +4708,57 @@ router.post('/node2Vec', function (req, res) {
 
     res.redirect('data/analyzeSim');
     */
-
 });
+
+router.post('/downloadData', function (req, res) {
+    console.log("HI");
+
+    var name = session_value.getSession().user; 
+    var pid = session_value.getSession().pid;
+    var startDate = req.body.startDate;
+    var endDate = req.body.endDate;
+    var actGenerate = req.body.generate;
+    var actProcess = req.body.process;
+    var actProvide = req.body.provide;
+    var dateFlag = true;
+    var actFlag = true;
+    var datesArgvs = '';
+    var actArgvs = '';
+
+    var downloadPath = name + '(' + pid  + ')님의 이력데이터.xlsx'
+
+    if(startDate.length == 0 || endDate.length == 0)
+        dateFlag = false;
+    else 
+        datesArgvs = startDate + ',' + endDate;
+
+    if(actGenerate == undefined && actProcess == undefined && actProvide == undefined)
+        actFlag = false;
+    else 
+        actArgvs = actGenerate + ',' + actProcess + ',' + actProvide;
+
+    //console.log(datesArgvs);
+    //console.log(actArgvs);
+
+    var wrote = 0;
+    var process = spawn('python', [__dirname + '\\data\\exportProv2CSV.py', name, pid, dateFlag, actFlag, datesArgvs, actArgvs]);
+    var startTime = new Date().getTime();
+
+    process.stdout.on('data', function (data) {
+        if (wrote == 0) {
+            }
+        wrote += 1;
+    });
+    var endTime = new Date().getTime();
+    console.log("Execution time : ", (endTime - startTime));
+    process.on('close', function (data) {
+        res.download(downloadPath, function(err){
+            if(err)
+                res.json({err:err});
+            else
+                res.end();
+        })
+    });
+});
+
 module.exports = router;
