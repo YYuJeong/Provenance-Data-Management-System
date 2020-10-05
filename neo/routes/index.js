@@ -4982,7 +4982,6 @@ router.post('/node2Vec', function (req, res) {
 });
 
 router.post('/downloadData', function (req, res) {
-    console.log("HI");
 
     var name = session_value.getSession().user; 
     var pid = session_value.getSession().pid;
@@ -5030,6 +5029,19 @@ router.post('/downloadData', function (req, res) {
                 res.end();
         })
     });
+});
+
+router.post('/checkReceipt', function (req, res) {
+
+    var name = session_value.getSession().user; 
+    var pid = session_value.getSession().pid;
+    var startDate = req.body.startDate;
+    var endDate = req.body.endDate;
+
+    res.render("data/utilizeDataReceiptResult", {
+        esession: session_value.getSession(),
+    });
+
 });
 
 module.exports = router;

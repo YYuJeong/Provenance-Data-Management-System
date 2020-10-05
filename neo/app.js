@@ -44,17 +44,19 @@ var analyzeFreqResult = require('./routes/data/analyzeFreqResult');
 var analyzeSim = require('./routes/data/analyzeSim');
 var analyzeFreq = require('./routes/data/analyzeFreq');
 
+var downloadData = require('./routes/data/downloadData');
+
 var utilizeData = require('./routes/data/utilizeData')
 var utilizeDataResult = require('./routes/data/utilizeDataResult');
 var utilizeDataPage = require('./routes/data/utilizeDataPage');
 
-var fileuploadRouter = require('./routes/data/uploadData');
+var utilizeDataReceipt = require('./routes/data/utilizeDataReceipt')
+var utilizeDataReceiptResult = require('./routes/data/utilizeDataReceiptResult')
 
-var downloadData = require('./routes/data/downloadData');
+var fileuploadRouter = require('./routes/data/uploadData');
 
 var ejs = require('ejs');
 var app = express();
-
 
 //var neo4j = require('neo4j-driver').v1;
 var neo4j = require('neo4j-driver');
@@ -111,14 +113,17 @@ app.use('/data/analyzeFreqResult', analyzeFreqResult);
 app.use('/data/analyzeSim', analyzeSim);
 app.use('/data/analyzeFreq', analyzeFreq);
 
+app.use('/data/downloadData', downloadData);
+
 app.use('/data/utilizeData', utilizeData);
 app.use('/data/utilizeDataResult', utilizeDataResult);
 app.use('/data/utilizeDataPage', utilizeDataPage);
 
+app.use('/data/utilizeDataReceipt', utilizeDataReceipt);
+app.use('/data/utilizeDataReceiptResult', utilizeDataReceiptResult);
+
 app.use('/data/uploadData', fileuploadRouter);
 //app.use('/upload', express.static('uploads'));
-
-app.use('/data/downloadData', downloadData);
 
 app.set('scripts', express.static(path.join(__dirname , "scripts")))
 
