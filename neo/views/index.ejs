@@ -7,18 +7,45 @@
     <style type="text/css">
     @font-face { font-family: 'Binggrae-Bold'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Binggrae-Bold.woff') format('woff'); font-weight: normal; font-style: normal; }
     @font-face { font-family: 'RIDIBatang'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/RIDIBatang.woff') format('woff'); font-weight: normal; font-style: normal; }
-        body {
-            font-family: 'RIDIBatang';
-            color: #333333;
-            letter-spacing: 1px;
-            background-image: url("/images/solution.png");
-            background-position: 1100px 770px;
-            background-size: 14% 17%;
-            background-repeat: no-repeat;
-        }
-        .s {
-            font-size: 2em;
-        }
+    body {
+        font-family: 'RIDIBatang';
+        color: #333333;
+        letter-spacing: 1px;
+        /*background-image: url("/images/solution.png");
+        background-position: 1100px 770px;
+        background-size: 14% 17%;
+        background-repeat: no-repeat;*/
+    }
+
+    .s {
+        font-size: 2em;
+    }
+
+    #box {
+        overflow-y: visible;
+        overflow-x: auto;
+        white-space: nowrap;
+        vertical-align: text-top;
+        margin: 0;
+        padding: 0;
+        clear: both;
+        border-spacing: 5px;
+    }
+
+    .item {
+        display: table-cell;
+        min-width: 240px;
+        width: 240px;
+        font-size: 140px;
+        border: 2px solid #d1d1d1;
+        border-radius: 5px;
+        padding: 5px;
+        margin: 5px;
+        white-space: normal;
+        line-height: 1.6;
+        vertical-align: top;
+        text-align: center;
+    }
     </style>
 
 </head>
@@ -82,11 +109,6 @@
 
     <!-- /END THE FEATURETTES -->
 
-
-
-
-
-
     <!-- FOOTER -->
     <footer>
     </footer>
@@ -98,6 +120,28 @@
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+<scrip src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.js"></script>
+
+<script type="text/javascript">
+    jQuery(function ($) {
+    $.fn.hScroll = function (amount) {
+        amount = amount || 120;
+        $(this).bind("DOMMouseScroll mousewheel", function (event) {
+            var oEvent = event.originalEvent, 
+                direction = oEvent.detail ? oEvent.detail * -amount : oEvent.wheelDelta, 
+                position = $(this).scrollLeft();
+            position += direction > 0 ? -amount : amount;
+            $(this).scrollLeft(position);
+            event.preventDefault();
+            })
+        };
+    });
+ 
+    $(document).ready(function() {
+        $('#box').hScroll(40); // You can pass (optionally) scrolling amount
+    });
+</script>
 
 </body>
 </html>
