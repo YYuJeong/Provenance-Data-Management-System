@@ -24,7 +24,7 @@
 
   <script>
     function onAdd(){
-      alert("개인정보가 제공되었습니다.");
+      alert("개인정보가 활용되었습니다.");
     };
         
     $(document).ready(function () {
@@ -93,7 +93,7 @@
       <div class="jumbotron" style="background-color: #f8f8f8;">
         <div style="font-size:2em;">개인정보 활용</div><br><br>
           <div class="fontSize">
-            <form method="post" action="/transfer" >             
+            <form method="post" action="/utilize_transfer" >             
               <div style="text-align: center; font-size:1.5em;">세부 사항</div>
               <br>
               <div class="row">
@@ -104,7 +104,7 @@
                       </div>
                       <br>-->
                       <div class="input-group" style="width:30%; margin:0 auto;">
-                        <span class="input-group-addon">기관</span>
+                        <span class="input-group-addon">활용처</span>
                         <select id="company" name="company" class="form-control">
                           <option value=''>선택 (필수)</option>
                           <% for(var i = 0; i < insNames.length; i++) { %>
@@ -132,28 +132,20 @@
                       </div>
                       <br>
                       <div class="input-group" style="width:30%; margin:0 auto;">
-                          <span class="input-group-addon">가격</span>
-                          <input type="text" id="price" name="price" class="form-control"/>
+                          <span class="input-group-addon">활용 목적</span>
+                          <input type="text" id="purpose" name="purpose" class="form-control"/>
                       </div>
                       <br>
                       <div class="input-group" style="width:30%; margin:0 auto;">
-                          <span class="input-group-addon">정보제공 동의여부</span>
-                          <select id="permission" name="permission" class="form-control">
-                            <option value=''>선택 (필수)</option>
-                            <option value="Yes">YES</option>
-                            <option value="NO">NO</option>
-                          </select>
+                        <span class="input-group-addon">활용 방법</span>
+                        <input type="text" id="method" name="method" class="form-control"/>
                       </div>
                       <br>
                       <div class="input-group" style="width:30%; margin:0 auto;">
-                          <span class="input-group-addon">가공방법</span>
-                          <select id="manuMethod" name="manuMethod" class="form-control">
-                            <option value=''>선택 (필수)</option>
-                            <option value="미가공">미가공</option>
-                            <option value="암호화">암호화</option>
-                            <option value="익명화">익명화</option>
-                          </select>
+                        <span class="input-group-addon">활용 항목</span>
+                        <input type="text" id="item" name="item" class="form-control"/>
                       </div>
+                      <br>
                   </div>
               </div>
               

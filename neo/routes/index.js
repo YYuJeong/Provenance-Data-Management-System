@@ -4436,6 +4436,106 @@ router.post('/getUtilizeValues', function (req, res) {
     }
 });
 
+router.post('/utilize_transfer', function (req, res) {
+    console.log("utilize_Transfer")
+    var session = driver.session();
+    var session2 = driver.session();
+    var session3 = driver.session();
+    var session4 = driver.session();
+
+    var company = req.body.company;
+    var allowedPeriodFrom = req.body.allowedPeriodFrom;
+    var allowedPeriodTo = req.body.allowedPeriodTo;
+    var purpose = req.body.purpose;
+    var method = req.body.permission;
+    var item = req.body.item;
+
+    var user_name = session_value.getSession().user;
+    var user_pid = session_value.getSession().pid;
+    var user_type;
+    if(session_value.getSession().gubun == '사용자'){
+        user_type = '개인'
+    }
+
+    let today = new Date();
+    let year = today.getFullYear(); 
+    let month = (today.getMonth() + 1).toString();  
+    let day = today.getDate().toString();  
+    if(month.length == 1){
+        month = "0" + month
+    }
+    if(day.length == 1){
+        day = "0" + day
+    }
+    var date = year.toString() + month + day
+
+    console.log("DDD",  provInfo)
+    console.log(company, allowedPeriodFrom, allowedPeriodTo, purpose, method, item);
+    
+
+    var mergeData = "MATCH (d:Data) "
+                    + "WITH d.name as name, d.value as value, d.file_path as file_path, d.origin as origin, COLLECT(d) AS ns "
+                    + "WHERE size(ns) > 1 "
+                    + "CALL apoc.refactor.mergeNodes(ns) YIELD node "
+                    + "RETURN node"
+    var mergePerson = "MATCH (p:Person) "
+                    + "WITH toLower(p.name) as name, p.pid as pid, p.p_type as p_type, COLLECT(p) AS ns "
+                    + "WHERE size(ns) > 1 "
+                    + "CALL apoc.refactor.mergeNodes(ns) YIELD node "
+                    + "RETURN node"
+    var deleteRel = "MATCH (s)-[r]->(e) "
+                    + "with s,e,type(r) as typ, tail(collect(r)) as coll "
+                    + "foreach(x in coll | delete x) "
+
+    for(var i = 0 ; i < provInfo.length/4; i++){
+        var receiveCypher = "CREATE (p:Person), (d:Data), (p2:Person), (ac:Activity)"
+                            + "SET p = {name: '" + user_name + "', pid: '" + user_pid + "', p_type: '" + user_type + "'}, "
+                            + "    d = {name: '" + provInfo[i*4] + "', value: '" + provInfo[i*4+1] + "', file_path:'" + provInfo[i*4+2] + "', origin:'" + provInfo[i*4+3] + "'}, "
+                            + "    ac = {name: '활용', date:'" + date + "', detail: '', purpose: '" + purpose + "', item: '" + item + "', method: '" + method + "'}, "
+                            + "    p2 = {name: '" + company + "' , pid: '111111', p_type: '기관'} "
+                            + "CREATE (p) <- [o:Own] -(ac), (p2) <- [u:Use{allowed_period_from:'" + allowedPeriodFrom + "', allowed_period_to: '" + allowedPeriodTo + "'}] -(ac), (ac) <- [g:Generate] -(d)"
+        console.log(receiveCypher)
+        session.run(receiveCypher)
+        .then(function (result) {
+        session2.run(mergeData)
+            .then(function (result) {
+                    session2.close()
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+        session3.run(mergePerson)
+            .then(function (result) {
+                session3.close()
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+        session4.run(deleteRel)
+            .then(function (result) {
+                session4.close()
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+        session.close()
+        })
+        .catch(function (err) {
+            console.log(err);
+        });
+    }
+    res.render('data/utilizeData.ejs', {
+        esession: session_value.getSession(), 
+        dataNamesTotal: dataN,
+        dataValuesTotal: datavalue,
+        dataFilesTotal: datafile,
+        dataOriginTotal: dataorigin,
+        s_names: datasname,
+        authenticated: true
+    });
+   
+});
+
 
 router.post('/node2Vec', function (req, res) {
 
