@@ -5160,12 +5160,14 @@ router.post('/checkReceipt', function (req, res) {
 
     var APFroms = []
     var APTos = []
-
+    var dateFlag;
     if(startDate == '' || endDate == ''){
         utilCypher = "MATCH (p)-[o:Own]-(ac), (p2)-[u:Use]-(ac), (ac)-[g:Generate]-(d) WHERE ac.name = '활용' AND p.name = '"+ name +"' AND p.pid = '"+ pid +"' RETURN d, ac, p2, u"
+        dateFlag = false
     }
     else{
         utilCypher = "MATCH (p)-[o:Own]-(ac), (p2)-[u:Use]-(ac), (ac)-[g:Generate]-(d) WHERE ac.name = '활용' AND (ac.date >= '"+ startDate +"' AND ac.date <= '" + endDate + "') AND p.name = '"+ name +"' AND p.pid = '"+ pid +"' RETURN d, ac, p2, u"
+        dateFlag = true
     }
     
     session.run(utilCypher)
@@ -5238,6 +5240,11 @@ router.post('/checkReceipt', function (req, res) {
         //console.log(totalPrice)
         res.render("data/utilizeDataReceiptResult", {
             esession: session_value.getSession(),
+            
+            dateFlag : dateFlag,
+            startDate : startDate,
+            endDate : endDate,
+
             dataResults: dataResults,
             countResults: countResults,
             pricesResults: pricesResults,

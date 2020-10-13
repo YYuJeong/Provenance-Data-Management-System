@@ -48,7 +48,7 @@
 
     <hr class="featurette-divider">
         <div class="jumbotron" style="background-color: #f8f8f8;">
-        <% if(esession.authenticated == false){ %>
+            <% if(esession.authenticated == false){ %>
             <% include ../notAuthenticated.ejs %>
             <% } 
             else if(esession.gubun == '관리자'){ %>
@@ -97,7 +97,13 @@
 
     <div class="receipt" id="printDiv">
         <div class="receipt-top"></div>
-            <h1>영수증</h1>
+            <% if(dateFlag == false){ %>
+                <h1>영수증</h1>
+            <% } 
+            else { %>
+                <h1>영수증<br>(<%= startDate %> ~ <%= endDate %>)<br></h1>
+            <% } %>
+            <br>
             <h2 class="hidden-heading">개인정보 목록</h2>
             <form action="/getReceiptTable" method="post" id="tableData" name="tableData"> 
             <ul class="items">
