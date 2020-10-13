@@ -4291,7 +4291,7 @@ router.get('/data/utilizeData', function (req, res) {
               datafile.push(record._fields[1].properties.file_path)
               dataorigin.push(record._fields[1].properties.origin)
               datasname.push(record._fields[0].properties.name)
-              session.close();
+              session.close()
             });
             
             res.render('data/utilizeData', {
@@ -5215,33 +5215,34 @@ router.post('/checkReceipt', function (req, res) {
                 }
             }
             countResults.push(count);
-
+            
             total = 0;
             for(var k = 0; k<indexs.length; k++){
                 total = total + parseInt(prices[indexs[k]])
             }
             pricesResults.push(total) 
+            
         }
-
+        
         var priceResult = 0
         for (var i = 0; i<pricesResults.length ; i++){
             priceResult = priceResult + pricesResults[i]
         }
-        var totalPrice = priceResult*1.1
-
+        //var totalPrice = priceResult*1.1
+        
         console.log(dataResults)
         console.log(countResults)
         console.log(pricesResults)
 
         console.log(priceResult)
-        console.log(totalPrice)
+        //console.log(totalPrice)
         res.render("data/utilizeDataReceiptResult", {
             esession: session_value.getSession(),
             dataResults: dataResults,
             countResults: countResults,
             pricesResults: pricesResults,
             priceResult: priceResult,
-            totalPrice: totalPrice,
+            //totalPrice: totalPrice,
             authenticated: true
         });
     })

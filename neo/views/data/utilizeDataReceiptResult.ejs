@@ -91,16 +91,17 @@
             <h1>영수증</h1>
             <h2 class="hidden-heading">개인정보 목록</h2>
             <ul class="items">
-                <li><div class="description">Product 1</div><div class="value">&#8361;2500</div></li>
-                <li><div class="description">Product 2</div><div class="value">&#8361;2500</div></li>
-                <li><div class="description">Product 3</div><div class="value">&#8361;2500</div></li>
-                <li><div class="description">Product 4</div><div class="value">&#8361;2500</div></li>
+                <% for(var i = 0; i < dataResults.length; i++ ) { %>
+                <li><div class="description"><%= dataResults[i] %> (X<%= countResults[i] %>)</div><div class="value">&#8361;<%= pricesResults[i] %></div></li>
+                <% } %>
             </ul>
             <h2 class="hidden-heading">총 합</h2>
             <ul class="totals">
-                <li><div class="description" style="margin-bottom: 3px;">금 액</div><div class="value">&#8361;10000</div></li>
-                <li><div class="description" style="margin-bottom: 3px;">부가세(10%)</div><div class="value">&#8361;1000</div></li>
-                <li ><div class="description" style="font-weight: 700; margin-bottom: 3px;">합 계</div><div class="value" style="font-weight: 700;">&#8361;11000</div></li>
+                <li><div class="description" style="margin-bottom: 3px;">금 액</div><div class="value">&#8361;<%= priceResult %></div></li>
+                <% var tax = priceResult/100*10; %>
+                <% var total = priceResult + tax %>
+                <li><div class="description" style="margin-bottom: 3px;">부가세(10%)</div><div class="value">&#8361;<%= tax %></div></li>
+                <li ><div class="description" style="font-weight: 700; margin-bottom: 3px;">합 계</div><div class="value" style="font-weight: 700;">&#8361;<%= total %></div></li>
             </ul>
             
             <!--Additional details will only be visible when printed-->
