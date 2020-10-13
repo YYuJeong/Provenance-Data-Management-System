@@ -101,9 +101,11 @@
         <div class="receipt-top"></div>
             <% if(dateFlag == false){ %>
                 <h1>영수증</h1>
+                <h3>(전체 기간)</h3>
             <% } 
             else { %>
-                <h1>영수증<br>(<%= startDate %> ~ <%= endDate %>)<br></h1>
+                <h1>영수증</h1>
+                <h3>(<%= startDate %> ~ <%= endDate %>)</h3>
             <% } %>
             <br>
             <h2 class="hidden-heading">개인정보 목록</h2>
@@ -111,7 +113,7 @@
             <ul class="items">
                 <% for(var i = 0; i < dataResults.length; i++ ) { %>
                 <% var innerText = dataResults[i] %>
-                <li><div class="description" onclick="submitData('<%=innerText%>','<%=startDate%>','<%=endDate%>');"><%= dataResults[i] %>(x<%= countResults[i] %>)</div><div class="value">&#8361;<%= pricesResults[i] %></div></li>
+                <li><a><div class="description" onclick="submitData('<%=innerText%>','<%=startDate%>','<%=endDate%>');"><%= dataResults[i] %>(x<%= countResults[i] %>)</div></a><div class="value">&#8361;<%= pricesResults[i] %></div></li>
                 <% } %>
             </ul>
             <h2 class="hidden-heading">총 합</h2>

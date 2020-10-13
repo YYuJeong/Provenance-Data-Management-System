@@ -24,9 +24,19 @@
 	h1 {
 		width: 500px;
 		margin: 0 auto;
-		height: 50px;
+		height: 40px;
 		color: #48b9a0;
 		font-size: 30px;
+		text-align: center;
+		line-height: 50px;
+	}
+
+	h3 {
+		width: 500px;
+		margin: 0 auto;
+		height: 30px;
+		color: #48b9a0;
+		font-size: 20px;
 		text-align: center;
 		line-height: 50px;
 	}
