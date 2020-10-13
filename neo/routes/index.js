@@ -5267,7 +5267,8 @@ router.post('/getReceiptTable', function (req, res) {
     console.log(req.body.startDateTemp);
     console.log(req.body.endDateTemp);
     //console.log("HI!");
-
+    var startDate = req.body.startDateTemp
+    var endDate = req.body.endDateTemp
     var user_name = session_value.getSession().user;
     var user_pid = session_value.getSession().pid;
     var user_type;
@@ -5289,17 +5290,22 @@ router.post('/getReceiptTable', function (req, res) {
     var APFroms = []
     var APTos = []
 
-
+    var utilCypher;
 
     if(session_value.getSession().gubun == '사용자'){
         user_type = '개인'
     }
-
-    var utilCypher;
-    utilCypher = "MATCH (p)-[o:Own]-(ac), (p2)-[u:Use]-(ac), (ac)-[g:Generate]-(d) "
-                +"WHERE ac.name = '활용' AND p.name = '"+ user_name +"' AND p.pid = '"+ user_pid +"' "
-                +"AND d.name = '" + dataNameKey + "' RETURN d, ac, p2, u"
-
+    if(startDate != '' && endDate != ''){
+        utilCypher = "MATCH (p)-[o:Own]-(ac), (p2)-[u:Use]-(ac), (ac)-[g:Generate]-(d) "
+                    +"WHERE ac.name = '활용' AND p.name = '"+ user_name +"' AND p.pid = '"+ user_pid +"' "
+                    +"AND (ac.date >= '"+ startDate +"' AND ac.date <= '" + endDate + "') "
+                    +"AND d.name = '" + dataNameKey + "' RETURN d, ac, p2, u"
+    }
+    else{
+        utilCypher = "MATCH (p)-[o:Own]-(ac), (p2)-[u:Use]-(ac), (ac)-[g:Generate]-(d) "
+                    +"WHERE ac.name = '활용' AND p.name = '"+ user_name +"' AND p.pid = '"+ user_pid +"' "
+                    +"AND d.name = '" + dataNameKey + "' RETURN d, ac, p2, u"
+    }
     session.run(utilCypher)
     .then(function (result){
         result.records.forEach(function (record){
