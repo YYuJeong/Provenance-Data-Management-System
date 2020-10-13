@@ -23,6 +23,7 @@ var keyResult = require('./keyResult');
 var similarityResult = require('./similarityResult');
 var fsmResult = require('./fsmResult');
 var Cy2NeoD3 = require('../public/scripts/cy2neod3');
+const session = require('express-session');
 
 let nameArr5 = [];
 let affiliationArr5 = [];
@@ -5133,6 +5134,7 @@ router.post('/downloadData', function (req, res) {
 });
 
 router.post('/checkReceipt', function (req, res) {
+
     var session = driver.session();
 
     var name = session_value.getSession().user; 
@@ -5187,6 +5189,7 @@ router.post('/checkReceipt', function (req, res) {
            
             APFroms.push(record._fields[3].properties.allowed_period_from)
             APTos.push(record._fields[3].properties.allowed_period_to)
+            session.close()
         })
 
         let unique = [...new Set(dataNames)];
