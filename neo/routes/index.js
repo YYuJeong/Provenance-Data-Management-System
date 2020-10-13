@@ -5223,15 +5223,25 @@ router.post('/checkReceipt', function (req, res) {
             pricesResults.push(total) 
         }
 
+        var priceResult = 0
+        for (var i = 0; i<pricesResults.length ; i++){
+            priceResult = priceResult + pricesResults[i]
+        }
+        var totalPrice = priceResult*1.1
+
         console.log(dataResults)
         console.log(countResults)
         console.log(pricesResults)
 
+        console.log(priceResult)
+        console.log(totalPrice)
         res.render("data/utilizeDataReceiptResult", {
             esession: session_value.getSession(),
             dataResults: dataResults,
             countResults: countResults,
             pricesResults: pricesResults,
+            priceResult: priceResult,
+            totalPrice: totalPrice,
             authenticated: true
         });
     })
