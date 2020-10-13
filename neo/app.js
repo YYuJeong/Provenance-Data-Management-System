@@ -52,6 +52,7 @@ var utilizeDataPage = require('./routes/data/utilizeDataPage');
 
 var utilizeDataReceipt = require('./routes/data/utilizeDataReceipt')
 var utilizeDataReceiptResult = require('./routes/data/utilizeDataReceiptResult')
+var utilizeDataReceiptTable = require('./routes/data/utilizeDataReceiptTable')
 
 var fileuploadRouter = require('./routes/data/uploadData');
 
@@ -121,6 +122,7 @@ app.use('/data/utilizeDataPage', utilizeDataPage);
 
 app.use('/data/utilizeDataReceipt', utilizeDataReceipt);
 app.use('/data/utilizeDataReceiptResult', utilizeDataReceiptResult);
+app.use('/data/utilizeDataReceiptTable', utilizeDataReceiptTable);
 
 app.use('/data/uploadData', fileuploadRouter);
 //app.use('/upload', express.static('uploads'));

@@ -5249,9 +5249,26 @@ router.post('/checkReceipt', function (req, res) {
     .catch(function (err){
         console.log(err);
     });
+});
 
+router.post('/getReceiptTable', function (req, res) {
 
+    var dataNameKey = req.body.dataName;
+    console.log(req.body.dataName);
+    //console.log("HI!");
 
+    var user_name = session_value.getSession().user;
+    var user_pid = session_value.getSession().pid;
+    var user_type;
+    if(session_value.getSession().gubun == '사용자'){
+        user_type = '개인'
+    }
+
+    res.render('data/utilizeDataReceiptTable.ejs', {
+        esession: session_value.getSession(),
+        authenticated: true
+    });
+            
 });
 
 module.exports = router;
