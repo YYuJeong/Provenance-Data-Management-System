@@ -5,14 +5,14 @@
 	}
 	
 	.receipt-top {
-		width: 300px;
+		width: 1000px;
 		margin: 0 auto;
 		background: url(images/receipt-top.svg) no-repeat;
 		height: 50px;
 	}
 	
 	.receipt {
-		width: 300px;
+		width: 1000px;
 		padding: 0;
 		margin: 0 auto;
 		background: #ffffff;
@@ -22,11 +22,11 @@
 	}
 	
 	h1 {
-		width: 280px;
+		width: 500px;
 		margin: 0 auto;
 		height: 50px;
 		color: #48b9a0;
-		font-size: 19px;
+		font-size: 30px;
 		text-align: center;
 		line-height: 50px;
 	}
@@ -35,16 +35,17 @@
 		margin: 0 auto;
 		margin-top: 20px;
 		padding: 0;
-		width: 240px;
+		width: 680px;
 		
 	}
 	ul.items li {
 		list-style: none;
 		border-bottom: 1px dotted #BABCC1;
 		clear: both;
-		height: 40px;
+		height: 80px;
 		padding: 0;
-		line-height: 40px;
+		line-height: 80px;
+		font-size: 18px;
 	}
 	
 	ul.items li:last-child {
@@ -69,9 +70,9 @@
 	}
 	
 	ul.totals {
-		margin: 10px auto 10px;
-		padding: 20px 30px;
-		width: 240px;
+		margin: 15px auto 10px;
+		padding: 40px 50px;
+		width: 800px;
 		background: #f5f6f8;
 	}
 	
@@ -80,7 +81,7 @@
 		clear: both;
 		height: 15px;
 		margin-bottom: 8px;
-		font-size: 15px;
+		font-size: 18px;
 		color: #555963;
 	}
 	
@@ -91,12 +92,12 @@
 	a.print-btn {
 		display: block;
 		background: #48b9a0;
-		width: 300px;
+		width: 999px;
 		padding: 0;
 		height: 80px;
 		line-height: 80px;
 		color: #ffffff;
-		font-size: 17px;
+		font-size: 18px;
 		text-decoration: none;
 		text-align: center;
 	}
