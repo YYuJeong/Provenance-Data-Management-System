@@ -5246,13 +5246,13 @@ router.post('/checkReceipt', function (req, res) {
             authenticated: true
         });
     })
-    .catch(function (err){
+    .catch(function (err){  
         console.log(err);
     });
 });
 
 router.post('/getReceiptTable', function (req, res) {
-
+    var session = driver.session();
     var dataNameKey = req.body.dataName;
     console.log(req.body.dataName);
     //console.log("HI!");
@@ -5260,14 +5260,84 @@ router.post('/getReceiptTable', function (req, res) {
     var user_name = session_value.getSession().user;
     var user_pid = session_value.getSession().pid;
     var user_type;
+
+    var dataNames = []
+    var filePaths = []
+    var values = []
+    var origins = []
+
+    var dates = []
+    var items = []
+    var details = []
+    var methods = []
+    var purposes = []
+    var prices = []
+    
+    var insts = []
+
+    var APFroms = []
+    var APTos = []
+
+
+
     if(session_value.getSession().gubun == '사용자'){
         user_type = '개인'
     }
 
-    res.render('data/utilizeDataReceiptTable.ejs', {
-        esession: session_value.getSession(),
-        authenticated: true
+    var utilCypher;
+    utilCypher = "MATCH (p)-[o:Own]-(ac), (p2)-[u:Use]-(ac), (ac)-[g:Generate]-(d) "
+                +"WHERE ac.name = '활용' AND p.name = '"+ user_name +"' AND p.pid = '"+ user_pid +"' "
+                +"AND d.name = '" + dataNameKey + "' RETURN d, ac, p2, u"
+
+    session.run(utilCypher)
+    .then(function (result){
+        result.records.forEach(function (record){
+
+            dataNames.push(record._fields[0].properties.name)
+            filePaths.push(record._fields[0].properties.file_path)
+            values.push(record._fields[0].properties.value)
+            origins.push(record._fields[0].properties.origin)
+
+            
+            dates.push(record._fields[1].properties.date)
+            items.push(record._fields[1].properties.item)
+            details.push(record._fields[1].properties.detail)
+            methods.push(record._fields[1].properties.method)
+            purposes.push(record._fields[1].properties.purpose)
+            prices.push(record._fields[1].properties.price)
+            
+            insts.push(record._fields[2].properties.name)
+            
+            APFroms.push(record._fields[3].properties.allowed_period_from)
+            APTos.push(record._fields[3].properties.allowed_period_to)
+            session.close()
+        })
+
+        res.render("data/utilizeDataReceiptTable.ejs", {
+            esession: session_value.getSession(),
+            dataNames : dataNames,
+            filePaths : filePaths,
+            values : values,
+            origins : origins,
+        
+            dates : dates,
+            items : items,
+            details : details,
+            methods : methods,
+            purposes : purposes,
+            prices : prices,
+            
+            insts : insts,
+        
+            APFroms : APFroms,
+            APTos : APTos,
+            authenticated: true
+        });
+    })
+    .catch(function (err){  
+        console.log(err);
     });
+
             
 });
 

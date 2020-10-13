@@ -49,12 +49,11 @@
         <% } else{ %>
             <div class="jumbotron" style="background-color: #f8f8f8;">
                 <div class="panel panel-default" style="background-color: #ffffff">
-                    <div class="panel-heading" style="font-size:1.5em; background-color: #e7ebee;">활용 이력</div>
+                    <div class="panel-heading" style="font-size:1.5em; background-color: #e7ebee;">' <%= dataNames[0] %>' 데이터 활용 이력</div>
                     <table class="table table-striped" style="font-size: 0.85em;">
                         <thead>
                         <tr>
                             <th>#</th>
-                            <th>데이터명</th>
                             <th>값</th>
                             <th>파일</th>
                             <th>발급처</th>
@@ -67,6 +66,41 @@
                         </tr>
                         </thead>
                         <tbody>
+                        <% for(var i = 0; i < values.length; i++ ) { %>
+                            <tr>
+                                <th scope="row">
+                                    <%= (i + 1) %>
+                                </th>
+                                <td>
+                                    <%= values[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= filePaths[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= origins[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= insts[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= APFroms[i] %> ~ <%= APTos[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= prices[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= purposes[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= methods[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= items[i] %>
+                                </td>
+                            </tr>
+                        <% } %>
+
                         </tbody>
                     </table>             
                 </div>
