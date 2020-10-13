@@ -32,10 +32,12 @@
     </style>
 
     <script type="text/javascript">
-    function submitData(innerText){
+    function submitData(innerText, startDate, endDate){
         var form = document.tableData;
         form.dataName.value = innerText;
-        form.submit(innerText);
+        form.startDateTemp.value = startDate;
+        form.endDateTemp.value = endDate;
+        form.submit();
     }
     </script>
 
@@ -109,7 +111,7 @@
             <ul class="items">
                 <% for(var i = 0; i < dataResults.length; i++ ) { %>
                 <% var innerText = dataResults[i] %>
-                <li><div class="description" onclick="submitData('<%=innerText%>');"><%= dataResults[i] %>(x<%= countResults[i] %>)</div><div class="value">&#8361;<%= pricesResults[i] %></div></li>
+                <li><div class="description" onclick="submitData('<%=innerText%>','<%=startDate%>','<%=endDate%>');"><%= dataResults[i] %>(x<%= countResults[i] %>)</div><div class="value">&#8361;<%= pricesResults[i] %></div></li>
                 <% } %>
             </ul>
             <h2 class="hidden-heading">총 합</h2>
@@ -121,6 +123,8 @@
                 <li ><div class="description" style="font-weight: 700; margin-bottom: 3px;">합 계</div><div class="value" style="font-weight: 700;">&#8361;<%= total %></div></li>
             </ul>
             <div style="display: none;"><input type="text" name="dataName"></div>
+            <div style="display: none;"><input type="text" name="startDateTemp"></div>
+            <div style="display: none;"><input type="text" name="endDateTemp"></div>
             </form>
             
             <!--Additional details will only be visible when printed-->

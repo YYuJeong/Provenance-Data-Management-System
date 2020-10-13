@@ -5250,6 +5250,8 @@ router.post('/checkReceipt', function (req, res) {
             pricesResults: pricesResults,
             priceResult: priceResult,
             //totalPrice: totalPrice,
+            startDate: startDate,
+            endDate: endDate,
             authenticated: true
         });
     })
@@ -5262,6 +5264,8 @@ router.post('/getReceiptTable', function (req, res) {
     var session = driver.session();
     var dataNameKey = req.body.dataName;
     console.log(req.body.dataName);
+    console.log(req.body.startDateTemp);
+    console.log(req.body.endDateTemp);
     //console.log("HI!");
 
     var user_name = session_value.getSession().user;
