@@ -1,7 +1,7 @@
 @media screen {
 	body {
 		color: #8e9197;
-		font: 12px 'Roboto Slab', "Helvetica Neue", Helvetica, Arial, sans-serif;
+		font:'Roboto Slab', "Helvetica Neue", Helvetica, Arial, sans-serif;
 	}
 	
 	.receipt-top {
