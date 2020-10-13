@@ -86,36 +86,37 @@
         </div>
     <hr class="featurette-divider">
 
-    <div class="receipt">
+    <div class="receipt" id="printDiv">
         <div class="receipt-top"></div>
-            <h1>Receipt of Payment</h1>
-            <h2 class="hidden-heading">Item List</h2>
+            <h1>영수증</h1>
+            <h2 class="hidden-heading">개인정보 목록</h2>
             <ul class="items">
-                <li><div class="description">Product 1</div><div class="value">$25.00</div></li>
-                <li><div class="description">Product 2</div><div class="value">$25.00</div></li>
-                <li><div class="description">Product 3</div><div class="value">$25.00</div></li>
-                <li><div class="description">Product 4</div><div class="value">$25.00</div></li>
+                <li><div class="description">Product 1</div><div class="value">&#8361;2500</div></li>
+                <li><div class="description">Product 2</div><div class="value">&#8361;2500</div></li>
+                <li><div class="description">Product 3</div><div class="value">&#8361;2500</div></li>
+                <li><div class="description">Product 4</div><div class="value">&#8361;2500</div></li>
             </ul>
-            <h2 class="hidden-heading">Totals</h2>
+            <h2 class="hidden-heading">총 합</h2>
             <ul class="totals">
-                <li><div class="description">Sub Total</div><div class="value">$100</div></li>
-                <li><div class="description">Tax (20%)</div><div class="value">$20</div></li>
-                <li ><div class="description" style="font-weight: 700;">Total</div><div class="value" style="font-weight: 700;">$120</div></li>
+                <li><div class="description" style="margin-bottom: 3px;">금 액</div><div class="value">&#8361;10000</div></li>
+                <li><div class="description" style="margin-bottom: 3px;">부가세(10%)</div><div class="value">&#8361;1000</div></li>
+                <li ><div class="description" style="font-weight: 700; margin-bottom: 3px;">합 계</div><div class="value" style="font-weight: 700;">&#8361;11000</div></li>
             </ul>
             
             <!--Additional details will only be visible when printed-->
+            <!--
             <h2 class="hidden-heading">Additional Details</h2>
             <ul class="additional-fields">
                 <li><div class="description">Additional Field 1</div><div class="value">Value</div></li>
                 <li><div class="description">Additional Field 2</div><div class="value">Value</div></li>
             </ul>
-            
-            <a href="javascript:window.print()" class="print-btn"><img src="/images/print-icn.png" />Print a copy</a>
+            -->
+            <a class="print-btn" onclick="printReceipt()"><img src="/images/print-icn.png" />영수증 출력</a>
         </div>
     <div class="receipt-bottom"></div>
 
     <hr class="featurette-divider">
-</div>        
+</div> 
 
 <script type="text/javascript">
 
@@ -124,6 +125,19 @@
             $("#receipt").submit();
         });
     });
+
+	function printReceipt() {
+        var initBody = document.body.innerHTML;
+        
+        window.onbeforeprint = function () {
+            document.body.innerHTML = document.getElementById("printDiv").innerHTML;
+        }
+        
+        window.onafterprint = function () {
+            document.body.innerHTML = initBody;
+        }
+        window.print();
+    }
 
     $(document).ready(function () {
             $('#datePicker')
