@@ -4447,8 +4447,9 @@ router.post('/utilize_transfer', function (req, res) {
     var allowedPeriodFrom = req.body.allowedPeriodFrom;
     var allowedPeriodTo = req.body.allowedPeriodTo;
     var purpose = req.body.purpose;
-    var method = req.body.permission;
+    var method = req.body.method;
     var item = req.body.item;
+    var price = req.body.price;
 
     var user_name = session_value.getSession().user;
     var user_pid = session_value.getSession().pid;
@@ -4491,7 +4492,7 @@ router.post('/utilize_transfer', function (req, res) {
         var receiveCypher = "CREATE (p:Person), (d:Data), (p2:Person), (ac:Activity)"
                             + "SET p = {name: '" + user_name + "', pid: '" + user_pid + "', p_type: '" + user_type + "'}, "
                             + "    d = {name: '" + provInfo[i*4] + "', value: '" + provInfo[i*4+1] + "', file_path:'" + provInfo[i*4+2] + "', origin:'" + provInfo[i*4+3] + "'}, "
-                            + "    ac = {name: '활용', date:'" + date + "', detail: '', purpose: '" + purpose + "', item: '" + item + "', method: '" + method + "'}, "
+                            + "    ac = {name: '활용', date:'" + date + "', detail: '', purpose: '" + purpose + "', item: '" + item + "', method: '" + method + "', price: '" + price + "' }, "
                             + "    p2 = {name: '" + company + "' , pid: '111111', p_type: '기관'} "
                             + "CREATE (p) <- [o:Own] -(ac), (p2) <- [u:Use{allowed_period_from:'" + allowedPeriodFrom + "', allowed_period_to: '" + allowedPeriodTo + "'}] -(ac), (ac) <- [g:Generate] -(d)"
         console.log(receiveCypher)
