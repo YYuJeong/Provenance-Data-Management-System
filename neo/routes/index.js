@@ -5133,15 +5133,110 @@ router.post('/downloadData', function (req, res) {
 });
 
 router.post('/checkReceipt', function (req, res) {
+    var session = driver.session();
 
     var name = session_value.getSession().user; 
     var pid = session_value.getSession().pid;
     var startDate = req.body.startDate;
     var endDate = req.body.endDate;
 
-    res.render("data/utilizeDataReceiptResult", {
-        esession: session_value.getSession(),
+    var utilCypher 
+
+    var dataNames = []
+    var filePaths = []
+    var values = []
+    var origins = []
+
+    var dates = []
+    var items = []
+    var details = []
+    var methods = []
+    var purposes = []
+    var prices = []
+    
+    var insts = []
+
+    var APFroms = []
+    var APTos = []
+
+    if(startDate == '' || endDate == ''){
+        utilCypher = "MATCH (p)-[o:Own]-(ac), (p2)-[u:Use]-(ac), (ac)-[g:Generate]-(d) WHERE ac.name = '활용' AND p.name = '"+ name +"' AND p.pid = '"+ pid +"' RETURN d, ac, p2, u"
+    }
+    else{
+        utilCypher = "MATCH (p)-[o:Own]-(ac), (p2)-[u:Use]-(ac), (ac)-[g:Generate]-(d) WHERE ac.name = '활용' AND (ac.date >= '"+ startDate +"' AND ac.date <= '" + endDate + "') AND p.name = '"+ name +"' AND p.pid = '"+ pid +"' RETURN d, ac, p2, u"
+    }
+    
+    session.run(utilCypher)
+    .then(function (result){
+        result.records.forEach(function (record){
+
+            dataNames.push(record._fields[0].properties.name)
+            filePaths.push(record._fields[0].properties.file_path)
+            values.push(record._fields[0].properties.value)
+            origins.push(record._fields[0].properties.origin)
+
+          
+            dates.push(record._fields[1].properties.date)
+            items.push(record._fields[1].properties.item)
+            details.push(record._fields[1].properties.detail)
+            methods.push(record._fields[1].properties.method)
+            purposes.push(record._fields[1].properties.purpose)
+            prices.push(record._fields[1].properties.price)
+           
+            insts.push(record._fields[2].properties.name)
+           
+            APFroms.push(record._fields[3].properties.allowed_period_from)
+            APTos.push(record._fields[3].properties.allowed_period_to)
+        })
+
+        let unique = [...new Set(dataNames)];
+
+        var dataResults = []
+        var countResults = []
+        var pricesResults = []
+
+        var count;
+        var indexs;
+        var total;
+        for(var i = 0; i<unique.length; i++){
+            console.log(i)
+            console.log(unique[i])
+            dataResults.push(unique[i])
+            
+            count = 0;
+            indexs = []
+            for(var j = 0; j<dataNames.length ; j++){
+                if(dataNames[j] == unique[i]){
+                    count++;
+                    indexs.push(j)
+                }
+            }
+            countResults.push(count);
+
+            total = 0;
+            for(var k = 0; k<indexs.length; k++){
+                total = total + parseInt(prices[indexs[k]])
+            }
+            pricesResults.push(total) 
+        }
+
+        console.log(dataResults)
+        console.log(countResults)
+        console.log(pricesResults)
+
+        res.render("data/utilizeDataReceiptResult", {
+            esession: session_value.getSession(),
+            dataResults: dataResults,
+            countResults: countResults,
+            pricesResults: pricesResults,
+            authenticated: true
+        });
+    })
+    .catch(function (err){
+        console.log(err);
     });
+
+
 
 });
 
