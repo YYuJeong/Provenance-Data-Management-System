@@ -5194,6 +5194,7 @@ router.post('/checkReceipt', function (req, res) {
             session.close()
         })
 
+        /*
         let unique = [...new Set(dataNames)];
 
         var dataResults = []
@@ -5204,7 +5205,6 @@ router.post('/checkReceipt', function (req, res) {
         var indexs;
         var total;
         for(var i = 0; i<unique.length; i++){
-            console.log(i)
             console.log(unique[i])
             dataResults.push(unique[i])
             
@@ -5225,16 +5225,43 @@ router.post('/checkReceipt', function (req, res) {
             pricesResults.push(total) 
             
         }
-        
+        */
+
+        var countResults = [];
+        var comparedData = [];
+        var comparedPrice = [];
+        var dataResults = [];
+        var countResults = [];
+        var priceResults = [];
         var priceResult = 0
-        for (var i = 0; i<pricesResults.length ; i++){
-            priceResult = priceResult + pricesResults[i]
+
+        for(var i = 0; i < dataNames.length; i++) {
+            if(!comparedData.includes(dataNames[i] + '/' + insts[i])){
+                comparedData.push(dataNames[i] + '/' + insts[i]);
+                comparedPrice.push(dataNames[i] + '/' + insts[i]);
+                comparedData[dataNames[i] + '/' + insts[i]] = 1;
+                comparedPrice[dataNames[i] + '/' + insts[i]] = parseInt(prices[i]);
+            }
+            else {
+                comparedData[dataNames[i] + '/' + insts[i]] = comparedData[dataNames[i] + '/' + insts[i]] + 1;
+                comparedPrice[dataNames[i] + '/' + insts[i]] = comparedPrice[dataNames[i] + '/' + insts[i]] + parseInt(prices[i]);
+            }
+        }
+
+        for(var i = 0; i < comparedData.length; i++) {
+            dataResults[i] = comparedData[i];
+            countResults[i] = comparedData[comparedData[i]];
+            priceResults[i] = comparedPrice[comparedData[i]];
+        }
+
+        for (var i = 0; i < priceResults.length ; i++){
+            priceResult = priceResult + priceResults[i]
         }
         //var totalPrice = priceResult*1.1
         
         console.log(dataResults)
         console.log(countResults)
-        console.log(pricesResults)
+        console.log(priceResults)
 
         console.log(priceResult)
         //console.log(totalPrice)
@@ -5247,11 +5274,11 @@ router.post('/checkReceipt', function (req, res) {
 
             dataResults: dataResults,
             countResults: countResults,
-            pricesResults: pricesResults,
+            pricesResults: priceResults,
             priceResult: priceResult,
+            insts : insts,
             //totalPrice: totalPrice,
-            startDate: startDate,
-            endDate: endDate,
+
             authenticated: true
         });
     })
@@ -5266,9 +5293,11 @@ router.post('/getReceiptTable', function (req, res) {
     console.log(req.body.dataName);
     console.log(req.body.startDateTemp);
     console.log(req.body.endDateTemp);
+    console.log(req.body.inst);
     //console.log("HI!");
-    var startDate = req.body.startDateTemp
-    var endDate = req.body.endDateTemp
+    var startDate = req.body.startDateTemp;
+    var endDate = req.body.endDateTemp;
+    var inst = req.body.inst;
     var user_name = session_value.getSession().user;
     var user_pid = session_value.getSession().pid;
     var user_type;
@@ -5298,12 +5327,14 @@ router.post('/getReceiptTable', function (req, res) {
     if(startDate != '' && endDate != ''){
         utilCypher = "MATCH (p)-[o:Own]-(ac), (p2)-[u:Use]-(ac), (ac)-[g:Generate]-(d) "
                     +"WHERE ac.name = '활용' AND p.name = '"+ user_name +"' AND p.pid = '"+ user_pid +"' "
+                    +"AND p2.name = '" + inst + "' "
                     +"AND (ac.date >= '"+ startDate +"' AND ac.date <= '" + endDate + "') "
                     +"AND d.name = '" + dataNameKey + "' RETURN d, ac, p2, u"
     }
     else{
         utilCypher = "MATCH (p)-[o:Own]-(ac), (p2)-[u:Use]-(ac), (ac)-[g:Generate]-(d) "
                     +"WHERE ac.name = '활용' AND p.name = '"+ user_name +"' AND p.pid = '"+ user_pid +"' "
+                    +"AND p2.name = '" + inst + "' "
                     +"AND d.name = '" + dataNameKey + "' RETURN d, ac, p2, u"
     }
     session.run(utilCypher)
@@ -5315,7 +5346,6 @@ router.post('/getReceiptTable', function (req, res) {
             values.push(record._fields[0].properties.value)
             origins.push(record._fields[0].properties.origin)
 
-            
             dates.push(record._fields[1].properties.date)
             items.push(record._fields[1].properties.item)
             details.push(record._fields[1].properties.detail)

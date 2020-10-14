@@ -52,10 +52,10 @@
 		list-style: none;
 		border-bottom: 1px dotted #BABCC1;
 		clear: both;
-		height: 80px;
+		height: 60px;
 		padding: 0;
-		line-height: 80px;
-		font-size: 18px;
+		line-height: 60px;
+		font-size: 17px;
 	}
 	
 	ul.items li:last-child {
@@ -73,6 +73,33 @@
 		float: right;
 		text-align: right;
 		font-weight: 700;
+	}
+
+	li .item {
+		width: 25%;
+		float: left;
+		font-weight: 300;
+	}
+
+	li .company{
+		width: 25%;
+		float: left;
+		text-align: center;
+		font-weight: 300;
+	}
+
+	li .count {
+		width: 25%;
+		float: left;
+		text-align: center;
+		font-weight: 300;
+	}
+
+	li .price {
+		width: 25%;
+		float: right;
+		text-align: right;
+		font-weight: 300;
 	}
 	
 	ul.totals li .value {

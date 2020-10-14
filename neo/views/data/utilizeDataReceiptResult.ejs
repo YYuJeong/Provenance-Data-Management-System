@@ -32,9 +32,10 @@
     </style>
 
     <script type="text/javascript">
-    function submitData(innerText, startDate, endDate){
+    function submitData(innerText, inst, startDate, endDate){
         var form = document.tableData;
         form.dataName.value = innerText;
+        form.inst.value = inst;
         form.startDateTemp.value = startDate;
         form.endDateTemp.value = endDate;
         form.submit();
@@ -111,20 +112,30 @@
             <h2 class="hidden-heading">개인정보 목록</h2>
             <form action="/getReceiptTable" method="post" id="tableData" name="tableData"> 
             <ul class="items">
+                <li><div class="item" style="font-weight: 700;">데이터 명</div>
+                    <div class="company" style="font-weight: 700;">제공처</div>
+                    <div class="count" style="font-weight: 700;">사용 횟수</div>
+                    <div class="price" style="font-weight: 700;">제공 금액</div>
+                </li>
                 <% for(var i = 0; i < dataResults.length; i++ ) { %>
-                <% var innerText = dataResults[i] %>
-                <li><a><div class="description" onclick="submitData('<%=innerText%>','<%=startDate%>','<%=endDate%>');"><%= dataResults[i] %>(x<%= countResults[i] %>)</div></a><div class="value">&#8361;<%= pricesResults[i] %></div></li>
+                <% var innerText = (dataResults[i].split('/'))[0] %>
+                <% var inst = (dataResults[i].split('/'))[1] %>
+                <li><a><div class="item" onclick="submitData('<%=innerText%>','<%=inst%>','<%=startDate%>','<%=endDate%>');"><%= (dataResults[i].split('/'))[0] %></div></a>
+                    <div class="company"><%= (dataResults[i].split('/'))[1] %></div>
+                    <div class="count"><%= countResults[i] %></div>
+                    <div class="price">&#8361;<%= pricesResults[i] %></div></li>
                 <% } %>
             </ul>
             <h2 class="hidden-heading">총 합</h2>
             <ul class="totals">
                 <li><div class="description" style="margin-bottom: 3px;">금 액</div><div class="value">&#8361;<%= priceResult %></div></li>
-                <% var tax = priceResult/100*10; %>
+                <% var tax = 0 %>
                 <% var total = priceResult + tax %>
                 <li><div class="description" style="margin-bottom: 3px;">부가세(10%)</div><div class="value">&#8361;<%= tax %></div></li>
                 <li ><div class="description" style="font-weight: 700; margin-bottom: 3px;">합 계</div><div class="value" style="font-weight: 700;">&#8361;<%= total %></div></li>
             </ul>
             <div style="display: none;"><input type="text" name="dataName"></div>
+            <div style="display: none;"><input type="text" name="inst"></div>
             <div style="display: none;"><input type="text" name="startDateTemp"></div>
             <div style="display: none;"><input type="text" name="endDateTemp"></div>
             </form>
