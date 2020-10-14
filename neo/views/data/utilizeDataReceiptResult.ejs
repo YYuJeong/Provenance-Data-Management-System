@@ -29,6 +29,50 @@
         .fontSize {
             font-size: 1.2em;
         }
+
+        [toolTipText]:hover {
+            position: relative;
+        }
+
+        [toolTipText]:after {
+            -webkit-transition: bottom .3s ease-in-out, opacity .3s ease-in-out;
+            -moz-transition: bottom .3s ease-in-out, opacity .3s ease-in-out;
+            transition: bottom .3s ease-in-out, opacity .3s ease-in-out;
+
+            background-color: #43689c;
+
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 3px;
+            
+            color: #eeeeee;
+            font-size: 0.7em;
+            font-weight: 10;
+            padding-left: 9px;
+            position: absolute;
+            width: auto;
+            min-width: 100px;
+            max-width: 500px;
+            height: auto;
+            max-height: 60px;
+            word-wrap: break-word;
+
+            z-index: 9999;
+
+            opacity: 0;
+            left: -9999px;
+            top: 90%;
+            
+            content: attr(toolTipText);
+            white-space: pre;
+        }
+
+        [toolTipText]:hover:after {
+            top: -220%;
+            left: 110%;
+            opacity: 1;
+        }
+        
     </style>
 
     <script type="text/javascript">
@@ -61,8 +105,7 @@
             <% } 
             else{ %>
                 <div class="container" style="display: inline-block; text-align: center;">
-                    <div style="text-align: center; font-size:2em;">개인정보 이력 영수증
-                    </div>
+                    <div style="text-align: center; font-size:2em;">개인정보 이력 영수증</div>
                     <!--Start-->
                     <br><br>
                     <form class="form-inline" method="post" action="/checkReceipt" name="receipt" id="receipt" >
@@ -120,7 +163,7 @@
                 <% for(var i = 0; i < dataResults.length; i++ ) { %>
                 <% var innerText = (dataResults[i].split('/'))[0] %>
                 <% var inst = (dataResults[i].split('/'))[1] %>
-                <li><a><div class="item" onclick="submitData('<%=innerText%>','<%=inst%>','<%=startDate%>','<%=endDate%>');"><%= (dataResults[i].split('/'))[0] %></div></a>
+                <li><a><div class="item" onclick="submitData('<%=innerText%>','<%=inst%>','<%=startDate%>','<%=endDate%>');"><span toolTipText="상세 이력 보기"><%= (dataResults[i].split('/'))[0] %></span></div></a>
                     <div class="company"><%= (dataResults[i].split('/'))[1] %></div>
                     <div class="count"><%= countResults[i] %></div>
                     <div class="price">&#8361;<%= pricesResults[i] %></div></li>
@@ -224,7 +267,7 @@
                 }
             });
         });
-         
+
 </script>
 </body>
 </html>
