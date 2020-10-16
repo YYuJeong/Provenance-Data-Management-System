@@ -155,7 +155,7 @@ def searchCreateProv(tx, dateFlag):
                         + returnCypher)
     else:
         createCypher = createCypher + returnCypher
-
+    print(createCypher)
     results = tx.run(createCypher).values()
     
     p, d, ac = [], [], []

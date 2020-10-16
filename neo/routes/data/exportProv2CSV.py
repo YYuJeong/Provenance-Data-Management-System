@@ -227,9 +227,11 @@ def searchProvideProv(tx, dateFlag):
 
 user_name = sys.argv[1]
 user_pid = sys.argv[2]
-
+#p = "C://Users//YuJeong//Documents//Provenance-Data-Management-System//neo//"
 filename = user_name + '(' + user_pid +')님의 이력데이터.xlsx'
 writer = pd.ExcelWriter(filename, engine='xlsxwriter')
+
+#filename = p + 
 
 dateFlag = sys.argv[3]
 actFlag = sys.argv[4]

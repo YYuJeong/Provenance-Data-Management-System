@@ -14,18 +14,21 @@ import math
 
 from neo4j import GraphDatabase
 
-driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "wowhi223"))
+driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "wowhi223"), encrypted=False)
 
 def check_nodeLabel(tx, keyword):
     personNodes = (tx.run("MATCH (n:Person)"
-                          "WHERE (any(prop in ['name', 'pid', 'p_type'] WHERE n[prop] = $keyword))"
-                          "RETURN n", keyword = keyword)).value()
+                          "where not exists(n.graph) "
+                          "and (any(prop in ['name', 'pid', 'p_type'] WHERE n[prop] = '"+keyword+"'))"
+                          "RETURN n")).value()
     dataNodes = (tx.run("MATCH (n:Data)"
-                      "WHERE (any(prop in ['name', 'value', 'file_path', 'origin'] WHERE n[prop] = $keyword))"
-                      "RETURN n", keyword = keyword)).value()
+                        "where not exists(n.graph) "
+                      "and (any(prop in ['name', 'value', 'file_path', 'origin'] WHERE n[prop] = '"+keyword+"'))"
+                      "RETURN n")).value()
     activityNodes = (tx.run("MATCH (n:Activity)"
-                          "WHERE (any(prop in ['name', 'date','detail'] WHERE n[prop] = $keyword))"
-                          "RETURN n", keyword = keyword)).value()
+                            "where not exists(n.graph) "
+                          "and (any(prop in ['name', 'date','detail'] WHERE n[prop] = '"+keyword+"'))"
+                          "RETURN n")).value()
 
     if(personNodes):
         return personNodes
@@ -56,9 +59,8 @@ def delete_duplicateNode(kNodes):
 
 # next (iter (k1nodes[0].labels)) : frozenset 값 얻는법
 def get_nodes(tx, user_name , user_pid):
-    nodes = (tx.run("MERGE (p: Person {name:$user_name, pid: $user_pid, p_type: '개인'}) "
-                    "RETURN p"
-                    , user_name = user_name, user_pid = user_pid)).values()
+    nodes = (tx.run("MERGE (p: Person {name:'"+user_name+"', pid: '"+ user_pid +"', p_type: '개인'}) "
+                    "RETURN p")).values()
     return nodes
 
 def generate_shortestPathQuery(n, m):
@@ -74,8 +76,10 @@ def generate_shortestPathQuery(n, m):
     for i in range(len(prop1)):
          whereN1 = whereN1 + "n."+prop1[i]+" = '" + val1[i] + "' AND "    
     for i in range(len(prop2)):
-         whereN2 = whereN2 + "m."+prop2[i]+" = '" + val2[i] + "' "
-         if i+1 != len(prop2):
+        print("prop2[i]: " , prop2[i]) 
+        print(val2[i])
+        whereN2 = whereN2 + "m."+prop2[i]+" = '" + str(val2[i]) + "' "
+        if i+1 != len(prop2):
              whereN2 = whereN2 + 'AND ' 
     spWhere = spWhere + whereN1 + whereN2
     spQuery = spMatch + spWhere + " MATCH p = shortestPath((n)-[*]-(m)) RETURN p, length(p)"
@@ -234,7 +238,7 @@ with driver.session() as session:
     #keywords = ['성별데이터','나나나','이미지데이터','중소기업진흥공단','data_912']
 
     user_name = '이상우'
-    user_pid = '980514-1520414'
+    user_pid = '880514-1520414'
     
     userNode = session.read_transaction(get_nodes, user_name = user_name, user_pid = user_pid)
 
