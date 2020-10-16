@@ -4448,8 +4448,7 @@ router.post('/utilize_transfer', function (req, res) {
     var allowedPeriodFrom = req.body.allowedPeriodFrom;
     var allowedPeriodTo = req.body.allowedPeriodTo;
     var purpose = req.body.purpose;
-    var method = req.body.method;
-    var item = req.body.item;
+    var use = req.body.use;
     var price = req.body.price;
 
     var user_name = session_value.getSession().user;
@@ -4472,7 +4471,6 @@ router.post('/utilize_transfer', function (req, res) {
     var date = year.toString() + month + day
 
     console.log("DDD",  provInfo)
-    console.log(company, allowedPeriodFrom, allowedPeriodTo, purpose, method, item);
     
 
     var mergeData = "MATCH (d:Data) "
@@ -4493,7 +4491,7 @@ router.post('/utilize_transfer', function (req, res) {
         var receiveCypher = "CREATE (p:Person), (d:Data), (p2:Person), (ac:Activity)"
                             + "SET p = {name: '" + user_name + "', pid: '" + user_pid + "', p_type: '" + user_type + "'}, "
                             + "    d = {name: '" + provInfo[i*4] + "', value: '" + provInfo[i*4+1] + "', file_path:'" + provInfo[i*4+2] + "', origin:'" + provInfo[i*4+3] + "'}, "
-                            + "    ac = {name: '활용', date:'" + date + "', detail: '', purpose: '" + purpose + "', item: '" + item + "', method: '" + method + "', price: '" + price + "' }, "
+                            + "    ac = {name: '활용', date:'" + date + "', detail: '', purpose: '" + purpose + "', use: '" + use + "', price: '" + price + "' }, "
                             + "    p2 = {name: '" + company + "' , pid: '111111', p_type: '기관'} "
                             + "CREATE (p) <- [o:Own] -(ac), (p2) <- [u:Use{allowed_period_from:'" + allowedPeriodFrom + "', allowed_period_to: '" + allowedPeriodTo + "'}] -(ac), (ac) <- [g:Generate] -(d)"
         console.log(receiveCypher)
@@ -5150,11 +5148,10 @@ router.post('/checkReceipt', function (req, res) {
     var origins = []
 
     var dates = []
-    var items = []
     var details = []
-    var methods = []
     var purposes = []
     var prices = []
+    var uses = []
     
     var insts = []
 
@@ -5181,11 +5178,10 @@ router.post('/checkReceipt', function (req, res) {
 
           
             dates.push(record._fields[1].properties.date)
-            items.push(record._fields[1].properties.item)
             details.push(record._fields[1].properties.detail)
-            methods.push(record._fields[1].properties.method)
             purposes.push(record._fields[1].properties.purpose)
             prices.push(record._fields[1].properties.price)
+            uses.push(record._fields[1].properties.use)
            
             insts.push(record._fields[2].properties.name)
            
@@ -5308,9 +5304,8 @@ router.post('/getReceiptTable', function (req, res) {
     var origins = []
 
     var dates = []
-    var items = []
+    var uses = []
     var details = []
-    var methods = []
     var purposes = []
     var prices = []
     
@@ -5347,12 +5342,11 @@ router.post('/getReceiptTable', function (req, res) {
             origins.push(record._fields[0].properties.origin)
 
             dates.push(record._fields[1].properties.date)
-            items.push(record._fields[1].properties.item)
             details.push(record._fields[1].properties.detail)
-            methods.push(record._fields[1].properties.method)
             purposes.push(record._fields[1].properties.purpose)
             prices.push(record._fields[1].properties.price)
-            
+            uses.push(record._fields[1].properties.use)
+
             insts.push(record._fields[2].properties.name)
             
             APFroms.push(record._fields[3].properties.allowed_period_from)
@@ -5368,11 +5362,10 @@ router.post('/getReceiptTable', function (req, res) {
             origins : origins,
         
             dates : dates,
-            items : items,
             details : details,
-            methods : methods,
             purposes : purposes,
             prices : prices,
+            uses : uses,
             
             insts : insts,
         
