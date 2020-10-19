@@ -85,13 +85,12 @@ def extractProcessProps(p, d2, ac, d1):
                 '파일': dataFilePaths1,
                 '발급처' : dataOrigins1,
                 '가공날짜' : acDates,
-                '기타정보' : acDetails,
-                '(가공)' : acNames,
+                '가공방법' : acDetails,
                 '데이터명 ' : dataNames2,
                 '값 ' : dataVals2,
                 '파일 ': dataFilePaths2,
                 '발급처 ' : dataOrigins2,
-                }    
+                }       
         
         processDF = pd.DataFrame(data, index=range(1,len(acDates)+1))
     return processDF
@@ -250,29 +249,107 @@ with driver.session() as session:
             if act == '생성':
                 createDF = session.read_transaction(searchCreateProv, dateFlag)
                 createDF.to_excel(writer, sheet_name='생성')
+                workbook  = writer.book
+                worksheet = writer.sheets['생성']
+                cell_form = workbook.add_format({'align': 'center'})
+                worksheet.set_column('A:K', 10, cell_form)
+                worksheet.set_column('C:D', 20, cell_form)
+                #workbook.close()
             elif act == '가공':
                 processDF = session.read_transaction(searchProcessProv, dateFlag)   
-                processDF.to_excel(writer, sheet_name='가공')
+                processDF.to_excel(writer, sheet_name='가공' , startrow=1)
+                workbook  = writer.book
+                worksheet = writer.sheets['가공']
+                cell_form = workbook.add_format({'align': 'center'})
+                cell_boldform = workbook.add_format({'align': 'center', 'bold': True, 'left':1, 'right':1})
+                worksheet.merge_range('B1:F1', '가공 전', cell_boldform)
+                worksheet.merge_range('H1:K1', '가공 후', cell_boldform)
+                worksheet.write(0,6, '->', cell_boldform)
+                worksheet.set_column('A:K', 10, cell_form)
+                worksheet.set_column('C:D', 20, cell_form)
+                #workbook.close()
+                
             elif act == '제공':
                 provideDF = session.read_transaction(searchProvideProv, dateFlag)   
                 provideDF.to_excel(writer, sheet_name='제공')
+                workbook  = writer.book
+                worksheet = writer.sheets['제공']
+                cell_form = workbook.add_format({'align': 'center'})
+                worksheet.set_column('A:K', 10, cell_form)
+                worksheet.set_column('I:I', 20, cell_form)
+                worksheet.set_column('K:K', 20, cell_form)
+                worksheet.set_column('C:D', 20, cell_form)
+                #workbook.close()
     else:
         if actFlag: 
             for act in actArgvs:
                 if act == '생성':
                     createDF = session.read_transaction(searchCreateProv, dateFlag)
                     createDF.to_excel(writer, sheet_name='생성')
+                    workbook  = writer.book
+                    worksheet = writer.sheets['생성']
+                    cell_form = workbook.add_format({'align': 'center'})
+                    worksheet.set_column('A:K', 10, cell_form)
+                    worksheet.set_column('C:D', 20, cell_form)
+                    #workbook.close()
                 elif act == '가공':
                     processDF = session.read_transaction(searchProcessProv, dateFlag)   
-                    processDF.to_excel(writer, sheet_name='가공')
+                    processDF.to_excel(writer, sheet_name='가공' , startrow=1)
+                    workbook  = writer.book
+                    worksheet = writer.sheets['가공']
+                    cell_form = workbook.add_format({'align': 'center'})
+                    cell_boldform = workbook.add_format({'align': 'center', 'bold': True, 'left':1, 'right':1})
+                    worksheet.merge_range('B1:F1', '가공 전', cell_boldform)
+                    worksheet.merge_range('H1:K1', '가공 후', cell_boldform)
+                    worksheet.write(0,6, '->', cell_boldform)
+                    worksheet.set_column('A:K', 10, cell_form)
+                    worksheet.set_column('C:D', 20, cell_form)
+                    worksheet.set_column('I:J', 20, cell_form)
+                    
+                    #workbook.close()
                 elif act == '제공':
                     provideDF = session.read_transaction(searchProvideProv, dateFlag)   
                     provideDF.to_excel(writer, sheet_name='제공')
+                    workbook  = writer.book
+                    worksheet = writer.sheets['제공']
+                    cell_form = workbook.add_format({'align': 'center'})
+                    worksheet.set_column('A:K', 10, cell_form)
+                    worksheet.set_column('C:D', 20, cell_form)
+                    worksheet.set_column('I:I', 20, cell_form)
+                    worksheet.set_column('K:K', 20, cell_form)                    
+                    #workbook.close()
         elif dateFlag:
             createDF = session.read_transaction(searchCreateProv, dateFlag)
             processDF = session.read_transaction(searchProcessProv, dateFlag) 
-            provideDF = session.read_transaction(searchProvideProv, dateFlag)
+            provideDF = session.read_transaction(searchProvideProv, dateFlag) 
+            
+            createDF.to_excel(writer, sheet_name='생성')
+            workbook  = writer.book
+            worksheet = writer.sheets['생성']
+            cell_form = workbook.add_format({'align': 'center'})
+            worksheet.set_column('A:K', 10, cell_form)
+            worksheet.set_column('C:D', 20, cell_form)
+            
+            processDF.to_excel(writer, sheet_name='가공' , startrow=1)
+            workbook  = writer.book
+            worksheet = writer.sheets['가공']
+            cell_form = workbook.add_format({'align': 'center'})
+            cell_boldform = workbook.add_format({'align': 'center', 'bold': True, 'left':1, 'right':1})
+            worksheet.merge_range('B1:F1', '가공 전', cell_boldform)
+            worksheet.merge_range('H1:K1', '가공 후', cell_boldform)
+            worksheet.write(0,6, '->', cell_boldform)
+            worksheet.set_column('A:K', 10, cell_form)
+            worksheet.set_column('C:D', 20, cell_form)
+            worksheet.set_column('I:J', 20, cell_form)
 
+            provideDF.to_excel(writer, sheet_name='제공')
+            workbook  = writer.book
+            worksheet = writer.sheets['제공']
+            cell_form = workbook.add_format({'align': 'center'})
+            worksheet.set_column('A:J', 10, cell_form)
+            worksheet.set_column('C:D', 20, cell_form)
+            worksheet.set_column('I:I', 20, cell_form)
+            worksheet.set_column('K:K', 20, cell_form)
 
     writer.save()
 
