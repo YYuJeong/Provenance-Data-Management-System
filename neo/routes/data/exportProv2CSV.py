@@ -222,15 +222,15 @@ def searchProvideProv(tx, dateFlag):
     provideDF = extractProvideProps(p1, d, ac, r, p2)
 
     return provideDF
-        
+
+'''
+filename = user_name + '(' + user_pid +')님의 이력데이터.xlsx'
+writer = pd.ExcelWriter(filename, engine = 'xlsxwriter')
+'''
 
 user_name = sys.argv[1]
 user_pid = sys.argv[2]
-#p = "C://Users//YuJeong//Documents//Provenance-Data-Management-System//neo//"
-filename = user_name + '(' + user_pid +')님의 이력데이터.xlsx'
-writer = pd.ExcelWriter(filename, engine='xlsxwriter')
 
-#filename = p + 
 
 dateFlag = sys.argv[3]
 actFlag = sys.argv[4]
@@ -240,6 +240,17 @@ actArgvs = sys.argv[6]
 
 datesArgvs = datesArgvs.split(',')
 actArgvs = actArgvs.split(',')
+
+
+def demo():
+    filename = user_name + '(' + user_pid +')님의 이력데이터.xlsx'
+    #writer = pd.ExcelWriter(filename, engine = 'xlsxwriter')
+    """Demo for the false positive"""
+    with pd.ExcelWriter(filename) as writer:
+
+        return writer
+
+writer = demo()
 
 with driver.session() as session:
 
