@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <% include ../before_loading.ejs %>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>개인정보 이력관리 시스템</title>
+
+    <style type="text/css">
+    @font-face { font-family: 'Binggrae-Bold'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Binggrae-Bold.woff') format('woff'); font-weight: normal; font-style: normal; }
+    @font-face { font-family: 'RIDIBatang'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/RIDIBatang.woff') format('woff'); font-weight: normal; font-style: normal; }
+        body {
+            font-family: 'RIDIBatang';
+            color: #303030;
+            letter-spacing: 1px;
+        }
+
+        th {
+            text-align: center;
+        }
+
+        td {
+            font-size: 0.9em;
+        }
+
+        .fontSize {
+            font-size: 1.2em;
+        }
+    </style>
+
+</head>
+
+<body style="overflow:auto">
+    <% include ../header %>
+    <div class="container marketing">
+    <% include ../menu %>
+
+    <hr class="featurette-divider">
+    <div class="container fontSize" style="display: inline-block;text-align: center;">
+        <!-- Default panel contents -->
+        <% if(esession.authenticated == false){ %>
+            <% include ../notAuthenticated.ejs %>
+        <% } 
+        else if(esession.gubun == '관리자'){ %>
+            <% include ../adminres %>
+        <% } else{ %>
+            <div class="jumbotron" style="background-color: #f8f8f8;">
+                <div class="panel panel-default" style="background-color: #ffffff">
+                    <div class="panel-heading" style="font-size:1.5em; background-color: #e7ebee;"><%=insts[0]%>의 <%=dataNames[0]%> 데이터 활용 이력</div>
+                    <table class="table table-striped" style="font-size: 0.85em;">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>값</th>
+                            <th>파일</th>
+                            <th>발급처</th>
+                            <th>활용처</th>
+                            <th>허용 기간</th>
+                            <th>가격</th>
+                            <th>활용 목적</th>
+                            <th>용도 구분</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <% for(var i = 0; i < values.length; i++ ) { %>
+                            <tr>
+                                <th scope="row">
+                                    <%= (i + 1) %>
+                                </th>
+                                <td>
+                                    <%= values[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= filePaths[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= origins[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= insts[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= APFroms[i] %> ~ <%= APTos[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= prices[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= purposes[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= uses[i] %>
+                                </td>
+                            </tr>
+                        <% } %>
+
+                        </tbody>
+                    </table>             
+                </div>
+            </div>
+        <% }%>
+        <a href="javascript:history.back();"><input class="btn btn-primary" type="/" value="뒤로가기"
+            style="width:100px; background-color: #4a9dea; border-color:  #4a9dea;"></a>
+    </div>
+
+    <!-- /END THE FEATURETTES -->
+
+    <hr class="featurette-divider">
+    <!-- FOOTER -->
+    <footer>
+    </footer>
+
+</div><!-- /.container -->
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script type="text/javascript">
+</script>
+</body>
+</html>

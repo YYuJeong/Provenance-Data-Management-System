@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <% include ../before_loading.ejs %>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>개인정보 이력관리 시스템</title>
+
+    <style type="text/css">
+    @font-face { font-family: 'Binggrae-Bold'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Binggrae-Bold.woff') format('woff'); font-weight: normal; font-style: normal; }
+    @font-face { font-family: 'RIDIBatang'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/RIDIBatang.woff') format('woff'); font-weight: normal; font-style: normal; }
+        body {
+            font-family: 'RIDIBatang';
+            color: #303030;
+            letter-spacing: 1px;
+        }
+
+        th {
+            text-align: center;
+        }
+
+        .fontSize {
+            font-size: 1.2em;
+        }
+
+        
+
+</style>
+
+</head>
+
+<body style="overflow:auto">
+<% include ../header %>
+
+<!-- Carousel
+================================================== -->
+
+
+<!-- Marketing messaging and featurettes
+================================================== -->
+<!-- Wrap the rest of the page in another container to center all the content. -->
+<div class="container marketing">
+    <!-- Three columns of text below the carousel -->
+    <% include ../menu %>
+
+    <!-- START THE FEATURETTES -->
+    
+
+    <hr class="featurette-divider">
+    <div class="container fontSize" style="display: inline-block;text-align: center;">
+        <!-- Default panel contents -->
+        <% if(authenticated == false){ %>
+            <% include ../notAuthenticated %>
+        <% } 
+        else if(esession.gubun == '관리자'){ %>
+            <% include ../adminres %>
+        <% } 
+        else{ %>
+        <div class="jumbotron" style="background-color: #f8f8f8;">
+            <form action="/getUtilizeValues" method="post" id="Data">
+            <div class="panel panel-default" style="background-color: #ffffff">
+                <div class="panel-heading" style="font-size:1.4em; background-color: #e7ebee;">개인정보 활용</div>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>데이터명</th>
+                        <th>값</th>
+                        <th>파일</th>
+                        <th>발급처</th>
+                        <th>선택</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <% for(var i = 0; i < s_names.length; i++) { %>
+                            <tr>
+                                <th scope="row">
+                                    <%= (i + 1) %>
+                                </th>
+                                <td>
+                                    <%= dataNamesTotal[i] %>
+                                </td>
+                                <td align=center width=200;>
+                                    <%= dataValuesTotal[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= dataFilesTotal[i] %>
+                                </td>
+                                <td align=center>
+                                    <%= dataOriginTotal[i] %>
+                                </td>
+                                <td align=center>
+                                    <input type="checkbox" name="modifyCheck" style="width: 15px; height: 15px;" value=<%= i %>>
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+            <br>
+            <button type="button" class="btn btn-primary" id="transfer" style="width:100px; background-color: #4a9dea; border-color:  #4a9dea;">활용</button>
+        </div>
+        <% }%>
+    </div>
+    </form>
+    <!-- /END THE FEATURETTES -->
+    <hr class="featurette-divider">
+</div><!-- /.container -->
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function () {
+    $("#transfer").click(function() {
+            $("#Data").submit();
+    });
+});
+
+/*
+function Write() {
+    //document.getElementById("dataTransfer").innerHTML = "ONEW";
+    var newDiv = document.createElement("div");
+    newDiv.className = "jumbotron";
+    newDiv.style.backgroundColor = "#f8f8f8";
+    var newDiv2 = document.createElement("div");
+    newDiv2.style.textAlign = "center";
+    newDiv2.style.fontSize = "2em";
+    newDiv2.innerHTML = "세부사항" + "<br>" + "<br>"
+    var newDiv3 = document.createElement("div");
+    newDiv3.className = "row";
+    var newDiv4 = document.createElement("div");
+    newDiv4.style.margin = "0 auto";
+
+    var newDiv5 = document.createElement("div");
+    newDiv5.className = "input-group";
+    newDiv5.style.width = "30%";
+    newDiv5.style.margin = "0 auto";
+    var newSpan = document.createElement("span")
+    newSpan.className = "input-group-addon"
+    newSpan.innerHTML = "기관"
+    var newInput = document.createElement("input")
+    newInput.type = "text";
+    newInput.id = "name";
+    newInput.name = "name";
+    newInput.className = "form-control";
+    newDiv5.appendChild(newSpan);
+    newDiv5.appendChild(newInput);
+    newDiv4.appendChild(newDiv5);
+
+    var newDiv6 = document.createElement("div");
+    newDiv6.className = "input-group";
+    newDiv6.style.width = "30%";
+    newDiv6.style.margin = "0 auto";
+    var newSpan2 = document.createElement("span")
+    newSpan2.className = "input-group-addon"
+    newSpan2.innerHTML = "허용기간(시작)"
+    var newInput2 = document.createElement("input")
+    newInput2.type = "text";
+    newInput2.id = "allowedPeriodTo";
+    newInput2.name = "allowedPeriodTo";
+    newInput2.className = "form-control";
+    newDiv6.appendChild(newSpan2);
+    newDiv6.appendChild(newInput2);
+    newDiv4.appendChild(newDiv6);
+
+
+
+    var newDiv7 = document.createElement("div");
+    var newDiv8 = document.createElement("div");
+    var newDiv9 = document.createElement("div");
+
+
+
+
+
+    newDiv3.appendChild(newDiv4);
+    newDiv2.appendChild(newDiv3);
+    newDiv.appendChild(newDiv2);
+    dataTransfer.appendChild(newDiv);
+        
+}*/
+</script>
+</body>
+</html>

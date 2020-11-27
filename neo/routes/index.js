@@ -23,6 +23,7 @@ var keyResult = require('./keyResult');
 var similarityResult = require('./similarityResult');
 var fsmResult = require('./fsmResult');
 var Cy2NeoD3 = require('../public/scripts/cy2neod3');
+const session = require('express-session');
 
 let nameArr5 = [];
 let affiliationArr5 = [];
@@ -4166,6 +4167,376 @@ router.post('/modify', function (req, res) {
         });
 });
 
+router.get('/data/utilizeData', function (req, res) {
+
+    var session = driver.session();
+
+    var nameArr = [];
+    var affiliationArr = [];
+    var pidArr = [];
+    var pTypeArr = [];
+    var nameArr2 = [];
+    var affiliationArr2 = [];
+
+    var s_nameArr = [];
+    var s_pidArr = [];
+    var s_pTypeArr = [];
+    var r_nameArr = [];
+    var r_affiliationArr = [];
+
+    var activityTypeArr4 = [];
+    var dateArr4 = [];
+    var detailArr4 = [];
+    var dataNameArr4 = [];
+    //var dataTypeArr4 = [];
+    //var priceArr4 = [];
+    //var deviceArr4 = [];
+    var valueArr4 = [];
+    var file_pathArr4 = [];
+    var originArr4 = [];
+    var dataNameArr215 = [];
+    var valueArr215 = [];
+    var file_pathArr215 = [];
+    var originArr215 = [];
+
+    var activityTypeArr3 = [];
+    var dateArr3 = [];
+    var detailArr3 = [];
+    var dataNameArr3 = [];
+    var dataTypeArr3 = [];
+    var priceArr3 = [];
+    var deviceArr3 = [];
+    var valueArr3 = [];
+    var file_pathArr3 = [];
+    var originArr3 = [];
+
+    var nameArr10 = [];
+    var pidArr10 = [];
+    var pTypeArr10 = [];
+    var affiliationArr10 = [];
+
+    var activityTypeArr10 = [];
+    var dateArr10 = [];
+    var detailArr10 = [];
+
+    var APFromArr10 = [];
+    var APToArr10 = [];
+    var priceArr10 = [];
+    var isAgreeArr10 = [];
+
+    var dataNameArr10 = [];
+    var dataTypeArr10 = [];
+    var deviceArr10 = [];
+
+    var dataNameArr10 = [];
+    var valueArr10 = [];
+    var file_pathArr10 = [];
+    var originArr10 = [];
+    //var dataTypeArr10 = [];
+    //var deviceArr10 = [];
+
+    var nameArr11 = [];
+    var pidArr11 = [];
+    var pTypeArr11 = [];
+
+    var dataNameArr11 = [];
+    var dataTypeArr11 = [];
+    var priceArr11 = [];
+    var deviceArr11 = [];
+
+    //var dataOwner = [];
+    //var dataOwnerAff = [];
+
+    var i = 0;
+    var user_gubun = session_value.getSession().gubun;
+    var user_name = session_value.getSession().user;
+    var user_pid = session_value.getSession().pid;
+
+    modiInsName = [];
+        
+     con.query("SELECT * FROM iitp.institutions;", function (err, rows, fields) {
+        if (err) {
+            console.log(err);
+            console.log("QUERY ERROR!");
+        }
+        else {
+            for (var index = 0; index < rows.length; index++) {
+                modiInsName.push(rows[index]["name"]);
+            }
+        }
+    });
+    
+    if (user_gubun == '사용자') {
+        console.log('사용자')
+        session
+          .run("MATCH (d:Data)-[:Generate]-(ac:Activity)-[:Act]-(p:Person) WHERE ac.name = '생성' AND p.name = '" + user_name + "' AND p.pid = '"+ user_pid +"' RETURN p, d, ac")
+          .then(function (result) {
+            result.records.forEach(function (record) {
+
+              s_nameArr.push(record._fields[0].properties.name)
+              s_pidArr.push(record._fields[0].properties.pid)
+              s_pTypeArr.push(record._fields[0].properties.p_type)
+
+              dataNameArr4.push(record._fields[1].properties.name)
+              valueArr4.push(record._fields[1].properties.value)
+              file_pathArr4.push(record._fields[1].properties.file_path)
+              originArr4.push(record._fields[1].properties.origin)
+
+              activityTypeArr4.push(record._fields[2].properties.name)
+              dateArr4.push(record._fields[2].properties.date)
+              detailArr4.push(record._fields[2].properties.detail)
+
+              dataN.push(record._fields[1].properties.name)
+              datavalue.push(record._fields[1].properties.value)
+              datafile.push(record._fields[1].properties.file_path)
+              dataorigin.push(record._fields[1].properties.origin)
+              datasname.push(record._fields[0].properties.name)
+              session.close()
+            });
+            
+            res.render('data/utilizeData', {
+                esession: session_value.getSession(),
+
+
+                s_names: s_nameArr,
+                s_pids: s_pidArr,
+                s_pTypes: s_pTypeArr,
+                dataNames4: dataNameArr4,
+                values4: valueArr4,
+                filePaths4: file_pathArr4,
+                origins4: originArr4,
+                activityTypes4: activityTypeArr4,
+                dates4: dateArr4,
+                details4: detailArr4,
+
+                dataNamesTotal: dataN,
+                dataValuesTotal: datavalue,
+                dataFilesTotal: datafile,
+                dataOriginTotal: dataorigin,
+
+                indNames: modiInsName,
+                
+                authenticated: true
+            });
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+    }
+    else {
+        res.render('data/utilizeData', {
+            esession: session_value.getSession(),
+            names: undefined,
+            affiliations: undefined,
+            dataTypes3: undefined,
+            dataNames3: undefined,
+            devices3: undefined,
+            prices3: undefined,
+            activityTypes3: undefined,
+            dates3: undefined,
+
+            s_names: undefined,
+            s_affiliations: undefined,
+            dataTypes4: undefined,
+            dataNames4: undefined,
+            devices4: undefined,
+            prices4: undefined,
+            activityTypes4: undefined,
+            dates4: undefined,
+            r_names: undefined,
+            r_affiliations: undefined,
+
+            names2 : undefined,
+            affiliations2 : undefined,
+
+            names10 : undefined,
+            affiliations10 : undefined,
+            
+            activityTypes10 : undefined,
+            dates10 : undefined,
+            dateNames10 : undefined,
+            dateTypes10 : undefined,
+            prices10: undefined,
+            devices10: undefined,
+
+            dateNames11 : undefined,
+            dateTypes11 : undefined,
+            prices11: undefined,
+            devices11: undefined,
+
+            authenticated: false
+        });
+    }
+
+
+});
+
+router.post('/getUtilizeValues', function (req, res) {
+
+    var checkValues = req.body.modifyCheck;
+    var checkLen;
+
+    var modiFlag = false;
+
+    if (checkValues == undefined) {
+        checkLen = 0;
+    } 
+    else {
+        checkLen = checkValues.length;
+    }
+    /*
+    if (Array.isArray(checkValues)) {
+        modiFlag = false;
+    }
+    */
+    if (!(checkLen == 0)) {
+        console.log("------------check ------------", checkValues, checkValues.length);
+        modiFlag = true;
+    }
+
+    if (!modiFlag) {
+        console.log("false");
+        modiFlag = false;
+    }
+
+    if (checkLen == 0) 
+        modiFlag = false;
+
+    if (modiFlag) {
+        if(!Array.isArray(checkValues)){
+            provInfo.push(dataN[checkValues]);
+            provInfo.push(datavalue[checkValues]);
+            provInfo.push(datafile[checkValues]);
+            provInfo.push(dataorigin[checkValues]);
+
+            console.log("modiFlag : ", modiFlag);
+            console.log("provInfo : ", provInfo);
+        }
+        else{
+            for(var i = 0; i < checkLen ; i++){
+                provInfo.push(dataN[checkValues[i]]);
+                provInfo.push(datavalue[checkValues[i]]);
+                provInfo.push(datafile[checkValues[i]]);
+                provInfo.push(dataorigin[checkValues[i]]);
+    
+                console.log("modiFlag : ", modiFlag);
+                console.log("provInfo : ", provInfo);
+            }
+        }
+        res.render('data/utilizeDataPage.ejs', {
+            esession: session_value.getSession(),
+
+            modiFlag: modiFlag,
+            provInfo: provInfo,
+            insNames: modiInsName,
+
+            authenticated: true
+        });  
+    } else {
+        res.send('<script type="text/javascript">alert("하나의 개인정보를 선택해주세요."); window.history.go(-1);</script>');
+    }
+});
+
+router.post('/utilize_transfer', function (req, res) {
+    console.log("utilize_Transfer")
+    var session = driver.session();
+    var session2 = driver.session();
+    var session3 = driver.session();
+    var session4 = driver.session();
+
+    var company = req.body.company;
+    var allowedPeriodFrom = req.body.allowedPeriodFrom;
+    var allowedPeriodTo = req.body.allowedPeriodTo;
+    var purpose = req.body.purpose;
+    var use = req.body.use;
+    var price = req.body.price;
+
+    var user_name = session_value.getSession().user;
+    var user_pid = session_value.getSession().pid;
+    var user_type;
+    if(session_value.getSession().gubun == '사용자'){
+        user_type = '개인'
+    }
+
+    let today = new Date();
+    let year = today.getFullYear(); 
+    let month = (today.getMonth() + 1).toString();  
+    let day = today.getDate().toString();  
+    if(month.length == 1){
+        month = "0" + month
+    }
+    if(day.length == 1){
+        day = "0" + day
+    }
+    var date = year.toString() + month + day
+
+    console.log("DDD",  provInfo)
+    
+
+    var mergeData = "MATCH (d:Data) "
+                    + "WITH d.name as name, d.value as value, d.file_path as file_path, d.origin as origin, COLLECT(d) AS ns "
+                    + "WHERE size(ns) > 1 "
+                    + "CALL apoc.refactor.mergeNodes(ns) YIELD node "
+                    + "RETURN node"
+    var mergePerson = "MATCH (p:Person) "
+                    + "WITH toLower(p.name) as name, p.pid as pid, p.p_type as p_type, COLLECT(p) AS ns "
+                    + "WHERE size(ns) > 1 "
+                    + "CALL apoc.refactor.mergeNodes(ns) YIELD node "
+                    + "RETURN node"
+    var deleteRel = "MATCH (s)-[r]->(e) "
+                    + "with s,e,type(r) as typ, tail(collect(r)) as coll "
+                    + "foreach(x in coll | delete x) "
+
+    for(var i = 0 ; i < provInfo.length/4; i++){
+        var receiveCypher = "CREATE (p:Person), (d:Data), (p2:Person), (ac:Activity)"
+                            + "SET p = {name: '" + user_name + "', pid: '" + user_pid + "', p_type: '" + user_type + "'}, "
+                            + "    d = {name: '" + provInfo[i*4] + "', value: '" + provInfo[i*4+1] + "', file_path:'" + provInfo[i*4+2] + "', origin:'" + provInfo[i*4+3] + "'}, "
+                            + "    ac = {name: '활용', date:'" + date + "', detail: '', purpose: '" + purpose + "', use: '" + use + "', price: '" + price + "' }, "
+                            + "    p2 = {name: '" + company + "' , pid: '111111', p_type: '기관'} "
+                            + "CREATE (p) <- [o:Own] -(ac), (p2) <- [u:Use{allowed_period_from:'" + allowedPeriodFrom + "', allowed_period_to: '" + allowedPeriodTo + "'}] -(ac), (ac) <- [g:Generate] -(d)"
+        console.log(receiveCypher)
+        session.run(receiveCypher)
+        .then(function (result) {
+        session2.run(mergeData)
+            .then(function (result) {
+                    session2.close()
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+        session3.run(mergePerson)
+            .then(function (result) {
+                session3.close()
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+        session4.run(deleteRel)
+            .then(function (result) {
+                session4.close()
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+        session.close()
+        })
+        .catch(function (err) {
+            console.log(err);
+        });
+    }
+    res.render('data/utilizeData.ejs', {
+        esession: session_value.getSession(), 
+        dataNamesTotal: dataN,
+        dataValuesTotal: datavalue,
+        dataFilesTotal: datafile,
+        dataOriginTotal: dataorigin,
+        s_names: datasname,
+        authenticated: true
+    });
+   
+});
+
+
 router.post('/node2Vec', function (req, res) {
 
     var range = req.body.range;
@@ -4201,6 +4572,7 @@ router.post('/node2Vec', function (req, res) {
                 + '</script>'
 
     if(nodeType == 'personNode') {
+        var startTime = new Date().getTime();
         console.log('Person');
         var personID = req.body.personID;
 
@@ -4363,6 +4735,8 @@ router.post('/node2Vec', function (req, res) {
 
                                                             console.log(nameExceptIns);
                                                             console.log(similarityExceptIns);
+                                                            var endTime = new Date().getTime();
+                                                            console.log("Execution time : ", (endTime - startTime));
                                                             
                                                             res.render("data/analyzeSimResult", {
                                                                 esession: session_value.getSession(),
@@ -4609,7 +4983,6 @@ router.post('/node2Vec', function (req, res) {
                         console.log(err);
                     })*/
 
-
     /* previous version (using gensim)
     if(req.body.nodeType == 'personNode') {
         var nodeKeyword = req.body.personName + ' ' + req.body.personValue;
@@ -4706,6 +5079,306 @@ router.post('/node2Vec', function (req, res) {
 
     res.redirect('data/analyzeSim');
     */
-
 });
+
+router.post('/downloadData', function (req, res) {
+
+    var name = session_value.getSession().user; 
+    var pid = session_value.getSession().pid;
+    var startDate = req.body.startDate;
+    var endDate = req.body.endDate;
+    var actGenerate = req.body.generate;
+    var actProcess = req.body.process;
+    var actProvide = req.body.provide;
+    var dateFlag = true;
+    var actFlag = true;
+    var datesArgvs = '';
+    var actArgvs = '';
+
+    var downloadPath = name + '(' + pid  + ')님의 이력데이터.xlsx'
+
+    if(startDate.length == 0 || endDate.length == 0)
+        dateFlag = false;
+    else 
+        datesArgvs = startDate + ',' + endDate;
+
+    if(actGenerate == undefined && actProcess == undefined && actProvide == undefined)
+        actFlag = false;
+    else 
+        actArgvs = actGenerate + ',' + actProcess + ',' + actProvide;
+
+    //console.log(datesArgvs);
+    //console.log(actArgvs);
+
+    var wrote = 0;
+    var process = spawn('python', [__dirname + '\\data\\exportProv2CSV.py', name, pid, dateFlag, actFlag, datesArgvs, actArgvs]);
+    var startTime = new Date().getTime();
+
+    process.stdout.on('data', function (data) {
+        if (wrote == 0) {
+            }
+        wrote += 1;
+    });
+    var endTime = new Date().getTime();
+    console.log("Execution time : ", (endTime - startTime));
+    process.on('close', function (data) {
+        res.download(downloadPath, function(err){
+            if(err)
+                res.json({err:err});
+            else
+                res.end();
+        })
+    });
+});
+
+router.post('/checkReceipt', function (req, res) {
+
+    var session = driver.session();
+
+    var name = session_value.getSession().user; 
+    var pid = session_value.getSession().pid;
+    var startDate = req.body.startDate;
+    var endDate = req.body.endDate;
+
+    var utilCypher 
+
+    var dataNames = []
+    var filePaths = []
+    var values = []
+    var origins = []
+
+    var dates = []
+    var details = []
+    var purposes = []
+    var prices = []
+    var uses = []
+    
+    var insts = []
+
+    var APFroms = []
+    var APTos = []
+    var dateFlag;
+    if(startDate == '' || endDate == ''){
+        utilCypher = "MATCH (p)-[o:Own]-(ac), (p2)-[u:Use]-(ac), (ac)-[g:Generate]-(d) WHERE ac.name = '활용' AND p.name = '"+ name +"' AND p.pid = '"+ pid +"' RETURN d, ac, p2, u"
+        dateFlag = false
+    }
+    else{
+        utilCypher = "MATCH (p)-[o:Own]-(ac), (p2)-[u:Use]-(ac), (ac)-[g:Generate]-(d) WHERE ac.name = '활용' AND (ac.date >= '"+ startDate +"' AND ac.date <= '" + endDate + "') AND p.name = '"+ name +"' AND p.pid = '"+ pid +"' RETURN d, ac, p2, u"
+        dateFlag = true
+    }
+    
+    session.run(utilCypher)
+    .then(function (result){
+        result.records.forEach(function (record){
+
+            dataNames.push(record._fields[0].properties.name)
+            filePaths.push(record._fields[0].properties.file_path)
+            values.push(record._fields[0].properties.value)
+            origins.push(record._fields[0].properties.origin)
+
+          
+            dates.push(record._fields[1].properties.date)
+            details.push(record._fields[1].properties.detail)
+            purposes.push(record._fields[1].properties.purpose)
+            prices.push(record._fields[1].properties.price)
+            uses.push(record._fields[1].properties.use)
+           
+            insts.push(record._fields[2].properties.name)
+           
+            APFroms.push(record._fields[3].properties.allowed_period_from)
+            APTos.push(record._fields[3].properties.allowed_period_to)
+            session.close()
+        })
+
+        /*
+        let unique = [...new Set(dataNames)];
+
+        var dataResults = []
+        var countResults = []
+        var pricesResults = []
+
+        var count;
+        var indexs;
+        var total;
+        for(var i = 0; i<unique.length; i++){
+            console.log(unique[i])
+            dataResults.push(unique[i])
+            
+            count = 0;
+            indexs = []
+            for(var j = 0; j<dataNames.length ; j++){
+                if(dataNames[j] == unique[i]){
+                    count++;
+                    indexs.push(j)
+                }
+            }
+            countResults.push(count);
+            
+            total = 0;
+            for(var k = 0; k<indexs.length; k++){
+                total = total + parseInt(prices[indexs[k]])
+            }
+            pricesResults.push(total) 
+            
+        }
+        */
+
+        var countResults = [];
+        var comparedData = [];
+        var comparedPrice = [];
+        var dataResults = [];
+        var countResults = [];
+        var priceResults = [];
+        var priceResult = 0
+
+        for(var i = 0; i < dataNames.length; i++) {
+            if(!comparedData.includes(dataNames[i] + '/' + insts[i])){
+                comparedData.push(dataNames[i] + '/' + insts[i]);
+                comparedPrice.push(dataNames[i] + '/' + insts[i]);
+                comparedData[dataNames[i] + '/' + insts[i]] = 1;
+                comparedPrice[dataNames[i] + '/' + insts[i]] = parseInt(prices[i]);
+            }
+            else {
+                comparedData[dataNames[i] + '/' + insts[i]] = comparedData[dataNames[i] + '/' + insts[i]] + 1;
+                comparedPrice[dataNames[i] + '/' + insts[i]] = comparedPrice[dataNames[i] + '/' + insts[i]] + parseInt(prices[i]);
+            }
+        }
+
+        for(var i = 0; i < comparedData.length; i++) {
+            dataResults[i] = comparedData[i];
+            countResults[i] = comparedData[comparedData[i]];
+            priceResults[i] = comparedPrice[comparedData[i]];
+        }
+
+        for (var i = 0; i < priceResults.length ; i++){
+            priceResult = priceResult + priceResults[i]
+        }
+        //var totalPrice = priceResult*1.1
+        
+        console.log(dataResults)
+        console.log(countResults)
+        console.log(priceResults)
+
+        console.log(priceResult)
+        //console.log(totalPrice)
+        res.render("data/utilizeDataReceiptResult", {
+            esession: session_value.getSession(),
+            
+            dateFlag : dateFlag,
+            startDate : startDate,
+            endDate : endDate,
+
+            dataResults: dataResults,
+            countResults: countResults,
+            pricesResults: priceResults,
+            priceResult: priceResult,
+            insts : insts,
+            //totalPrice: totalPrice,
+
+            authenticated: true
+        });
+    })
+    .catch(function (err){  
+        console.log(err);
+    });
+});
+
+router.post('/getReceiptTable', function (req, res) {
+    var session = driver.session();
+    var dataNameKey = req.body.dataName;
+    console.log(req.body.dataName);
+    console.log(req.body.startDateTemp);
+    console.log(req.body.endDateTemp);
+    console.log(req.body.inst);
+    //console.log("HI!");
+    var startDate = req.body.startDateTemp;
+    var endDate = req.body.endDateTemp;
+    var inst = req.body.inst;
+    var user_name = session_value.getSession().user;
+    var user_pid = session_value.getSession().pid;
+    var user_type;
+
+    var dataNames = []
+    var filePaths = []
+    var values = []
+    var origins = []
+
+    var dates = []
+    var uses = []
+    var details = []
+    var purposes = []
+    var prices = []
+    
+    var insts = []
+
+    var APFroms = []
+    var APTos = []
+
+    var utilCypher;
+
+    if(session_value.getSession().gubun == '사용자'){
+        user_type = '개인'
+    }
+    if(startDate != '' && endDate != ''){
+        utilCypher = "MATCH (p)-[o:Own]-(ac), (p2)-[u:Use]-(ac), (ac)-[g:Generate]-(d) "
+                    +"WHERE ac.name = '활용' AND p.name = '"+ user_name +"' AND p.pid = '"+ user_pid +"' "
+                    +"AND p2.name = '" + inst + "' "
+                    +"AND (ac.date >= '"+ startDate +"' AND ac.date <= '" + endDate + "') "
+                    +"AND d.name = '" + dataNameKey + "' RETURN d, ac, p2, u"
+    }
+    else{
+        utilCypher = "MATCH (p)-[o:Own]-(ac), (p2)-[u:Use]-(ac), (ac)-[g:Generate]-(d) "
+                    +"WHERE ac.name = '활용' AND p.name = '"+ user_name +"' AND p.pid = '"+ user_pid +"' "
+                    +"AND p2.name = '" + inst + "' "
+                    +"AND d.name = '" + dataNameKey + "' RETURN d, ac, p2, u"
+    }
+    session.run(utilCypher)
+    .then(function (result){
+        result.records.forEach(function (record){
+
+            dataNames.push(record._fields[0].properties.name)
+            filePaths.push(record._fields[0].properties.file_path)
+            values.push(record._fields[0].properties.value)
+            origins.push(record._fields[0].properties.origin)
+
+            dates.push(record._fields[1].properties.date)
+            details.push(record._fields[1].properties.detail)
+            purposes.push(record._fields[1].properties.purpose)
+            prices.push(record._fields[1].properties.price)
+            uses.push(record._fields[1].properties.use)
+
+            insts.push(record._fields[2].properties.name)
+            
+            APFroms.push(record._fields[3].properties.allowed_period_from)
+            APTos.push(record._fields[3].properties.allowed_period_to)
+            session.close()
+        })
+
+        res.render("data/utilizeDataReceiptTable.ejs", {
+            esession: session_value.getSession(),
+            dataNames : dataNames,
+            filePaths : filePaths,
+            values : values,
+            origins : origins,
+        
+            dates : dates,
+            details : details,
+            purposes : purposes,
+            prices : prices,
+            uses : uses,
+            
+            insts : insts,
+        
+            APFroms : APFroms,
+            APTos : APTos,
+            authenticated: true
+        });
+    })
+    .catch(function (err){  
+        console.log(err);
+    });
+
+            
+});
+
 module.exports = router;

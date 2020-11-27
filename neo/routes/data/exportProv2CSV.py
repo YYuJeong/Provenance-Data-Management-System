@@ -90,7 +90,7 @@ def extractProcessProps(p, d2, ac, d1):
                 '값 ' : dataVals2,
                 '파일 ': dataFilePaths2,
                 '발급처 ' : dataOrigins2,
-                }    
+                }       
         
         processDF = pd.DataFrame(data, index=range(1,len(acDates)+1))
     return processDF
@@ -154,7 +154,7 @@ def searchCreateProv(tx, dateFlag):
                         + returnCypher)
     else:
         createCypher = createCypher + returnCypher
-    print(createCypher)
+
     results = tx.run(createCypher).values()
     
     p, d, ac = [], [], []
@@ -222,21 +222,39 @@ def searchProvideProv(tx, dateFlag):
     provideDF = extractProvideProps(p1, d, ac, r, p2)
 
     return provideDF
-        
 
-user_name = '이상우'
-user_pid = '880514-1520414'
-
+'''
 filename = user_name + '(' + user_pid +')님의 이력데이터.xlsx'
-writer = pd.ExcelWriter(filename, engine='xlsxwriter')
+writer = pd.ExcelWriter(filename, engine = 'xlsxwriter')
+'''
 
-dateFlag = True
-actFlag = True
+user_name = sys.argv[1]
+user_pid = sys.argv[2]
 
-datesArgvs = ['20000101', '20201231']
-actArgvs = ['생성', '가공', '제공']     
+
+dateFlag = sys.argv[3]
+actFlag = sys.argv[4]
+
+datesArgvs = sys.argv[5]
+actArgvs = sys.argv[6]
+
+datesArgvs = datesArgvs.split(',')
+actArgvs = actArgvs.split(',')
+
+
+def demo():
+    filename = user_name + '(' + user_pid +')님의 이력데이터.xlsx'
+    #writer = pd.ExcelWriter(filename, engine = 'xlsxwriter')
+    """Demo for the false positive"""
+    with pd.ExcelWriter(filename) as writer:
+
+        return writer
+
+writer = demo()
 
 with driver.session() as session:
+
+    
     if actFlag and dateFlag:
         for act in actArgvs:
             if act == '생성':
@@ -343,5 +361,7 @@ with driver.session() as session:
             worksheet.set_column('C:D', 20, cell_form)
             worksheet.set_column('I:I', 20, cell_form)
             worksheet.set_column('K:K', 20, cell_form)
-    
+
     writer.save()
+
+
