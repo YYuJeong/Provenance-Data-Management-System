@@ -235,8 +235,6 @@ datesArgvs = ['20000101', '20201231']
 actArgvs = ['생성', '가공', '제공']     
 
 with driver.session() as session:
-
-    
     if actFlag and dateFlag:
         for act in actArgvs:
             if act == '생성':
